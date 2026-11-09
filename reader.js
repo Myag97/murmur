@@ -156581,6 +156581,7 @@ async function renderLibrary(asked = false) {
     docs = (await dbAll()).sort((a2, b3) => b3.lastOpened - a2.lastOpened);
   } catch {
   }
+  $3("appRow").hidden = isExt2 || !/Android/i.test(navigator.userAgent);
   const driveReady = !!clientId();
   $3("driveRow").hidden = !driveReady;
   box.hidden = !docs.length && !asked && !driveReady;
