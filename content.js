@@ -303,6 +303,28 @@
     const SKIP_TAGS = /* @__PURE__ */ new Set(["SCRIPT", "STYLE", "NOSCRIPT", "TEMPLATE", "IFRAME", "SVG", "MATH", "CANVAS", "VIDEO", "AUDIO", "OBJECT", "EMBED", "BUTTON", "SELECT", "TEXTAREA", "INPUT", "OPTION", "NAV", "ASIDE", "DIALOG", "MENU", "HEAD", "TITLE", "META", "LINK"]);
     const SKIP_ROLES = /* @__PURE__ */ new Set(["navigation", "banner", "contentinfo", "complementary", "menu", "menubar", "search", "dialog", "alertdialog", "toolbar", "tablist", "tooltip", "presentation", "none"]);
     const SKIP_CLASS = /(^|[\s_-])(ad|ads|advert|advertisement|promo|cookie|cookies|share|sharing|social|sidebar|newsletter|breadcrumbs?|skip-link|visually-hidden|sr-only|screen-reader-text|comment-form|pagination)([\s_-]|$)/i;
+    const alive = () => {
+      try {
+        return !!chrome.runtime?.id;
+      } catch {
+        return false;
+      }
+    };
+    function toBg(msg, reply) {
+      if (!alive()) return Promise.resolve();
+      try {
+        if (reply) {
+          return chrome.runtime.sendMessage(msg, (res) => {
+            void chrome.runtime.lastError;
+            reply(res);
+          });
+        }
+        return chrome.runtime.sendMessage(msg).catch(() => {
+        });
+      } catch {
+        return Promise.resolve();
+      }
+    }
     const S = {
       settings: { ...DEFAULTS },
       sentences: [],
@@ -583,7 +605,7 @@
       const root = host.attachShadow({ mode: "open" });
       root.innerHTML = `<style>${CAPTION_CSS}</style><div class="cap" title="Click to pause or play"></div>`;
       const el = root.querySelector(".cap");
-      el.addEventListener("click", () => chrome.runtime.sendMessage({ type: "content:toggle" }));
+      el.addEventListener("click", () => toBg({ type: "content:toggle" }));
       (document.body || document.documentElement).appendChild(host);
       S.cap = { host, el, index: -1 };
       return S.cap;
@@ -689,13 +711,13 @@
     function start(mode) {
       hidePill();
       if (document.contentType === "application/pdf") {
-        chrome.runtime.sendMessage({ type: "content:open-pdf", url: location.href });
+        toBg({ type: "content:open-pdf", url: location.href });
         return;
       }
       if (isGoogleDoc()) {
         showBar();
         setState("loading", "Opening this Google Doc in the Murmur reader\u2026");
-        chrome.runtime.sendMessage({ type: "content:open-gdoc", url: location.href, title: document.title }, (res) => {
+        toBg({ type: "content:open-gdoc", url: location.href, title: document.title }, (res) => {
           if (res?.error) setState("error", res.error);
           else hideBar();
         });
@@ -753,7 +775,7 @@
       );
       languagesFor(sentences).then((langs) => {
         if (S.sentences !== sentences) return;
-        chrome.runtime.sendMessage({ type: "content:read", sentences: sentences.map((s) => s.text), breaks, langs, startIndex }, (res) => {
+        toBg({ type: "content:read", sentences: sentences.map((s) => s.text), breaks, langs, startIndex }, (res) => {
           if (S.starting === sentences) S.starting = null;
           if (chrome.runtime.lastError) setState("error", chrome.runtime.lastError.message);
           else if (res?.error) setState("error", res.error);
@@ -864,7 +886,7 @@
       return any ? hints : null;
     }
     function seek(i, word) {
-      chrome.runtime.sendMessage({ type: "content:seek", index: i, word: word || 0 });
+      toBg({ type: "content:seek", index: i, word: word || 0 });
     }
     const CLAUDE_MSG = '[data-testid="assistant-message"]';
     const claude = { streaming: /* @__PURE__ */ new Set(), scanTimer: 0, readTimer: 0 };
@@ -1028,15 +1050,15 @@
         <button class="x" title="Stop and close">&#10005;</button>
       </div>`;
       const $ = (s) => root.querySelector(s);
-      $(".gear").onclick = () => chrome.runtime.sendMessage({ type: "content:open-settings" });
-      $(".prev").onclick = () => chrome.runtime.sendMessage({ type: "content:prev" });
+      $(".gear").onclick = () => toBg({ type: "content:open-settings" });
+      $(".prev").onclick = () => toBg({ type: "content:prev" });
       $(".next").onclick = () => {
         if (S.state === "idle" && S.current < 0 && S.sentences.length) return continueIfPageGrew();
-        chrome.runtime.sendMessage({ type: "content:next" });
+        toBg({ type: "content:next" });
       };
-      $(".play").onclick = () => chrome.runtime.sendMessage({ type: "content:toggle" });
+      $(".play").onclick = () => toBg({ type: "content:toggle" });
       $(".x").onclick = () => {
-        chrome.runtime.sendMessage({ type: "content:stop" });
+        toBg({ type: "content:stop" });
         hideBar();
       };
       $(".cc").onclick = () => {
@@ -1063,7 +1085,7 @@
       speed.onchange = () => {
         const s = { ...S.settings, speed: parseFloat(speed.value) };
         chrome.storage.sync.set({ speed: s.speed });
-        chrome.runtime.sendMessage({ type: "settings-changed", settings: s });
+        toBg({ type: "settings-changed", settings: s });
       };
       (document.body || document.documentElement).appendChild(host);
       S.bar = { host, root, $ };
@@ -1298,8 +1320,7 @@
       }
     });
     window.addEventListener("pagehide", () => {
-      if (S.state !== "idle") chrome.runtime.sendMessage({ type: "content:stop" }).catch?.(() => {
-      });
+      if (S.state !== "idle") toBg({ type: "content:stop" });
     });
   })();
 })();
