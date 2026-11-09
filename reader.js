@@ -156048,7 +156048,7 @@ var import_Lame = __toESM(require_Lame(), 1);
 var import_BitStream = __toESM(require_BitStream(), 1);
 
 // src/drive.js
-var DRIVE_CLIENT_ID = "";
+var DRIVE_CLIENT_ID = "994864521807-e2l6vkinu5n6sh8sblc2msqt38jlhk7d.apps.googleusercontent.com";
 var SCOPE = "https://www.googleapis.com/auth/drive.file";
 var API = "https://www.googleapis.com/drive/v3";
 var UPLOAD = "https://www.googleapis.com/upload/drive/v3";
