@@ -5632,14 +5632,14 @@ var require_jszip_min = __commonJS({
           }
         }
         n2(T2);
-        var q2 = false;
+        var q3 = false;
         function J3(e3, t3, r3, n3) {
           P3(e3, (s3 << 1) + (n3 ? 1 : 0), 3), function(e4, t4, r4, n4) {
             M4(e4), n4 && (U3(e4, r4), U3(e4, ~r4)), i3.arraySet(e4.pending_buf, e4.window, t4, r4, e4.pending), e4.pending += r4;
           }(e3, t3, r3, true);
         }
         r2._tr_init = function(e3) {
-          q2 || (function() {
+          q3 || (function() {
             var e4, t3, r3, n3, i4, s4 = new Array(g3 + 1);
             for (n3 = r3 = 0; n3 < a2 - 1; n3++) for (I2[n3] = r3, e4 = 0; e4 < 1 << w3[n3]; e4++) A3[r3++] = n3;
             for (A3[r3 - 1] = n3, n3 = i4 = 0; n3 < 16; n3++) for (T2[n3] = i4, e4 = 0; e4 < 1 << k4[n3]; e4++) E2[i4++] = n3;
@@ -5651,7 +5651,7 @@ var require_jszip_min = __commonJS({
             for (; e4 <= 287; ) z2[2 * e4 + 1] = 8, e4++, s4[8]++;
             for (Z2(z2, l2 + 1, s4), e4 = 0; e4 < f3; e4++) C2[2 * e4 + 1] = 5, C2[2 * e4] = j2(e4, 5);
             O2 = new D2(z2, w3, u3 + 1, l2, g3), B2 = new D2(C2, k4, 0, f3, g3), R2 = new D2(new Array(0), x2, 0, c3, p3);
-          }(), q2 = true), e3.l_desc = new F3(e3.dyn_ltree, O2), e3.d_desc = new F3(e3.dyn_dtree, B2), e3.bl_desc = new F3(e3.bl_tree, R2), e3.bi_buf = 0, e3.bi_valid = 0, W2(e3);
+          }(), q3 = true), e3.l_desc = new F3(e3.dyn_ltree, O2), e3.d_desc = new F3(e3.dyn_dtree, B2), e3.bl_desc = new F3(e3.bl_tree, R2), e3.bi_buf = 0, e3.bi_valid = 0, W2(e3);
         }, r2._tr_stored_block = J3, r2._tr_flush_block = function(e3, t3, r3, n3) {
           var i4, s4, a3 = 0;
           0 < e3.level ? (2 === e3.strm.data_type && (e3.strm.data_type = function(e4) {
@@ -17212,9 +17212,9 @@ var require_rules = __commonJS({
     exports.token = function(tokenType, value) {
       var matchValue = value !== void 0;
       return function(input) {
-        var token = input.head();
-        if (token && token.name === tokenType && (!matchValue || token.value === value)) {
-          return results.success(token.value, input.tail(), token.source);
+        var token2 = input.head();
+        if (token2 && token2.name === tokenType && (!matchValue || token2.value === value)) {
+          return results.success(token2.value, input.tail(), token2.source);
         } else {
           var expected = describeToken({ name: tokenType, value });
           return describeTokenMismatch(input, expected);
@@ -17459,21 +17459,21 @@ var require_rules = __commonJS({
         return rule(input).changeRemaining(input);
       };
     };
-    var describeToken = function(token) {
-      if (token.value) {
-        return token.name + ' "' + token.value + '"';
+    var describeToken = function(token2) {
+      if (token2.value) {
+        return token2.name + ' "' + token2.value + '"';
       } else {
-        return token.name;
+        return token2.name;
       }
     };
     function describeTokenMismatch(input, expected) {
       var error;
-      var token = input.head();
-      if (token) {
+      var token2 = input.head();
+      if (token2) {
         error = errors.error({
           expected,
-          actual: describeToken(token),
-          location: token.source
+          actual: describeToken(token2),
+          location: token2.source
         });
       } else {
         error = errors.error({
@@ -17699,22 +17699,22 @@ var require_regex_tokeniser = __commonJS({
             var endIndex = startIndex + result[0].length;
             if (result.index === startIndex && endIndex > startIndex) {
               var value = result[1];
-              var token = new Token(
+              var token2 = new Token(
                 rules[i3].name,
                 value,
                 source.range(startIndex, endIndex)
               );
-              return { token, endIndex };
+              return { token: token2, endIndex };
             }
           }
         }
         var endIndex = startIndex + 1;
-        var token = new Token(
+        var token2 = new Token(
           "unrecognisedCharacter",
           string.substring(startIndex, endIndex),
           source.range(startIndex, endIndex)
         );
-        return { token, endIndex };
+        return { token: token2, endIndex };
       }
       function endToken(input, source) {
         return new Token(
@@ -31548,17 +31548,17 @@ var require_Presets = __commonJS({
         var vbr_preset = gfp.VBR == VbrMode.vbr_rh ? vbr_old_switch_map : vbr_psy_switch_map;
         var x2 = gfp.VBR_q_frac;
         var p3 = vbr_preset[a2];
-        var q2 = vbr_preset[a2 + 1];
+        var q3 = vbr_preset[a2 + 1];
         var set = p3;
-        p3.st_lrm = p3.st_lrm + x2 * (q2.st_lrm - p3.st_lrm);
-        p3.st_s = p3.st_s + x2 * (q2.st_s - p3.st_s);
-        p3.masking_adj = p3.masking_adj + x2 * (q2.masking_adj - p3.masking_adj);
-        p3.masking_adj_short = p3.masking_adj_short + x2 * (q2.masking_adj_short - p3.masking_adj_short);
-        p3.ath_lower = p3.ath_lower + x2 * (q2.ath_lower - p3.ath_lower);
-        p3.ath_curve = p3.ath_curve + x2 * (q2.ath_curve - p3.ath_curve);
-        p3.ath_sensitivity = p3.ath_sensitivity + x2 * (q2.ath_sensitivity - p3.ath_sensitivity);
-        p3.interch = p3.interch + x2 * (q2.interch - p3.interch);
-        p3.msfix = p3.msfix + x2 * (q2.msfix - p3.msfix);
+        p3.st_lrm = p3.st_lrm + x2 * (q3.st_lrm - p3.st_lrm);
+        p3.st_s = p3.st_s + x2 * (q3.st_s - p3.st_s);
+        p3.masking_adj = p3.masking_adj + x2 * (q3.masking_adj - p3.masking_adj);
+        p3.masking_adj_short = p3.masking_adj_short + x2 * (q3.masking_adj_short - p3.masking_adj_short);
+        p3.ath_lower = p3.ath_lower + x2 * (q3.ath_lower - p3.ath_lower);
+        p3.ath_curve = p3.ath_curve + x2 * (q3.ath_curve - p3.ath_curve);
+        p3.ath_sensitivity = p3.ath_sensitivity + x2 * (q3.ath_sensitivity - p3.ath_sensitivity);
+        p3.interch = p3.interch + x2 * (q3.interch - p3.interch);
+        p3.msfix = p3.msfix + x2 * (q3.msfix - p3.msfix);
         lame_set_VBR_q(gfp, set.vbr_q);
         if (enforce != 0)
           gfp.quant_comp = set.quant_comp;
@@ -34420,17 +34420,17 @@ var tensorFromImage = async (image, options) => {
   }
 };
 var tensorFromTexture = (texture, options) => {
-  const { width, height, download: download2, dispose } = options;
+  const { width, height, download: download3, dispose } = options;
   const dims = [1, height, width, 4];
-  return new Tensor({ location: "texture", type: "float32", texture, dims, download: download2, dispose });
+  return new Tensor({ location: "texture", type: "float32", texture, dims, download: download3, dispose });
 };
 var tensorFromGpuBuffer = (gpuBuffer, options) => {
-  const { dataType, dims, download: download2, dispose } = options;
-  return new Tensor({ location: "gpu-buffer", type: dataType ?? "float32", gpuBuffer, dims, download: download2, dispose });
+  const { dataType, dims, download: download3, dispose } = options;
+  return new Tensor({ location: "gpu-buffer", type: dataType ?? "float32", gpuBuffer, dims, download: download3, dispose });
 };
 var tensorFromMLTensor = (mlTensor, options) => {
-  const { dataType, dims, download: download2, dispose } = options;
-  return new Tensor({ location: "ml-tensor", type: dataType ?? "float32", mlTensor, dims, download: download2, dispose });
+  const { dataType, dims, download: download3, dispose } = options;
+  return new Tensor({ location: "ml-tensor", type: dataType ?? "float32", mlTensor, dims, download: download3, dispose });
 };
 var tensorFromPinnedBuffer = (type, buffer, dims) => new Tensor({ location: "cpu-pinned", type, data: buffer, dims: dims ?? [buffer.length] });
 
@@ -35766,7 +35766,7 @@ var Ia = U(() => {
     });
     var S2 = console.log.bind(console), $4 = console.error.bind(console), v3 = S2, x2 = $4;
     Object.assign(n2, b3), b3 = null;
-    var T2, E2, I2, z2, O2, D2, L2, q2, Q2, W2, Z2, we, H2, j2 = n2.wasmBinary, te2 = false, X2 = (s3) => s3.startsWith("file://");
+    var T2, E2, I2, z2, O2, D2, L2, q3, Q2, W2, Z2, we, H2, j2 = n2.wasmBinary, te2 = false, X2 = (s3) => s3.startsWith("file://");
     function ue() {
       return T2.buffer != z2.buffer && Ce2(), z2;
     }
@@ -35780,7 +35780,7 @@ var Ia = U(() => {
       return T2.buffer != z2.buffer && Ce2(), L2;
     }
     function C2() {
-      return T2.buffer != z2.buffer && Ce2(), q2;
+      return T2.buffer != z2.buffer && Ce2(), q3;
     }
     function V2() {
       return T2.buffer != z2.buffer && Ce2(), Q2;
@@ -35829,7 +35829,7 @@ var Ia = U(() => {
     }
     function Ce2() {
       var s3 = T2.buffer;
-      n2.HEAP8 = z2 = new Int8Array(s3), n2.HEAP16 = D2 = new Int16Array(s3), n2.HEAPU8 = O2 = new Uint8Array(s3), n2.HEAPU16 = L2 = new Uint16Array(s3), n2.HEAP32 = q2 = new Int32Array(s3), n2.HEAPU32 = Q2 = new Uint32Array(s3), n2.HEAPF32 = W2 = new Float32Array(s3), n2.HEAPF64 = H2 = new Float64Array(s3), n2.HEAP64 = Z2 = new BigInt64Array(s3), n2.HEAPU64 = we = new BigUint64Array(s3);
+      n2.HEAP8 = z2 = new Int8Array(s3), n2.HEAP16 = D2 = new Int16Array(s3), n2.HEAPU8 = O2 = new Uint8Array(s3), n2.HEAPU16 = L2 = new Uint16Array(s3), n2.HEAP32 = q3 = new Int32Array(s3), n2.HEAPU32 = Q2 = new Uint32Array(s3), n2.HEAPF32 = W2 = new Float32Array(s3), n2.HEAPF64 = H2 = new Float64Array(s3), n2.HEAP64 = Z2 = new BigInt64Array(s3), n2.HEAPU64 = we = new BigUint64Array(s3);
     }
     function _t() {
       u3 ? startWorker(n2) : Y2.Ca();
@@ -38259,16 +38259,16 @@ var ie = U(() => {
     let I2 = a2 < 2 ? "" : `
   fn i2o_${e2}(indices: ${f3.indices}) -> u32 {
     return ${E2.join("+")};
-  }`, z2 = (C2) => (g3.indicesToOffset = true, a2 < 2 ? C2 : `i2o_${e2}(${C2})`), O2 = (...C2) => a2 === 0 ? "0u" : `${f3.indices}(${C2.map(b3).join(",")})`, D2 = (C2, V2) => a2 < 2 ? `${C2}` : `${F(C2, V2, a2)}`, L2 = (C2, V2, de) => a2 < 2 ? `${C2}=${de};` : `${F(C2, V2, a2)}=${de};`, q2 = {}, Q2 = (C2, V2) => {
+  }`, z2 = (C2) => (g3.indicesToOffset = true, a2 < 2 ? C2 : `i2o_${e2}(${C2})`), O2 = (...C2) => a2 === 0 ? "0u" : `${f3.indices}(${C2.map(b3).join(",")})`, D2 = (C2, V2) => a2 < 2 ? `${C2}` : `${F(C2, V2, a2)}`, L2 = (C2, V2, de) => a2 < 2 ? `${C2}=${de};` : `${F(C2, V2, a2)}=${de};`, q3 = {}, Q2 = (C2, V2) => {
       g3.broadcastedIndicesToOffset = true;
       let de = `${V2.name}broadcastedIndicesTo${e2}Offset`;
-      if (de in q2) return `${de}(${C2})`;
+      if (de in q3) return `${de}(${C2})`;
       let ze = [];
       for (let ve = a2 - 1; ve >= 0; ve--) {
         let $e = V2.indicesGet("outputIndices", ve + V2.rank - a2);
         ze.push(`${D2($4, ve)} * (${$e} % ${D2(S2, ve)})`);
       }
-      return q2[de] = `fn ${de}(outputIndices: ${V2.type.indices}) -> u32 {
+      return q3[de] = `fn ${de}(outputIndices: ${V2.type.indices}) -> u32 {
              return ${ze.length > 0 ? ze.join("+") : "0u"};
            }`, `${de}(${C2})`;
     }, W2 = (C2, V2) => (() => {
@@ -38308,7 +38308,7 @@ var ie = U(() => {
     })();
     return { impl: () => {
       let C2 = [], V2 = false;
-      return g3.offsetToIndices && (C2.push(x2), V2 = true), g3.indicesToOffset && (C2.push(I2), V2 = true), g3.broadcastedIndicesToOffset && (Object.values(q2).forEach((de) => C2.push(de)), V2 = true), g3.set && (C2.push(ue), V2 = true), g3.setByIndices && (C2.push(X2), V2 = true), g3.get && (C2.push(H2), V2 = true), g3.getByIndices && (C2.push(we), V2 = true), !i3 && V2 && C2.unshift(`const ${S2} = ${f3.indices}(${r2.join(",")});`, `const ${$4} = ${f3.indices}(${k.computeStrides(r2).join(",")});`), C2.join(`
+      return g3.offsetToIndices && (C2.push(x2), V2 = true), g3.indicesToOffset && (C2.push(I2), V2 = true), g3.broadcastedIndicesToOffset && (Object.values(q3).forEach((de) => C2.push(de)), V2 = true), g3.set && (C2.push(ue), V2 = true), g3.setByIndices && (C2.push(X2), V2 = true), g3.get && (C2.push(H2), V2 = true), g3.getByIndices && (C2.push(we), V2 = true), !i3 && V2 && C2.unshift(`const ${S2} = ${f3.indices}(${r2.join(",")});`, `const ${$4} = ${f3.indices}(${k.computeStrides(r2).join(",")});`), C2.join(`
 `);
     }, type: f3, offsetToIndices: T2, indicesToOffset: z2, broadcastedIndicesToOffset: Q2, indices: O2, indicesGet: D2, indicesSet: L2, set: (...C2) => {
       if (C2.length !== a2 + 1) throw new Error(`indices length must be ${a2}`);
@@ -38955,7 +38955,7 @@ var Fr = U(() => {
     let z2 = [{ dims: p3, dataType: t2.dataType, gpuDataType: 0 }];
     m3 && z2.push({ dims: b3, dataType: t2.dataType, gpuDataType: 0 });
     let O2 = (D2) => {
-      let L2 = P("q", t2.dataType, t2.dims, S2), q2 = P("key", r2.dataType, r2.dims, S2), Q2 = [L2, q2];
+      let L2 = P("q", t2.dataType, t2.dims, S2), q3 = P("key", r2.dataType, r2.dims, S2), Q2 = [L2, q3];
       if (E2) {
         let X2 = P("past_key", n2.dataType, n2.dims, S2);
         Q2.push(X2);
@@ -39049,8 +39049,8 @@ var Fr = U(() => {
       v3 && D2.push(P("past_value", n2.dataType, n2.dims));
       let L2 = a2 ? P("seq_lens", a2.dataType, a2.dims) : void 0;
       a2 && D2.push(L2);
-      let q2 = u3 ? P("total_sequence_length_input", u3.dataType, u3.dims) : void 0;
-      u3 && D2.push(q2);
+      let q3 = u3 ? P("total_sequence_length_input", u3.dataType, u3.dims) : void 0;
+      u3 && D2.push(q3);
       let W2 = [M("output", t2.dataType, g3)];
       m3 && W2.push(M("present_value", t2.dataType, b3));
       let Z2 = [{ name: "M", type: "u32" }, { name: "K", type: "u32" }, { name: "N", type: "u32" }, { name: "num_heads", type: "u32" }, { name: "head_size", type: "u32" }, { name: "v_hidden_size", type: "u32" }, { name: "past_sequence_length", type: "u32" }, { name: "kv_sequence_length", type: "u32" }, { name: "n_reps", type: "u32" }];
@@ -39068,7 +39068,7 @@ var Fr = U(() => {
    let n = global_id.x;
    let sequence_length = uniforms.M;
    var total_sequence_length = uniforms.K;
-   ${lo(L2, q2, true)}
+   ${lo(L2, q3, true)}
    let offsetA = workgroup_id.z * uniforms.M * uniforms.K + m * uniforms.K;
    let absKvHeadIdx = batchIdx * kv_num_heads + kvHeadIdx; // kvHeadIdx is relative to the batch
    ${v3 && m3 ? "let pastValueOffset = absKvHeadIdx * uniforms.N * uniforms.past_sequence_length + n;" : ""};
@@ -39846,7 +39846,7 @@ var Yr = U(() => {
     let a2 = e2[0].dims, u3 = e2[1].dims, d3 = a2[a2.length - 2], c3 = u3[u3.length - 1], p3 = a2[a2.length - 1], m3 = ce(c3), f3 = ce(p3), b3 = ce(d3), g3 = k.size(r2) / m3 / b3, _3 = e2.length > 2, S2 = n2 ? n2.slice(0, -2) : r2.slice(0, -2), v3 = [k.size(S2), d3, c3], x2 = [{ type: 12, data: g3 }, { type: 12, data: d3 }, { type: 12, data: c3 }, { type: 12, data: p3 }];
     qe(t2, x2), x2.push(...N(S2, a2, u3)), _3 && x2.push(...N(e2[2].dims)), x2.push(...N(v3));
     let T2 = (E2) => {
-      let I2 = Lr("batch_dims", e2[0].dataType, S2.length), z2 = P("a", e2[0].dataType, a2.length, f3), O2 = P("b", e2[1].dataType, u3.length, m3), D2 = M("output", e2[0].dataType, v3.length, m3), L2 = be(D2.type.tensor), q2 = Fe(t2, D2.type.value, L2), Q2 = [z2, O2], W2 = "";
+      let I2 = Lr("batch_dims", e2[0].dataType, S2.length), z2 = P("a", e2[0].dataType, a2.length, f3), O2 = P("b", e2[1].dataType, u3.length, m3), D2 = M("output", e2[0].dataType, v3.length, m3), L2 = be(D2.type.tensor), q3 = Fe(t2, D2.type.value, L2), Q2 = [z2, O2], W2 = "";
       if (_3) {
         let H2 = o3 ? m3 : 1;
         Q2.push(P("bias", e2[2].dataType, e2[2].dims.length, H2)), W2 = `${o3 ? `value += bias[col / ${H2}];` : `value += ${D2.type.value}(bias[row + i]);`}`;
@@ -39895,7 +39895,7 @@ var Yr = U(() => {
     for (var i = 0u; i < ${b3}u; i++) {
       var value = values[i];
       ${W2}
-      ${q2}
+      ${q3}
       let cur_indices = ${D2.type.indices}(batch, row + i, col);
       let offset = ${D2.indicesToOffset("cur_indices")};
       ${D2.setByOffset(`offset / ${m3}`, "value")};
@@ -40200,17 +40200,17 @@ fn main(@builtin(local_invocation_id) localId : vec3<u32>,
   }, Jt = (e2, t2, r2, n2, o3 = false, i3) => {
     let a2 = e2[0].dims, u3 = e2[1].dims, d3 = a2.slice(0, -2), c3 = u3.slice(0, -2), p3 = n2 ? n2.slice(0, -2) : r2.slice(0, -2), m3 = k.size(p3), f3 = a2[a2.length - 2], b3 = a2[a2.length - 1], g3 = u3[u3.length - 1], _3 = b3 % 4 === 0 && g3 % 4 === 0, S2 = f3 <= 8 ? [4, 1, 1] : [4, 4, 1], $4 = [8, 8, 1], v3 = [Math.ceil(g3 / $4[0] / S2[0]), Math.ceil(f3 / $4[1] / S2[1]), Math.ceil(m3 / $4[2] / S2[2])], x2 = _3 ? 4 : 1, T2 = [...d3, f3, b3 / x2], E2 = T2.length, I2 = [...c3, b3, g3 / x2], z2 = I2.length, O2 = [m3, f3, g3 / x2], D2 = [{ type: 6, data: f3 }, { type: 6, data: g3 }, { type: 6, data: b3 }];
     qe(t2, D2), D2.push(...N(p3, T2, I2));
-    let L2 = ["rank", "rank"], q2 = e2.length > 2;
-    q2 && (D2.push(...N(e2[2].dims)), L2.push("rank")), D2.push(...N(O2));
+    let L2 = ["rank", "rank"], q3 = e2.length > 2;
+    q3 && (D2.push(...N(e2[2].dims)), L2.push("rank")), D2.push(...N(O2));
     let Q2 = (W2) => {
       let Z2 = p3.length, we = Lr("batchDims", e2[0].dataType, Z2, 1), H2 = be(e2[0].dataType), j2 = P("a", e2[0].dataType, E2, x2), te2 = P("b", e2[1].dataType, z2, x2), X2 = M("result", e2[0].dataType, O2.length, x2), ue = [j2, te2];
-      if (q2) {
+      if (q3) {
         let V2 = o3 ? x2 : 1;
         ue.push(P("bias", e2[2].dataType, e2[2].dims.length, V2));
       }
       let he = [{ name: "dim_a_outer", type: "i32" }, { name: "dim_b_outer", type: "i32" }, { name: "dim_inner", type: "i32" }];
       je(t2, he);
-      let ye = be(X2.type.tensor), re2 = Fe(t2, X2.type.value, ye), C2 = cf(x2, q2, re2, [we, j2, te2, X2], o3);
+      let ye = be(X2.type.tensor), re2 = Fe(t2, X2.type.value, ye), C2 = cf(x2, q3, re2, [we, j2, te2, X2], o3);
       return `
   ${W2.registerUniforms(he).registerInternalVariables(we).declareVariables(...ue, X2)}
   ${C2}
@@ -40336,7 +40336,7 @@ var Nu = U(() => {
   }, Uu = (e2, t2, r2, n2, o3, i3, a2, u3, d3) => {
     let c3 = t2.format === "NHWC", p3 = c3 ? e2[0].dims[3] : e2[0].dims[1], m3 = r2[0], f3 = c3 ? r2[2] : r2[3], b3 = c3 ? r2[1] : r2[2], g3 = c3 ? r2[3] : r2[1], _3 = c3 && (p3 % 4 === 0 || p3 % 3 === 0) && g3 % 4 === 0, S2 = c3 ? g3 : f3 * b3, $4 = c3 ? f3 * b3 : g3, v3 = [8, 8, 1], x2 = n2 <= 8 ? [4, 1, 1] : [4, 4, 1], T2 = [Math.ceil(S2 / v3[0] / x2[0]), Math.ceil($4 / v3[1] / x2[1]), Math.ceil(m3 / v3[2] / x2[2])];
     se("verbose", () => `[conv2d_mm_webgpu] dispatch = ${T2}`);
-    let E2 = _3 ? c3 && p3 % 4 !== 0 ? 3 : 4 : 1, I2 = v3[1] * x2[1], z2 = v3[0] * x2[0], O2 = Math.max(v3[0] * E2, v3[1]), D2 = n2 % I2 === 0, L2 = o3 % z2 === 0, q2 = i3 % O2 === 0, Q2 = _3 ? [E2, 4, 4] : [1, 1, 1], W2 = [{ type: 6, data: n2 }, { type: 6, data: o3 }, { type: 6, data: i3 }, { type: 6, data: [t2.pads[0], t2.pads[1]] }, { type: 6, data: t2.strides }, { type: 6, data: t2.dilations }];
+    let E2 = _3 ? c3 && p3 % 4 !== 0 ? 3 : 4 : 1, I2 = v3[1] * x2[1], z2 = v3[0] * x2[0], O2 = Math.max(v3[0] * E2, v3[1]), D2 = n2 % I2 === 0, L2 = o3 % z2 === 0, q3 = i3 % O2 === 0, Q2 = _3 ? [E2, 4, 4] : [1, 1, 1], W2 = [{ type: 6, data: n2 }, { type: 6, data: o3 }, { type: 6, data: i3 }, { type: 6, data: [t2.pads[0], t2.pads[1]] }, { type: 6, data: t2.strides }, { type: 6, data: t2.dilations }];
     qe(t2, W2), W2.push(...N(e2[0].dims, e2[1].dims));
     let Z2 = ["rank", "rank"];
     a2 && (W2.push(...N(e2[2].dims)), Z2.push("rank")), W2.push(...N(r2));
@@ -40365,10 +40365,10 @@ var Nu = U(() => {
         //  dilation : vec2<i32>, dimAOuter : i32, dimBOuter : i32, dimInner : i32 };
         ${H2.registerUniforms(j2).declareVariables(...re2, C2)}
         ${ue}
-        ${pf(c3, D2, L2, q2, a2, t2, Q2[0], Q2[1], Q2[2], X2)}
+        ${pf(c3, D2, L2, q3, a2, t2, Q2[0], Q2[1], Q2[2], X2)}
         ${_3 ? mo(x2, v3, X2, void 0, !c3, O2) : fo(x2, v3, X2, void 0, !c3, O2, false, void 0, u3)}`;
     };
-    return { name: "Conv2DMatMul", shaderCache: { hint: `${t2.cacheKey};${E2};${_3};${D2};${L2};${q2};${I2};${z2};${O2}`, inputDependencies: Z2 }, getRunData: () => ({ outputs: [{ dims: d3 ? d3(r2) : r2, dataType: e2[0].dataType }], dispatchGroup: { x: T2[0], y: T2[1], z: T2[2] }, programUniforms: W2 }), getShaderSource: we };
+    return { name: "Conv2DMatMul", shaderCache: { hint: `${t2.cacheKey};${E2};${_3};${D2};${L2};${q3};${I2};${z2};${O2}`, inputDependencies: Z2 }, getRunData: () => ({ outputs: [{ dims: d3 ? d3(r2) : r2, dataType: e2[0].dataType }], dispatchGroup: { x: T2[0], y: T2[1], z: T2[2] }, programUniforms: W2 }), getShaderSource: we };
   };
 });
 var mf;
@@ -40421,8 +40421,8 @@ var Hu = U(() => {
     if (a2 === "channelsLast") [u3, d3, c3, p3, m3] = e2;
     else if (a2 === "channelsFirst") [u3, m3, d3, c3, p3] = e2;
     else throw new Error(`Unknown dataFormat ${a2}`);
-    let [f3, , b3, g3, _3] = t2, [S2, $4, v3] = Vu(r2), [x2, T2, E2] = Vu(n2), I2 = Jr(b3, x2), z2 = Jr(g3, T2), O2 = Jr(_3, E2), { padInfo: D2, outDepth: L2, outHeight: q2, outWidth: Q2 } = hf(o3, d3, c3, p3, S2, $4, v3, I2, z2, O2), W2 = i3 ? f3 * m3 : f3, Z2 = [0, 0, 0, 0, 0];
-    return a2 === "channelsFirst" ? Z2 = [u3, W2, L2, q2, Q2] : a2 === "channelsLast" && (Z2 = [u3, L2, q2, Q2, W2]), { batchSize: u3, dataFormat: a2, inDepth: d3, inHeight: c3, inWidth: p3, inChannels: m3, outDepth: L2, outHeight: q2, outWidth: Q2, outChannels: W2, padInfo: D2, strideDepth: S2, strideHeight: $4, strideWidth: v3, filterDepth: b3, filterHeight: g3, filterWidth: _3, effectiveFilterDepth: I2, effectiveFilterHeight: z2, effectiveFilterWidth: O2, dilationDepth: x2, dilationHeight: T2, dilationWidth: E2, inShape: e2, outShape: Z2, filterShape: t2 };
+    let [f3, , b3, g3, _3] = t2, [S2, $4, v3] = Vu(r2), [x2, T2, E2] = Vu(n2), I2 = Jr(b3, x2), z2 = Jr(g3, T2), O2 = Jr(_3, E2), { padInfo: D2, outDepth: L2, outHeight: q3, outWidth: Q2 } = hf(o3, d3, c3, p3, S2, $4, v3, I2, z2, O2), W2 = i3 ? f3 * m3 : f3, Z2 = [0, 0, 0, 0, 0];
+    return a2 === "channelsFirst" ? Z2 = [u3, W2, L2, q3, Q2] : a2 === "channelsLast" && (Z2 = [u3, L2, q3, Q2, W2]), { batchSize: u3, dataFormat: a2, inDepth: d3, inHeight: c3, inWidth: p3, inChannels: m3, outDepth: L2, outHeight: q3, outWidth: Q2, outChannels: W2, padInfo: D2, strideDepth: S2, strideHeight: $4, strideWidth: v3, filterDepth: b3, filterHeight: g3, filterWidth: _3, effectiveFilterDepth: I2, effectiveFilterHeight: z2, effectiveFilterWidth: O2, dilationDepth: x2, dilationHeight: T2, dilationWidth: E2, inShape: e2, outShape: Z2, filterShape: t2 };
   }, Gu = (e2, t2, r2, n2, o3, i3) => {
     let a2 = i3 === "channelsLast", u3 = a2 ? e2[0].dims[3] : e2[0].dims[1], d3 = false, c3 = [64, 1, 1], p3 = { x: r2.map((v3, x2) => x2) }, m3 = [Math.ceil(mf(p3.x.map((v3) => r2[v3])) / c3[0]), 1, 1];
     se("verbose", () => `[conv3d_naive_webgpu] dispatch = ${m3}`);
@@ -40441,7 +40441,7 @@ var Hu = U(() => {
           return bias[${a2 ? F("coords", 4, 5) : F("coords", 1, 5)}${d3 ? "/ 4" : ""}];
         }`;
       }
-      let q2 = Ie(f3, E2), Q2 = Fe(t2, q2, E2);
+      let q3 = Ie(f3, E2), Q2 = Fe(t2, q3, E2);
       return `
             ${L2}
             fn getX(d0 : u32, d1 : u32, d2 : u32, d3 : u32, d4 : u32) -> f32 {
@@ -40761,8 +40761,8 @@ var Zu = U(() => {
         L2.push(z2), L2.push(O2);
       } else z2 = t2[0].reshape([I2, c3, u3 * d3]), O2 = t2[1].reshape([1, g3, c3]), D2 = [I2, g3, f3 * b3], L2.push(O2), L2.push(z2);
       a2 && L2.push(t2[2]);
-      let q2 = D2[2], Q2 = L2[0].dims[L2[0].dims.length - 1];
-      q2 < 8 && Q2 < 8 ? e2.compute(Qr(L2, r2, i3, D2, o3, n2), { inputs: L2 }) : e2.compute(Jt(L2, r2, i3, D2, o3, n2), { inputs: L2 });
+      let q3 = D2[2], Q2 = L2[0].dims[L2[0].dims.length - 1];
+      q3 < 8 && Q2 < 8 ? e2.compute(Qr(L2, r2, i3, D2, o3, n2), { inputs: L2 }) : e2.compute(Jt(L2, r2, i3, D2, o3, n2), { inputs: L2 });
       return;
     }
     let S2 = true, $4 = e2.kernelCustomData.wT ?? e2.compute(Ee(t2[1], ho), { inputs: [1], outputs: [r2.wIsConst ? -2 : -1] })[0];
@@ -40801,7 +40801,7 @@ var Yu = U(() => {
     let v3 = ["rank", "rank"], x2 = [t2.strides[0], t2.strides[1]], T2 = [t2.kernelShape[i3 ? 1 : 2], t2.kernelShape[i3 ? 2 : 3]], E2 = [t2.dilations[0], t2.dilations[1]], I2 = [T2[0] + (t2.dilations[0] <= 1 ? 0 : (t2.kernelShape[i3 ? 1 : 2] - 1) * (t2.dilations[0] - 1)), T2[1] + (t2.dilations[1] <= 1 ? 0 : (t2.kernelShape[i3 ? 2 : 3] - 1) * (t2.dilations[1] - 1))], z2 = [I2[0] - 1 - Math.floor((t2.pads[0] + t2.pads[2]) / 2), I2[1] - 1 - Math.floor((t2.pads[1] + t2.pads[3]) / 2)], O2 = [{ type: 12, data: S2 }, { type: 12, data: x2 }, { type: 12, data: T2 }, { type: 12, data: E2 }, { type: 12, data: I2 }, { type: 6, data: z2 }, { type: 12, data: f3 }, { type: 12, data: d3 }, { type: 12, data: c3 }, ...N(e2[0].dims, e2[1].dims)];
     n2 && (O2.push(...N(e2[2].dims)), v3.push("rank")), O2.push(...N(o3));
     let D2 = (L2) => {
-      let q2 = [{ name: "output_size", type: "u32" }, { name: "strides", type: "u32", length: x2.length }, { name: "filter_dims", type: "u32", length: T2.length }, { name: "dilations", type: "u32", length: T2.length }, { name: "effective_filter_dims", type: "u32", length: I2.length }, { name: "pads", type: "i32", length: z2.length }, { name: "input_channels_per_group_int", type: "u32" }, { name: "input_channels_per_group", type: "u32" }, { name: "output_channels_per_group", type: "u32" }], Q2 = be(e2[0].dataType), W2 = i3 ? 1 : 2, Z2 = i3 ? 2 : 3, we = i3 ? 3 : 1, H2 = P("W", e2[1].dataType, e2[1].dims.length, _3), j2 = P("Dy", e2[0].dataType, e2[0].dims.length, p3), te2 = [j2, H2];
+      let q3 = [{ name: "output_size", type: "u32" }, { name: "strides", type: "u32", length: x2.length }, { name: "filter_dims", type: "u32", length: T2.length }, { name: "dilations", type: "u32", length: T2.length }, { name: "effective_filter_dims", type: "u32", length: I2.length }, { name: "pads", type: "i32", length: z2.length }, { name: "input_channels_per_group_int", type: "u32" }, { name: "input_channels_per_group", type: "u32" }, { name: "output_channels_per_group", type: "u32" }], Q2 = be(e2[0].dataType), W2 = i3 ? 1 : 2, Z2 = i3 ? 2 : 3, we = i3 ? 3 : 1, H2 = P("W", e2[1].dataType, e2[1].dims.length, _3), j2 = P("Dy", e2[0].dataType, e2[0].dims.length, p3), te2 = [j2, H2];
       n2 && te2.push(P("bias", e2[2].dataType, [o3[we]].length, g3));
       let X2 = M("result", e2[0].dataType, o3.length, g3), ue = () => {
         let re2 = "";
@@ -40908,7 +40908,7 @@ var Yu = U(() => {
             ${X2.setByOffset("global_idx", "value")};
           `;
       return `
-    ${L2.registerUniforms(q2).declareVariables(...te2, X2)}
+    ${L2.registerUniforms(q3).declareVariables(...te2, X2)}
       ${L2.mainStart()}
       ${L2.guardAgainstOutOfBoundsWorkgroupSizes("uniforms.output_size")};
     ${ye}}`;
@@ -41176,8 +41176,8 @@ var md = U(() => {
             if (E2.inputIndices.includes(D2)) {
               let L2 = O2.symbolToIndices.get(I2);
               if (L2 === void 0) throw new Error("Invalid symbol error");
-              L2.forEach((q2) => {
-                m3.push(`${i3[D2].indicesSet(`input${D2}Indices`, q2, u3.indicesGet("outputIndices", z2))}`);
+              L2.forEach((q3) => {
+                m3.push(`${i3[D2].indicesSet(`input${D2}Indices`, q3, u3.indicesGet("outputIndices", z2))}`);
               });
             }
           });
@@ -42487,7 +42487,7 @@ var tl = U(() => {
     let I2 = [d3, o3, a2 / g3];
     x2.push(...N(I2));
     let z2 = (O2) => {
-      let D2 = T2.length, L2 = P("a", e2[0].dataType, D2, f3), q2 = P("b", 12, E2.length, b3), Q2 = P("scales", e2[2].dataType, e2[2].dims.length), W2 = [L2, q2, Q2], Z2 = e2.length === 4 ? P("zero_points", 12, e2[3].dims.length) : void 0;
+      let D2 = T2.length, L2 = P("a", e2[0].dataType, D2, f3), q3 = P("b", 12, E2.length, b3), Q2 = P("scales", e2[2].dataType, e2[2].dims.length), W2 = [L2, q3, Q2], Z2 = e2.length === 4 ? P("zero_points", 12, e2[3].dims.length) : void 0;
       Z2 && W2.push(Z2);
       let we = I2.length, H2 = M("output", e2[0].dataType, we, g3), j2 = be(e2[0].dataType), te2 = (() => {
         switch (f3) {
@@ -42547,7 +42547,7 @@ var tl = U(() => {
       }, he = () => {
         let ye = `col_index = col * ${g3};`;
         for (let re2 = 0; re2 < g3 * S2; re2++) ye += `
-            let b${re2}_data = ${q2.getByIndices(`${q2.type.indices}(col_index, block, word)`)};
+            let b${re2}_data = ${q3.getByIndices(`${q3.type.indices}(col_index, block, word)`)};
             col_index += 1;`;
         return ye += `
             var b_value: u32;
@@ -42598,7 +42598,7 @@ var tl = U(() => {
     O2.splice(-1, 1, p3 / b3), I2.push(...N(z2)), I2.push(...N(O2)), I2.push(...N(e2[2].dims)), e2.length === 4 && I2.push(...N(k.convertShape(e2[3].dims)));
     let D2 = [d3, o3, a2];
     I2.push(...N(D2));
-    let L2 = (q2) => {
+    let L2 = (q3) => {
       let Q2 = z2.length, W2 = P("a", e2[0].dataType, Q2, f3), Z2 = P("b", 12, O2.length, b3), we = P("scales", e2[2].dataType, e2[2].dims.length), H2 = [W2, Z2, we], j2 = e2.length === 4 ? P("zero_points", 12, e2[3].dims.length) : void 0;
       j2 && H2.push(j2);
       let te2 = D2.length, X2 = M("output", e2[0].dataType, te2), ue = be(e2[0].dataType), he = () => {
@@ -42622,8 +42622,8 @@ var tl = U(() => {
       return `
         var<workgroup> sub_a: array<${W2.type.value}, ${x2}>;
         var<workgroup> inter_results: array<array<${X2.type.value}, ${$4}>, ${S2}>;
-        ${q2.declareVariables(...H2, X2)}
-        ${q2.mainStart([$4, S2, 1])}
+        ${q3.declareVariables(...H2, X2)}
+        ${q3.mainStart([$4, S2, 1])}
           let output_indices = ${X2.offsetToIndices(`workgroup_index * ${S2}`)};
           let col = output_indices[2];
           let row = output_indices[1];
@@ -43070,12 +43070,12 @@ var xl = U(() => {
     E2 && z2.push(E2);
     let O2 = [c3, p3];
     m3 && O2.push(f3);
-    let D2 = [{ type: 12, data: u3 / $4 }, { type: 12, data: r2 }, { type: 12, data: t2.blockSize }, ...N(...O2, i3)], L2 = (q2) => {
+    let D2 = [{ type: 12, data: u3 / $4 }, { type: 12, data: r2 }, { type: 12, data: t2.blockSize }, ...N(...O2, i3)], L2 = (q3) => {
       let Q2 = [{ name: "output_size", type: "u32" }, { name: "axis", type: "u32" }, { name: "block_size", type: "u32" }];
       return `
-      ${q2.registerUniforms(Q2).declareVariables(...z2, I2)}
-      ${q2.mainStart()}
-          ${q2.guardAgainstOutOfBoundsWorkgroupSizes("uniforms.output_size")}
+      ${q3.registerUniforms(Q2).declareVariables(...z2, I2)}
+      ${q3.mainStart()}
+          ${q3.guardAgainstOutOfBoundsWorkgroupSizes("uniforms.output_size")}
           let output_indices = ${I2.offsetToIndices("global_idx")};
 
           // Set input x
@@ -44360,20 +44360,20 @@ var ec = U(() => {
         p3.forEach((O2) => {
           let D2 = typeof O2.data == "number" ? [O2.data] : O2.data;
           if (D2.length === 0) return;
-          let L2 = O2.type === 10 ? 2 : 4, q2, Q2;
-          O2.type === 10 ? (Q2 = D2.length > 4 ? 16 : D2.length > 2 ? 8 : D2.length * L2, q2 = D2.length > 4 ? 16 : L2 * D2.length) : (Q2 = D2.length <= 2 ? D2.length * L2 : 16, q2 = 16), x2 = Math.ceil(x2 / Q2) * Q2, T2.push(x2);
+          let L2 = O2.type === 10 ? 2 : 4, q3, Q2;
+          O2.type === 10 ? (Q2 = D2.length > 4 ? 16 : D2.length > 2 ? 8 : D2.length * L2, q3 = D2.length > 4 ? 16 : L2 * D2.length) : (Q2 = D2.length <= 2 ? D2.length * L2 : 16, q3 = 16), x2 = Math.ceil(x2 / Q2) * Q2, T2.push(x2);
           let W2 = O2.type === 10 ? 8 : 4;
-          x2 += D2.length > 4 ? Math.ceil(D2.length / W2) * q2 : D2.length * L2;
+          x2 += D2.length > 4 ? Math.ceil(D2.length / W2) * q3 : D2.length * L2;
         });
         let E2 = 16;
         x2 = Math.ceil(x2 / E2) * E2;
         let I2 = new ArrayBuffer(x2);
         p3.forEach((O2, D2) => {
-          let L2 = T2[D2], q2 = typeof O2.data == "number" ? [O2.data] : O2.data;
-          if (O2.type === 6) new Int32Array(I2, L2, q2.length).set(q2);
-          else if (O2.type === 12) new Uint32Array(I2, L2, q2.length).set(q2);
-          else if (O2.type === 10) new Uint16Array(I2, L2, q2.length).set(q2);
-          else if (O2.type === 1) new Float32Array(I2, L2, q2.length).set(q2);
+          let L2 = T2[D2], q3 = typeof O2.data == "number" ? [O2.data] : O2.data;
+          if (O2.type === 6) new Int32Array(I2, L2, q3.length).set(q3);
+          else if (O2.type === 12) new Uint32Array(I2, L2, q3.length).set(q3);
+          else if (O2.type === 10) new Uint16Array(I2, L2, q3.length).set(q3);
+          else if (O2.type === 1) new Float32Array(I2, L2, q3.length).set(q3);
           else throw new Error(`Unsupported uniform type: ${Ye(O2.type)}`);
         });
         let z2 = this.gpuDataManager.create(x2, GPUBufferUsage.COPY_DST | GPUBufferUsage.UNIFORM);
@@ -44825,8 +44825,8 @@ var Vn = U(() => {
         At.set(e2, [c3, p3, m3, f3, b3, true]);
       }
       a2.jsepOnRunStart?.(c3), a2.webnnOnRunStart?.(c3);
-      let q2;
-      f3 ? q2 = await a2._OrtRunWithBinding(c3, f3.handle, S2, D2, $4) : q2 = await a2._OrtRun(c3, O2, z2, _3, L2, S2, D2, $4), q2 !== 0 && pe("failed to call OrtRun().");
+      let q3;
+      f3 ? q3 = await a2._OrtRunWithBinding(c3, f3.handle, S2, D2, $4) : q3 = await a2._OrtRun(c3, O2, z2, _3, L2, S2, D2, $4), q3 !== 0 && pe("failed to call OrtRun().");
       let Q2 = [];
       for (let W2 = 0; W2 < S2; W2++) {
         let Z2 = Number(a2.getValue(D2 + W2 * u3, "*"));
@@ -44880,7 +44880,7 @@ var Vn = U(() => {
       }
       return f3 && !b3 && (a2._OrtClearBoundOutputs(f3.handle) !== 0 && pe("Can't clear bound outputs."), At.set(e2, [c3, p3, m3, f3, b3, false])), Q2;
     } finally {
-      a2.stackRestore(I2), x2.forEach((q2) => a2._OrtReleaseTensor(q2)), T2.forEach((q2) => a2._OrtReleaseTensor(q2)), E2.forEach((q2) => a2._free(q2)), $4 !== 0 && a2._OrtReleaseRunOptions($4), v3.forEach((q2) => a2._free(q2));
+      a2.stackRestore(I2), x2.forEach((q3) => a2._OrtReleaseTensor(q3)), T2.forEach((q3) => a2._OrtReleaseTensor(q3)), E2.forEach((q3) => a2._free(q3)), $4 !== 0 && a2._OrtReleaseRunOptions($4), v3.forEach((q3) => a2._free(q3));
     }
   }, Ir = (e2) => {
     let t2 = fe(), r2 = At.get(e2);
@@ -45750,9 +45750,9 @@ var __webpack_modules__ = {
         type = "SpreadExpression";
       };
       var CallStatement = class extends Statement {
-        constructor(call, callerArgs, body) {
+        constructor(call2, callerArgs, body) {
           super();
-          this.call = call;
+          this.call = call2;
           this.callerArgs = callerArgs;
           this.body = body;
         }
@@ -46207,21 +46207,21 @@ var __webpack_modules__ = {
           return operand;
         }
         function parsePrimaryExpression() {
-          const token = tokens[current2++];
-          switch (token.type) {
+          const token2 = tokens[current2++];
+          switch (token2.type) {
             case TOKEN_TYPES.NumericLiteral: {
-              const num = token.value;
+              const num = token2.value;
               return num.includes(".") ? new FloatLiteral(Number(num)) : new IntegerLiteral(Number(num));
             }
             case TOKEN_TYPES.StringLiteral: {
-              let value = token.value;
+              let value = token2.value;
               while (is2(TOKEN_TYPES.StringLiteral)) {
                 value += tokens[current2++].value;
               }
               return new StringLiteral(value);
             }
             case TOKEN_TYPES.Identifier:
-              return new Identifier(token.value);
+              return new Identifier(token2.value);
             case TOKEN_TYPES.OpenParen: {
               const expression = parseExpressionSequence();
               expect(TOKEN_TYPES.CloseParen, "Expected closing parenthesis, got ${tokens[current].type} instead.");
@@ -46253,7 +46253,7 @@ var __webpack_modules__ = {
               return new ObjectLiteral(values);
             }
             default:
-              throw new SyntaxError(`Unexpected token: ${token.type}`);
+              throw new SyntaxError(`Unexpected token: ${token2.type}`);
           }
         }
         while (current2 < tokens.length) {
@@ -46297,8 +46297,8 @@ var __webpack_modules__ = {
         const monthFormatterLong = new Intl.DateTimeFormat(void 0, { month: "long" });
         const monthFormatterShort = new Intl.DateTimeFormat(void 0, { month: "short" });
         const pad2 = (n2) => n2 < 10 ? "0" + n2 : n2.toString();
-        return format2.replace(/%[YmdbBHM%]/g, (token) => {
-          switch (token) {
+        return format2.replace(/%[YmdbBHM%]/g, (token2) => {
+          switch (token2) {
             case "%Y":
               return date.getFullYear().toString();
             case "%m":
@@ -46316,7 +46316,7 @@ var __webpack_modules__ = {
             case "%%":
               return "%";
             default:
-              return token;
+              return token2;
           }
         });
       }
@@ -50333,8 +50333,8 @@ var __webpack_modules__ = {
               logits[i3].data
             );
             const bannedTokens = this.calcBannedNgramTokens(input_ids[i3]);
-            for (const token of bannedTokens) {
-              batch_logits_data[token] = -Infinity;
+            for (const token2 of bannedTokens) {
+              batch_logits_data[token2] = -Infinity;
             }
           }
           return logits;
@@ -50364,11 +50364,11 @@ var __webpack_modules__ = {
               logits[i3].data
             );
             for (const input_id of new Set(input_ids[i3])) {
-              const token = Number(input_id);
-              if (batch_logits_data[token] < 0) {
-                batch_logits_data[token] *= this.penalty;
+              const token2 = Number(input_id);
+              if (batch_logits_data[token2] < 0) {
+                batch_logits_data[token2] *= this.penalty;
               } else {
-                batch_logits_data[token] /= this.penalty;
+                batch_logits_data[token2] /= this.penalty;
               }
             }
           }
@@ -56492,7 +56492,7 @@ var __webpack_modules__ = {
             console.warn("<|notimestamps|> prompt token is removed from generation_config since `return_timestamps` is set to `true`.");
             init_tokens.pop();
           }
-          return init_tokens.filter((token) => token != null);
+          return init_tokens.filter((token2) => token2 != null);
         }
         /**
          * Transcribes or translates log-mel input features to a sequence of auto-regressively generated token ids.
@@ -68802,8 +68802,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          */
         encode(tokens) {
           const outputTokens = [];
-          for (const token of tokens) {
-            const chars = [...token];
+          for (const token2 of tokens) {
+            const chars = [...token2];
             if (chars.length > this.max_input_chars_per_word) {
               outputTokens.push(this.unk_token);
               continue;
@@ -68885,11 +68885,11 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
             const tokens = [];
             const sliced = chars.slice(beginPos).join("");
             const prefixedTokens = this.trie.commonPrefixSearch(sliced);
-            for (const token of prefixedTokens) {
-              tokens.push(token);
-              const tokenId = this.tokens_to_ids.get(token);
+            for (const token2 of prefixedTokens) {
+              tokens.push(token2);
+              const tokenId = this.tokens_to_ids.get(token2);
               const tokenScore = this.scores[tokenId];
-              const n2 = (0, _utils_core_js__WEBPACK_IMPORTED_MODULE_1__.len)(token);
+              const n2 = (0, _utils_core_js__WEBPACK_IMPORTED_MODULE_1__.len)(token2);
               lattice.insert(beginPos, n2, tokenScore, tokenId);
               if (!hasSingleNode && n2 === mblen) {
                 hasSingleNode = true;
@@ -68919,8 +68919,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          */
         encode(tokens) {
           const toReturn = [];
-          for (const token of tokens) {
-            const tokenized = this.tokenize(token);
+          for (const token2 of tokens) {
+            const tokenized = this.tokenize(token2);
             toReturn.push(...tokenized);
           }
           return toReturn;
@@ -69001,15 +69001,15 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @param {string} token The token to encode.
          * @returns {string[]} The BPE encoded tokens.
          */
-        bpe(token) {
-          if (token.length === 0) {
+        bpe(token2) {
+          if (token2.length === 0) {
             return [];
           }
-          const cached = this.cache.get(token);
+          const cached = this.cache.get(token2);
           if (cached !== void 0) {
             return cached;
           }
-          const word = Array.from(token);
+          const word = Array.from(token2);
           if (this.end_of_word_suffix) {
             word[word.length - 1] += this.end_of_word_suffix;
           }
@@ -69078,8 +69078,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
               result[i3] += this.continuing_subword_suffix;
             }
           }
-          if (token.length < this.max_length_to_cache) {
-            this.cache.put(token, result);
+          if (token2.length < this.max_length_to_cache) {
+            this.cache.put(token2, result);
           }
           return result;
         }
@@ -69103,12 +69103,12 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          */
         encode(tokens) {
           const outputTokens = [];
-          for (const token of tokens) {
-            if (this.ignore_merges && this.tokens_to_ids.has(token)) {
-              outputTokens.push(token);
+          for (const token2 of tokens) {
+            if (this.ignore_merges && this.tokens_to_ids.has(token2)) {
+              outputTokens.push(token2);
               continue;
             }
-            const bpe_token_list = this.bpe(token);
+            const bpe_token_list = this.bpe(token2);
             for (const t2 of bpe_token_list) {
               if (this.tokens_to_ids.has(t2)) {
                 outputTokens.push(t2);
@@ -69542,7 +69542,7 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           }
           const tokens = this.use_regex ? text.match(this.pattern) || [] : [text];
           return tokens.map(
-            (token) => Array.from(this.text_encoder.encode(token), (byte2) => this.byte_encoder[byte2]).join("")
+            (token2) => Array.from(this.text_encoder.encode(token2), (byte2) => this.byte_encoder[byte2]).join("")
           );
         }
       }
@@ -69879,7 +69879,7 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
         /** @type {Decoder['decode_chain']} */
         decode_chain(tokens) {
           const pattern = createPattern(this.config.pattern);
-          return pattern === null ? tokens : tokens.map((token) => token.replaceAll(pattern, this.config.content));
+          return pattern === null ? tokens : tokens.map((token2) => token2.replaceAll(pattern, this.config.content));
         }
       }
       class ByteFallback extends Decoder {
@@ -69891,10 +69891,10 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
         decode_chain(tokens) {
           const new_tokens = [];
           let previous_byte_tokens = [];
-          for (const token of tokens) {
+          for (const token2 of tokens) {
             let bytes = null;
-            if (token.length === 6 && token.startsWith("<0x") && token.endsWith(">")) {
-              const byte2 = parseInt(token.slice(3, 5), 16);
+            if (token2.length === 6 && token2.startsWith("<0x") && token2.endsWith(">")) {
+              const byte2 = parseInt(token2.slice(3, 5), 16);
               if (!isNaN(byte2)) {
                 bytes = byte2;
               }
@@ -69907,7 +69907,7 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
                 new_tokens.push(string);
                 previous_byte_tokens = [];
               }
-              new_tokens.push(token);
+              new_tokens.push(token2);
             }
           }
           if (previous_byte_tokens.length > 0) {
@@ -69933,27 +69933,27 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
         }
         /** @type {Decoder['decode_chain']} */
         decode_chain(tokens) {
-          return tokens.map((token) => {
+          return tokens.map((token2) => {
             let start_cut = 0;
             for (let i3 = 0; i3 < this.start; ++i3) {
-              if (token[i3] === this.content) {
+              if (token2[i3] === this.content) {
                 start_cut = i3 + 1;
                 continue;
               } else {
                 break;
               }
             }
-            let stop_cut = token.length;
+            let stop_cut = token2.length;
             for (let i3 = 0; i3 < this.stop; ++i3) {
-              const index = token.length - i3 - 1;
-              if (token[index] === this.content) {
+              const index = token2.length - i3 - 1;
+              if (token2[index] === this.content) {
                 stop_cut = index;
                 continue;
               } else {
                 break;
               }
             }
-            return token.slice(start_cut, stop_cut);
+            return token2.slice(start_cut, stop_cut);
           });
         }
       }
@@ -69970,18 +69970,18 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
         }
         /** @type {Decoder['decode_chain']} */
         decode_chain(tokens) {
-          return tokens.map((token, i3) => {
+          return tokens.map((token2, i3) => {
             if (i3 !== 0) {
-              if (token.startsWith(this.config.prefix)) {
-                token = token.replace(this.config.prefix, "");
+              if (token2.startsWith(this.config.prefix)) {
+                token2 = token2.replace(this.config.prefix, "");
               } else {
-                token = " " + token;
+                token2 = " " + token2;
               }
             }
             if (this.cleanup) {
-              token = clean_up_tokenization(token);
+              token2 = clean_up_tokenization(token2);
             }
-            return token;
+            return token2;
           });
         }
       }
@@ -70014,15 +70014,15 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
         decode_chain(tokens) {
           const sub_texts = [];
           let current_sub_text = [];
-          for (const token of tokens) {
-            if (this.added_tokens.find((x2) => x2.content === token) !== void 0) {
+          for (const token2 of tokens) {
+            if (this.added_tokens.find((x2) => x2.content === token2) !== void 0) {
               if (current_sub_text.length > 0) {
                 sub_texts.push(this.convert_tokens_to_string(current_sub_text));
                 current_sub_text = [];
               }
-              sub_texts.push(token);
+              sub_texts.push(token2);
             } else {
-              current_sub_text.push(token);
+              current_sub_text.push(token2);
             }
           }
           if (current_sub_text.length > 0) {
@@ -70051,7 +70051,7 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
               grouped_tokens.push(tokens[i3]);
             }
           }
-          const filtered_tokens = grouped_tokens.filter((token) => token !== this.pad_token);
+          const filtered_tokens = grouped_tokens.filter((token2) => token2 !== this.pad_token);
           let text = filtered_tokens.join("");
           if (this.cleanup) {
             text = clean_up_tokenization(text).replaceAll(this.word_delimiter_token, " ").trim();
@@ -70087,8 +70087,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
         }
         /** @type {Decoder['decode_chain']} */
         decode_chain(tokens) {
-          return tokens.map((token, i3) => {
-            return token.replaceAll(this.suffix, i3 === tokens.length - 1 ? "" : " ");
+          return tokens.map((token2, i3) => {
+            return token2.replaceAll(this.suffix, i3 === tokens.length - 1 ? "" : " ");
           });
         }
       }
@@ -70336,13 +70336,13 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           this.all_special_ids = [];
           this.added_tokens = [];
           for (const addedToken of tokenizerJSON.added_tokens) {
-            const token = new AddedToken(addedToken);
-            this.added_tokens.push(token);
-            this.model.tokens_to_ids.set(token.content, token.id);
-            this.model.vocab[token.id] = token.content;
-            if (token.special) {
-              this.special_tokens.push(token.content);
-              this.all_special_ids.push(token.id);
+            const token2 = new AddedToken(addedToken);
+            this.added_tokens.push(token2);
+            this.model.tokens_to_ids.set(token2.content, token2.id);
+            this.model.vocab[token2.id] = token2.content;
+            if (token2.special) {
+              this.special_tokens.push(token2.content);
+              this.all_special_ids.push(token2.id);
             }
           }
           this.additional_special_tokens = tokenizerConfig.additional_special_tokens ?? [];
@@ -71150,12 +71150,12 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
               }
               if (stride_right) {
                 for (let i3 = token_ids.length - 1; i3 >= 0; --i3) {
-                  const token = Number(token_ids[i3]);
-                  if (token >= timestamp_begin) {
-                    if (last_timestamp !== null && (token - timestamp_begin) * time_precision < right_stride_start) {
+                  const token2 = Number(token_ids[i3]);
+                  if (token2 >= timestamp_begin) {
+                    if (last_timestamp !== null && (token2 - timestamp_begin) * time_precision < right_stride_start) {
                       break;
                     }
-                    last_timestamp = token;
+                    last_timestamp = token2;
                   }
                 }
               }
@@ -71163,9 +71163,9 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
             let current_tokens = [];
             let current_token_timestamps = [];
             for (let i3 = 0; i3 < token_ids.length; ++i3) {
-              const token = Number(token_ids[i3]);
-              if (all_special_ids.has(token)) {
-                const text = this.decode([token]);
+              const token2 = Number(token_ids[i3]);
+              if (all_special_ids.has(token2)) {
+                const text = this.decode([token2]);
                 const language = _models_whisper_common_whisper_js__WEBPACK_IMPORTED_MODULE_7__.WHISPER_LANGUAGE_MAPPING.get(text.slice(2, -2));
                 if (language !== void 0) {
                   if (last_language !== null && language !== last_language && !return_timestamps) {
@@ -71181,12 +71181,12 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
                   last_language = chunk.language = language;
                 } else {
                 }
-              } else if (token >= timestamp_begin && token <= timestamp_end) {
-                const time = (token - timestamp_begin) * time_precision + time_offset;
+              } else if (token2 >= timestamp_begin && token2 <= timestamp_end) {
+                const time = (token2 - timestamp_begin) * time_precision + time_offset;
                 const rounded_time = (0, _utils_maths_js__WEBPACK_IMPORTED_MODULE_3__.round)(time, 2);
-                if (last_timestamp !== null && token >= last_timestamp) {
+                if (last_timestamp !== null && token2 >= last_timestamp) {
                   skip = true;
-                } else if (skip || previous_tokens.length > 0 && token < first_timestamp) {
+                } else if (skip || previous_tokens.length > 0 && token2 < first_timestamp) {
                   skip = false;
                 } else if (chunk.timestamp[0] === null) {
                   chunk.timestamp[0] = rounded_time;
@@ -71220,13 +71220,13 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
                   }
                 }
               } else {
-                current_tokens.push(token);
+                current_tokens.push(token2);
                 if (returnWordTimestamps) {
                   let start_time = (0, _utils_maths_js__WEBPACK_IMPORTED_MODULE_3__.round)(token_timestamps[i3] + time_offset, 2);
                   let end_time;
                   if (i3 + 1 < token_timestamps.length) {
                     end_time = (0, _utils_maths_js__WEBPACK_IMPORTED_MODULE_3__.round)(token_timestamps[i3 + 1] + time_offset, 2);
-                    const decoded_text = this.decode([token]);
+                    const decoded_text = this.decode([token2]);
                     if (PUNCTUATION_ONLY_REGEX.test(decoded_text)) {
                       end_time = (0, _utils_maths_js__WEBPACK_IMPORTED_MODULE_3__.round)(Math.min(start_time + time_precision, end_time), 2);
                     }
@@ -71417,14 +71417,14 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           const time_precision = decode_args?.time_precision ?? 0.02;
           const timestamp_begin = Array.from(this.all_special_ids).at(-1) + 1;
           let outputs = [[]];
-          for (let token of token_ids) {
-            token = Number(token);
-            if (token >= timestamp_begin) {
-              const timestamp = ((token - timestamp_begin) * time_precision).toFixed(2);
+          for (let token2 of token_ids) {
+            token2 = Number(token2);
+            if (token2 >= timestamp_begin) {
+              const timestamp = ((token2 - timestamp_begin) * time_precision).toFixed(2);
               outputs.push(`<|${timestamp}|>`);
               outputs.push([]);
             } else {
-              outputs[outputs.length - 1].push(token);
+              outputs[outputs.length - 1].push(token2);
             }
           }
           outputs = outputs.map(
@@ -71451,8 +71451,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           let current_indices = [];
           let unicode_offset = 0;
           for (let token_idx = 0; token_idx < tokens.length; ++token_idx) {
-            const token = tokens[token_idx];
-            current_tokens.push(token);
+            const token2 = tokens[token_idx];
+            current_tokens.push(token2);
             current_indices.push(token_idx);
             const decoded = this.decode(current_tokens, {
               // @ts-ignore
@@ -73334,9 +73334,9 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           headers.set("User-Agent", `transformers.js/${version3}; is_ci/${IS_CI};`);
           const isHFURL = isValidUrl(urlOrPath, ["http:", "https:"], ["huggingface.co", "hf.co"]);
           if (isHFURL) {
-            const token = process.env?.HF_TOKEN ?? process.env?.HF_ACCESS_TOKEN;
-            if (token) {
-              headers.set("Authorization", `Bearer ${token}`);
+            const token2 = process.env?.HF_TOKEN ?? process.env?.HF_ACCESS_TOKEN;
+            if (token2) {
+              headers.set("Authorization", `Bearer ${token2}`);
             }
           }
           return fetch(urlOrPath, { headers });
@@ -81974,7 +81974,7 @@ var b = { Memory: function(A3) {
     return function(A5) {
       var g4 = A5.a, r3 = g4.a.buffer, a3 = new Int8Array(r3), I3 = new Int16Array(r3), f4 = new Int32Array(r3), i4 = new Uint8Array(r3), B2 = new Uint16Array(r3), c3 = new Uint32Array(r3), Q2 = new Float64Array(r3), G3 = Math.imul, w3 = Math.fround, E2 = Math.abs, D2 = Math.clz32, u3 = Math.min, l2 = Math.floor, x2 = Math.ceil, d3 = g4.b, m3 = g4.c, M4 = g4.d, v3 = g4.e, h3 = g4.f, p3 = g4.g, Y2 = g4.h, H2 = g4.i, N3 = g4.j, P3 = g4.k, F3 = g4.l, y3 = g4.m, z2 = g4.n, O2 = g4.o, Z2 = g4.p, K2 = g4.q, W2 = g4.r, X2 = g4.s, L2 = g4.t, T2 = g4.u, V2 = 294656, J3 = 0, R2 = 0, U3 = 0;
       function j2(A6) {
-        var e4, g5 = 0, r4 = 0, C3 = 0, k5 = 0, o4 = 0, w4 = 0, D3 = 0, u4 = 0, l3 = 0, x3 = 0, d4 = 0, m4 = 0, M5 = 0, v4 = 0, h4 = 0, p4 = 0, Y3 = 0, H3 = 0, N4 = 0, P4 = 0, F4 = 0, y4 = 0, z3 = 0, O3 = 0, Z3 = 0, K3 = 0, W3 = 0, X3 = 0, L3 = 0, T3 = 0, J4 = 0, R3 = 0, U4 = 0, j3 = 0, q3 = 0, _4 = 0, eA3 = 0, gA3 = 0, rA3 = 0, iA3 = 0, sA3 = 0, kA3 = 0, oA3 = 0, BA3 = 0, cA3 = 0, QA3 = 0, GA3 = 0, wA3 = 0, EA3 = 0, DA3 = 0, uA3 = 0, lA3 = 0, xA3 = 0;
+        var e4, g5 = 0, r4 = 0, C3 = 0, k5 = 0, o4 = 0, w4 = 0, D3 = 0, u4 = 0, l3 = 0, x3 = 0, d4 = 0, m4 = 0, M5 = 0, v4 = 0, h4 = 0, p4 = 0, Y3 = 0, H3 = 0, N4 = 0, P4 = 0, F4 = 0, y4 = 0, z3 = 0, O3 = 0, Z3 = 0, K3 = 0, W3 = 0, X3 = 0, L3 = 0, T3 = 0, J4 = 0, R3 = 0, U4 = 0, j3 = 0, q4 = 0, _4 = 0, eA3 = 0, gA3 = 0, rA3 = 0, iA3 = 0, sA3 = 0, kA3 = 0, oA3 = 0, BA3 = 0, cA3 = 0, QA3 = 0, GA3 = 0, wA3 = 0, EA3 = 0, DA3 = 0, uA3 = 0, lA3 = 0, xA3 = 0;
         if (V2 = e4 = V2 - 16 | 0, 2 != (0 | A6)) if (A6 = f4[33283], f4[A6 >> 2] != f4[A6 + 4 >> 2]) {
           if (qr2(f4[f4[32972] + 60 >> 2]), v4 = f4[47192], iA3 = e4 + 12 | 0, cA3 = e4 + 8 | 0, V2 = D3 = V2 - 6832 | 0, f4[D3 + 6816 >> 2] = 0, f4[D3 + 6808 >> 2] = 32, f4[D3 + 6800 >> 2] = 0, v4) {
             f4[47351] = 0, f4[47350] = 0, f4[47352] = 0, a3[189076] = 0, A6 = f4[33284], f4[47353] = (0 | A6) > 0 ? A6 : 0, f4[47355] = f4[47354] + 1, ue(O3 = D3 + 5184 | 0, 0, 1600), eA3 = D3 + 6800 | 0, V2 = o4 = V2 - 2608 | 0, f4[o4 + 2156 >> 2] = 32, f4[o4 + 2148 >> 2] = 0, i4[134760] && (a3[190280] = 0, a3[134760] = 0), f4[v4 + 8216 >> 2] = 0, f4[v4 + 8220 >> 2] = 0, f4[v4 + 288 >> 2] = 0, f4[D3 + 780 >> 2] = 0, a3[189360] = 0;
@@ -82486,7 +82486,7 @@ var b = { Memory: function(A3) {
                             break;
                           }
                           if ((0 | k5) > 0) {
-                            r4 && ue(A6 = q3 + 189424 | 0, 32, Te(o4 + 2336 | 0, A6)), A6 = f4[o4 + 2148 >> 2] + 189424 | 0, a3[0 | A6] = 32, a3[A6 + 1 | 0] = 0, f4[33285] = f4[o4 + 2152 >> 2], r4 = f4[47203] ? 524358 : G3((0 | k5) >= 3 ? 3 : k5, 30) + 524328 | 0;
+                            r4 && ue(A6 = q4 + 189424 | 0, 32, Te(o4 + 2336 | 0, A6)), A6 = f4[o4 + 2148 >> 2] + 189424 | 0, a3[0 | A6] = 32, a3[A6 + 1 | 0] = 0, f4[33285] = f4[o4 + 2152 >> 2], r4 = f4[47203] ? 524358 : G3((0 | k5) >= 3 ? 3 : k5, 30) + 524328 | 0;
                             break A;
                           }
                           if (A6 = f4[47268] < (0 | j3), j3 = 0, !A6) {
@@ -82501,10 +82501,10 @@ var b = { Memory: function(A3) {
                           break g;
                         }
                         if (kg(f4[o4 + 2156 >> 2]) && ur(f4[o4 + 2156 >> 2])) break g;
-                        f4[33691] = f4[o4 + 2156 >> 2], a3[0 | (A6 = q3 + 189424 | 0)] = 32, a3[A6 + 1 | 0] = 0, f4[33285] = f4[o4 + 2152 >> 2];
+                        f4[33691] = f4[o4 + 2156 >> 2], a3[0 | (A6 = q4 + 189424 | 0)] = 32, a3[A6 + 1 | 0] = 0, f4[33285] = f4[o4 + 2152 >> 2];
                         break A;
                       }
-                      W3 && (f4[o4 + 2148 >> 2] = Fg(1328, f4[o4 + 2148 >> 2] + 189424 | 0) + f4[o4 + 2148 >> 2]), r4 && ue(A6 = q3 + 189424 | 0, 32, Te(o4 + 2336 | 0, A6)), A6 = f4[o4 + 2148 >> 2] + 189424 | 0, a3[0 | A6] = 32, a3[A6 + 1 | 0] = 0;
+                      W3 && (f4[o4 + 2148 >> 2] = Fg(1328, f4[o4 + 2148 >> 2] + 189424 | 0) + f4[o4 + 2148 >> 2]), r4 && ue(A6 = q4 + 189424 | 0, 32, Te(o4 + 2336 | 0, A6)), A6 = f4[o4 + 2148 >> 2] + 189424 | 0, a3[0 | A6] = 32, a3[A6 + 1 | 0] = 0;
                     }
                     r4 = 589864;
                     break A;
@@ -82659,7 +82659,7 @@ var b = { Memory: function(A3) {
                           M5 = 32, f4[o4 + 2156 >> 2] = 32, k5 = 0;
                         }
                         if (!(!k5 | 46 != (0 | M5) | !f4[47203] | 60 != (0 | w4))) {
-                          q3 = f4[o4 + 2148 >> 2], A6 = r4;
+                          q4 = f4[o4 + 2148 >> 2], A6 = r4;
                           break g;
                         }
                         if (!k5) break g;
@@ -82804,13 +82804,13 @@ var b = { Memory: function(A3) {
                               r4 = A6 ? A6 + 4519 | 0 : 0, C3 = C3 + 4449 | 0;
                               break r;
                             }
-                            m4 |= 131072, q3 = f4[D3 + 6804 >> 2], A6 = f4[D3 + 6812 >> 2], w4 = 32;
+                            m4 |= 131072, q4 = f4[D3 + 6804 >> 2], A6 = f4[D3 + 6812 >> 2], w4 = 32;
                             break C;
                           }
                           r4 = 50500 + (A6 + G3(C3, 28) | 0) | 0, C3 = (u4 >>> 0) / 588 | 4352;
                           break r;
                         }
-                        if (q3 = f4[D3 + 6804 >> 2], A6 = f4[D3 + 6812 >> 2], !((r4 = w4 - 12592 | 0) >>> 0 > 51)) {
+                        if (q4 = f4[D3 + 6804 >> 2], A6 = f4[D3 + 6812 >> 2], !((r4 = w4 - 12592 | 0) >>> 0 > 51)) {
                           C3 = 4352 | i4[r4 + 103296 | 0], r4 = 0;
                           break r;
                         }
@@ -82818,7 +82818,7 @@ var b = { Memory: function(A3) {
                       o4 = g5 + 189424 | 0;
                       C: if (!(28268 != (0 | (r4 = f4[v4 + 212 >> 2])) & 24934 != (0 | r4) | 39 != (0 | w4)) && !Mr2(A6) && (Te(D3 + 6820 | 0, o4 + 1 | 0), Vr2(f4[D3 + 6820 >> 2]))) {
                         C3 = 601, r4 = 0;
-                        a: switch (q3 - 110 | 0) {
+                        a: switch (q4 - 110 | 0) {
                           case 6:
                             break r;
                           case 0:
@@ -82859,7 +82859,7 @@ var b = { Memory: function(A3) {
                               r4 = 0, C3 = w4;
                               break C;
                             }
-                            Te(D3 + 6824 | 0, A6), N4 && nr(q3) && (f4[D3 + 6824 >> 2] = Ir2(f4[D3 + 6824 >> 2])), r4 = f4[D3 + 6824 >> 2];
+                            Te(D3 + 6824 | 0, A6), N4 && nr(q4) && (f4[D3 + 6824 >> 2] = Ir2(f4[D3 + 6824 >> 2])), r4 = f4[D3 + 6824 >> 2];
                           }
                           C3 = f4[D3 + 6828 >> 2], m4 |= 2097152, N4 && (C3 = Ir2(C3));
                         }
@@ -87881,7 +87881,7 @@ var b = { Memory: function(A3) {
         }
         return U3 = a4, 2099200 | e4;
       }
-      function q2(A6) {
+      function q3(A6) {
         var e4, g5 = 0, r4 = 0, C3 = 0, b4 = 0, s4 = 0;
         (e4 = IA2(8244)) && (f4[e4 + 328 >> 2] = 2, a3[132848] = 0, f4[e4 + 684 >> 2] = 0, f4[e4 + 688 >> 2] = 0, f4[e4 + 320 >> 2] = 0, f4[e4 + 324 >> 2] = 0, a3[e4 + 268 | 0] = 0, a3[e4 + 228 | 0] = 0, f4[e4 + 8216 >> 2] = 0, f4[e4 + 8220 >> 2] = 0, f4[e4 + 224 >> 2] = 104944, f4[e4 + 216 >> 2] = 383, f4[e4 + 220 >> 2] = 96, ue(e4 + 344 | 0, 0, 292), f4[e4 + 8196 >> 2] = 0, f4[(g5 = e4 + 8188 | 0) >> 2] = 0, f4[g5 + 4 >> 2] = 0, f4[e4 + 8180 >> 2] = 0, f4[e4 + 8184 >> 2] = 0, a3[e4 + 460 | 0] = 22, a3[e4 + 461 | 0] = 129, a3[e4 + 466 | 0] = 38, a3[e4 + 462 | 0] = 38, a3[e4 + 463 | 0] = 36, a3[e4 + 464 | 0] = 22, a3[e4 + 465 | 0] = 224, a3[e4 + 456 | 0] = 22, a3[e4 + 457 | 0] = 22, a3[e4 + 458 | 0] = 44, a3[e4 + 459 | 0] = 22, a3[e4 + 454 | 0] = 46, a3[e4 + 455 | 0] = 129, a3[e4 + 446 | 0] = 22, a3[e4 + 447 | 0] = 38, a3[e4 + 448 | 0] = 28, a3[e4 + 449 | 0] = 193, a3[e4 + 450 | 0] = 38, a3[e4 + 451 | 0] = 22, a3[e4 + 452 | 0] = 46, a3[e4 + 453 | 0] = 46, a3[e4 + 441 | 0] = 129, a3[e4 + 442 | 0] = 38, a3[e4 + 443 | 0] = 22, a3[e4 + 444 | 0] = 38, a3[e4 + 445 | 0] = 193, f4[e4 + 332 >> 2] = 104912, f4[e4 + 336 >> 2] = 104916, f4[e4 + 340 >> 2] = 105232, a3[e4 + 296 | 0] = 18, a3[e4 + 297 | 0] = 18, I3[e4 + 304 >> 1] = 182, I3[e4 + 306 >> 1] = 140, a3[e4 + 298 | 0] = 20, I3[e4 + 308 >> 1] = 220, I3[e4 + 310 >> 1] = 220, I3[e4 + 312 >> 1] = 220, a3[e4 + 299 | 0] = 20, a3[e4 + 300 | 0] = 20, I3[e4 + 314 >> 1] = 240, a3[e4 + 301 | 0] = 22, I3[e4 + 316 >> 1] = 260, I3[e4 + 318 >> 1] = 280, a3[e4 + 302 | 0] = 22, a3[e4 + 303 | 0] = 20, g5 = ue(e4, 0, 212), f4[g5 + 200 >> 2] = 20, f4[g5 + 192 >> 2] = 25966, f4[g5 + 196 >> 2] = 500, f4[g5 + 80 >> 2] = 95, f4[g5 + 16 >> 2] = 1, f4[g5 + 20 >> 2] = 3, f4[g5 + 8 >> 2] = 2, f4[g5 + 52 >> 2] = 19, a3[g5 + 168 | 0] = 3, f4[g5 + 92 >> 2] = 2, f4[g5 + 72 >> 2] = 4, f4[g5 + 40 >> 2] = 115, f4[g5 + 44 >> 2] = 95, f4[g5 + 140 >> 2] = 105244, pr(g5, 201), f4[g5 + 120 >> 2] = 2, f4[g5 + 124 >> 2] = 44, f4[g5 + 164 >> 2] = 100, f4[g5 + 128 >> 2] = 46, f4[g5 + 132 >> 2] = 14, f4[g5 + 112 >> 2] = 1227133512, f4[g5 + 116 >> 2] = 49, f4[g5 + 104 >> 2] = 1, r4 = f4[26313], f4[g5 + 636 >> 2] = f4[26312], f4[g5 + 640 >> 2] = r4, r4 = f4[26315], f4[g5 + 644 >> 2] = f4[26314], f4[g5 + 648 >> 2] = r4, r4 = f4[26317], f4[g5 + 652 >> 2] = f4[26316], f4[g5 + 656 >> 2] = r4, r4 = f4[26319], f4[g5 + 660 >> 2] = f4[26318], f4[g5 + 664 >> 2] = r4, r4 = f4[26321], f4[g5 + 668 >> 2] = f4[26320], f4[g5 + 672 >> 2] = r4, r4 = f4[26323], f4[g5 + 676 >> 2] = f4[26322], f4[g5 + 680 >> 2] = r4, r4 = i4[104928] | i4[104929] << 8, a3[g5 + 160 | 0] = r4, a3[g5 + 161 | 0] = r4 >>> 8, r4 = i4[104924] | i4[104925] << 8 | i4[104926] << 16 | i4[104927] << 24, a3[g5 + 156 | 0] = r4, a3[g5 + 157 | 0] = r4 >>> 8, a3[g5 + 158 | 0] = r4 >>> 16, a3[g5 + 159 | 0] = r4 >>> 24), C3 = rg2(e4 + 228 | 0, A6), g5 = 0;
         A: {
@@ -90092,7 +90092,7 @@ var b = { Memory: function(A3) {
         return V2 = C3 + 1856 | 0, I4;
       }
       function rA2(A6, e4, g5, r4, C3, I4, b4, s4) {
-        var t3, n3, k5 = 0, o4 = 0, B3 = 0, c4 = 0, Q3 = 0, w4 = 0, E3 = 0, D3 = 0, u4 = 0, l3 = 0, x3 = 0, d4 = 0, m4 = 0, M5 = 0, v4 = 0, h4 = 0, p4 = 0, Y3 = 0, H3 = 0, N4 = 0, P4 = 0, F4 = 0, y4 = 0, z3 = 0, O3 = 0, Z3 = 0, K3 = 0, W3 = 0, X3 = 0, L3 = 0, T3 = 0, J4 = 0, R3 = 0, U4 = 0, j3 = 0, S3 = 0, q3 = 0, _4 = 0, $5 = 0, AA3 = 0, eA3 = 0;
+        var t3, n3, k5 = 0, o4 = 0, B3 = 0, c4 = 0, Q3 = 0, w4 = 0, E3 = 0, D3 = 0, u4 = 0, l3 = 0, x3 = 0, d4 = 0, m4 = 0, M5 = 0, v4 = 0, h4 = 0, p4 = 0, Y3 = 0, H3 = 0, N4 = 0, P4 = 0, F4 = 0, y4 = 0, z3 = 0, O3 = 0, Z3 = 0, K3 = 0, W3 = 0, X3 = 0, L3 = 0, T3 = 0, J4 = 0, R3 = 0, U4 = 0, j3 = 0, S3 = 0, q4 = 0, _4 = 0, $5 = 0, AA3 = 0, eA3 = 0;
         V2 = t3 = V2 - 384 | 0, n3 = f4[e4 >> 2];
         A: {
           e: {
@@ -90106,8 +90106,8 @@ var b = { Memory: function(A3) {
                 f4[I4 >> 2] = 0, f4[e4 >> 2] = n3 + 1;
                 break A;
               }
-              P4 = 86135, X3 = 268435456 & b4, L3 = 134217728 & b4, T3 = 8388608 & b4, J4 = 16384 & b4, R3 = 8192 & b4, z3 = g5 - 1 | 0, O3 = r4 - g5 | 0, U4 = 2 & b4, j3 = 128 & b4, S3 = b4 >>> 31 | 0, q3 = -2147483648 & b4, Z3 = t3 + 96 | 1;
-              r: for (; ; ) for (f4[t3 + 268 >> 2] = 0, E3 = (B3 = f4[e4 >> 2]) + r4 | 0, v4 = -2, m4 = -6, g5 = C3, h4 = q3, Y3 = 0, F4 = 0, M5 = 1, k5 = 0, p4 = 0, N4 = 0; ; ) {
+              P4 = 86135, X3 = 268435456 & b4, L3 = 134217728 & b4, T3 = 8388608 & b4, J4 = 16384 & b4, R3 = 8192 & b4, z3 = g5 - 1 | 0, O3 = r4 - g5 | 0, U4 = 2 & b4, j3 = 128 & b4, S3 = b4 >>> 31 | 0, q4 = -2147483648 & b4, Z3 = t3 + 96 | 1;
+              r: for (; ; ) for (f4[t3 + 268 >> 2] = 0, E3 = (B3 = f4[e4 >> 2]) + r4 | 0, v4 = -2, m4 = -6, g5 = C3, h4 = q4, Y3 = 0, F4 = 0, M5 = 1, k5 = 0, p4 = 0, N4 = 0; ; ) {
                 c4 = B3, D3 = k5;
                 C: {
                   a: {
@@ -90928,7 +90928,7 @@ var b = { Memory: function(A3) {
                           V2 = b4 + 32 | 0, i4[0 | (r4 = (r4 - A6 | 0) + A6 | 0)] ? (f4[57150] = r4 + 1, a3[0 | r4] = 0) : f4[57150] = 0;
                         } else f4[57150] = 0, A6 = 0;
                       }
-                      r4 = rg2(m4, A6), rg2(d4, A6), Ng(rg2(g5 + 896 | 0, A6)), f4[47192] = q2(r4), oC(f4[32972] + 40 | 0, t3, 20);
+                      r4 = rg2(m4, A6), rg2(d4, A6), Ng(rg2(g5 + 896 | 0, A6)), f4[47192] = q3(r4), oC(f4[32972] + 40 | 0, t3, 20);
                     }
                     O3 = 1;
                     continue;
@@ -91020,7 +91020,7 @@ var b = { Memory: function(A3) {
           e: {
             if ((A6 = f4[47192]) | D3) {
               if (D3) break e;
-            } else A6 = q2(m4), f4[47192] = A6;
+            } else A6 = q3(m4), f4[47192] = A6;
             g: {
               if (!u4) {
                 if ((0 | (A6 = Ng(g5 + 896 | 0))) < 0 && (f4[g5 >> 2] = g5 + 896, eC(f4[30450], 87567, g5), A6 = 0), f4[f4[32972] + 60 >> 2] = A6, r4 = f4[47192], f4[r4 + 292 >> 2] = A6, HA2(r4, d4, 4 & e4), i4[132848]) break g;
@@ -93209,11 +93209,11 @@ var b = { Memory: function(A3) {
         return V2 = g5 + 48 | 0, a4;
       }
       function BA2() {
-        var A6 = 0, e4 = 0, g5 = 0, r4 = 0, C3 = 0, b4 = 0, s4 = 0, t3 = 0, n3 = 0, k5 = 0, o4 = 0, B3 = 0, w4 = 0, D3 = 0, u4 = 0, l3 = 0, x3 = 0, d4 = 0, m4 = 0, M5 = 0, v4 = 0, h4 = 0, p4 = 0, Y3 = 0, H3 = 0, N4 = 0, P4 = 0, F4 = 0, y4 = 0, z3 = 0, O3 = 0, Z3 = 0, K3 = 0, W3 = 0, X3 = 0, L3 = 0, T3 = 0, V3 = 0, J4 = 0, R3 = 0, j3 = 0, S3 = 0, q3 = 0, _4 = 0, $5 = 0, AA3 = 0;
+        var A6 = 0, e4 = 0, g5 = 0, r4 = 0, C3 = 0, b4 = 0, s4 = 0, t3 = 0, n3 = 0, k5 = 0, o4 = 0, B3 = 0, w4 = 0, D3 = 0, u4 = 0, l3 = 0, x3 = 0, d4 = 0, m4 = 0, M5 = 0, v4 = 0, h4 = 0, p4 = 0, Y3 = 0, H3 = 0, N4 = 0, P4 = 0, F4 = 0, y4 = 0, z3 = 0, O3 = 0, Z3 = 0, K3 = 0, W3 = 0, X3 = 0, L3 = 0, T3 = 0, V3 = 0, J4 = 0, R3 = 0, j3 = 0, S3 = 0, q4 = 0, _4 = 0, $5 = 0, AA3 = 0;
         f4[55925] = 0, A6 = f4[56772], f4[56772] = A6 + 1, g5 = f4[55961], w4 = f4[55922], u4 = Ig(39.89822670059037 * (e4 = +(0 | A6))), k5 = Ig(22.30530784048753 * e4), e4 = +(0 | w4) / 50 * (+(0 | g5) / 100) * (Ig(14.765485471872028 * e4) + (u4 + k5)) * 10, A6 = E2(e4) < 2147483648 ? ~~e4 : -2147483648, f4[56607] = A6 + f4[56607];
         A: if (!(f4[55923] <= 0)) {
           for (; ; ) {
-            for (g5 = Cr2(f4[33209], 0, 1103515245, 0), A6 = U3, A6 = tC(g5 = g5 + 12345 | 0, A6 = g5 >>> 0 < 12345 ? A6 + 1 | 0 : A6), f4[33209] = A6, A6 = 8191 + ((A6 >>> 0) % 16383 | 0) | 0, f4[55929] = A6, z3 = +(0 | A6), e4 = 0.75 * Q2[28387] + z3, Q2[28387] = e4, O3 = (0 | (A6 = f4[55924])) > (0 | (p4 = f4[55928])) ? 0.5 * e4 : e4, X3 = (C3 = 0.033 * +f4[56652]) > 0 ? 1 - C3 : 1, g5 = f4[56650] << 2, N4 = 1 == (0 | (H3 = f4[55921])) && (0 | g5) > 263 ? 263 : g5, L3 = 111136 + ((Z3 = f4[56651]) << 1) | 0, T3 = 111136 + ((P4 = f4[56658]) << 1) | 0, V3 = (0 | P4) > 0, K3 = f4[55918], J4 = G3(K3, 40), R3 = f4[55925], j3 = Q2[27967], W3 = f4[56607], e4 = Q2[27979], x3 = Q2[27969], t3 = Q2[27970], F4 = f4[56780], M5 = f4[56654], B3 = Q2[27976], D3 = Q2[27972], d4 = Q2[28388], m4 = Q2[28389], w4 = f4[55927], r4 = Q2[28383], o4 = f4[55926], v4 = f4[55956], S3 = Q2[27975], k5 = Q2[28131], b4 = Q2[28130], s4 = Q2[28123], l3 = Q2[28121], n3 = Q2[28122], Y3 = Q2[28120], h4 = Q2[28119], q3 = Q2[28129], _4 = Q2[28128], $5 = Q2[28127], AA3 = Cg(0 * Q2[27968]), y4 = 0; ; ) {
+            for (g5 = Cr2(f4[33209], 0, 1103515245, 0), A6 = U3, A6 = tC(g5 = g5 + 12345 | 0, A6 = g5 >>> 0 < 12345 ? A6 + 1 | 0 : A6), f4[33209] = A6, A6 = 8191 + ((A6 >>> 0) % 16383 | 0) | 0, f4[55929] = A6, z3 = +(0 | A6), e4 = 0.75 * Q2[28387] + z3, Q2[28387] = e4, O3 = (0 | (A6 = f4[55924])) > (0 | (p4 = f4[55928])) ? 0.5 * e4 : e4, X3 = (C3 = 0.033 * +f4[56652]) > 0 ? 1 - C3 : 1, g5 = f4[56650] << 2, N4 = 1 == (0 | (H3 = f4[55921])) && (0 | g5) > 263 ? 263 : g5, L3 = 111136 + ((Z3 = f4[56651]) << 1) | 0, T3 = 111136 + ((P4 = f4[56658]) << 1) | 0, V3 = (0 | P4) > 0, K3 = f4[55918], J4 = G3(K3, 40), R3 = f4[55925], j3 = Q2[27967], W3 = f4[56607], e4 = Q2[27979], x3 = Q2[27969], t3 = Q2[27970], F4 = f4[56780], M5 = f4[56654], B3 = Q2[27976], D3 = Q2[27972], d4 = Q2[28388], m4 = Q2[28389], w4 = f4[55927], r4 = Q2[28383], o4 = f4[55926], v4 = f4[55956], S3 = Q2[27975], k5 = Q2[28131], b4 = Q2[28130], s4 = Q2[28123], l3 = Q2[28121], n3 = Q2[28122], Y3 = Q2[28120], h4 = Q2[28119], q4 = Q2[28129], _4 = Q2[28128], $5 = Q2[28127], AA3 = Cg(0 * Q2[27968]), y4 = 0; ; ) {
               u4 = b4;
               e: {
                 g: switch (H3 - 1 | 0) {
@@ -93241,7 +93241,7 @@ var b = { Memory: function(A3) {
                 }
                 o4 ? (v4 = 256, g5 = E2(b4 = +(0 | A6) / +(0 | o4) * 256) < 2147483648 ? ~~b4 : -2147483648, r4 = +I3[111344 + ((0 | g5) % 256 << 1) >> 1], r4 = e4 * ((+I3[111344 + ((g5 + 1 | 0) % 256 << 1) >> 1] - r4) * (b4 - +(0 | g5)) + r4)) : (v4 = 256, r4 = 0);
               }
-              if ((0 | A6) >= (0 | o4) && ((0 | W3) > 0 ? (A6 = (0 | J4) / (0 | W3) | 0, B3 = 0, D3 = 0, D3 = P4 >>> 0 <= 87 ? 1e-3 * +I3[T3 >> 1] : D3, B3 = Z3 >>> 0 <= 87 ? 1e-3 * +I3[L3 >> 1] * 0.1 : B3, p4 = A6 >> V3, w4 = (0 | (g5 = (o4 = (A6 - 1 | 0) <= (0 | N4)) ? A6 - 2 | 0 : N4)) <= 40 ? 40 : g5, b4 = +I3[111776 + ((w4 = o4 || (0 | g5) < 40 ? w4 : N4) << 1) >> 1], Q2[27966] = b4, l3 = b4, b4 = +(0 | w4), Q2[27965] = l3 * b4 * 0.333, M5 = (0 | (g5 = A6 - w4 | 0)) > (0 | M5) ? M5 : g5, F4 = 0 - (g5 = (0 | F4) < 0 ? 0 - M5 | 0 : M5) | 0, h4 = (b4 *= 833e-5) * b4, h4 *= 1 - (Y3 = (l3 = (b4 = $A2(j3 * +((0 | K3) / (0 | w4) | 0))) * AA3) + l3) - (l3 = b4 * -b4), A6 = 4 != (0 | (o4 = A6 + g5 | 0))) : (f4[55930] = 0, f4[55931] = 0, f4[55932] = 0, f4[55933] = 0, p4 = 4, B3 = 0, D3 = 0, o4 = 4, A6 = 0), t3 = (A6 |= !R3) ? C3 : t3, x3 = A6 ? X3 : x3, A6 = 0), A6 = A6 + 1 | 0, b4 = r4 = q3 * k5 + ($5 * r4 + _4 * u4), k5 = u4, 4 == (0 | (y4 = y4 + 1 | 0))) break;
+              if ((0 | A6) >= (0 | o4) && ((0 | W3) > 0 ? (A6 = (0 | J4) / (0 | W3) | 0, B3 = 0, D3 = 0, D3 = P4 >>> 0 <= 87 ? 1e-3 * +I3[T3 >> 1] : D3, B3 = Z3 >>> 0 <= 87 ? 1e-3 * +I3[L3 >> 1] * 0.1 : B3, p4 = A6 >> V3, w4 = (0 | (g5 = (o4 = (A6 - 1 | 0) <= (0 | N4)) ? A6 - 2 | 0 : N4)) <= 40 ? 40 : g5, b4 = +I3[111776 + ((w4 = o4 || (0 | g5) < 40 ? w4 : N4) << 1) >> 1], Q2[27966] = b4, l3 = b4, b4 = +(0 | w4), Q2[27965] = l3 * b4 * 0.333, M5 = (0 | (g5 = A6 - w4 | 0)) > (0 | M5) ? M5 : g5, F4 = 0 - (g5 = (0 | F4) < 0 ? 0 - M5 | 0 : M5) | 0, h4 = (b4 *= 833e-5) * b4, h4 *= 1 - (Y3 = (l3 = (b4 = $A2(j3 * +((0 | K3) / (0 | w4) | 0))) * AA3) + l3) - (l3 = b4 * -b4), A6 = 4 != (0 | (o4 = A6 + g5 | 0))) : (f4[55930] = 0, f4[55931] = 0, f4[55932] = 0, f4[55933] = 0, p4 = 4, B3 = 0, D3 = 0, o4 = 4, A6 = 0), t3 = (A6 |= !R3) ? C3 : t3, x3 = A6 ? X3 : x3, A6 = 0), A6 = A6 + 1 | 0, b4 = r4 = q4 * k5 + ($5 * r4 + _4 * u4), k5 = u4, 4 == (0 | (y4 = y4 + 1 | 0))) break;
             }
             if (f4[55926] = o4, f4[55956] = v4, f4[55924] = A6, Q2[28383] = r4, f4[55927] = w4, Q2[28389] = m4, Q2[28388] = d4, Q2[27972] = D3, Q2[27976] = B3, f4[55928] = p4, f4[56654] = M5, f4[56780] = F4, Q2[27970] = t3, Q2[27969] = x3, Q2[28122] = n3, Q2[28120] = Y3, Q2[28119] = h4, Q2[28123] = s4, Q2[28121] = l3, Q2[28131] = k5, Q2[28130] = r4, 5 == (0 | H3) && (r4 = 6e3 * ((e4 = +(0 | A6) / +(0 | o4)) + e4 + -1), Q2[28383] = r4), e4 = r4 * x3 + Q2[28384] * t3, Q2[28383] = e4, Q2[28384] = e4, (0 | A6) < (0 | w4) && (e4 = B3 * z3 + e4, Q2[28383] = e4), t3 = O3 * Q2[27974], u4 = e4 * Q2[27973] + t3, k5 = 0, 2 != f4[55916] && (k5 = Q2[27987], n3 = Q2[27986], Q2[27987] = n3, e4 = t3 + e4 * D3, Q2[27986] = e4, t3 = Q2[28059], s4 = Q2[28058], Q2[28059] = s4, e4 = t3 * Q2[28057] + (Q2[28055] * (k5 * Q2[27985] + (Q2[27983] * e4 + n3 * Q2[27984])) + s4 * Q2[28056]), Q2[28058] = e4, k5 = Q2[28049], t3 = Q2[28051], n3 = Q2[28048], s4 = Q2[28047], C3 = Q2[28050], Q2[28051] = C3, e4 = k5 * t3 + (s4 * e4 + n3 * C3), Q2[28050] = e4, k5 = Q2[28043], t3 = Q2[28041], n3 = Q2[28040], s4 = Q2[28039], C3 = Q2[28042], Q2[28043] = C3, e4 = t3 * k5 + (s4 * e4 + n3 * C3), Q2[28042] = e4, k5 = Q2[28035], t3 = Q2[28033], n3 = Q2[28032], s4 = Q2[28031], C3 = Q2[28034], Q2[28035] = C3, e4 = t3 * k5 + (s4 * e4 + n3 * C3), Q2[28034] = e4, k5 = Q2[28027], t3 = Q2[28025], n3 = Q2[28024], s4 = Q2[28023], C3 = Q2[28026], Q2[28027] = C3, e4 = t3 * k5 + (s4 * e4 + n3 * C3), Q2[28026] = e4, k5 = Q2[28019], t3 = Q2[28017], n3 = Q2[28016], s4 = Q2[28015], C3 = Q2[28018], Q2[28019] = C3, e4 = t3 * k5 + (s4 * e4 + n3 * C3), Q2[28018] = e4, k5 = Q2[28011], t3 = Q2[28009], n3 = Q2[28008], s4 = Q2[28007], C3 = Q2[28010], Q2[28011] = C3, e4 = t3 * k5 + (s4 * e4 + n3 * C3), Q2[28010] = e4, k5 = Q2[28003], t3 = Q2[28001], n3 = Q2[28e3], s4 = Q2[27999], C3 = Q2[28002], Q2[28003] = C3, e4 = t3 * k5 + (s4 * e4 + n3 * C3), Q2[28002] = e4, k5 = Q2[27995], t3 = Q2[27993], n3 = Q2[27992], s4 = Q2[27991], C3 = Q2[27994], Q2[27995] = C3, k5 = t3 * k5 + (s4 * e4 + n3 * C3), Q2[27994] = k5), e4 = Q2[28385], Q2[28385] = u4, t3 = Q2[28075], n3 = Q2[28074], Q2[28075] = n3, s4 = Q2[28067], C3 = Q2[28066], Q2[28067] = C3, t3 = t3 * Q2[28073] + (Q2[28071] * u4 + n3 * Q2[28072]), Q2[28074] = t3, n3 = s4 * Q2[28065] + (Q2[28063] * u4 + C3 * Q2[28064]), Q2[28066] = n3, s4 = Q2[28081], C3 = Q2[28083], b4 = Q2[28079], r4 = Q2[28080], B3 = Q2[28082], Q2[28083] = B3, u4 = s4 * C3 + (b4 * (e4 = S3 * O3 + u4 - e4) + r4 * B3), Q2[28082] = u4, s4 = Q2[28091], C3 = Q2[28089], b4 = Q2[28087], r4 = Q2[28088], B3 = Q2[28090], Q2[28091] = B3, s4 = C3 * s4 + (b4 * e4 + r4 * B3), Q2[28090] = s4, C3 = Q2[28099], b4 = Q2[28097], r4 = Q2[28095], B3 = Q2[28096], D3 = Q2[28098], Q2[28099] = D3, C3 = b4 * C3 + (r4 * e4 + B3 * D3), Q2[28098] = C3, b4 = Q2[28107], r4 = Q2[28105], B3 = Q2[28103], D3 = Q2[28104], x3 = Q2[28106], Q2[28107] = x3, b4 = r4 * b4 + (B3 * e4 + D3 * x3), Q2[28106] = b4, r4 = Q2[28115], B3 = Q2[28113], D3 = Q2[28111], x3 = Q2[28112], d4 = Q2[28114], Q2[28115] = d4, r4 = B3 * r4 + (D3 * e4 + x3 * d4), Q2[28114] = r4, B3 = Q2[28139], D3 = Q2[28137], x3 = Q2[28136], d4 = Q2[28135], m4 = Q2[27971], l3 = Q2[28138], Q2[28139] = l3, e4 = D3 * B3 + (d4 * (e4 * m4 - (r4 - (b4 - (C3 - (s4 - (u4 - (k5 + t3 + n3))))))) + x3 * l3), Q2[28138] = e4, e4 = Q2[27977] * (e4 * +f4[50779]), r4 = +(0 | (A6 = E2(e4) < 2147483648 ? ~~e4 : -2147483648)), (0 | (A6 = f4[50776])) < f4[50773] && (o4 = A6 + 1 | 0, g5 = f4[50772], (w4 = f4[50774]) ? (f4[50776] = o4, A6 = G3(w4, a3[A6 + g5 | 0])) : (w4 = i4[A6 + g5 | 0], g5 = a3[g5 + o4 | 0], f4[50776] = A6 + 2, A6 = w4 | g5 << 8), r4 += +((0 | G3(f4[50775], (0 | G3(A6, f4[50780])) / 1024 | 0)) / 40 | 0)), (0 | (A6 = f4[55962])) <= 63 && (f4[55962] = A6 + 1, r4 = r4 * +(0 | A6) * 0.015625), (0 | (A6 = f4[55963])) <= 0 || (A6 = A6 - 1 | 0, f4[55963] = A6, r4 = r4 * +(0 | A6) * 0.015625, A6 || (f4[55962] = 0)), g5 = (A6 = f4[51293]) + 1 | 0, f4[51293] = g5, o4 = G3(I3[205184 + (A6 << 1) >> 1], f4[50755]) >> 8, A6 = E2(r4) < 2147483648 ? ~~r4 : -2147483648, (0 | g5) >= 5500 && (f4[51293] = 0), g5 = f4[51290], f4[51290] = g5 + 1, A6 = (0 | (A6 = (0 | (A6 = A6 + o4 | 0)) <= -32768 ? -32768 : A6)) >= 32767 ? 32767 : A6, a3[0 | g5] = A6, g5 = f4[51290], f4[51290] = g5 + 1, a3[0 | g5] = A6 >>> 8, o4 = (g5 = f4[51292]) + 1 | 0, f4[51292] = o4, I3[205184 + (g5 << 1) >> 1] = A6, (0 | o4) >= 5500 && (f4[51292] = 0), o4 = 1, f4[56606] = f4[56606] + 1, c3[54046] < f4[51290] + 2 >>> 0) break A;
             if (A6 = f4[55925] + 1 | 0, f4[55925] = A6, !((0 | A6) < f4[55923])) break;
@@ -97148,7 +97148,7 @@ var b = { Memory: function(A3) {
               if (!Qr2(A6, g5)) break e;
               (I4 = f4[r4 + 688 >> 2]) && mA2(I4), mA2(r4), f4[e4 >> 2] = 0;
             }
-            f4[e4 >> 2] = q2(A6), A6 = rg2(g5, A6), HA2(g5 = f4[e4 >> 2], g5 + 228 | 0, 0) && (qr2(f4[f4[32972] + 60 >> 2]), a3[0 | A6] = 0, C3 = -1), r4 = f4[e4 >> 2], f4[r4 + 292 >> 2] = C3;
+            f4[e4 >> 2] = q3(A6), A6 = rg2(g5, A6), HA2(g5 = f4[e4 >> 2], g5 + 228 | 0, 0) && (qr2(f4[f4[32972] + 60 >> 2]), a3[0 | A6] = 0, C3 = -1), r4 = f4[e4 >> 2], f4[r4 + 292 >> 2] = C3;
           } else if (!r4) break A;
           a3[r4 + 268 | 0] = 0;
         }
@@ -125652,12 +125652,12 @@ function withFixed(s3) {
 }
 
 // src/tone.js
-function coeffs(type, fs2, f0, gainDb, q2) {
+function coeffs(type, fs2, f0, gainDb, q3) {
   const A3 = Math.pow(10, gainDb / 40);
   const w0 = 2 * Math.PI * f0 / fs2;
   const cos = Math.cos(w0);
   const sin = Math.sin(w0);
-  const alpha = sin / (2 * q2);
+  const alpha = sin / (2 * q3);
   let b0, b1, b22, a0, a1, a2;
   if (type === "peak") {
     b0 = 1 + alpha * A3;
@@ -125686,9 +125686,9 @@ function coeffs(type, fs2, f0, gainDb, q2) {
   }
   return [b0 / a0, b1 / a0, b22 / a0, a1 / a0, a2 / a0];
 }
-function bandpass(fs2, f0, q2) {
+function bandpass(fs2, f0, q3) {
   const w0 = 2 * Math.PI * f0 / fs2;
-  const alpha = Math.sin(w0) / (2 * q2);
+  const alpha = Math.sin(w0) / (2 * q3);
   const a0 = 1 + alpha;
   return [alpha / a0, 0, -alpha / a0, -2 * Math.cos(w0) / a0, (1 - alpha) / a0];
 }
@@ -125783,7 +125783,7 @@ function toneChain(tone, speed = 1) {
   const k4 = Math.min(1, Math.max(0, (speed - 1.4) / 1.6));
   if (!k4) return base;
   return base.map(
-    ([type, f0, g3, q2]) => type === "peak" && f0 <= 250 ? [type, f0, g3 * (1 - 0.5 * k4), q2] : type === "highshelf" ? [type, f0, g3 * (1 - k4), q2] : [type, f0, g3, q2]
+    ([type, f0, g3, q3]) => type === "peak" && f0 <= 250 ? [type, f0, g3 * (1 - 0.5 * k4), q3] : type === "highshelf" ? [type, f0, g3 * (1 - k4), q3] : [type, f0, g3, q3]
   );
 }
 function shapeVoice(samples, rate, { tone = "warm", speed = 1, lang = "en", ownVoice = true } = {}) {
@@ -125794,11 +125794,11 @@ function applyTone(samples, rate = 24e3, tone = "warm", speed = 1) {
   const chain = [...toneChain(tone, speed), ...clarityBoost(speed)];
   if (!chain.length || !samples || samples.length < 8) return samples;
   let y3 = samples instanceof Float32Array ? samples : Float32Array.from(samples);
-  for (const [type, f0, gain, q2] of chain) {
+  for (const [type, f0, gain, q3] of chain) {
     if (type === "gain") {
       const g3 = Math.pow(10, gain / 20);
       for (let i3 = 0; i3 < y3.length; i3++) y3[i3] *= g3;
-    } else y3 = run(y3, coeffs(type, rate, f0, gain, q2));
+    } else y3 = run(y3, coeffs(type, rate, f0, gain, q3));
   }
   let peak = 0;
   for (let i3 = 0; i3 < y3.length; i3++) peak = Math.max(peak, Math.abs(y3[i3]));
@@ -125904,7 +125904,7 @@ function squeezeSpeech(x2, factor, rate = 24e3) {
     }
     let j2 = k4;
     while (j2 < n2 && env3[j2] < thr) j2++;
-    if (j2 - k4 >= 7) for (let q2 = k4 + 1; q2 < j2 - 1; q2++) pause[q2] = 1;
+    if (j2 - k4 >= 7) for (let q3 = k4 + 1; q3 < j2 - 1; q3++) pause[q3] = 1;
     k4 = j2;
   }
   const segs = [];
@@ -126861,8 +126861,8 @@ function createEngine({ wasmPaths, onEvent }) {
     if (online && online.audio.length > 100) {
       r2 = { audio: online.audio, ...spreadWords(text, online.audio) };
       if (squeeze > 1.01) {
-        const q2 = squeezeSpeech(r2.audio, squeeze, SAMPLE_RATE2);
-        r2 = { audio: q2.audio, starts: r2.starts.map(q2.map), ends: r2.ends.map(q2.map) };
+        const q3 = squeezeSpeech(r2.audio, squeeze, SAMPLE_RATE2);
+        r2 = { audio: q3.audio, starts: r2.starts.map(q3.map), ends: r2.ends.map(q3.map) };
       }
       r2.audio = matchLoudness(r2.audio, SAMPLE_RATE2);
       return r2;
@@ -126892,11 +126892,11 @@ function createEngine({ wasmPaths, onEvent }) {
         }
       }
       if (squeeze > 1.01) {
-        const q2 = squeezeSpeech(r2.audio, squeeze, SAMPLE_RATE2);
-        r2.audio = q2.audio;
+        const q3 = squeezeSpeech(r2.audio, squeeze, SAMPLE_RATE2);
+        r2.audio = q3.audio;
         if (r2.starts) {
-          r2.starts = r2.starts.map(q2.map);
-          r2.ends = r2.ends?.map(q2.map);
+          r2.starts = r2.starts.map(q3.map);
+          r2.ends = r2.ends?.map(q3.map);
         }
       }
       r2.audio = shapeVoice(r2.audio, SAMPLE_RATE2, { tone: settings2.tone || "natural", speed: wanted, lang: lang || "en", ownVoice: ownVoice && !foreign ? true : !foreign });
@@ -127025,10 +127025,10 @@ function createEngine({ wasmPaths, onEvent }) {
     if (st2.ticker) clearInterval(st2.ticker);
     st2.ticker = null;
   }
-  function startTicker(token, i3, item) {
+  function startTicker(token2, i3, item) {
     stopTicker();
     const tick = () => {
-      if (token !== st2.playToken) return stopTicker();
+      if (token2 !== st2.playToken) return stopTicker();
       if (st2.ctx.state !== "running") return;
       const t2 = st2.ctx.currentTime - st2.t0 + 0.02;
       let w3 = st2.word;
@@ -127042,7 +127042,7 @@ function createEngine({ wasmPaths, onEvent }) {
     tick();
   }
   async function playFrom(i3, fromWord = 0) {
-    const token = ++st2.playToken;
+    const token2 = ++st2.playToken;
     stopSource();
     if (i3 < 0) i3 = 0;
     if (i3 >= st2.sentences.length) {
@@ -127062,15 +127062,15 @@ function createEngine({ wasmPaths, onEvent }) {
     try {
       item = await getItem(i3);
     } catch (e2) {
-      if (token !== st2.playToken) return;
+      if (token2 !== st2.playToken) return;
       console.error("[murmur]", e2);
       setStatus2("error", String(e2?.message || e2));
       return;
     }
-    if (token !== st2.playToken || !item) return;
+    if (token2 !== st2.playToken || !item) return;
     const ctx = getCtx();
     if (ctx.state !== "running") await ctx.resume();
-    if (token !== st2.playToken) return;
+    if (token2 !== st2.playToken) return;
     let offset = 0;
     if (fromWord > 0 && item.starts && item.starts[fromWord] != null) {
       offset = Math.max(0, Math.min(item.buf.duration - 0.05, item.starts[fromWord] - 0.04));
@@ -127080,7 +127080,7 @@ function createEngine({ wasmPaths, onEvent }) {
     src.buffer = item.buf;
     src.connect(ctx.destination);
     src.onended = () => {
-      if (token !== st2.playToken) return;
+      if (token2 !== st2.playToken) return;
       st2.source = null;
       playFrom(i3 + 1);
     };
@@ -127089,7 +127089,7 @@ function createEngine({ wasmPaths, onEvent }) {
     st2.t0 = ctx.currentTime - offset;
     emit("sentence", { index: i3, starts: item.starts, offset, sentAt: Date.now() });
     setStatus2("playing");
-    if (item.starts) startTicker(token, i3, item);
+    if (item.starts) startTicker(token2, i3, item);
     prefetch(i3);
   }
   return {
@@ -127133,14 +127133,14 @@ function createEngine({ wasmPaths, onEvent }) {
       st2.word = -1;
       const ready = st2.timed || st2.tts;
       setStatus2(ready ? "buffering" : "loading", ready ? "Starting\u2026" : "Getting the voice ready\u2026");
-      const token = st2.playToken;
+      const token2 = st2.playToken;
       try {
         await ensureModel();
       } catch (e2) {
         setStatus2("error", "Could not load the voice: " + String(e2?.message || e2));
         return;
       }
-      if (token !== st2.playToken) return;
+      if (token2 !== st2.playToken) return;
       playFrom(startIndex, startWord);
     },
     pause() {
@@ -156046,9 +156046,213 @@ var import_lamejs = __toESM(require_js(), 1);
 var import_MPEGMode = __toESM(require_MPEGMode(), 1);
 var import_Lame = __toESM(require_Lame(), 1);
 var import_BitStream = __toESM(require_BitStream(), 1);
-Object.assign(globalThis, { MPEGMode: import_MPEGMode.default, Lame: import_Lame.default, BitStream: import_BitStream.default });
+
+// src/drive.js
+var DRIVE_CLIENT_ID = "";
+var SCOPE = "https://www.googleapis.com/auth/drive.file";
+var API = "https://www.googleapis.com/drive/v3";
+var UPLOAD = "https://www.googleapis.com/upload/drive/v3";
+var FOLDER = "Murmur library";
+var PLACES = "murmur-places.json";
+var TOKEN_KEY = "murmur:drive:token";
+var WANT_KEY = "murmur:drive:want";
 var isExt = typeof chrome !== "undefined" && !!chrome.runtime?.getURL;
-var BASE = isExt ? chrome.runtime.getURL("") : new URL("./", location.href).href;
+var store = {
+  get(k4) {
+    try {
+      return localStorage.getItem(k4);
+    } catch {
+      return null;
+    }
+  },
+  set(k4, v3) {
+    try {
+      if (v3 == null) localStorage.removeItem(k4);
+      else localStorage.setItem(k4, v3);
+    } catch {
+    }
+  }
+};
+function clientId() {
+  return DRIVE_CLIENT_ID || store.get("murmur:drive:client") || "";
+}
+function redirectUri() {
+  if (isExt) return chrome.identity?.getRedirectURL ? chrome.identity.getRedirectURL() : "https://" + chrome.runtime.id + ".chromiumapp.org/";
+  return location.origin + location.pathname;
+}
+function authUrl() {
+  const p3 = new URLSearchParams({ client_id: clientId(), redirect_uri: redirectUri(), response_type: "token", scope: SCOPE, include_granted_scopes: "true" });
+  return "https://accounts.google.com/o/oauth2/v2/auth?" + p3;
+}
+function keepToken(fragment) {
+  const p3 = new URLSearchParams(fragment.replace(/^[#?]/, ""));
+  const t2 = p3.get("access_token");
+  if (!t2) return p3.get("error") || null;
+  const secs = parseInt(p3.get("expires_in") || "3600", 10);
+  store.set(TOKEN_KEY, JSON.stringify({ t: t2, exp: Date.now() + (secs - 120) * 1e3 }));
+  return null;
+}
+function backFromGoogle() {
+  if (isExt || !/access_token=|error=/.test(location.hash)) return false;
+  keepToken(location.hash);
+  try {
+    history.replaceState(null, "", location.pathname + location.search);
+  } catch {
+  }
+  const want = store.get(WANT_KEY) === "1";
+  store.set(WANT_KEY, null);
+  return want;
+}
+function signedIn() {
+  try {
+    const s3 = JSON.parse(store.get(TOKEN_KEY) || "null");
+    return !!s3 && s3.exp > Date.now();
+  } catch {
+    return false;
+  }
+}
+function everSignedIn() {
+  return store.get("murmur:drive:on") === "1";
+}
+async function token(ask) {
+  if (signedIn()) return JSON.parse(store.get(TOKEN_KEY)).t;
+  if (!clientId()) return null;
+  if (isExt) {
+    if (!chrome.identity?.launchWebAuthFlow && ask) {
+      try {
+        await chrome.permissions.request({ permissions: ["identity"] });
+      } catch {
+      }
+    }
+    if (!chrome.identity?.launchWebAuthFlow) return null;
+    try {
+      const back = await chrome.identity.launchWebAuthFlow({ url: authUrl() + (ask ? "" : "&prompt=none"), interactive: !!ask });
+      if (!back) return null;
+      keepToken(new URL(back).hash);
+    } catch {
+      return null;
+    }
+    return signedIn() ? JSON.parse(store.get(TOKEN_KEY)).t : null;
+  }
+  if (!ask) return null;
+  store.set(WANT_KEY, "1");
+  location.assign(authUrl());
+  return new Promise(() => {
+  });
+}
+async function call(tok, url, opts = {}) {
+  const res = await fetch(url, { ...opts, headers: { Authorization: "Bearer " + tok, ...opts.headers || {} } });
+  if (res.status === 401) store.set(TOKEN_KEY, null);
+  if (!res.ok) {
+    let msg = "";
+    try {
+      msg = (await res.json())?.error?.message || "";
+    } catch {
+    }
+    throw new Error(msg || `Google Drive answered ${res.status}`);
+  }
+  return res;
+}
+var q2 = (s3) => s3.replace(/\\/g, "\\\\").replace(/'/g, "\\'");
+async function folderId(tok) {
+  const cached = store.get("murmur:drive:folder");
+  if (cached) return cached;
+  const find = new URLSearchParams({ q: `name='${q2(FOLDER)}' and mimeType='application/vnd.google-apps.folder' and trashed=false`, fields: "files(id)", pageSize: "1" });
+  const found = (await (await call(tok, `${API}/files?${find}`)).json()).files?.[0]?.id;
+  const id2 = found || (await (await call(tok, `${API}/files?fields=id`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: FOLDER, mimeType: "application/vnd.google-apps.folder" }) })).json()).id;
+  store.set("murmur:drive:folder", id2);
+  return id2;
+}
+async function listFiles(tok, folder) {
+  const out = [];
+  let page = "";
+  do {
+    const p3 = new URLSearchParams({ q: `'${q2(folder)}' in parents and trashed=false`, fields: "nextPageToken,files(id,name,size,mimeType,modifiedTime)", pageSize: "200" });
+    if (page) p3.set("pageToken", page);
+    const r2 = await (await call(tok, `${API}/files?${p3}`)).json();
+    out.push(...r2.files || []);
+    page = r2.nextPageToken || "";
+  } while (page);
+  return out;
+}
+async function upload(tok, folder, name, type, blob, existingId = null) {
+  const meta = existingId ? {} : { name, parents: [folder] };
+  const start = await call(tok, `${UPLOAD}/files${existingId ? "/" + existingId : ""}?uploadType=resumable&fields=id`, {
+    method: existingId ? "PATCH" : "POST",
+    headers: { "Content-Type": "application/json; charset=UTF-8", "X-Upload-Content-Type": type || "application/octet-stream", "X-Upload-Content-Length": String(blob.size) },
+    body: JSON.stringify(meta)
+  });
+  const where = start.headers.get("Location");
+  if (!where) throw new Error("Google Drive did not say where to send the file");
+  const done = await call(tok, where, { method: "PUT", headers: { "Content-Type": type || "application/octet-stream" }, body: blob });
+  return (await done.json()).id;
+}
+var sameFile = (a2, name, size) => a2.name === name && Number(a2.size || 0) === Number(size || 0);
+async function sync({ local, removed = [], ask = false, onStatus = () => {
+} }) {
+  const tok = await token(ask);
+  if (!tok) return null;
+  store.set("murmur:drive:on", "1");
+  onStatus("Looking at your Drive\u2026");
+  const folder = await folderId(tok);
+  let files;
+  try {
+    files = await listFiles(tok, folder);
+  } catch (e2) {
+    store.set("murmur:drive:folder", null);
+    files = await listFiles(tok, await folderId(tok));
+  }
+  const dir = store.get("murmur:drive:folder");
+  for (const r2 of removed) {
+    const hit = files.find((f3) => sameFile(f3, r2.name, r2.size));
+    if (!hit) continue;
+    await call(tok, `${API}/files/${hit.id}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ trashed: true }) });
+    files = files.filter((f3) => f3 !== hit);
+  }
+  let uploaded = 0;
+  const missing = local.filter((d3) => d3.blob && !files.some((f3) => sameFile(f3, d3.name, d3.size)));
+  for (const [i3, d3] of missing.entries()) {
+    onStatus(`Sending \u201C${d3.name}\u201D to your Drive (${i3 + 1} of ${missing.length})\u2026`);
+    const id2 = await upload(tok, dir, d3.name, d3.type, d3.blob);
+    files.push({ id: id2, name: d3.name, size: String(d3.size), mimeType: d3.type, modifiedTime: (/* @__PURE__ */ new Date()).toISOString() });
+    uploaded++;
+  }
+  onStatus("Matching where you stopped\u2026");
+  const placesFile = files.find((f3) => f3.name === PLACES);
+  let places = {};
+  if (placesFile) {
+    try {
+      places = await (await call(tok, `${API}/files/${placesFile.id}?alt=media`)).json() || {};
+    } catch {
+    }
+  }
+  let changed = false;
+  for (const d3 of local) {
+    if (!d3.place || !d3.fileKey) continue;
+    const there = places[d3.fileKey];
+    if (!there || d3.place.at > there.at) {
+      places[d3.fileKey] = d3.place;
+      changed = true;
+    }
+  }
+  if (changed || !placesFile) {
+    const body = new Blob([JSON.stringify(places)], { type: "application/json" });
+    await upload(tok, dir, PLACES, "application/json", body, placesFile?.id || null);
+  }
+  const remoteOnly = files.filter((f3) => f3.name !== PLACES && !local.some((d3) => sameFile(f3, d3.name, d3.size))).map((f3) => ({ id: f3.id, name: f3.name, type: f3.mimeType || "", size: Number(f3.size || 0), modified: Date.parse(f3.modifiedTime) || Date.now() }));
+  onStatus("");
+  return { remoteOnly, places, uploaded, total: files.filter((f3) => f3.name !== PLACES).length };
+}
+async function download(id2, ask = true) {
+  const tok = await token(ask);
+  if (!tok) throw new Error("Sign in to Google Drive first");
+  return (await call(tok, `${API}/files/${id2}?alt=media`)).blob();
+}
+
+// src/reader.js
+Object.assign(globalThis, { MPEGMode: import_MPEGMode.default, Lame: import_Lame.default, BitStream: import_BitStream.default });
+var isExt2 = typeof chrome !== "undefined" && !!chrome.runtime?.getURL;
+var BASE = isExt2 ? chrome.runtime.getURL("") : new URL("./", location.href).href;
 GlobalWorkerOptions.workerSrc = BASE + "pdf.worker.js";
 var $3 = (id2) => document.getElementById(id2);
 var docEl = $3("doc");
@@ -156062,7 +156266,7 @@ var status = "idle";
 var saveCancelled = false;
 async function loadUsage() {
   try {
-    if (isExt && chrome.storage?.local) return (await chrome.storage.local.get("onlineUsage")).onlineUsage || null;
+    if (isExt2 && chrome.storage?.local) return (await chrome.storage.local.get("onlineUsage")).onlineUsage || null;
     return JSON.parse(localStorage.getItem("murmur:onlineUsage") || "null");
   } catch {
     return null;
@@ -156073,7 +156277,7 @@ function saveUsage(u3) {
   usageWrites = usageWrites.then(async () => {
     const usage = addUsage(await loadUsage(), u3?.add, u3?.month);
     settings.onlineUsage = usage;
-    if (isExt && chrome.storage?.local) await chrome.storage.local.set({ onlineUsage: usage });
+    if (isExt2 && chrome.storage?.local) await chrome.storage.local.set({ onlineUsage: usage });
     else localStorage.setItem("murmur:onlineUsage", JSON.stringify(usage));
   }).catch(() => {
   });
@@ -156081,14 +156285,14 @@ function saveUsage(u3) {
 }
 async function loadSettings() {
   const onlineUsage = await loadUsage();
-  if (isExt && chrome.storage?.sync) return withFixed({ ...DEFAULTS, ...await chrome.storage.sync.get(DEFAULTS), onlineUsage });
+  if (isExt2 && chrome.storage?.sync) return withFixed({ ...DEFAULTS, ...await chrome.storage.sync.get(DEFAULTS), onlineUsage });
   try {
     return withFixed({ ...DEFAULTS, ...JSON.parse(localStorage.getItem("murmur:settings") || "{}"), onlineUsage });
   } catch {
     return { ...DEFAULTS };
   }
 }
-if (isExt && chrome.storage?.onChanged) {
+if (isExt2 && chrome.storage?.onChanged) {
   chrome.storage.onChanged.addListener((changes, area) => {
     if (area !== "sync") return;
     const patch = {};
@@ -156102,7 +156306,7 @@ if (isExt && chrome.storage?.onChanged) {
 }
 function saveSettings(patch) {
   Object.assign(settings, patch);
-  if (isExt && chrome.storage?.sync) chrome.storage.sync.set(patch);
+  if (isExt2 && chrome.storage?.sync) chrome.storage.sync.set(patch);
   else {
     try {
       const { onlineUsage, ...keep } = settings;
@@ -156284,6 +156488,8 @@ async function rememberDoc(file, blocks = null) {
       rec.v = BLOCKS_VERSION;
     }
     await dbPut(rec);
+    for (const d3 of await dbAll()) if (d3.remoteId && d3.fileKey === rec.fileKey) await dbDelete(d3.key);
+    if (signedIn()) setTimeout(() => syncLibrary(false), 3e3);
   } catch (e2) {
     console.warn("[murmur] could not remember document", e2);
   }
@@ -156304,7 +156510,9 @@ async function renderLibrary(asked = false) {
     docs = (await dbAll()).sort((a2, b3) => b3.lastOpened - a2.lastOpened);
   } catch {
   }
-  box.hidden = !docs.length && !asked;
+  const driveReady = !!clientId();
+  $3("driveRow").hidden = !driveReady;
+  box.hidden = !docs.length && !asked && !driveReady;
   list.textContent = "";
   if (!docs.length && asked) list.textContent = "Nothing here yet. Every file you open is kept here, so you can carry on where you stopped.";
   for (const d3 of docs) {
@@ -156314,20 +156522,115 @@ async function renderLibrary(asked = false) {
     item.className = "item";
     item.innerHTML = `<span class="t"></span><span class="m"></span><button class="rm" title="Remove from this list">&#10005;</button>`;
     item.querySelector(".t").textContent = d3.title;
-    item.querySelector(".m").textContent = pct > 0 && pct < 100 ? `${pct}% \xB7 ${new Date(d3.lastOpened).toLocaleDateString()}` : new Date(d3.lastOpened).toLocaleDateString();
-    item.onclick = (e2) => {
+    const onDrive = !!d3.remoteId;
+    item.querySelector(".m").textContent = onDrive ? "On your Drive \xB7 tap to get it" : pct > 0 && pct < 100 ? `${pct}% \xB7 ${new Date(d3.lastOpened).toLocaleDateString()}` : new Date(d3.lastOpened).toLocaleDateString();
+    item.onclick = async (e2) => {
       if (e2.target.closest(".rm")) return;
+      if (onDrive) {
+        try {
+          driveNote(`Getting \u201C${d3.name}\u201D from your Drive\u2026`);
+          const blob = await download(d3.remoteId);
+          driveNote("");
+          await loadFile(new File([blob], d3.name, { type: d3.type }));
+          await dbDelete(d3.key);
+        } catch (err) {
+          driveNote("Could not get it: " + (err.message || err));
+        }
+        return;
+      }
       loadFile(new File([d3.blob], d3.name, { type: d3.type }));
     };
     item.querySelector(".rm").onclick = async (e2) => {
       e2.stopPropagation();
+      noteRemoved(d3);
       await dbDelete(d3.key);
-      renderLibrary();
+      await renderLibrary(true);
+      if (signedIn()) syncLibrary(false);
     };
     list.appendChild(item);
   }
   return docs;
 }
+var syncing = null;
+var currentFileKey = null;
+function driveNote(t2) {
+  const el2 = $3("driveNote");
+  if (el2) el2.textContent = t2 || "";
+}
+function removedList() {
+  try {
+    return JSON.parse(localStorage.getItem("murmur:drive:removed") || "[]");
+  } catch {
+    return [];
+  }
+}
+function noteRemoved(d3) {
+  if (!everSignedIn()) return;
+  try {
+    localStorage.setItem("murmur:drive:removed", JSON.stringify([...removedList(), { name: d3.name, size: d3.blob ? d3.blob.size : d3.size }]));
+  } catch {
+  }
+}
+function localPlace(d3) {
+  if (!d3.count) return null;
+  const pos = parseInt(localStorage.getItem("murmur:pos:" + d3.key) || "0", 10);
+  const at = parseInt(localStorage.getItem("murmur:posAt:" + d3.key) || "0", 10);
+  return at ? { f: pos / d3.count, at } : null;
+}
+function applyDrivePlace() {
+  if (!currentFileKey || !docKey || !sentences.length) return;
+  try {
+    const p3 = JSON.parse(localStorage.getItem("murmur:drive:places") || "{}")[currentFileKey];
+    const at = parseInt(localStorage.getItem("murmur:posAt:" + docKey) || "0", 10);
+    if (p3 && p3.at > at) {
+      localStorage.setItem("murmur:pos:" + docKey, String(Math.min(sentences.length - 1, Math.round(p3.f * sentences.length))));
+      localStorage.setItem("murmur:posAt:" + docKey, String(p3.at));
+    }
+  } catch {
+  }
+}
+async function syncLibrary(ask = false) {
+  if (syncing) return syncing;
+  if (!clientId()) return null;
+  syncing = (async () => {
+    try {
+      const docs = await dbAll();
+      const local = docs.filter((d3) => d3.blob).map((d3) => ({ name: d3.name, type: d3.type, size: d3.blob.size, blob: d3.blob, fileKey: d3.fileKey, place: localPlace(d3) }));
+      const r2 = await sync({ local, removed: removedList(), ask, onStatus: driveNote });
+      if (!r2) return null;
+      localStorage.removeItem("murmur:drive:removed");
+      localStorage.setItem("murmur:drive:places", JSON.stringify(r2.places));
+      for (const d3 of docs) {
+        const p3 = r2.places[d3.fileKey];
+        const mine = localPlace(d3);
+        if (p3 && d3.count && d3.key !== docKey && (!mine || p3.at > mine.at)) {
+          localStorage.setItem("murmur:pos:" + d3.key, String(Math.min(d3.count - 1, Math.round(p3.f * d3.count))));
+          localStorage.setItem("murmur:posAt:" + d3.key, String(p3.at));
+        }
+      }
+      const stubs = docs.filter((d3) => d3.remoteId);
+      for (const s3 of stubs) if (!r2.remoteOnly.some((f3) => f3.id === s3.remoteId)) await dbDelete(s3.key);
+      for (const f3 of r2.remoteOnly) {
+        if (stubs.some((s3) => s3.remoteId === f3.id)) continue;
+        await dbPut({ key: "drive-" + f3.id, remoteId: f3.id, fileKey: hash(`${f3.name}|${f3.size}`), title: f3.name.replace(/\.[^.]+$/, ""), name: f3.name, type: f3.type, size: f3.size, count: 0, lastOpened: f3.modified });
+      }
+      driveNote(`In step with your Drive: ${r2.total} ${r2.total === 1 ? "book" : "books"}.`);
+      if (!$3("start").hidden) await renderLibrary(true);
+      return r2;
+    } catch (e2) {
+      driveNote("Drive problem: " + (e2.message || e2));
+      return null;
+    } finally {
+      syncing = null;
+    }
+  })();
+  return syncing;
+}
+$3("driveBtn").onclick = () => syncLibrary(true);
+setInterval(() => signedIn() && syncLibrary(false), 5 * 60 * 1e3);
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "hidden" && signedIn()) syncLibrary(false);
+});
 $3("libraryBtn").onclick = async () => {
   engine.stop();
   docEl.hidden = true;
@@ -156345,6 +156648,7 @@ function savePosition(i3) {
   if (!docKey) return;
   try {
     localStorage.setItem("murmur:pos:" + docKey, String(i3));
+    localStorage.setItem("murmur:posAt:" + docKey, String(Date.now()));
   } catch {
   }
 }
@@ -156593,7 +156897,7 @@ async function pdfToBlocks(data, onProgress) {
       text = text.replace(new RegExp("\\b(?:\\p{L} ){2,}\\p{L}\\b", "gu"), (m3) => m3.replace(/ /g, ""));
       l2.text = text.replace(/\s+/g, " ").trim();
       l2.rel = l2.y / vh2;
-      l2.box = { x0: Math.min(...l2.parts.map((q2) => q2.x)), x1: Math.max(...l2.parts.map((q2) => q2.end)), top: l2.y + l2.h * 0.85, bottom: l2.y - l2.h * 0.25 };
+      l2.box = { x0: Math.min(...l2.parts.map((q3) => q3.x)), x1: Math.max(...l2.parts.map((q3) => q3.end)), top: l2.y + l2.h * 0.85, bottom: l2.y - l2.h * 0.25 };
     }
     lines.sort((a2, b3) => b3.y - a2.y);
     pages.push(lines.filter((l2) => l2.text));
@@ -156632,7 +156936,7 @@ async function pdfToBlocks(data, onProgress) {
   const blocks = [];
   for (const [i3, lines] of pages.entries()) {
     if (pages.length > 1) blocks.push({ kind: "page", page: i3 + 1 });
-    const lefts = lines.filter((q2) => q2.box && !isBoiler(q2)).map((q2) => q2.box.x0).sort((a2, b3) => a2 - b3);
+    const lefts = lines.filter((q3) => q3.box && !isBoiler(q3)).map((q3) => q3.box.x0).sort((a2, b3) => a2 - b3);
     const leftEdge = lefts[Math.floor(lefts.length * 0.2)] ?? 0;
     let para = "";
     let box = null;
@@ -156958,6 +157262,7 @@ async function render(blocks, title) {
     });
   }
   carryPlace = null;
+  applyDrivePlace();
   const resume = savedPosition();
   setStatus(
     "idle",
@@ -157004,7 +157309,12 @@ async function loadFile(file) {
       blocks = textToBlocks(await file.text());
     }
     const keep = blocks.map((b3) => ({ ...b3 }));
-    await render(blocks, name.replace(/\.[^.]+$/, ""));
+    currentFileKey = fileKeyOf(file);
+    try {
+      await render(blocks, name.replace(/\.[^.]+$/, ""));
+    } finally {
+      currentFileKey = null;
+    }
     if (sentences.length) rememberDoc(file, keep);
   } catch (e2) {
     console.error(e2);
@@ -157095,7 +157405,7 @@ function toMp3(samples, rate) {
   if (end.length) out.push(new Uint8Array(end));
   return new Blob(out, { type: "audio/mpeg" });
 }
-function download(blob, name) {
+function download2(blob, name) {
   const a2 = document.createElement("a");
   a2.href = URL.createObjectURL(blob);
   a2.download = name;
@@ -157147,7 +157457,7 @@ $3("saveGo").onclick = async () => {
       blob = toWav(res.samples, res.sampleRate);
     }
     const ext = blob.type === "audio/mpeg" ? "mp3" : "wav";
-    download(blob, `${docTitle.replace(/[\\/:*?"<>|]+/g, "_")}.${ext}`);
+    download2(blob, `${docTitle.replace(/[\\/:*?"<>|]+/g, "_")}.${ext}`);
     $3("saveStatus").textContent = `Saved ${(blob.size / 1048576).toFixed(1)} MB, ${Math.round(res.samples.length / res.sampleRate / 60)} min of audio.`;
   } catch (e2) {
     $3("saveStatus").textContent = "Failed: " + (e2.message || e2);
@@ -157186,7 +157496,7 @@ async function init() {
   const params = new URLSearchParams(location.search);
   const wantSave = params.get("save") === "1";
   if (params.get("src")) await loadUrl(params.get("src"));
-  else if (params.get("doc") && isExt && chrome.storage?.session) {
+  else if (params.get("doc") && isExt2 && chrome.storage?.session) {
     const key = params.get("doc");
     const got = await chrome.storage.session.get(key);
     const doc = got[key];
@@ -157206,8 +157516,11 @@ async function init() {
   } else if (params.get("text")) {
     await render(textToBlocks(params.get("text")), params.get("title") || "Text");
   } else {
-    const docs = await renderLibrary(params.has("library"));
-    const last = docs[0];
+    const back = backFromGoogle();
+    const docs = await renderLibrary(params.has("library") || back);
+    const last = back ? null : docs.find((d3) => d3.blob);
+    if (back) syncLibrary(false);
+    else if (signedIn()) setTimeout(() => syncLibrary(false), 4e3);
     if (last && !params.has("library")) await loadFile(new File([last.blob], last.name, { type: last.type }));
   }
   if (wantSave && sentences.length) $3("saveBtn").click();
