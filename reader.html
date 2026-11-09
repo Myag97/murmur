@@ -58,6 +58,18 @@
       footer .ctl:hover { background: color-mix(in srgb, var(--fg) 10%, transparent); }
       footer .ctl.play { width: 44px; height: 44px; background: var(--accent); color: var(--on-accent); font-size: 18px; }
       #status { color: var(--muted); min-width: 120px; }
+      /* On a phone: everything stays inside the screen, and the bars take less room. */
+      @media (max-width: 640px) {
+        header { padding: 6px 10px; gap: 6px; }
+        header button { padding: 6px 10px; }
+        #docTitle { max-width: 100%; margin-left: 0; flex-basis: 100%; font-size: 13px; }
+        footer { padding: 6px 10px; gap: 6px; }
+        footer #status { min-width: 0; flex: 1 1 60px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        footer #bar { flex: 1 1 100%; order: -1; min-width: 0; }
+        footer #voice { flex: 1 1 0; min-width: 0; max-width: 100%; }
+        .spd input { width: 90px; }
+        main { padding: 12px 10px 190px; }
+      }
       #status.err { color: #c0392b; }
       #bar { flex: 1; height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; min-width: 80px; cursor: pointer; }
       #bar > div { height: 100%; width: 0; background: var(--accent); }
