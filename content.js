@@ -84,7 +84,7 @@
     // 'auto' (GPU, then CPU), 'webgpu' or 'wasm'
     skipCitations: true,
     // leave out [12], (Smith, 2020), footnote marks and reference lists
-    caption: false,
+    caption: true,
     // big text of the current sentence in the middle of the screen
     selectButton: true,
     // show a play button when text is selected
@@ -596,6 +596,10 @@
       font: 700 clamp(26px, 3.4vw, 46px)/1.3 "Segoe UI Variable Display", "Segoe UI", system-ui, -apple-system, sans-serif; letter-spacing: .01em;
       box-shadow: 0 14px 44px rgba(0,0,0,.45); cursor: pointer; user-select: none; text-wrap: balance; }
     .cap .w.cur { color: #ffd56b; text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 6px; }
+    .cap { padding-right: 52px; padding-left: 52px; }
+    .cap .x { position: absolute; top: 8px; right: 10px; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center;
+      font: 400 18px/1 system-ui, sans-serif; opacity: .65; cursor: pointer; }
+    .cap .x:hover { opacity: 1; background: rgba(255,255,255,.14); }
     .cap .hint { display: block; font: 13px/1.3 system-ui, sans-serif; opacity: .55; margin-top: 10px; font-weight: 400; }
   `;
     function ensureCaption() {
@@ -603,15 +607,21 @@
       const host = document.createElement("div");
       host.id = "murmur-caption";
       const root = host.attachShadow({ mode: "open" });
-      root.innerHTML = `<style>${CAPTION_CSS}</style><div class="cap" title="Click to pause or play"></div>`;
-      const el = root.querySelector(".cap");
-      el.addEventListener("click", () => toBg({ type: "content:toggle" }));
+      root.innerHTML = `<style>${CAPTION_CSS}</style><div class="cap" title="Click to pause or play"><span class="x" title="Hide the big text (it comes back next time you start reading)">\u2715</span><span class="t"></span></div>`;
+      const box = root.querySelector(".cap");
+      const el = root.querySelector(".t");
+      box.addEventListener("click", () => toBg({ type: "content:toggle" }));
+      root.querySelector(".x").addEventListener("click", (e) => {
+        e.stopPropagation();
+        S.capClosed = true;
+        renderCaption();
+      });
       (document.body || document.documentElement).appendChild(host);
       S.cap = { host, el, index: -1 };
       return S.cap;
     }
     function renderCaption() {
-      if (!S.settings.caption || !S.bar || S.current < 0 || !S.sentences[S.current]) {
+      if (!S.settings.caption || S.capClosed || !S.bar || S.current < 0 || !S.sentences[S.current]) {
         if (S.cap) S.cap.host.style.display = "none";
         return;
       }
@@ -1063,6 +1073,7 @@
       };
       $(".cc").onclick = () => {
         S.settings.caption = !S.settings.caption;
+        S.capClosed = false;
         chrome.storage.sync.set({ caption: S.settings.caption });
         renderCaption();
         updateBar();
@@ -1138,6 +1149,7 @@
       if (!S.bar) return;
       S.bar.host.remove();
       S.bar = null;
+      S.capClosed = false;
       removeCaption();
       clearHighlight();
       S.state = "idle";

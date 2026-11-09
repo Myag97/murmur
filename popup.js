@@ -114,7 +114,7 @@
     // 'auto' (GPU, then CPU), 'webgpu' or 'wasm'
     skipCitations: true,
     // leave out [12], (Smith, 2020), footnote marks and reference lists
-    caption: false,
+    caption: true,
     // big text of the current sentence in the middle of the screen
     selectButton: true,
     // show a play button when text is selected

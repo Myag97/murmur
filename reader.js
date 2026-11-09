@@ -125585,7 +125585,7 @@ var DEFAULTS = {
   // 'auto' (GPU, then CPU), 'webgpu' or 'wasm'
   skipCitations: true,
   // leave out [12], (Smith, 2020), footnote marks and reference lists
-  caption: false,
+  caption: true,
   // big text of the current sentence in the middle of the screen
   selectButton: true,
   // show a play button when text is selected
@@ -156155,9 +156155,11 @@ function clearCurrent() {
   renderCaption();
 }
 var captionIndex = -1;
+var captionClosed = false;
 function renderCaption() {
   const cap2 = $3("caption");
-  const on2 = settings.caption && current >= 0 && sentences[current] && (status === "playing" || status === "paused" || status === "buffering");
+  if (status === "idle" || status === "ended") captionClosed = false;
+  const on2 = settings.caption && !captionClosed && current >= 0 && sentences[current] && (status === "playing" || status === "paused" || status === "buffering");
   $3("ccBtn").classList.toggle("on", !!settings.caption);
   if (!on2) {
     cap2.hidden = true;
@@ -156168,6 +156170,16 @@ function renderCaption() {
   if (captionIndex === current) return;
   captionIndex = current;
   cap2.textContent = "";
+  const x2 = document.createElement("button");
+  x2.className = "capx";
+  x2.title = "Hide the big text (it comes back next time you start reading)";
+  x2.textContent = "\u2715";
+  x2.onclick = (e2) => {
+    e2.stopPropagation();
+    captionClosed = true;
+    renderCaption();
+  };
+  cap2.appendChild(x2);
   sentences[current].text.split(" ").filter(Boolean).forEach((w3, k4) => {
     const sp = document.createElement("span");
     sp.className = "w";
@@ -156178,6 +156190,7 @@ function renderCaption() {
   });
 }
 $3("ccBtn").onclick = () => {
+  captionClosed = false;
   saveSettings({ caption: !settings.caption });
   renderCaption();
 };
