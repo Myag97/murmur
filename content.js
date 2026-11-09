@@ -101,7 +101,8 @@
     onlineVoices: true,
     googleKey: "",
     onlineVoice: "Sadaltager",
-    // Mya's pick, Nov 9 (Algieba close second)
+    onlineVoiceByLang: {},
+    // a different Google voice for one language, e.g. { ru: 'Charon' } // Mya's pick, Nov 9 (Algieba close second)
     // Mya's picks, Nov 8: Spanish Sharvard (native engine), Italian Nicola with a
     // touch of her voice, Portuguese the Alex+Santa blend.
     // Chosen by measurement (dev/clarity.mjs): the cleanest speaker per language,

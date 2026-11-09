@@ -125635,7 +125635,8 @@ var DEFAULTS = {
   onlineVoices: true,
   googleKey: "",
   onlineVoice: "Sadaltager",
-  // Mya's pick, Nov 9 (Algieba close second)
+  onlineVoiceByLang: {},
+  // a different Google voice for one language, e.g. { ru: 'Charon' } // Mya's pick, Nov 9 (Algieba close second)
   // Mya's picks, Nov 8: Spanish Sharvard (native engine), Italian Nicola with a
   // touch of her voice, Portuguese the Alex+Santa blend.
   // Chosen by measurement (dev/clarity.mjs): the cleanest speaker per language,
@@ -126588,7 +126589,7 @@ function wavToFloat(bytes) {
 async function onlineSynthesize({ text, lang, settings: settings2, speakingRate = 1, onUsage, ignoreLimit = false }) {
   if (!onlineReady(settings2, lang, { ignoreLimit })) return null;
   const locale = ONLINE_LOCALES[lang || "en"];
-  const speaker = settings2.onlineVoice || "Sadaltager";
+  const speaker = settings2.onlineVoiceByLang?.[lang || "en"] || settings2.onlineVoice || "Sadaltager";
   const body = {
     input: { text },
     voice: { languageCode: locale, name: `${locale}-Chirp3-HD-${speaker}` },
@@ -126638,14 +126639,22 @@ async function onlineSynthesize({ text, lang, settings: settings2, speakingRate 
   return { audio, chars: text.length };
 }
 async function testOnlineVoice(key, speaker = "Charon", lang = "en") {
-  const s3 = { onlineVoices: true, googleKey: key, onlineVoice: speaker, onlineUsage: null };
+  const s3 = { onlineVoices: true, googleKey: key, onlineVoice: speaker, onlineVoiceByLang: null, onlineUsage: null };
   state.badKey = "";
   state.pauseUntil = 0;
   const line = {
     en: "Hello. This is how I sound when I read to you.",
     es: "Hola. As\xED sueno cuando te leo en espa\xF1ol.",
     fr: "Bonjour. Voici ma voix quand je lis en fran\xE7ais.",
-    de: "Guten Tag. So klinge ich, wenn ich auf Deutsch vorlese."
+    de: "Guten Tag. So klinge ich, wenn ich auf Deutsch vorlese.",
+    ru: "\u0417\u0434\u0440\u0430\u0432\u0441\u0442\u0432\u0443\u0439\u0442\u0435. \u0412\u043E\u0442 \u043A\u0430\u043A \u0437\u0432\u0443\u0447\u0438\u0442 \u043C\u043E\u0439 \u0433\u043E\u043B\u043E\u0441, \u043A\u043E\u0433\u0434\u0430 \u044F \u0447\u0438\u0442\u0430\u044E \u043F\u043E-\u0440\u0443\u0441\u0441\u043A\u0438.",
+    tr: "Merhaba. T\xFCrk\xE7e okurken sesim b\xF6yle duyulur.",
+    it: "Buongiorno. Ecco la mia voce quando leggo in italiano.",
+    pt: "Ol\xE1. \xC9 assim que eu soo quando leio em portugu\xEAs.",
+    ar: "\u0645\u0631\u062D\u0628\u0627\u064B. \u0647\u0643\u0630\u0627 \u064A\u0628\u062F\u0648 \u0635\u0648\u062A\u064A \u0639\u0646\u062F\u0645\u0627 \u0623\u0642\u0631\u0623 \u0628\u0627\u0644\u0639\u0631\u0628\u064A\u0629.",
+    zh: "\u4F60\u597D\u3002\u8FD9\u662F\u6211\u7528\u4E2D\u6587\u6717\u8BFB\u65F6\u7684\u58F0\u97F3\u3002",
+    hi: "\u0928\u092E\u0938\u094D\u0924\u0947\u0964 \u091C\u092C \u092E\u0948\u0902 \u0939\u093F\u0902\u0926\u0940 \u092E\u0947\u0902 \u092A\u0922\u093C\u0924\u093E \u0939\u0942\u0901 \u0924\u094B \u092E\u0947\u0930\u0940 \u0906\u0935\u093E\u091C\u093C \u0910\u0938\u0940 \u0932\u0917\u0924\u0940 \u0939\u0948\u0964",
+    el: "\u0393\u03B5\u03B9\u03B1 \u03C3\u03B1\u03C2. \u0388\u03C4\u03C3\u03B9 \u03B1\u03BA\u03BF\u03CD\u03B3\u03B5\u03C4\u03B1\u03B9 \u03B7 \u03C6\u03C9\u03BD\u03AE \u03BC\u03BF\u03C5 \u03CC\u03C4\u03B1\u03BD \u03B4\u03B9\u03B1\u03B2\u03AC\u03B6\u03C9 \u03B5\u03BB\u03BB\u03B7\u03BD\u03B9\u03BA\u03AC."
   }[lang] || "Hello.";
   const r2 = await onlineSynthesize({ text: line, lang, settings: s3, ignoreLimit: true });
   if (!r2) return { ok: false, problem: state.lastProblem || "No answer from Google." };

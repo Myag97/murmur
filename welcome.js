@@ -91715,7 +91715,8 @@ var DEFAULTS = {
   onlineVoices: true,
   googleKey: "",
   onlineVoice: "Sadaltager",
-  // Mya's pick, Nov 9 (Algieba close second)
+  onlineVoiceByLang: {},
+  // a different Google voice for one language, e.g. { ru: 'Charon' } // Mya's pick, Nov 9 (Algieba close second)
   // Mya's picks, Nov 8: Spanish Sharvard (native engine), Italian Nicola with a
   // touch of her voice, Portuguese the Alex+Santa blend.
   // Chosen by measurement (dev/clarity.mjs): the cleanest speaker per language,
@@ -92601,7 +92602,7 @@ function wavToFloat(bytes) {
 async function onlineSynthesize({ text, lang, settings: settings2, speakingRate = 1, onUsage, ignoreLimit = false }) {
   if (!onlineReady(settings2, lang, { ignoreLimit })) return null;
   const locale = ONLINE_LOCALES[lang || "en"];
-  const speaker = settings2.onlineVoice || "Sadaltager";
+  const speaker = settings2.onlineVoiceByLang?.[lang || "en"] || settings2.onlineVoice || "Sadaltager";
   const body = {
     input: { text },
     voice: { languageCode: locale, name: `${locale}-Chirp3-HD-${speaker}` },
