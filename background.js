@@ -318,7 +318,7 @@ async function onActionClick(tab) {
   await loadSession();
   if (!tab) return;
   if (/^(chrome|edge|about|chrome-extension|devtools):/.test(tab.url || "") && !tab.url.includes("reader.html")) {
-    await openReader();
+    await openReader({ library: "1" });
     return;
   }
   let res;
@@ -326,15 +326,7 @@ async function onActionClick(tab) {
   else res = await readTab(tab, "page");
   if (res?.error) {
     console.warn("[murmur] could not start:", res.error);
-    await chrome.action.setBadgeBackgroundColor({ color: "#c0392b" });
-    await chrome.action.setBadgeText({ text: "!", tabId: tab.id });
-    await chrome.action.setTitle({ title: "Murmur: " + res.error, tabId: tab.id });
-    setTimeout(() => {
-      chrome.action.setBadgeText({ text: "", tabId: tab.id }).catch(() => {
-      });
-      chrome.action.setTitle({ title: "Murmur: read this page (right-click for settings)", tabId: tab.id }).catch(() => {
-      });
-    }, 6e3);
+    await openReader({ library: "1" });
   }
   return res;
 }
