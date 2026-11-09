@@ -100519,7 +100519,10 @@ function guessLanguage(text) {
 }
 function hasHintWord(text, lang) {
   const list = HINTS[lang];
-  if (!list) return true;
+  if (!list) {
+    const latinOnly = !/[^\p{Script=Latin}\P{L}]/u.test(text);
+    return !latinOnly || text.length >= 160;
+  }
   const words = text.toLowerCase().match(/[\p{L}']+/gu) || [];
   const set = new Set(list);
   return words.some((w3) => set.has(w3));
@@ -125608,7 +125611,6 @@ var DEFAULTS = {
 };
 var FOREIGN_SPEED_CAP = 0.8;
 var LANG_SPEED_CAP = { fr: 1 };
-var SPEEDS = [0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3, 1.5, 1.7, 2, 2.2, 2.5, 2.8, 3, 3.5];
 var FIXED = ["tone", "depth", "autoLanguage", "engine"];
 function withFixed(s3) {
   const out = { ...s3 };
@@ -155963,7 +155965,7 @@ if (isExt && chrome.storage?.onChanged) {
     Object.assign(settings, withFixed({ ...settings, ...patch }));
     engine.setSettings(withFixed(settings));
     if (patch.voice !== void 0) $3("voice").value = settings.voice;
-    if (patch.speed !== void 0) $3("speed").value = String(settings.speed);
+    if (patch.speed !== void 0) showSpeed();
     if (patch.caption !== void 0) renderCaption();
   });
 }
@@ -156126,6 +156128,8 @@ async function dbDelete(key) {
   });
 }
 var fileKeyOf = (file) => hash(`${file.name}|${file.size}`);
+var BLOCKS_VERSION = 2;
+var carryPlace = null;
 async function rememberDoc(file, blocks = null) {
   if (!docKey || !file || file.size > 80 * 1024 * 1024) return;
   try {
@@ -156133,6 +156137,7 @@ async function rememberDoc(file, blocks = null) {
     if (blocks) {
       rec.blocks = blocks;
       rec.pdfSizes = pdfSizes;
+      rec.v = BLOCKS_VERSION;
     }
     await dbPut(rec);
   } catch (e2) {
@@ -156463,9 +156468,17 @@ async function pdfToBlocks(data, onProgress) {
   }
   const allH = pages.flat().map((l2) => l2.h).sort((a2, b3) => a2 - b3);
   const medianH = allH[Math.floor(allH.length / 2)] || 10;
+  for (const lines of pages) {
+    for (const [k4, l2] of lines.entries()) {
+      const up = lines[k4 - 1] ? lines[k4 - 1].y - l2.y : Infinity;
+      const down = lines[k4 + 1] ? l2.y - lines[k4 + 1].y : Infinity;
+      l2.lone = up > l2.h * 2 && down > l2.h * 2;
+    }
+  }
   const isBoiler = (l2) => {
     if (/^[\divxlc]{1,6}$/i.test(l2.text)) return true;
     if (!zone(l2)) return false;
+    if (l2.lone && l2.h <= medianH * 1.25 && l2.text.split(" ").length <= 2 && l2.text.length <= 10) return true;
     if (/^(page\s+)?\d{1,4}(\s+of\s+\d+)?$/i.test(l2.text)) return true;
     const big = l2.h > medianH * 1.25;
     return !big && (freq.get(keyOf(l2)) || 0) >= 3;
@@ -156474,13 +156487,17 @@ async function pdfToBlocks(data, onProgress) {
   const blocks = [];
   for (const [i3, lines] of pages.entries()) {
     if (pages.length > 1) blocks.push({ kind: "page", page: i3 + 1 });
+    const lefts = lines.filter((q2) => q2.box && !isBoiler(q2)).map((q2) => q2.box.x0).sort((a2, b3) => a2 - b3);
+    const leftEdge = lefts[Math.floor(lefts.length * 0.2)] ?? 0;
     let para = "";
     let box = null;
     let prev = null;
+    let plines = [];
     const flush = () => {
-      if (para.trim()) blocks.push({ kind: "p", text: para.trim(), page: i3 + 1, box });
+      if (para.trim()) blocks.push({ kind: "p", text: para.trim(), page: i3 + 1, box, lines: plines });
       para = "";
       box = null;
+      plines = [];
     };
     for (const l2 of lines) {
       if (isBoiler(l2)) continue;
@@ -156499,9 +156516,13 @@ async function pdfToBlocks(data, onProgress) {
       if (l2.newPara && para) flush();
       else if (prev && gap > prev.h * 1.9) flush();
       else if (prev && /[.!?]["')]?$/.test(para) && /^[A-Z]/.test(l2.text) && gap > prev.h * 1.35) flush();
+      else if (prev && l2.box && l2.box.x0 - leftEdge > l2.h * 1.2 && /[.!?:]["'’”)]*$/.test(para) && new RegExp(`^["'\u2018\u201C(]*\\p{Lu}`, "u").test(l2.text)) flush();
       if (para.endsWith("-") && /^[a-z]/.test(l2.text)) para = para.slice(0, -1) + l2.text;
       else para += (para ? " " : "") + l2.text;
-      if (l2.box) box = union(box, l2.box);
+      if (l2.box) {
+        box = union(box, l2.box);
+        plines.push({ t: l2.text, box: l2.box });
+      }
       prev = l2;
     }
     flush();
@@ -156513,6 +156534,7 @@ var blockPlace = /* @__PURE__ */ new WeakMap();
 var pageEls = [];
 var pageObserver = null;
 var renderedPages = /* @__PURE__ */ new Set();
+var pageCrop = /* @__PURE__ */ new Map();
 function pagesAvailable() {
   return !!pdfDoc && pdfSizes.length > 0;
 }
@@ -156533,8 +156555,14 @@ function buildPages() {
     const pg2 = document.createElement("div");
     pg2.className = "pg";
     pg2.dataset.page = String(i3 + 1);
-    pg2.style.aspectRatio = `${size.w} / ${size.h}`;
-    pg2.innerHTML = `<canvas></canvas><div class="hl" hidden></div><span class="num">${i3 + 1}</span>`;
+    const c3 = pageCrop.get(i3 + 1);
+    const pad = size.w * 0.035;
+    let x0 = c3 ? Math.max(0, c3.x0 - pad) : 0;
+    let x1 = c3 ? Math.min(size.w, c3.x1 + pad) : size.w;
+    if (x1 - x0 < size.w * 0.45) [x0, x1] = [0, size.w];
+    const cw = x1 - x0;
+    pg2.style.aspectRatio = `${cw} / ${size.h}`;
+    pg2.innerHTML = `<div class="in" style="left:${-x0 / cw * 100}%;width:${size.w / cw * 100}%"><canvas></canvas><div class="hl" hidden></div></div><span class="num">${i3 + 1}</span>`;
     pg2.onclick = (ev2) => jumpToPageSpot(i3 + 1, ev2);
     box.appendChild(pg2);
     pageEls.push(pg2);
@@ -156566,7 +156594,7 @@ async function drawPage(n2) {
   const canvas = pg2.querySelector("canvas");
   try {
     const page = await pdfDoc.getPage(n2);
-    const cssWidth = pg2.clientWidth || 800;
+    const cssWidth = pg2.querySelector(".in").clientWidth || 800;
     const scale = cssWidth * Math.min(2, devicePixelRatio || 1) / (page.view[2] - page.view[0]);
     const viewport = page.getViewport({ scale });
     canvas.width = Math.ceil(viewport.width);
@@ -156586,15 +156614,42 @@ async function drawPage(n2) {
     }
   }
 }
+function lineOffsets(lines, text) {
+  if (!Array.isArray(lines) || !lines.length) return null;
+  const out = [];
+  let cur = 0;
+  for (const ln2 of lines) {
+    const probe = String(ln2.t || "").replace(/\s+/g, " ").trim().slice(0, 12);
+    let at = probe ? text.indexOf(probe, cur) : -1;
+    if (at < 0) at = cur;
+    out.push({ at, box: ln2.box });
+    cur = at + 1;
+  }
+  return out;
+}
+function sentenceBox(s3) {
+  const place = s3 && blockPlace.get(s3.block);
+  if (!place) return null;
+  if (!place.lines || s3.at == null) return place.box;
+  let box = null;
+  for (const [k4, ln2] of place.lines.entries()) {
+    const next = place.lines[k4 + 1]?.at ?? Infinity;
+    if (ln2.at < s3.end && next > s3.at && ln2.box) {
+      const b3 = ln2.box;
+      box = !box ? { ...b3 } : { x0: Math.min(box.x0, b3.x0), x1: Math.max(box.x1, b3.x1), top: Math.max(box.top, b3.top), bottom: Math.min(box.bottom, b3.bottom) };
+    }
+  }
+  return box || place.box;
+}
 function markOnPage(s3) {
   for (const pg3 of pageEls) pg3.querySelector(".hl").hidden = true;
   const place = s3 && blockPlace.get(s3.block);
-  if (!place || !place.box) return;
+  const b3 = sentenceBox(s3);
+  if (!place || !b3) return;
   const pg2 = pageEls[place.page - 1];
   const size = pdfSizes[place.page - 1];
   if (!pg2 || !size) return;
   const hl2 = pg2.querySelector(".hl");
-  const b3 = place.box;
   hl2.style.left = `${b3.x0 / size.w * 100}%`;
   hl2.style.width = `${(b3.x1 - b3.x0) / size.w * 100}%`;
   hl2.style.top = `${(1 - b3.top / size.h) * 100}%`;
@@ -156606,16 +156661,18 @@ function markOnPage(s3) {
 function jumpToPageSpot(n2, ev2) {
   const pg2 = pageEls[n2 - 1];
   const size = pdfSizes[n2 - 1];
-  const rect = pg2.getBoundingClientRect();
+  const rect = pg2.querySelector(".in").getBoundingClientRect();
   const x2 = (ev2.clientX - rect.left) / rect.width * size.w;
   const y3 = (1 - (ev2.clientY - rect.top) / rect.height) * size.h;
   let best = -1;
   let bestD = Infinity;
   for (const [i3, s3] of sentences.entries()) {
     const p3 = blockPlace.get(s3.block);
-    if (!p3 || p3.page !== n2 || !p3.box) continue;
-    const inside = y3 <= p3.box.top && y3 >= p3.box.bottom && x2 >= p3.box.x0 - 20 && x2 <= p3.box.x1 + 20;
-    const d3 = inside ? 0 : Math.min(Math.abs(y3 - p3.box.top), Math.abs(y3 - p3.box.bottom));
+    if (!p3 || p3.page !== n2) continue;
+    const sb = sentenceBox(s3);
+    if (!sb) continue;
+    const inside = y3 <= sb.top && y3 >= sb.bottom && x2 >= sb.x0 - 20 && x2 <= sb.x1 + 20;
+    const d3 = inside ? 0 : Math.min(Math.abs(y3 - sb.top), Math.abs(y3 - sb.bottom));
     if (d3 < bestD) {
       bestD = d3;
       best = i3;
@@ -156677,6 +156734,12 @@ async function render(blocks, title) {
   $3("docTitle").textContent = (title || "") + (docLang && docLang !== "en" ? ` \xB7 ${LANGS[docLang]?.name || docLang}` : "");
   docEl.innerHTML = "";
   sentences = [];
+  pageCrop = /* @__PURE__ */ new Map();
+  for (const b3 of blocks) {
+    if (!b3.page || !b3.box || b3.kind === "page") continue;
+    const c3 = pageCrop.get(b3.page);
+    pageCrop.set(b3.page, c3 ? { x0: Math.min(c3.x0, b3.box.x0), x1: Math.max(c3.x1, b3.box.x1) } : { x0: b3.box.x0, x1: b3.box.x1 });
+  }
   current = -1;
   if (settings.skipCitations !== false) blocks = withoutCitations(blocks);
   for (const b3 of blocks) {
@@ -156713,12 +156776,12 @@ async function render(blocks, title) {
             span.appendChild(w3);
           }
         }
-        sentences.push({ text: speak, el: span, block: el2, heading: b3.kind === "h", lang: b3.lang || "en" });
+        sentences.push({ text: speak, el: span, block: el2, heading: b3.kind === "h", lang: b3.lang || "en", at: s3, end: e2 });
       } else span.textContent = raw;
       el2.appendChild(span);
     }
     if (last < text.length) el2.appendChild(document.createTextNode(text.slice(last)));
-    if (b3.page) blockPlace.set(el2, { page: b3.page, box: b3.box });
+    if (b3.page) blockPlace.set(el2, { page: b3.page, box: b3.box, lines: lineOffsets(b3.lines, text) });
     docEl.appendChild(el2);
   }
   docKey = hash(docTitle + "|" + sentences.length + "|" + sentences.slice(0, 20).map((s3) => s3.text).join("|"));
@@ -156730,6 +156793,16 @@ async function render(blocks, title) {
   $3("saveBtn").disabled = !sentences.length;
   window.scrollTo(0, 0);
   document.querySelector("main").scrollTop = 0;
+  if (carryPlace && carryPlace.key !== docKey && carryPlace.count) {
+    try {
+      const old = parseInt(localStorage.getItem("murmur:pos:" + carryPlace.key) || "0", 10);
+      if (old > 0) localStorage.setItem("murmur:pos:" + docKey, String(Math.round(old / carryPlace.count * sentences.length)));
+    } catch {
+    }
+    dbDelete(carryPlace.key).catch(() => {
+    });
+  }
+  carryPlace = null;
   const resume = savedPosition();
   setStatus(
     "idle",
@@ -156749,7 +156822,9 @@ async function loadFile(file) {
   if (!(ext === "pdf" || type === "application/pdf")) forgetPdf();
   try {
     let blocks;
-    const cached = await cachedBlocksFor(file);
+    const saved = await cachedBlocksFor(file);
+    const cached = saved && saved.v === BLOCKS_VERSION ? saved : null;
+    carryPlace = saved && !cached ? { key: saved.key, count: saved.count } : null;
     if (cached) {
       blocks = cached.blocks;
       if (ext === "pdf" || type === "application/pdf") {
@@ -156944,17 +157019,13 @@ async function init() {
     o3.textContent = voiceInfo(settings.voice).name;
     $3("voice").prepend(o3);
   }
-  for (const v3 of SPEEDS) {
-    const o3 = document.createElement("option");
-    o3.value = String(v3);
-    o3.textContent = v3 + "\xD7";
-    $3("speed").appendChild(o3);
-  }
   $3("voice").value = settings.voice;
-  $3("speed").value = String(settings.speed);
-  if (!$3("speed").value) $3("speed").value = "1";
+  showSpeed();
   initOnline();
   $3("voice").onchange = () => saveSettings({ voice: $3("voice").value });
+  $3("speed").oninput = () => {
+    $3("speedVal").textContent = speedLabel(parseFloat($3("speed").value));
+  };
   $3("speed").onchange = () => saveSettings({ speed: parseFloat($3("speed").value) });
   engine.setSettings(settings, true);
   const params = new URLSearchParams(location.search);
@@ -156990,6 +157061,13 @@ init();
 window.murmurReader = { engine, get sentences() {
   return sentences;
 }, loadFile, render, textToBlocks, htmlToBlocks, pdfToBlocks, toMp3, toWav };
+function speedLabel(v3) {
+  return Math.round(v3 * 100) / 100 + "\xD7";
+}
+function showSpeed() {
+  $3("speed").value = String(settings.speed || 1);
+  $3("speedVal").textContent = speedLabel(settings.speed || 1);
+}
 function renderOnline(problem) {
   $3("onlineVoices").checked = settings.onlineVoices !== false;
   $3("onlineVoice").value = settings.onlineVoice || "Sadaltager";

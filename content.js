@@ -108,7 +108,6 @@
     // least noise above 8 kHz. Mya hears that noise as "static".
     langVoices: { es: "piper:es_MX-claude-high", fr: "ff_siwis", it: "im_nicola*0.7+bm_fable*0.3", pt: "piper:pt_BR-cadu-medium", hi: "piper:hi_IN-pratham-medium", zh: "zm_yunyang", la: "im_nicola" }
   };
-  var SPEEDS = [0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3, 1.5, 1.7, 2, 2.2, 2.5, 2.8, 3, 3.5];
   var FIXED = ["tone", "depth", "autoLanguage", "engine"];
   function withFixed(s) {
     const out = { ...s };
@@ -215,7 +214,10 @@
   }
   function hasHintWord(text, lang) {
     const list = HINTS[lang];
-    if (!list) return true;
+    if (!list) {
+      const latinOnly = !/[^\p{Script=Latin}\P{L}]/u.test(text);
+      return !latinOnly || text.length >= 160;
+    }
     const words = text.toLowerCase().match(/[\p{L}']+/gu) || [];
     const set = new Set(list);
     return words.some((w) => set.has(w));
@@ -569,7 +571,7 @@
     :host { all: initial; }
     .cap { position: fixed; left: 50%; top: 10%; transform: translateX(-50%); z-index: 2147483646; max-width: min(960px, 88vw);
       padding: 18px 28px; border-radius: 20px; background: rgba(20,20,24,.93); color: #f6f6f8; text-align: center;
-      font: 600 clamp(26px, 3.4vw, 44px)/1.35 system-ui, -apple-system, "Segoe UI", sans-serif;
+      font: 700 clamp(26px, 3.4vw, 46px)/1.3 "Segoe UI Variable Display", "Segoe UI", system-ui, -apple-system, sans-serif; letter-spacing: .01em;
       box-shadow: 0 14px 44px rgba(0,0,0,.45); cursor: pointer; user-select: none; text-wrap: balance; }
     .cap .w.cur { color: #ffd56b; text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 6px; }
     .cap .hint { display: block; font: 13px/1.3 system-ui, sans-serif; opacity: .55; margin-top: 10px; font-weight: 400; }
@@ -995,6 +997,9 @@
     .status.err { color: #ff9a9a; opacity: 1; white-space: normal; max-width: 360px; }
     select { all: unset; cursor: pointer; padding: 6px 8px; border-radius: 8px; background: rgba(255,255,255,.12); font-size: 13px; }
     select option { color: #111; }
+    .spd { display: flex; align-items: center; gap: 4px; cursor: default; }
+    .spd input { width: 96px; accent-color: #6d5dfc; cursor: pointer; margin: 0; }
+    .spd .sv { min-width: 40px; font-size: 13px; font-variant-numeric: tabular-nums; opacity: .9; }
     .x { opacity: .75; }
     .gear { opacity: .8; font-size: 17px; }
     button.cc { width: auto; padding: 0 9px; border-radius: 8px; font: 700 12px/1 system-ui, sans-serif; letter-spacing: .5px; border: 1.5px solid rgba(255,255,255,.35); height: 26px; }
@@ -1018,9 +1023,7 @@
         <span class="status"></span>
         <button class="cc" title="Big text: show the sentence being read large on the screen">CC</button>
         ${isClaudeChat() ? '<button class="auto" title="Read each new reply from Claude out loud as soon as it arrives. Click to turn this off or on.">Auto-read on</button>' : ""}
-        <select class="speed" title="Reading speed">
-          ${SPEEDS.map((v) => `<option value="${v}">${v}\xD7</option>`).join("")}
-        </select>
+        <label class="spd" title="Speed: slide left for slower, right for faster"><input class="speed" type="range" min="0.7" max="3.5" step="0.05" /><span class="sv"></span></label>
         <button class="gear" title="Voice and settings">&#9881;</button>
         <button class="x" title="Stop and close">&#10005;</button>
       </div>`;
@@ -1051,8 +1054,12 @@
         };
       }
       const speed = $(".speed");
-      speed.value = String(S.settings.speed);
-      if (!speed.value) speed.value = "1";
+      const showSpeed = () => {
+        $(".sv").textContent = Math.round(parseFloat(speed.value) * 100) / 100 + "\xD7";
+      };
+      speed.value = String(S.settings.speed || 1);
+      showSpeed();
+      speed.oninput = showSpeed;
       speed.onchange = () => {
         const s = { ...S.settings, speed: parseFloat(speed.value) };
         chrome.storage.sync.set({ speed: s.speed });
@@ -1080,7 +1087,7 @@
       });
       let drag = null;
       bar.addEventListener("pointerdown", (e) => {
-        if (e.button !== 0 || e.target.closest("button, select, option")) return;
+        if (e.button !== 0 || e.target.closest("button, select, option, input, .spd")) return;
         const r = bar.getBoundingClientRect();
         drag = { dx: e.clientX - r.left, dy: e.clientY - r.top, moved: false };
         bar.setPointerCapture(e.pointerId);
@@ -1283,7 +1290,10 @@
           break;
         case "settings":
           Object.assign(S.settings, msg.settings);
-          if (S.bar) S.bar.$(".speed").value = String(S.settings.speed);
+          if (S.bar) {
+            S.bar.$(".speed").value = String(S.settings.speed || 1);
+            S.bar.$(".sv").textContent = Math.round((S.settings.speed || 1) * 100) / 100 + "\xD7";
+          }
           break;
       }
     });

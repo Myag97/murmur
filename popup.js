@@ -478,7 +478,7 @@
   function renderSettings() {
     $("voice").value = settings.voice;
     $("speed").value = settings.speed;
-    $("speedVal").textContent = Number(settings.speed).toFixed(1) + "\xD7";
+    $("speedVal").textContent = Math.round(Number(settings.speed) * 100) / 100 + "\xD7";
     $("skipCitations").checked = settings.skipCitations !== false;
     $("selectButton").checked = !!settings.selectButton;
     renderOnline();
@@ -599,7 +599,7 @@
       $("listen").innerHTML = "&#10074;&#10074; Stop";
     };
     $("sample").onended = () => $("listen").innerHTML = "&#9654; Listen";
-    $("speed").oninput = () => $("speedVal").textContent = Number($("speed").value).toFixed(1) + "\xD7";
+    $("speed").oninput = () => $("speedVal").textContent = Math.round(Number($("speed").value) * 100) / 100 + "\xD7";
     $("speed").onchange = () => saveSettings({ speed: parseFloat($("speed").value) });
     $("skipCitations").onchange = () => saveSettings({ skipCitations: $("skipCitations").checked });
     $("selectButton").onchange = () => saveSettings({ selectButton: $("selectButton").checked });
