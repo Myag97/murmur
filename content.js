@@ -207,10 +207,12 @@
     const score = {};
     for (const [lang, list] of Object.entries(HINTS)) {
       const set = new Set(list);
-      score[lang] = words.filter((w) => set.has(w)).length / words.length;
+      score[lang] = words.filter((w) => set.has(w) && (lang === "en" || !ALSO_ENGLISH.has(w))).length / words.length;
     }
     const best = Object.entries(score).sort((a, b) => b[1] - a[1])[0];
-    return best && best[1] >= 0.08 ? best[0] : null;
+    if (!best || best[1] < 0.08) return null;
+    if (best[0] !== "en" && (score.en || 0) >= best[1]) return null;
+    return best[0];
   }
   function hasHintWord(text, lang) {
     const list = HINTS[lang];
@@ -220,7 +222,7 @@
     }
     const words = text.toLowerCase().match(/[\p{L}']+/gu) || [];
     const set = new Set(list);
-    return words.some((w) => set.has(w));
+    return words.some((w) => set.has(w) && !ALSO_ENGLISH.has(w));
   }
   async function detectLanguage(text) {
     const t = (text || "").trim();
