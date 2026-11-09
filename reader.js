@@ -157206,7 +157206,7 @@ async function init() {
   } else if (params.get("text")) {
     await render(textToBlocks(params.get("text")), params.get("title") || "Text");
   } else {
-    const docs = await renderLibrary();
+    const docs = await renderLibrary(params.has("library"));
     const last = docs[0];
     if (last && !params.has("library")) await loadFile(new File([last.blob], last.name, { type: last.type }));
   }
