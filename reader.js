@@ -156627,7 +156627,7 @@ async function syncLibrary(ask = false) {
   return syncing;
 }
 $3("driveBtn").onclick = () => syncLibrary(true);
-setInterval(() => signedIn() && syncLibrary(false), 5 * 60 * 1e3);
+setInterval(() => signedIn() && syncLibrary(false), 2 * 60 * 1e3);
 document.addEventListener("visibilitychange", () => {
   if (document.visibilityState === "hidden" && signedIn()) syncLibrary(false);
 });
@@ -156830,16 +156830,23 @@ async function ocrPage(page, vh2, onStep) {
   return lines;
 }
 var pdfDoc = null;
+function closePdf(doc) {
+  if (!doc) return;
+  try {
+    const p3 = typeof doc.destroy === "function" ? doc.destroy() : doc.loadingTask?.destroy?.();
+    p3?.catch?.(() => {
+    });
+  } catch {
+  }
+}
 var pdfSizes = [];
 function forgetPdf() {
-  if (pdfDoc) pdfDoc.destroy().catch(() => {
-  });
+  closePdf(pdfDoc);
   pdfDoc = null;
   pdfSizes = [];
 }
 async function pdfToBlocks(data, onProgress) {
-  if (pdfDoc) pdfDoc.destroy().catch(() => {
-  });
+  closePdf(pdfDoc);
   const pdf = await getDocument({ data, wasmUrl: BASE + "wasm/" }).promise;
   pdfDoc = pdf;
   pdfSizes = [];
@@ -157288,8 +157295,7 @@ async function loadFile(file) {
     if (cached) {
       blocks = cached.blocks;
       if (ext === "pdf" || type === "application/pdf") {
-        if (pdfDoc) pdfDoc.destroy().catch(() => {
-        });
+        closePdf(pdfDoc);
         pdfDoc = await getDocument({ data: new Uint8Array(await file.arrayBuffer()), wasmUrl: BASE + "wasm/" }).promise;
         pdfSizes = cached.pdfSizes || [];
       } else {
