@@ -984,27 +984,27 @@
     );
     const BAR_CSS = `
     :host { all: initial; }
-    .bar { position: fixed; right: 20px; bottom: 20px; z-index: 2147483647; display: flex; align-items: center; gap: 6px;
-      padding: 8px 10px 8px 12px; background: #1f1f24; color: #f3f3f5; border-radius: 999px;
-      box-shadow: 0 8px 28px rgba(0,0,0,.4); font: 14px/1.2 system-ui, -apple-system, "Segoe UI", sans-serif; user-select: none; cursor: grab; touch-action: none; }
+    .bar { position: fixed; right: 20px; bottom: 20px; z-index: 2147483647; display: flex; align-items: center; gap: 2px;
+      padding: 4px 6px 4px 8px; background: #1f1f24; color: #f3f3f5; border-radius: 999px;
+      box-shadow: 0 8px 28px rgba(0,0,0,.4); font: 13px/1.2 system-ui, -apple-system, "Segoe UI", sans-serif; user-select: none; cursor: grab; touch-action: none; }
     .bar.dragging { cursor: grabbing; }
-    .grip { opacity: .45; font-size: 15px; letter-spacing: -3px; padding: 0 2px 0 0; }
-    button { all: unset; cursor: pointer; width: 36px; height: 36px; display: grid; place-items: center; border-radius: 50%; font-size: 14px; }
+    .grip { opacity: .45; font-size: 12px; letter-spacing: -3px; padding: 0 2px 0 0; }
+    button { all: unset; cursor: pointer; width: 28px; height: 28px; display: grid; place-items: center; border-radius: 50%; font-size: 12px; }
     button:hover { background: rgba(255,255,255,.14); }
-    button.play { width: 44px; height: 44px; background: #6d5dfc; color: #fff; font-size: 17px; }
+    button.play { width: 34px; height: 34px; background: #6d5dfc; color: #fff; font-size: 14px; }
     button.play:hover { background: #8577ff; }
-    .status { max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: .9; padding: 0 6px; }
+    .status { max-width: 170px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: .9; padding: 0 6px; }
     .status.err { color: #ff9a9a; opacity: 1; white-space: normal; max-width: 360px; }
     select { all: unset; cursor: pointer; padding: 6px 8px; border-radius: 8px; background: rgba(255,255,255,.12); font-size: 13px; }
     select option { color: #111; }
     .spd { display: flex; align-items: center; gap: 4px; cursor: default; }
-    .spd input { width: 96px; accent-color: #6d5dfc; cursor: pointer; margin: 0; }
-    .spd .sv { min-width: 40px; font-size: 13px; font-variant-numeric: tabular-nums; opacity: .9; }
+    .spd input { width: 72px; accent-color: #6d5dfc; cursor: pointer; margin: 0; }
+    .spd .sv { min-width: 36px; font-size: 12px; font-variant-numeric: tabular-nums; opacity: .9; }
     .x { opacity: .75; }
-    .gear { opacity: .8; font-size: 17px; }
-    button.cc { width: auto; padding: 0 9px; border-radius: 8px; font: 700 12px/1 system-ui, sans-serif; letter-spacing: .5px; border: 1.5px solid rgba(255,255,255,.35); height: 26px; }
+    .gear { opacity: .8; font-size: 14px; }
+    button.cc { width: auto; padding: 0 9px; border-radius: 8px; font: 700 12px/1 system-ui, sans-serif; letter-spacing: .5px; border: 1.5px solid rgba(255,255,255,.35); height: 22px; }
     button.cc.on { background: #6d5dfc; color: #fff; border-color: #6d5dfc; }
-    button.auto { width: auto; padding: 0 9px; border-radius: 8px; font: 600 12px/1 system-ui, sans-serif; white-space: nowrap; border: 1.5px solid rgba(255,255,255,.35); height: 26px; opacity: .8; }
+    button.auto { width: auto; padding: 0 9px; border-radius: 8px; font: 600 12px/1 system-ui, sans-serif; white-space: nowrap; border: 1.5px solid rgba(255,255,255,.35); height: 22px; opacity: .8; }
     button.auto.on { background: #6d5dfc; color: #fff; border-color: #6d5dfc; opacity: 1; }
   `;
     function showBar() {
@@ -1022,7 +1022,7 @@
         <button class="next" title="Forward one sentence">&#9197;</button>
         <span class="status"></span>
         <button class="cc" title="Big text: show the sentence being read large on the screen">CC</button>
-        ${isClaudeChat() ? '<button class="auto" title="Read each new reply from Claude out loud as soon as it arrives. Click to turn this off or on.">Auto-read on</button>' : ""}
+        ${isClaudeChat() ? '<button class="auto" title="Read each new reply from Claude out loud as soon as it arrives. Click to turn this off or on.">Auto-read</button>' : ""}
         <label class="spd" title="Speed: slide left for slower, right for faster"><input class="speed" type="range" min="0.7" max="3.5" step="0.05" /><span class="sv"></span></label>
         <button class="gear" title="Voice and settings">&#9881;</button>
         <button class="x" title="Stop and close">&#10005;</button>

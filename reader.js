@@ -100637,56 +100637,56 @@ var Lexicon = class {
     if (v3 == null) return this.spell(word);
     return v3;
   }
-  s(stem) {
-    if (!stem) return null;
-    const last = stem[stem.length - 1];
-    if ("ptkf\u03B8".includes(last)) return stem + "s";
-    if ("sz\u0283\u0292\u02A7\u02A4".includes(last)) return stem + (this.british ? "\u026A" : "\u1D7B") + "z";
-    return stem + "z";
+  s(stem2) {
+    if (!stem2) return null;
+    const last = stem2[stem2.length - 1];
+    if ("ptkf\u03B8".includes(last)) return stem2 + "s";
+    if ("sz\u0283\u0292\u02A7\u02A4".includes(last)) return stem2 + (this.british ? "\u026A" : "\u1D7B") + "z";
+    return stem2 + "z";
   }
   stemS(word) {
     if (word.length < 3 || !word.endsWith("s")) return null;
-    let stem;
-    if (!word.endsWith("ss") && this.isKnown(word.slice(0, -1))) stem = word.slice(0, -1);
-    else if ((word.endsWith("'s") || word.length > 4 && word.endsWith("es") && !word.endsWith("ies")) && this.isKnown(word.slice(0, -2))) stem = word.slice(0, -2);
-    else if (word.length > 4 && word.endsWith("ies") && this.isKnown(word.slice(0, -3) + "y")) stem = word.slice(0, -3) + "y";
+    let stem2;
+    if (!word.endsWith("ss") && this.isKnown(word.slice(0, -1))) stem2 = word.slice(0, -1);
+    else if ((word.endsWith("'s") || word.length > 4 && word.endsWith("es") && !word.endsWith("ies")) && this.isKnown(word.slice(0, -2))) stem2 = word.slice(0, -2);
+    else if (word.length > 4 && word.endsWith("ies") && this.isKnown(word.slice(0, -3) + "y")) stem2 = word.slice(0, -3) + "y";
     else return null;
-    return this.s(this.lookup(stem));
+    return this.s(this.lookup(stem2));
   }
-  ed(stem) {
-    if (!stem) return null;
-    const last = stem[stem.length - 1];
-    if ("pkf\u03B8\u0283s\u02A7".includes(last)) return stem + "t";
-    if (last === "d") return stem + (this.british ? "\u026A" : "\u1D7B") + "d";
-    if (last !== "t") return stem + "d";
-    if (this.british || stem.length < 2) return stem + "\u026Ad";
-    if (US_TAUS.has(stem[stem.length - 2])) return stem.slice(0, -1) + "\u027E\u1D7Bd";
-    return stem + "\u1D7Bd";
+  ed(stem2) {
+    if (!stem2) return null;
+    const last = stem2[stem2.length - 1];
+    if ("pkf\u03B8\u0283s\u02A7".includes(last)) return stem2 + "t";
+    if (last === "d") return stem2 + (this.british ? "\u026A" : "\u1D7B") + "d";
+    if (last !== "t") return stem2 + "d";
+    if (this.british || stem2.length < 2) return stem2 + "\u026Ad";
+    if (US_TAUS.has(stem2[stem2.length - 2])) return stem2.slice(0, -1) + "\u027E\u1D7Bd";
+    return stem2 + "\u1D7Bd";
   }
   stemEd(word) {
     if (word.length < 4 || !word.endsWith("d")) return null;
-    let stem;
-    if (!word.endsWith("dd") && this.isKnown(word.slice(0, -1))) stem = word.slice(0, -1);
-    else if (word.length > 4 && word.endsWith("ed") && !word.endsWith("eed") && this.isKnown(word.slice(0, -2))) stem = word.slice(0, -2);
+    let stem2;
+    if (!word.endsWith("dd") && this.isKnown(word.slice(0, -1))) stem2 = word.slice(0, -1);
+    else if (word.length > 4 && word.endsWith("ed") && !word.endsWith("eed") && this.isKnown(word.slice(0, -2))) stem2 = word.slice(0, -2);
     else return null;
-    return this.ed(this.lookup(stem));
+    return this.ed(this.lookup(stem2));
   }
-  ing(stem) {
-    if (!stem) return null;
-    const last = stem[stem.length - 1];
+  ing(stem2) {
+    if (!stem2) return null;
+    const last = stem2[stem2.length - 1];
     if (this.british) {
       if ("\u0259\u02D0".includes(last)) return null;
-    } else if (stem.length > 1 && last === "t" && US_TAUS.has(stem[stem.length - 2])) return stem.slice(0, -1) + "\u027E\u026A\u014B";
-    return stem + "\u026A\u014B";
+    } else if (stem2.length > 1 && last === "t" && US_TAUS.has(stem2[stem2.length - 2])) return stem2.slice(0, -1) + "\u027E\u026A\u014B";
+    return stem2 + "\u026A\u014B";
   }
   stemIng(word) {
     if (word.length < 5 || !word.endsWith("ing")) return null;
-    let stem;
-    if (word.length > 5 && this.isKnown(word.slice(0, -3))) stem = word.slice(0, -3);
-    else if (this.isKnown(word.slice(0, -3) + "e")) stem = word.slice(0, -3) + "e";
-    else if (word.length > 5 && /([bcdgklmnprstvxz])\1ing$|cking$/.test(word) && this.isKnown(word.slice(0, -4))) stem = word.slice(0, -4);
+    let stem2;
+    if (word.length > 5 && this.isKnown(word.slice(0, -3))) stem2 = word.slice(0, -3);
+    else if (this.isKnown(word.slice(0, -3) + "e")) stem2 = word.slice(0, -3) + "e";
+    else if (word.length > 5 && /([bcdgklmnprstvxz])\1ing$|cking$/.test(word) && this.isKnown(word.slice(0, -4))) stem2 = word.slice(0, -4);
     else return null;
-    return this.ing(this.lookup(stem));
+    return this.ing(this.lookup(stem2));
   }
   // Phonemes for one word, or null if the dictionary cannot help.
   word(word) {
@@ -125962,6 +125962,101 @@ function matchLoudness(x2, rate = 24e3, target = SPEECH_TARGET) {
   return y3;
 }
 
+// src/names.js
+var ABOUT_RUSSIA = /\b(Russia|Russian|Russians|Moscow|Muscovite|Soviet|Tsar|Tsarina|Czar|Kremlin|Petersburg|Siberia|Romanov)\b/g;
+var STRONG = /(ov|ova|ev|eva|yov|ovich|evich|ovna|evna|sky|skii|skiy|skaya|skoy|enko|yenko|vich|kin)$|kh|zh|shch/;
+var SOFT = /(in|ina|yn|ei|ey|ii|iy|ya|ai|oy)$/;
+var ENGLISH = /* @__PURE__ */ new Set(["russia", "sky", "kiev", "within", "begin", "again", "margin", "origin", "cabin", "basin", "robin", "latin", "berlin", "dublin", "martin", "austin", "franklin", "darwin", "kevin", "calvin", "they", "today", "away", "hey", "monday", "holiday", "galley", "valley", "turkey", "jersey", "sydney", "mickey", "stanley", "boy", "troy", "convoy", "enjoy", "employ", "destroy", "savoy", "thai", "shanghai", "dubai", "mumbai", "pumpkin", "napkin", "bumpkin", "catkin", "gherkin", "firkin", "watkin", "hopkin", "perkin", "jenkin", "atkin", "sky"]);
+var stem = (w3) => w3.replace(/^[^\p{L}]+|[^\p{L}]+$/gu, "").replace(/['’]s$/i, "");
+var capital = (w3) => new RegExp("^\\p{Lu}", "u").test(w3);
+var latin = (w3) => /^[A-Za-z]+$/.test(w3);
+function aboutRussia(title, text) {
+  if (/russia|moscow|soviet|tsar|petersburg/i.test(title || "")) return true;
+  const sample = (text || "").slice(0, 6e4);
+  return (sample.match(ABOUT_RUSSIA) || []).length >= 6;
+}
+function russianNameHints(sentences2) {
+  const known = /* @__PURE__ */ new Set();
+  const looks = (w3) => {
+    const s3 = stem(w3);
+    if (s3.length < 4 || !capital(s3) || !latin(s3)) return 0;
+    const l2 = s3.toLowerCase().replace(/(ov|ev|in)s$/, "$1");
+    if (ENGLISH.has(l2)) return 0;
+    if (STRONG.test(l2)) return 2;
+    if (SOFT.test(l2)) return 1;
+    return 0;
+  };
+  const marks = sentences2.map((text) => {
+    const words = text.split(" ").filter(Boolean);
+    const score = words.map(looks);
+    const out = words.map((w3, i3) => {
+      if (score[i3] === 2) return "ru";
+      if (score[i3] === 1 && (score[i3 - 1] > 0 || score[i3 + 1] > 0)) return "ru";
+      return null;
+    });
+    out.forEach((m3, i3) => m3 && known.add(stem(words[i3]).toLowerCase()));
+    return { words, out };
+  });
+  return marks.map(({ words, out }) => {
+    words.forEach((w3, i3) => {
+      if (!out[i3] && known.has(stem(w3).toLowerCase()) && capital(stem(w3))) out[i3] = "ru";
+    });
+    return out.some(Boolean) ? out : null;
+  });
+}
+var MULTI = [
+  ["shch", "\u0449"],
+  ["tch", "\u0447"],
+  ["sch", "\u0449"],
+  ["zh", "\u0436"],
+  ["kh", "\u0445"],
+  ["ts", "\u0446"],
+  ["ch", "\u0447"],
+  ["sh", "\u0448"],
+  ["yu", "\u044E"],
+  ["ya", "\u044F"],
+  ["yo", "\u0451"],
+  ["ye", "\u0435"],
+  ["ia", "\u0438\u044F"],
+  ["iu", "\u0438\u044E"],
+  ["ck", "\u043A"],
+  ["ph", "\u0444"]
+];
+var ONE = { a: "\u0430", b: "\u0431", c: "\u043A", d: "\u0434", e: "\u0435", f: "\u0444", g: "\u0433", h: "\u0445", i: "\u0438", j: "\u0439", k: "\u043A", l: "\u043B", m: "\u043C", n: "\u043D", o: "\u043E", p: "\u043F", q: "\u043A", r: "\u0440", s: "\u0441", t: "\u0442", u: "\u0443", v: "\u0432", w: "\u0432", x: "\u043A\u0441", z: "\u0437" };
+var VOWELS2 = "aeiouy";
+function toCyrillic(word) {
+  const m3 = new RegExp("^([^\\p{L}]*)(\\p{L}+)(?:['\u2019]s)?([^\\p{L}]*)$", "u").exec(word);
+  if (!m3) return word;
+  const [, pre, body, post] = m3;
+  let plural = false;
+  let w3 = body.toLowerCase();
+  if (/(ov|ev|in)s$/.test(w3)) {
+    w3 = w3.slice(0, -1);
+    plural = true;
+  }
+  let out = "";
+  for (let i3 = 0; i3 < w3.length; ) {
+    const multi = MULTI.find(([k4]) => w3.startsWith(k4, i3));
+    if (multi) {
+      out += multi[1];
+      i3 += multi[0].length;
+      continue;
+    }
+    const c3 = w3[i3];
+    const prev = w3[i3 - 1];
+    const end = i3 === w3.length - 1;
+    if (c3 === "y") out += prev && VOWELS2.includes(prev) ? "\u0439" : end ? "\u0438\u0439" : "\u044B";
+    else if (c3 === "i" && prev && "ao".includes(prev) && (end || !VOWELS2.includes(w3[i3 + 1] || "x")) && !(w3.slice(i3, i3 + 2) === "il" && i3 + 2 === w3.length)) out += "\u0439";
+    else if (c3 === "e" && i3 === 0) out += "\u044D";
+    else out += ONE[c3] ?? c3;
+    i3++;
+  }
+  out = out.replace(/ии$/, "\u0438\u0439");
+  if (plural) out += "\u044B";
+  if (new RegExp("^\\p{Lu}", "u").test(body)) out = out[0].toUpperCase() + out.slice(1);
+  return pre + out + post;
+}
+
 // src/mixed.js
 var LATIN_HINTS = [
   [/[şğıİ]/, "tr"],
@@ -126000,7 +126095,7 @@ function splitByLanguage(text, mainLang = "en", hints = null) {
   for (const [k4, w3] of words.entries()) {
     let lang = hints && hints[k4] || wordLanguage(w3, mainLang);
     if (!lang) lang = runs.length ? runs[runs.length - 1].lang : mainLang;
-    const word = lang === "zh-latn" ? pinyinToNumbers(w3) : w3;
+    const word = lang === "zh-latn" ? pinyinToNumbers(w3) : lang === "ru" && /[A-Za-z]/.test(w3) ? toCyrillic(w3) : w3;
     const last = runs[runs.length - 1];
     if (last && last.lang === lang) {
       last.text += " " + word;
@@ -126988,11 +127083,13 @@ function createEngine({ wasmPaths, onEvent }) {
       st2.langs = langs || [];
       const needed = /* @__PURE__ */ new Set();
       for (const l2 of st2.langs) {
-        const code = typeof l2 === "object" ? l2?.main : l2;
-        if (!code || code === "en") continue;
-        const v3 = voiceFor(code, st2.settings);
-        if (v3.startsWith("piper:")) needed.add(v3.slice(6));
-        else if (v3 === st2.settings.voice && PIPER_VOICES[code]) needed.add(PIPER_VOICES[code]);
+        const codes = typeof l2 === "object" ? [l2?.main, ...l2?.words || []] : [l2];
+        for (const code of new Set(codes)) {
+          if (!code || code === "en") continue;
+          const v3 = voiceFor(code, st2.settings);
+          if (v3.startsWith("piper:")) needed.add(v3.slice(6));
+          else if (v3 === st2.settings.voice && PIPER_VOICES[code]) needed.add(PIPER_VOICES[code]);
+        }
       }
       for (const name of needed) warmPiperVoice(name);
       st2.buffers.clear();
@@ -127165,8 +127262,8 @@ function speakable(text, { heading = false } = {}) {
 }
 var BRACKET = /\s?\[(?:\d{1,3}[a-z]?(?:\s*[-–,]\s*\d{1,3}[a-z]?)*|[a-z]|note \d+)\]/gi;
 var NAME = "[A-Z][\\p{L}'\u2019-]+(?: (?:and|&|y|et) [A-Z][\\p{L}'\u2019-]+)?(?: et al\\.?)?";
-var ONE = `(?:see |see also |e\\.g\\.,? |cf\\. )?${NAME},? \\d{4}[a-z]?(?:, pp?\\. ?\\d+(?:[-\u2013]\\d+)?)?`;
-var PAREN = new RegExp(`\\s?\\((?:${ONE})(?:; ?(?:${ONE}))*\\)`, "gu");
+var ONE2 = `(?:see |see also |e\\.g\\.,? |cf\\. )?${NAME},? \\d{4}[a-z]?(?:, pp?\\. ?\\d+(?:[-\u2013]\\d+)?)?`;
+var PAREN = new RegExp(`\\s?\\((?:${ONE2})(?:; ?(?:${ONE2}))*\\)`, "gu");
 var SUPERSCRIPT = /[⁰¹²³⁴⁵⁶⁷⁸⁹]+(?:[,⁻–][⁰¹²³⁴⁵⁶⁷⁸⁹]+)*/g;
 function stripCitations(text) {
   if (!text) return text;
@@ -156152,7 +156249,7 @@ async function cachedBlocksFor(file) {
     return null;
   }
 }
-async function renderLibrary() {
+async function renderLibrary(asked = false) {
   const box = $3("library");
   const list = $3("libraryList");
   let docs = [];
@@ -156160,8 +156257,9 @@ async function renderLibrary() {
     docs = (await dbAll()).sort((a2, b3) => b3.lastOpened - a2.lastOpened);
   } catch {
   }
-  box.hidden = !docs.length;
+  box.hidden = !docs.length && !asked;
   list.textContent = "";
+  if (!docs.length && asked) list.textContent = "Nothing here yet. Every file you open is kept here, so you can carry on where you stopped.";
   for (const d3 of docs) {
     const pos = parseInt(localStorage.getItem("murmur:pos:" + d3.key) || "0", 10);
     const pct = d3.count ? Math.round(pos / d3.count * 100) : 0;
@@ -156183,12 +156281,12 @@ async function renderLibrary() {
   }
   return docs;
 }
-$3("libraryBtn").onclick = () => {
+$3("libraryBtn").onclick = async () => {
   engine.stop();
   docEl.hidden = true;
   $3("pages").hidden = true;
   $3("start").hidden = false;
-  renderLibrary();
+  await renderLibrary(true);
   $3("library").scrollIntoView({ block: "start", behavior: "smooth" });
 };
 function hash(str) {
@@ -156783,6 +156881,16 @@ async function render(blocks, title) {
     if (last < text.length) el2.appendChild(document.createTextNode(text.slice(last)));
     if (b3.page) blockPlace.set(el2, { page: b3.page, box: b3.box, lines: lineOffsets(b3.lines, text) });
     docEl.appendChild(el2);
+  }
+  if (settings.autoLanguage !== false) {
+    const sample = blocks.slice(0, 600).map((b3) => b3.text || "").join(" ");
+    if (aboutRussia(title, sample)) {
+      const hints = russianNameHints(sentences.map((s3) => s3.text));
+      hints.forEach((h3, i3) => {
+        const own = typeof sentences[i3].lang === "string" ? sentences[i3].lang : "en";
+        if (h3 && own === "en") sentences[i3].lang = { main: own, words: h3 };
+      });
+    }
   }
   docKey = hash(docTitle + "|" + sentences.length + "|" + sentences.slice(0, 20).map((s3) => s3.text).join("|"));
   $3("start").hidden = true;

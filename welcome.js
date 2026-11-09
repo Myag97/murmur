@@ -92037,6 +92037,60 @@ function matchLoudness(x2, rate = 24e3, target = SPEECH_TARGET) {
   return y3;
 }
 
+// src/names.js
+var MULTI = [
+  ["shch", "\u0449"],
+  ["tch", "\u0447"],
+  ["sch", "\u0449"],
+  ["zh", "\u0436"],
+  ["kh", "\u0445"],
+  ["ts", "\u0446"],
+  ["ch", "\u0447"],
+  ["sh", "\u0448"],
+  ["yu", "\u044E"],
+  ["ya", "\u044F"],
+  ["yo", "\u0451"],
+  ["ye", "\u0435"],
+  ["ia", "\u0438\u044F"],
+  ["iu", "\u0438\u044E"],
+  ["ck", "\u043A"],
+  ["ph", "\u0444"]
+];
+var ONE = { a: "\u0430", b: "\u0431", c: "\u043A", d: "\u0434", e: "\u0435", f: "\u0444", g: "\u0433", h: "\u0445", i: "\u0438", j: "\u0439", k: "\u043A", l: "\u043B", m: "\u043C", n: "\u043D", o: "\u043E", p: "\u043F", q: "\u043A", r: "\u0440", s: "\u0441", t: "\u0442", u: "\u0443", v: "\u0432", w: "\u0432", x: "\u043A\u0441", z: "\u0437" };
+var VOWELS2 = "aeiouy";
+function toCyrillic(word) {
+  const m3 = new RegExp("^([^\\p{L}]*)(\\p{L}+)(?:['\u2019]s)?([^\\p{L}]*)$", "u").exec(word);
+  if (!m3) return word;
+  const [, pre, body, post] = m3;
+  let plural = false;
+  let w3 = body.toLowerCase();
+  if (/(ov|ev|in)s$/.test(w3)) {
+    w3 = w3.slice(0, -1);
+    plural = true;
+  }
+  let out = "";
+  for (let i3 = 0; i3 < w3.length; ) {
+    const multi = MULTI.find(([k4]) => w3.startsWith(k4, i3));
+    if (multi) {
+      out += multi[1];
+      i3 += multi[0].length;
+      continue;
+    }
+    const c3 = w3[i3];
+    const prev = w3[i3 - 1];
+    const end = i3 === w3.length - 1;
+    if (c3 === "y") out += prev && VOWELS2.includes(prev) ? "\u0439" : end ? "\u0438\u0439" : "\u044B";
+    else if (c3 === "i" && prev && "ao".includes(prev) && (end || !VOWELS2.includes(w3[i3 + 1] || "x")) && !(w3.slice(i3, i3 + 2) === "il" && i3 + 2 === w3.length)) out += "\u0439";
+    else if (c3 === "e" && i3 === 0) out += "\u044D";
+    else out += ONE[c3] ?? c3;
+    i3++;
+  }
+  out = out.replace(/ии$/, "\u0438\u0439");
+  if (plural) out += "\u044B";
+  if (new RegExp("^\\p{Lu}", "u").test(body)) out = out[0].toUpperCase() + out.slice(1);
+  return pre + out + post;
+}
+
 // src/mixed.js
 var LATIN_HINTS = [
   [/[şğıİ]/, "tr"],
@@ -92075,7 +92129,7 @@ function splitByLanguage(text, mainLang = "en", hints = null) {
   for (const [k4, w3] of words.entries()) {
     let lang = hints && hints[k4] || wordLanguage(w3, mainLang);
     if (!lang) lang = runs.length ? runs[runs.length - 1].lang : mainLang;
-    const word = lang === "zh-latn" ? pinyinToNumbers(w3) : w3;
+    const word = lang === "zh-latn" ? pinyinToNumbers(w3) : lang === "ru" && /[A-Za-z]/.test(w3) ? toCyrillic(w3) : w3;
     const last = runs[runs.length - 1];
     if (last && last.lang === lang) {
       last.text += " " + word;
@@ -93023,11 +93077,13 @@ function createEngine({ wasmPaths, onEvent }) {
       st2.langs = langs || [];
       const needed = /* @__PURE__ */ new Set();
       for (const l2 of st2.langs) {
-        const code = typeof l2 === "object" ? l2?.main : l2;
-        if (!code || code === "en") continue;
-        const v3 = voiceFor(code, st2.settings);
-        if (v3.startsWith("piper:")) needed.add(v3.slice(6));
-        else if (v3 === st2.settings.voice && PIPER_VOICES[code]) needed.add(PIPER_VOICES[code]);
+        const codes = typeof l2 === "object" ? [l2?.main, ...l2?.words || []] : [l2];
+        for (const code of new Set(codes)) {
+          if (!code || code === "en") continue;
+          const v3 = voiceFor(code, st2.settings);
+          if (v3.startsWith("piper:")) needed.add(v3.slice(6));
+          else if (v3 === st2.settings.voice && PIPER_VOICES[code]) needed.add(PIPER_VOICES[code]);
+        }
       }
       for (const name of needed) warmPiperVoice(name);
       st2.buffers.clear();
@@ -93199,8 +93255,8 @@ function speakable(text, { heading = false } = {}) {
   return t2;
 }
 var NAME = "[A-Z][\\p{L}'\u2019-]+(?: (?:and|&|y|et) [A-Z][\\p{L}'\u2019-]+)?(?: et al\\.?)?";
-var ONE = `(?:see |see also |e\\.g\\.,? |cf\\. )?${NAME},? \\d{4}[a-z]?(?:, pp?\\. ?\\d+(?:[-\u2013]\\d+)?)?`;
-var PAREN = new RegExp(`\\s?\\((?:${ONE})(?:; ?(?:${ONE}))*\\)`, "gu");
+var ONE2 = `(?:see |see also |e\\.g\\.,? |cf\\. )?${NAME},? \\d{4}[a-z]?(?:, pp?\\. ?\\d+(?:[-\u2013]\\d+)?)?`;
+var PAREN = new RegExp(`\\s?\\((?:${ONE2})(?:; ?(?:${ONE2}))*\\)`, "gu");
 
 // src/welcome.js
 var $3 = (id2) => document.getElementById(id2);
