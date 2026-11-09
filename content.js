@@ -627,13 +627,13 @@
     }
     const CAPTION_CSS = `
     :host { all: initial; }
-    .cap { position: fixed; left: 50%; top: 10%; transform: translateX(-50%); z-index: 2147483646; max-width: min(960px, 88vw);
-      padding: 18px 28px; border-radius: 20px; background: rgba(20,20,24,.93); color: #f6f6f8; text-align: center;
-      font: 700 clamp(26px, 3.4vw, 46px)/1.3 "Segoe UI Variable Display", "Segoe UI", system-ui, -apple-system, sans-serif; letter-spacing: .01em;
-      box-shadow: 0 14px 44px rgba(0,0,0,.45); cursor: pointer; user-select: none; text-wrap: balance; }
+    .cap { position: fixed; left: 50%; top: 8px; transform: translateX(-50%); z-index: 2147483646; max-width: min(820px, 80vw);
+      padding: 10px 28px 12px; border-radius: 20px; background: rgba(20,20,24,.93); color: #f6f6f8; text-align: center;
+      font: 700 clamp(20px, 2.2vw, 30px)/1.3 "Segoe UI Variable Display", "Segoe UI", system-ui, -apple-system, sans-serif; letter-spacing: .01em;
+      box-shadow: 0 8px 28px rgba(0,0,0,.4); cursor: grab; touch-action: none; user-select: none; text-wrap: balance; }
     .cap .w.cur { color: #ffd56b; text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 6px; }
-    .cap { padding-right: 52px; padding-left: 52px; }
-    .cap .x { position: absolute; top: 8px; right: 10px; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center;
+    .cap { padding-right: 46px; padding-left: 46px; }
+    .cap .x { position: absolute; top: 4px; right: 6px; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center;
       font: 400 18px/1 system-ui, sans-serif; opacity: .65; cursor: pointer; }
     .cap .x:hover { opacity: 1; background: rgba(255,255,255,.14); }
     .cap .hint { display: block; font: 13px/1.3 system-ui, sans-serif; opacity: .55; margin-top: 10px; font-weight: 400; }
@@ -646,14 +646,55 @@
       root.innerHTML = `<style>${CAPTION_CSS}</style><div class="cap" title="Click to pause or play"><span class="x" title="Hide the big text (it comes back next time you start reading)">\u2715</span><span class="t"></span></div>`;
       const box = root.querySelector(".cap");
       const el = root.querySelector(".t");
-      box.addEventListener("click", () => toBg({ type: "content:toggle" }));
+      let capDragged = false;
+      box.addEventListener("click", () => {
+        if (!capDragged) toBg({ type: "content:toggle" });
+      });
+      {
+        const place = (p) => {
+          if (!p) return;
+          box.style.left = Math.max(0, Math.min(window.innerWidth - 80, p.x)) + "px";
+          box.style.top = Math.max(0, Math.min(window.innerHeight - 40, p.y)) + "px";
+          box.style.transform = "none";
+        };
+        chrome.storage.local.get("capPos", ({ capPos }) => place(capPos));
+        let d = null;
+        box.addEventListener("pointerdown", (e) => {
+          if (e.button !== 0) return;
+          const r = box.getBoundingClientRect();
+          d = { x: e.clientX, y: e.clientY, dx: e.clientX - r.left, dy: e.clientY - r.top, id: e.pointerId, moved: false };
+        });
+        box.addEventListener("pointermove", (e) => {
+          if (!d) return;
+          if (!d.moved) {
+            if (Math.hypot(e.clientX - d.x, e.clientY - d.y) < 6) return;
+            d.moved = true;
+            try {
+              box.setPointerCapture(d.id);
+            } catch {
+            }
+          }
+          place({ x: e.clientX - d.dx, y: e.clientY - d.dy });
+        });
+        const end = () => {
+          if (d?.moved) {
+            const r = box.getBoundingClientRect();
+            chrome.storage.local.set({ capPos: { x: r.left, y: r.top } });
+            capDragged = true;
+            setTimeout(() => capDragged = false, 50);
+          }
+          d = null;
+        };
+        box.addEventListener("pointerup", end);
+        box.addEventListener("pointercancel", end);
+      }
       root.querySelector(".x").addEventListener("click", (e) => {
         e.stopPropagation();
         S.capClosed = true;
         renderCaption();
       });
       (document.body || document.documentElement).appendChild(host);
-      S.cap = { host, el, index: -1 };
+      S.cap = { host, el, box, index: -1 };
       return S.cap;
     }
     function renderCaption() {
@@ -715,7 +756,19 @@
       }
     }
     function isInView(rect) {
-      return rect.top >= 60 && rect.bottom <= window.innerHeight - 100;
+      let top = 60;
+      if (S.cap && S.cap.host.style.display !== "none") {
+        const c = S.cap.box.getBoundingClientRect();
+        if (c.top < window.innerHeight / 2) top = Math.max(top, c.bottom + 12);
+      }
+      return rect.top >= top && rect.bottom <= window.innerHeight * 0.75;
+    }
+    function scrollParentOf(el) {
+      for (let n = el; n && n !== document.body && n !== document.documentElement; n = n.parentElement) {
+        const st = getComputedStyle(n);
+        if (/(auto|scroll|overlay)/.test(st.overflowY) && n.scrollHeight > n.clientHeight + 4) return n;
+      }
+      return null;
     }
     function setCurrent(i) {
       S.current = i;
@@ -727,8 +780,10 @@
       if (S.highlight) S.highlight.add(s.range);
       const rect = s.range.getBoundingClientRect();
       if (rect.height && !isInView(rect)) {
-        const el = s.range.startContainer.parentElement || s.el;
-        el.scrollIntoView({ block: "center", behavior: "smooth" });
+        const want = Math.max(window.innerHeight * 0.33, 120);
+        const scroller = scrollParentOf(s.range.startContainer.parentElement || s.el);
+        if (scroller) scroller.scrollBy({ top: rect.top - want, behavior: "smooth" });
+        else window.scrollBy({ top: rect.top - want, behavior: "smooth" });
       }
       renderCaption();
       updateBar();

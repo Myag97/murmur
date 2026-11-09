@@ -156441,7 +156441,54 @@ $3("ccBtn").onclick = () => {
   saveSettings({ caption: !settings.caption });
   renderCaption();
 };
-$3("caption").onclick = () => togglePlay();
+var capDragged = false;
+$3("caption").onclick = () => {
+  if (!capDragged) togglePlay();
+};
+{
+  const place = (p3) => {
+    if (!p3) return;
+    $3("caption").style.left = Math.max(0, Math.min(window.innerWidth - 80, p3.x)) + "px";
+    $3("caption").style.top = Math.max(0, Math.min(window.innerHeight - 40, p3.y)) + "px";
+    $3("caption").style.transform = "none";
+  };
+  try {
+    place(JSON.parse(localStorage.getItem("murmur:capPos") || "null"));
+  } catch {
+  }
+  let d3 = null;
+  $3("caption").addEventListener("pointerdown", (e2) => {
+    if (e2.button !== 0) return;
+    const r2 = $3("caption").getBoundingClientRect();
+    d3 = { x: e2.clientX, y: e2.clientY, dx: e2.clientX - r2.left, dy: e2.clientY - r2.top, id: e2.pointerId, moved: false };
+  });
+  $3("caption").addEventListener("pointermove", (e2) => {
+    if (!d3) return;
+    if (!d3.moved) {
+      if (Math.hypot(e2.clientX - d3.x, e2.clientY - d3.y) < 6) return;
+      d3.moved = true;
+      try {
+        $3("caption").setPointerCapture(d3.id);
+      } catch {
+      }
+    }
+    place({ x: e2.clientX - d3.dx, y: e2.clientY - d3.dy });
+  });
+  const end = () => {
+    if (d3?.moved) {
+      const r2 = $3("caption").getBoundingClientRect();
+      try {
+        localStorage.setItem("murmur:capPos", JSON.stringify({ x: r2.left, y: r2.top }));
+      } catch {
+      }
+      capDragged = true;
+      setTimeout(() => capDragged = false, 50);
+    }
+    d3 = null;
+  };
+  $3("caption").addEventListener("pointerup", end);
+  $3("caption").addEventListener("pointercancel", end);
+}
 var DB_NAME = "murmur-library";
 var dbOpen = null;
 function openDb() {
