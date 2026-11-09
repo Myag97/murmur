@@ -125646,7 +125646,8 @@ var DEFAULTS = {
   // free Google key; without one, Murmur's own voices read as always.
   onlineVoices: true,
   googleKey: "",
-  onlineVoice: "Charon",
+  onlineVoice: "Sadaltager",
+  // Mya's pick, Nov 9 (Algieba close second)
   // Mya's picks, Nov 8: Spanish Sharvard (native engine), Italian Nicola with a
   // touch of her voice, Portuguese the Alex+Santa blend.
   // Chosen by measurement (dev/clarity.mjs): the cleanest speaker per language,
@@ -126499,7 +126500,7 @@ function wavToFloat(bytes) {
 async function onlineSynthesize({ text, lang, settings: settings2, speakingRate = 1, onUsage, ignoreLimit = false }) {
   if (!onlineReady(settings2, lang, { ignoreLimit })) return null;
   const locale = ONLINE_LOCALES[lang || "en"];
-  const speaker = settings2.onlineVoice || "Charon";
+  const speaker = settings2.onlineVoice || "Sadaltager";
   const body = {
     input: { text },
     voice: { languageCode: locale, name: `${locale}-Chirp3-HD-${speaker}` },
@@ -157013,7 +157014,7 @@ window.murmurReader = { engine, get sentences() {
 }, loadFile, render, textToBlocks, htmlToBlocks, pdfToBlocks, toMp3, toWav };
 function renderOnline(problem) {
   $3("onlineVoices").checked = settings.onlineVoices !== false;
-  $3("onlineVoice").value = settings.onlineVoice || "Charon";
+  $3("onlineVoice").value = settings.onlineVoice || "Sadaltager";
   if (settings.googleKey) $3("googleKey").placeholder = "Key saved (paste a new one to change it)";
   const used = usageNow(settings.onlineUsage).chars;
   let text;

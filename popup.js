@@ -134,7 +134,8 @@
     // free Google key; without one, Murmur's own voices read as always.
     onlineVoices: true,
     googleKey: "",
-    onlineVoice: "Charon",
+    onlineVoice: "Sadaltager",
+    // Mya's pick, Nov 9 (Algieba close second)
     // Mya's picks, Nov 8: Spanish Sharvard (native engine), Italian Nicola with a
     // touch of her voice, Portuguese the Alex+Santa blend.
     // Chosen by measurement (dev/clarity.mjs): the cleanest speaker per language,
@@ -340,7 +341,7 @@
   async function onlineSynthesize({ text, lang, settings: settings2, speakingRate = 1, onUsage, ignoreLimit = false }) {
     if (!onlineReady(settings2, lang, { ignoreLimit })) return null;
     const locale = ONLINE_LOCALES[lang || "en"];
-    const speaker = settings2.onlineVoice || "Charon";
+    const speaker = settings2.onlineVoice || "Sadaltager";
     const body = {
       input: { text },
       voice: { languageCode: locale, name: `${locale}-Chirp3-HD-${speaker}` },
@@ -488,7 +489,7 @@
   }
   function renderOnline(problem) {
     $("onlineVoices").checked = settings.onlineVoices !== false;
-    $("onlineVoice").value = settings.onlineVoice || "Charon";
+    $("onlineVoice").value = settings.onlineVoice || "Sadaltager";
     if (!$("googleKey").value && settings.googleKey) $("googleKey").placeholder = "Key saved (paste a new one to change it)";
     const used = usageNow(settings.onlineUsage).chars;
     let text;
@@ -531,7 +532,7 @@
       const key = $("googleKey").value.trim();
       if (!key) return;
       $("onlineStatus").textContent = "Checking the key with Google\u2026";
-      const r = await testOnlineVoice(key, settings.onlineVoice || "Charon");
+      const r = await testOnlineVoice(key, settings.onlineVoice || "Sadaltager");
       if (!r.ok) return renderOnline(r.problem + " The key was not saved.");
       await countSample(r.chars);
       $("googleKey").value = "";

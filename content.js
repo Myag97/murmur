@@ -103,7 +103,8 @@
     // free Google key; without one, Murmur's own voices read as always.
     onlineVoices: true,
     googleKey: "",
-    onlineVoice: "Charon",
+    onlineVoice: "Sadaltager",
+    // Mya's pick, Nov 9 (Algieba close second)
     // Mya's picks, Nov 8: Spanish Sharvard (native engine), Italian Nicola with a
     // touch of her voice, Portuguese the Alex+Santa blend.
     // Chosen by measurement (dev/clarity.mjs): the cleanest speaker per language,

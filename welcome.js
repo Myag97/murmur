@@ -91680,7 +91680,8 @@ var DEFAULTS = {
   // free Google key; without one, Murmur's own voices read as always.
   onlineVoices: true,
   googleKey: "",
-  onlineVoice: "Charon",
+  onlineVoice: "Sadaltager",
+  // Mya's pick, Nov 9 (Algieba close second)
   // Mya's picks, Nov 8: Spanish Sharvard (native engine), Italian Nicola with a
   // touch of her voice, Portuguese the Alex+Santa blend.
   // Chosen by measurement (dev/clarity.mjs): the cleanest speaker per language,
@@ -92506,7 +92507,7 @@ function wavToFloat(bytes) {
 async function onlineSynthesize({ text, lang, settings: settings2, speakingRate = 1, onUsage, ignoreLimit = false }) {
   if (!onlineReady(settings2, lang, { ignoreLimit })) return null;
   const locale = ONLINE_LOCALES[lang || "en"];
-  const speaker = settings2.onlineVoice || "Charon";
+  const speaker = settings2.onlineVoice || "Sadaltager";
   const body = {
     input: { text },
     voice: { languageCode: locale, name: `${locale}-Chirp3-HD-${speaker}` },
