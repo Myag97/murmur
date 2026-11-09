@@ -313,13 +313,17 @@
     syncUsage(saved);
     return { ...state.usage };
   }
+  function speakerFor(settings2, lang) {
+    return settings2?.onlineVoiceByLang?.[lang || "en"] || settings2?.onlineVoice || "Sadaltager";
+  }
   function onlineReady(settings2, lang, { ignoreLimit = false } = {}) {
     if (!settings2?.onlineVoices || !settings2.googleKey) return false;
     if (settings2.googleKey === state.badKey) return false;
     if (typeof navigator !== "undefined" && navigator.onLine === false) return false;
     if (Date.now() < state.pauseUntil) return false;
     const locale = ONLINE_LOCALES[lang || "en"];
-    if (!locale || state.missing.has(locale)) return false;
+    if (!locale) return false;
+    if (state.missing.has(locale + ":" + speakerFor(settings2, lang))) return false;
     syncUsage(settings2.onlineUsage);
     return ignoreLimit || state.usage.chars < STOP_AT;
   }
@@ -353,7 +357,7 @@
   async function onlineSynthesize({ text, lang, settings: settings2, speakingRate = 1, onUsage, ignoreLimit = false }) {
     if (!onlineReady(settings2, lang, { ignoreLimit })) return null;
     const locale = ONLINE_LOCALES[lang || "en"];
-    const speaker = settings2.onlineVoiceByLang?.[lang || "en"] || settings2.onlineVoice || "Sadaltager";
+    const speaker = speakerFor(settings2, lang);
     const body = {
       input: { text },
       voice: { languageCode: locale, name: `${locale}-Chirp3-HD-${speaker}` },
@@ -383,7 +387,13 @@
       } catch {
       }
       if (res.status === 400 && /voice|language/i.test(msg)) {
-        state.missing.add(locale);
+        state.missing.add(locale + ":" + speaker);
+        state.lastProblem = "Google has no " + speaker + " voice for this language: " + msg;
+        if (settings2.onlineVoiceByLang?.[lang || "en"]) {
+          const by = { ...settings2.onlineVoiceByLang };
+          delete by[lang || "en"];
+          return onlineSynthesize({ text, lang, settings: { ...settings2, onlineVoiceByLang: by }, speakingRate, onUsage, ignoreLimit });
+        }
       } else if (res.status === 400 || res.status === 401 || res.status === 403) {
         state.badKey = settings2.googleKey;
         state.lastProblem = "Google did not accept the key: " + (msg || res.status);
@@ -394,7 +404,10 @@
       return null;
     }
     const json = await res.json();
-    if (!json?.audioContent) return null;
+    if (!json?.audioContent) {
+      state.lastProblem = "Google answered without any sound.";
+      return null;
+    }
     const { audio } = wavToFloat(base64ToBytes(json.audioContent));
     syncUsage(settings2.onlineUsage);
     state.usage.chars += text.length;
@@ -406,6 +419,8 @@
     const s = { onlineVoices: true, googleKey: key, onlineVoice: speaker, onlineVoiceByLang: null, onlineUsage: null };
     state.badKey = "";
     state.pauseUntil = 0;
+    state.missing.clear();
+    state.lastProblem = "";
     const line = {
       en: "Hello. This is how I sound when I read to you.",
       es: "Hola. As\xED sueno cuando te leo en espa\xF1ol.",

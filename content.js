@@ -627,9 +627,9 @@
     }
     const CAPTION_CSS = `
     :host { all: initial; }
-    .cap { position: fixed; left: 50%; top: 8px; transform: translateX(-50%); z-index: 2147483646; max-width: min(820px, 80vw);
+    .cap { position: fixed; left: 50%; top: 8px; transform: translateX(-50%); z-index: 2147483646; max-width: min(960px, 88vw);
       padding: 10px 28px 12px; border-radius: 20px; background: rgba(20,20,24,.93); color: #f6f6f8; text-align: center;
-      font: 700 clamp(20px, 2.2vw, 30px)/1.3 "Segoe UI Variable Display", "Segoe UI", system-ui, -apple-system, sans-serif; letter-spacing: .01em;
+      font: 700 clamp(26px, 3.4vw, 46px)/1.25 "Segoe UI Variable Display", "Segoe UI", system-ui, -apple-system, sans-serif; letter-spacing: .01em;
       box-shadow: 0 8px 28px rgba(0,0,0,.4); cursor: grab; touch-action: none; user-select: none; text-wrap: balance; }
     .cap .w.cur { color: #ffd56b; text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 6px; }
     .cap { padding-right: 46px; padding-left: 46px; }
