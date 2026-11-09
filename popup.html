@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      :root { --bg: #fff; --fg: #1f1f24; --muted: #6b6b75; --line: #e6e2da; --soft: #f4f2ee; --accent: #6d5dfc; --accent2: #8577ff; --on-accent: #fff; --err: #b3261e; }
+      @media (prefers-color-scheme: dark) {
+        :root { --bg: #1d1d22; --fg: #ececf0; --muted: #a3a3ad; --line: #34343c; --soft: #26262d; --err: #ff8a80; }
+      }
+      * { box-sizing: border-box; }
+      body { width: 320px; margin: 0; padding: 14px; font: 14px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--fg); background: var(--bg); }
+      h1 { font-size: 16px; margin: 0 0 12px; display: flex; align-items: center; gap: 8px; }
+      .logo { width: 22px; height: 22px; border-radius: 50%; background: var(--accent); color: var(--on-accent); display: grid; place-items: center; font-weight: 800; font-size: 13px; }
+      button { font: inherit; color: inherit; cursor: pointer; border: 0; border-radius: 10px; }
+      .big { width: 100%; padding: 13px 14px; font-size: 16px; font-weight: 650; background: var(--accent); color: var(--on-accent); display: flex; align-items: center; justify-content: center; gap: 10px; }
+      .big:hover { background: var(--accent2); }
+      .wide { width: 100%; margin-top: 8px; padding: 10px 12px; background: var(--soft); border: 1px solid var(--line); text-align: left; display: flex; align-items: center; gap: 10px; }
+      .wide:hover { border-color: var(--muted); }
+      .now { margin-top: 12px; padding: 10px; border-radius: 12px; background: var(--soft); border: 1px solid var(--line); }
+      .now[hidden] { display: none; }
+      .status { min-height: 18px; color: var(--muted); margin-bottom: 8px; text-align: center; }
+      .status.err { color: var(--err); }
+      .controls { display: flex; justify-content: center; gap: 10px; }
+      .controls button { width: 44px; height: 44px; border-radius: 50%; background: var(--bg); border: 1px solid var(--line); font-size: 15px; display: grid; place-items: center; }
+      .controls button.main { width: 52px; height: 52px; background: var(--accent); border: 0; color: var(--on-accent); font-size: 18px; }
+      .msg { margin-top: 10px; color: var(--err); font-size: 13px; }
+      .msg:empty { display: none; }
+      .field { margin-top: 14px; }
+      .field > .label { font-size: 12.5px; color: var(--muted); margin-bottom: 5px; display: block; }
+      .voice-row { display: flex; gap: 6px; }
+      select { flex: 1; min-width: 0; font: inherit; padding: 8px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--fg); }
+      .listen { padding: 0 12px; background: var(--soft); border: 1px solid var(--line); white-space: nowrap; }
+      .speed-row { display: flex; align-items: center; gap: 8px; }
+      .speed-row small { color: var(--muted); }
+      input[type=range] { flex: 1; accent-color: var(--accent); }
+      .speed-val { min-width: 38px; text-align: right; font-weight: 600; }
+      details { margin-top: 14px; border-top: 1px solid var(--line); padding-top: 10px; }
+      summary { cursor: pointer; color: var(--muted); list-style: none; }
+      summary::-webkit-details-marker { display: none; }
+      summary::before { content: '▸ '; }
+      details[open] summary::before { content: '▾ '; }
+      .check { display: flex; align-items: center; gap: 8px; margin: 9px 0; }
+      .lang { display: flex; align-items: center; gap: 6px; margin: 8px 0; }
+      .lang .name { width: 86px; color: var(--muted); font-size: 13px; flex: none; }
+      .lang select { flex: 1; min-width: 0; padding: 6px 8px; }
+      .lang .listen { padding: 0 10px; height: 32px; }
+      .small { font-size: 12px; color: var(--muted); margin-top: 8px; }
+      a { color: #2a6fd6; cursor: pointer; }
+    </style>
+  </head>
+  <body>
+    <h1><span class="logo">M</span>Murmur</h1>
+    <div class="small" style="margin: -6px 0 10px">One click on the Murmur button in the toolbar reads the page. This window is for the voice and settings.</div>
+
+    <button id="readPage" class="big"><span>&#9654;</span> <span id="readLabel">Read this page</span></button>
+    <button id="openReader" class="wide"><span>&#128196;</span> Open a PDF, Word file or text</button>
+
+    <div id="now" class="now" hidden>
+      <div id="status" class="status"></div>
+      <div class="controls">
+        <button id="prev" title="Back one sentence">&#9198;</button>
+        <button id="toggle" class="main" title="Pause or play">&#10074;&#10074;</button>
+        <button id="next" title="Forward one sentence">&#9197;</button>
+        <button id="stop" title="Stop">&#9632;</button>
+      </div>
+    </div>
+    <div id="msg" class="msg"></div>
+
+    <div class="field">
+      <span class="label">Voice</span>
+      <div class="voice-row">
+        <select id="voice"></select>
+        <button id="listen" class="listen" title="Hear this voice">&#9654; Listen</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <span class="label">Speed</span>
+      <div class="speed-row">
+        <small>Slower</small>
+        <input id="speed" type="range" min="0.7" max="3.5" step="0.1" />
+        <small>Faster</small>
+        <span id="speedVal" class="speed-val">1.0×</span>
+      </div>
+      <div class="small">Every syllable is kept at any speed. Slow down for dense material.</div>
+    </div>
+
+    <details>
+      <summary>Voices for other languages</summary>
+      <div id="langVoices"></div>
+      <div class="small">Murmur switches to these by itself when it meets that language.</div>
+    </details>
+
+    <details>
+      <summary>More</summary>
+      <button id="savePage" class="wide"><span>&#11015;</span> Save this page as an audio file</button>
+      <button id="voices" class="wide"><span>&#127911;</span> Hear all the voices</button>
+      <button id="help" class="wide"><span>&#10067;</span> How to use Murmur</button>
+      <label class="check"><input id="skipCitations" type="checkbox" /> Skip citations, footnotes and reference lists</label>
+      <label class="check"><input id="selectButton" type="checkbox" /> Show a play button when I select text</label>
+      <div class="small">
+        Optional keyboard shortcuts: Alt+Shift+R reads or pauses. <a id="shortcuts">Change them</a>
+      </div>
+    </details>
+    <audio id="sample" preload="none"></audio>
+    <script src="popup.js"></script>
+  </body>
+</html>

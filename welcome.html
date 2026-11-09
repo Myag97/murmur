@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Welcome to Murmur</title>
+    <style>
+      :root { --bg: #faf8f4; --fg: #1f1f24; --muted: #66666f; --card: #fff; --line: #e6e2da; --accent: #6d5dfc; --accent2: #8577ff; --on-accent: #fff; --hl: rgba(255, 226, 122, .5); --word: #ffd54a; --ok: #1e7d4f; }
+      @media (prefers-color-scheme: dark) {
+        :root { --bg: #17171b; --fg: #ececf0; --muted: #a0a0ab; --card: #202026; --line: #33333b; --hl: rgba(140, 115, 20, .55); --word: #8a7414; --ok: #6fd3a0; }
+      }
+      * { box-sizing: border-box; }
+      body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif; }
+      .wrap { max-width: 860px; margin: 0 auto; padding: 32px 16px 80px; }
+      .hero { display: flex; gap: 16px; align-items: center; margin-bottom: 8px; }
+      .logo { width: 56px; height: 56px; border-radius: 50%; background: var(--accent); color: var(--on-accent); display: grid; place-items: center; font-weight: 800; font-size: 28px; flex: none; }
+      h1 { margin: 0; font-size: 28px; line-height: 1.2; }
+      .lead { color: var(--muted); margin: 6px 0 24px; font-size: 17px; }
+      section { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 20px 22px; margin: 16px 0; }
+      h2 { margin: 0 0 6px; font-size: 20px; display: flex; align-items: center; gap: 10px; }
+      .num { width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: var(--on-accent); display: inline-grid; place-items: center; font-size: 15px; font-weight: 700; flex: none; }
+      .num.done { background: var(--ok); color: #fff; }
+      p { margin: 6px 0; }
+      .muted { color: var(--muted); }
+      button { font: inherit; cursor: pointer; border-radius: 10px; border: 1px solid var(--line); background: var(--card); color: var(--fg); padding: 8px 14px; }
+      button:hover { border-color: var(--muted); }
+      button.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 650; }
+      button.primary:hover { background: var(--accent2); }
+      .pin-demo { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 12px; padding: 12px 14px; background: var(--bg); border-radius: 12px; border: 1px dashed var(--line); }
+      .pin-demo .chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 8px; background: var(--card); border: 1px solid var(--line); }
+      .arrow { color: var(--muted); font-size: 20px; }
+      .group { margin: 18px 0 8px; font-weight: 650; }
+      .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; }
+      .voice { border: 2px solid var(--line); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 8px; background: var(--card); }
+      .voice.chosen { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 30%, transparent); }
+      .voice .name { font-weight: 650; }
+      .voice .desc { color: var(--muted); font-size: 14px; }
+      .voice .row { display: flex; gap: 8px; }
+      .voice .row button { flex: 1; padding: 7px 8px; }
+      .voice .badge { color: var(--ok); font-weight: 650; font-size: 14px; }
+      .bar { height: 12px; background: var(--line); border-radius: 6px; overflow: hidden; margin: 12px 0 6px; }
+      .bar > div { height: 100%; width: 0; background: var(--accent); transition: width .3s; }
+      #prepStatus.ok { color: var(--ok); font-weight: 650; }
+      #tryText { font: 19px/1.7 Georgia, "Times New Roman", serif; margin: 12px 0; }
+      #tryText .s.cur { background: var(--hl); border-radius: 3px; }
+      #tryText .w.cur { background: var(--word); border-radius: 3px; }
+      .how { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; margin-top: 10px; }
+      .how div { background: var(--bg); border-radius: 12px; padding: 12px 14px; border: 1px solid var(--line); }
+      .how b { display: block; margin-bottom: 4px; }
+      .kbd { font-size: 14px; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="hero">
+        <div class="logo">M</div>
+        <div>
+          <h1>Murmur is installed</h1>
+        </div>
+      </div>
+      <p class="lead">Murmur reads web pages, PDFs, Word files and Google Docs out loud in a natural voice. It runs on your own computer, so it's free with no limits.</p>
+
+      <section id="pin">
+        <h2><span class="num">1</span> Put the Murmur button where you can see it</h2>
+        <p>At the top right of Chrome, click the puzzle piece, then click the pin next to <b>Murmur Reader</b>. A purple <b>M</b> button appears. One click on it reads the page you are on. Right-click it for the voice and settings.</p>
+        <div class="pin-demo">
+          <span class="chip">&#129513; puzzle piece</span><span class="arrow">&rarr;</span>
+          <span class="chip">Murmur Reader &#128204;</span><span class="arrow">&rarr;</span>
+          <span class="chip"><span class="logo" style="width: 22px; height: 22px; font-size: 12px">M</span> in your toolbar</span>
+        </div>
+      </section>
+
+      <section id="voices">
+        <h2><span class="num">2</span> Your voice</h2>
+        <p class="muted">Your Mix is already chosen. Press <b>Listen</b> to compare the variants; <b>Use this voice</b> switches. You can change it any time.</p>
+        <div id="voiceList"></div>
+      </section>
+
+      <section id="languages">
+        <h2>Other languages</h2>
+        <p class="muted">Murmur notices when a paragraph is in Spanish, French, Italian, Portuguese or Hindi, pronounces it properly, and switches to the voice shown here. (Japanese and Chinese voices exist too, but need more work before they sound right.)</p>
+        <div id="langList" class="grid"></div>
+      </section>
+
+      <section id="prepare">
+        <h2><span id="prepNum" class="num">3</span> Getting the voice ready</h2>
+        <p class="muted">The first time, Murmur downloads its voice (about 325 MB). After that it starts in a second or two.</p>
+        <div class="bar"><div id="prepBar"></div></div>
+        <div id="prepStatus">Starting…</div>
+      </section>
+
+      <section id="try">
+        <h2><span class="num">4</span> Try it</h2>
+        <div id="tryText"></div>
+        <button id="tryBtn" class="primary">&#9654; Read this to me</button>
+        <span id="tryStatus" class="muted" style="margin-left: 10px"></span>
+      </section>
+
+      <section id="how">
+        <h2>How to use Murmur</h2>
+        <div class="how">
+          <div><b>Read a whole page</b>Click the M button. It starts reading; click again to pause.</div>
+          <div><b>Read just part of a page</b>Select some text with your mouse or finger. A small &#9654; button pops up next to it. Click it.</div>
+          <div><b>Jump around</b>While it's reading, click any sentence and Murmur jumps there.</div>
+          <div><b>PDFs, Word files, Google Docs</b>Open the PDF or Google Doc in Chrome and click the M. For a file on your computer, right-click the M, then <b>Open a PDF, Word file or text</b>.</div>
+          <div><b>Save as audio</b>In the reader, press <b>Save as audio</b> to get an MP3 you can listen to anywhere.</div>
+          <div><b>Faster or slower</b>Use the speed menu on the little player bar, or right-click the M for the settings.</div>
+        </div>
+        <p class="muted kbd" style="margin-top: 14px">Keyboard shortcuts are optional: Alt+Shift+R reads or pauses.</p>
+      </section>
+    </div>
+    <audio id="sample" preload="none"></audio>
+    <script type="module" src="welcome.js"></script>
+  </body>
+</html>

@@ -1,0 +1,14 @@
+{
+  "name": "Murmur Reader",
+  "short_name": "Murmur",
+  "description": "Reads PDFs, books, Word files and pasted text aloud in a natural voice that runs on your own device.",
+  "start_url": "./reader.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#17171b",
+  "theme_color": "#6d5dfc",
+  "icons": [
+    { "src": "icons/128.png", "sizes": "128x128", "type": "image/png" },
+    { "src": "icons/48.png", "sizes": "48x48", "type": "image/png" }
+  ]
+}
