@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Google voices key</title>
+    <style>
+      :root { --bg: #faf8f4; --fg: #1f1f24; --muted: #66666f; --card: #fff; --line: #e6e2da; --accent: #6d5dfc; --on-accent: #fff; }
+      @media (prefers-color-scheme: dark) {
+        :root { --bg: #18181c; --fg: #ececf0; --muted: #a3a3ad; --card: #222228; --line: #34343c; }
+      }
+      body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif; }
+      main { max-width: 640px; margin: 0 auto; padding: 32px 16px 64px; }
+      h1 { font-size: 24px; margin: 0 0 6px; }
+      .lead { color: var(--muted); margin: 0 0 24px; }
+      ol { list-style: none; padding: 0; margin: 0; counter-reset: s; }
+      li { counter-increment: s; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px 14px 56px; margin: 0 0 10px; position: relative; }
+      li::before { content: counter(s); position: absolute; left: 16px; top: 14px; width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: var(--on-accent); display: grid; place-items: center; font-weight: 700; font-size: 15px; }
+      a { color: var(--accent); font-weight: 600; }
+      .note { color: var(--muted); font-size: 14px; margin-top: 18px; }
+      b { font-weight: 650; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Getting your free Google key</h1>
+      <p class="lead">About five minutes, once. The key lets Murmur use Google's best voices when you're online. The first million letters each month are free. Murmur stops at 450,000 on your computer and 450,000 on your phone, so even together you stay inside the free amount.</p>
+      <ol>
+        <li>Open <a href="https://console.cloud.google.com/" target="_blank" rel="noopener">Google Cloud</a> and sign in with your Google account. Agree to the terms if it asks.</li>
+        <li>Google asks for a card to confirm you're a real person. Click <b>Start free</b> or <b>Activate</b> at the top and follow the steps. You won't be charged for the free amount.</li>
+        <li>Open <a href="https://console.cloud.google.com/apis/library/texttospeech.googleapis.com" target="_blank" rel="noopener">the Text-to-Speech page</a> and click <b>Enable</b>. If it asks you to pick or make a project first, make one called <b>Murmur</b>.</li>
+        <li>Open <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener">Credentials</a>. Click <b>Create credentials</b>, then <b>API key</b>. A box shows the key.</li>
+        <li>Make the key work only for voices: click <b>Edit API key</b> (or the key's name). Under <b>API restrictions</b>, choose <b>Restrict key</b>, tick <b>Cloud Text-to-Speech API</b>, and click <b>Save</b>.</li>
+        <li>Copy the key (the copy icon next to it).</li>
+        <li><b>Safety alert (do this):</b> open <a href="https://console.cloud.google.com/billing/budgets" target="_blank" rel="noopener">Budgets &amp; alerts</a>, click <b>Create budget</b>, name it <b>Murmur</b>, click <b>Next</b> twice, set the amount to <b>1</b> dollar, and click <b>Finish</b>. Google then emails you if anything is ever charged, even a cent.</li>
+        <li>In Chrome, right-click the round purple <b>M</b> at the top right, choose <b>Voice, speed and settings</b>, open <b>Google's voices (when online)</b>, paste the key and click <b>Save</b>. You'll hear the voice say hello.</li>
+      </ol>
+      <p class="note"><b>When the free trial ends (after 90 days)</b>, Google will offer to <b>upgrade</b> or <b>activate a full account</b>. Don't click it. Without it nothing is ever charged; the key just stops working and Murmur uses its own voices. Ask Claude first if you want to keep Google's voices.</p>
+      <p class="note">What gets sent: only the text being read aloud, to Google. Your dictation never leaves your computer.</p>
+    </main>
+  </body>
+</html>

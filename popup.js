@@ -130,11 +130,16 @@
     // detect other languages and switch voice
     autoReadClaude: true,
     // on claude.ai: read each new reply from Claude as soon as it finishes
+    // Google's online voices when you're online (see online.js). Needs your own
+    // free Google key; without one, Murmur's own voices read as always.
+    onlineVoices: true,
+    googleKey: "",
+    onlineVoice: "Charon",
     // Mya's picks, Nov 8: Spanish Sharvard (native engine), Italian Nicola with a
     // touch of her voice, Portuguese the Alex+Santa blend.
     // Chosen by measurement (dev/clarity.mjs): the cleanest speaker per language,
     // least noise above 8 kHz. Mya hears that noise as "static".
-    langVoices: { es: "piper:es_MX-claude-high", fr: "ff_siwis", it: "im_nicola*0.7+bm_fable*0.3", pt: "piper:pt_BR-cadu-medium", hi: "piper:hi_IN-pratham-medium", zh: "zm_yunyang" }
+    langVoices: { es: "piper:es_MX-claude-high", fr: "ff_siwis", it: "im_nicola*0.7+bm_fable*0.3", pt: "piper:pt_BR-cadu-medium", hi: "piper:hi_IN-pratham-medium", zh: "zm_yunyang", la: "im_nicola" }
   };
 
   // src/lang.js
@@ -202,6 +207,202 @@
     ku: { name: "Kurdish", espeak: "ku", own: true }
   };
   var SUPPORTED = Object.keys(LANGS);
+
+  // src/online.js
+  var ONLINE_LOCALES = {
+    en: "en-GB",
+    es: "es-US",
+    fr: "fr-FR",
+    it: "it-IT",
+    pt: "pt-BR",
+    hi: "hi-IN",
+    zh: "cmn-CN",
+    de: "de-DE",
+    el: "el-GR",
+    ru: "ru-RU",
+    ar: "ar-XA",
+    tr: "tr-TR",
+    ja: "ja-JP",
+    ko: "ko-KR",
+    nl: "nl-NL",
+    pl: "pl-PL",
+    uk: "uk-UA",
+    vi: "vi-VN",
+    id: "id-ID",
+    th: "th-TH",
+    bn: "bn-IN",
+    sv: "sv-SE",
+    da: "da-DK",
+    fi: "fi-FI",
+    nb: "nb-NO",
+    no: "nb-NO",
+    cs: "cs-CZ",
+    hu: "hu-HU",
+    ro: "ro-RO",
+    sk: "sk-SK",
+    bg: "bg-BG",
+    hr: "hr-HR",
+    sr: "sr-RS",
+    he: "he-IL",
+    fa: "fa-IR",
+    ta: "ta-IN",
+    te: "te-IN",
+    mr: "mr-IN",
+    gu: "gu-IN",
+    kn: "kn-IN",
+    ml: "ml-IN",
+    ur: "ur-IN",
+    sw: "sw-KE"
+  };
+  var ONLINE_VOICES = [
+    { id: "Charon", desc: "informative" },
+    { id: "Iapetus", desc: "clear" },
+    { id: "Schedar", desc: "even" },
+    { id: "Sadaltager", desc: "knowledgeable" },
+    { id: "Rasalgethi", desc: "informative" },
+    { id: "Orus", desc: "firm" },
+    { id: "Alnilam", desc: "firm" },
+    { id: "Umbriel", desc: "easy-going" },
+    { id: "Achird", desc: "friendly" },
+    { id: "Puck", desc: "upbeat" },
+    { id: "Fenrir", desc: "excitable" },
+    { id: "Enceladus", desc: "breathy" },
+    { id: "Algieba", desc: "smooth" },
+    { id: "Algenib", desc: "gravelly" },
+    { id: "Zubenelgenubi", desc: "casual" },
+    { id: "Sadachbia", desc: "lively" }
+  ];
+  var STOP_AT = 45e4;
+  function addUsage(saved, add, month = monthKey()) {
+    const base = saved && saved.month === month ? saved.chars : 0;
+    return { month, chars: base + (add || 0) };
+  }
+  var ENDPOINT = "https://texttospeech.googleapis.com/v1/text:synthesize";
+  var TIMEOUT_MS = 8e3;
+  var monthKey = (d = /* @__PURE__ */ new Date()) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+  var state = {
+    usage: { month: monthKey(), chars: 0 },
+    // grows as we read; seeded from settings
+    pauseUntil: 0,
+    // after a network failure or Google saying "too many", wait a bit
+    badKey: "",
+    // a key Google refused; don't keep trying it
+    missing: /* @__PURE__ */ new Set(),
+    // language codes Google said it has no such voice for
+    lastProblem: ""
+  };
+  function syncUsage(saved) {
+    const m = monthKey();
+    if (state.usage.month !== m) state.usage = { month: m, chars: 0 };
+    if (saved && saved.month === m && saved.chars > state.usage.chars) state.usage.chars = saved.chars;
+  }
+  function usageNow(saved) {
+    syncUsage(saved);
+    return { ...state.usage };
+  }
+  function onlineReady(settings2, lang, { ignoreLimit = false } = {}) {
+    if (!settings2?.onlineVoices || !settings2.googleKey) return false;
+    if (settings2.googleKey === state.badKey) return false;
+    if (typeof navigator !== "undefined" && navigator.onLine === false) return false;
+    if (Date.now() < state.pauseUntil) return false;
+    const locale = ONLINE_LOCALES[lang || "en"];
+    if (!locale || state.missing.has(locale)) return false;
+    syncUsage(settings2.onlineUsage);
+    return ignoreLimit || state.usage.chars < STOP_AT;
+  }
+  function base64ToBytes(b64) {
+    const bin = atob(b64);
+    const out = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+    return out;
+  }
+  function wavToFloat(bytes) {
+    const v = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+    let off = 12;
+    let rate = 24e3;
+    while (off + 8 <= bytes.length) {
+      const id = String.fromCharCode(bytes[off], bytes[off + 1], bytes[off + 2], bytes[off + 3]);
+      const size = v.getUint32(off + 4, true);
+      if (id === "fmt ") rate = v.getUint32(off + 12, true);
+      if (id === "data") {
+        const n2 = Math.floor(Math.min(size, bytes.length - off - 8) / 2);
+        const out2 = new Float32Array(n2);
+        for (let i = 0; i < n2; i++) out2[i] = v.getInt16(off + 8 + i * 2, true) / 32768;
+        return { audio: out2, rate };
+      }
+      off += 8 + size + (size & 1);
+    }
+    const n = Math.floor(bytes.length / 2);
+    const out = new Float32Array(n);
+    for (let i = 0; i < n; i++) out[i] = v.getInt16(i * 2, true) / 32768;
+    return { audio: out, rate };
+  }
+  async function onlineSynthesize({ text, lang, settings: settings2, speakingRate = 1, onUsage, ignoreLimit = false }) {
+    if (!onlineReady(settings2, lang, { ignoreLimit })) return null;
+    const locale = ONLINE_LOCALES[lang || "en"];
+    const speaker = settings2.onlineVoice || "Charon";
+    const body = {
+      input: { text },
+      voice: { languageCode: locale, name: `${locale}-Chirp3-HD-${speaker}` },
+      audioConfig: { audioEncoding: "LINEAR16", sampleRateHertz: 24e3, speakingRate: Math.max(0.25, Math.min(2, speakingRate)) }
+    };
+    const ctl = new AbortController();
+    const timer = setTimeout(() => ctl.abort(), TIMEOUT_MS);
+    let res;
+    try {
+      res = await fetch(ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-Goog-Api-Key": settings2.googleKey },
+        body: JSON.stringify(body),
+        signal: ctl.signal
+      });
+    } catch {
+      state.pauseUntil = Date.now() + 6e4;
+      state.lastProblem = "Couldn't reach Google, so Murmur's own voice is reading.";
+      return null;
+    } finally {
+      clearTimeout(timer);
+    }
+    if (!res.ok) {
+      let msg = "";
+      try {
+        msg = (await res.json())?.error?.message || "";
+      } catch {
+      }
+      if (res.status === 400 && /voice|language/i.test(msg)) {
+        state.missing.add(locale);
+      } else if (res.status === 400 || res.status === 401 || res.status === 403) {
+        state.badKey = settings2.googleKey;
+        state.lastProblem = "Google did not accept the key: " + (msg || res.status);
+      } else {
+        state.pauseUntil = Date.now() + 6e4;
+        state.lastProblem = "Google was busy, so Murmur's own voice is reading for a minute.";
+      }
+      return null;
+    }
+    const json = await res.json();
+    if (!json?.audioContent) return null;
+    const { audio } = wavToFloat(base64ToBytes(json.audioContent));
+    syncUsage(settings2.onlineUsage);
+    state.usage.chars += text.length;
+    state.lastProblem = "";
+    onUsage?.({ month: state.usage.month, add: text.length });
+    return { audio, chars: text.length };
+  }
+  async function testOnlineVoice(key, speaker = "Charon", lang = "en") {
+    const s = { onlineVoices: true, googleKey: key, onlineVoice: speaker, onlineUsage: null };
+    state.badKey = "";
+    state.pauseUntil = 0;
+    const line = {
+      en: "Hello. This is how I sound when I read to you.",
+      es: "Hola. As\xED sueno cuando te leo en espa\xF1ol.",
+      fr: "Bonjour. Voici ma voix quand je lis en fran\xE7ais.",
+      de: "Guten Tag. So klinge ich, wenn ich auf Deutsch vorlese."
+    }[lang] || "Hello.";
+    const r = await onlineSynthesize({ text: line, lang, settings: s, ignoreLimit: true });
+    if (!r) return { ok: false, problem: state.lastProblem || "No answer from Google." };
+    return { ok: true, audio: r.audio, chars: r.chars };
+  }
 
   // src/popup.js
   var $ = (id) => document.getElementById(id);
@@ -283,6 +484,71 @@
     $("speedVal").textContent = Number(settings.speed).toFixed(1) + "\xD7";
     $("skipCitations").checked = settings.skipCitations !== false;
     $("selectButton").checked = !!settings.selectButton;
+    renderOnline();
+  }
+  function renderOnline(problem) {
+    $("onlineVoices").checked = settings.onlineVoices !== false;
+    $("onlineVoice").value = settings.onlineVoice || "Charon";
+    if (!$("googleKey").value && settings.googleKey) $("googleKey").placeholder = "Key saved (paste a new one to change it)";
+    const used = usageNow(settings.onlineUsage).chars;
+    let text;
+    if (problem) text = problem;
+    else if (!settings.googleKey) text = "No key yet, so Murmur uses its own voices.";
+    else if (settings.onlineVoices === false) text = "Off: Murmur uses its own voices.";
+    else if (used >= STOP_AT) text = "This month's free amount is used up; Murmur's own voices read until next month.";
+    else text = "On. This month: " + used.toLocaleString() + " of " + STOP_AT.toLocaleString() + " free letters on this computer.";
+    $("onlineStatus").textContent = text;
+  }
+  async function countSample(chars) {
+    const { onlineUsage } = await chrome.storage.local.get("onlineUsage");
+    settings.onlineUsage = addUsage(onlineUsage, chars);
+    await chrome.storage.local.set({ onlineUsage: settings.onlineUsage });
+  }
+  var sampleCtx = null;
+  var sampleSrc = null;
+  function playFloat(audio) {
+    sampleCtx = sampleCtx || new AudioContext({ sampleRate: 24e3 });
+    if (sampleSrc) sampleSrc.stop();
+    const buf = sampleCtx.createBuffer(1, audio.length, 24e3);
+    buf.copyToChannel(audio, 0);
+    sampleSrc = sampleCtx.createBufferSource();
+    sampleSrc.buffer = buf;
+    sampleSrc.connect(sampleCtx.destination);
+    sampleSrc.onended = () => ($("onlineListen").innerHTML = "&#9654; Listen", sampleSrc = null);
+    sampleSrc.start();
+    $("onlineListen").innerHTML = "&#10074;&#10074; Stop";
+  }
+  function initOnline() {
+    for (const v of ONLINE_VOICES) {
+      const o = document.createElement("option");
+      o.value = v.id;
+      o.textContent = v.id + " (" + v.desc + ")";
+      $("onlineVoice").appendChild(o);
+    }
+    $("onlineVoices").onchange = () => saveSettings({ onlineVoices: $("onlineVoices").checked });
+    $("onlineVoice").onchange = () => saveSettings({ onlineVoice: $("onlineVoice").value });
+    $("saveKey").onclick = async () => {
+      const key = $("googleKey").value.trim();
+      if (!key) return;
+      $("onlineStatus").textContent = "Checking the key with Google\u2026";
+      const r = await testOnlineVoice(key, settings.onlineVoice || "Charon");
+      if (!r.ok) return renderOnline(r.problem + " The key was not saved.");
+      await countSample(r.chars);
+      $("googleKey").value = "";
+      await saveSettings({ googleKey: key, onlineVoices: true });
+      playFloat(r.audio);
+    };
+    $("onlineListen").onclick = async () => {
+      if (sampleSrc) return sampleSrc.stop();
+      if (!settings.googleKey) return renderOnline("Save your Google key first, then you can listen.");
+      $("onlineStatus").textContent = "Asking Google\u2026";
+      const r = await testOnlineVoice(settings.googleKey, $("onlineVoice").value);
+      if (!r.ok) return renderOnline(r.problem);
+      await countSample(r.chars);
+      renderOnline();
+      playFloat(r.audio);
+    };
+    $("keyHelp").onclick = () => chrome.tabs.create({ url: chrome.runtime.getURL("google-key.html") });
   }
   async function saveSettings(patch) {
     settings = { ...settings, ...patch };
@@ -304,6 +570,7 @@
     if (res?.settings) settings = { ...DEFAULTS, ...res.settings };
     fillVoices($("voice"));
     fillLanguageVoices();
+    initOnline();
     renderSettings();
     if (res?.session) renderState(res.session);
     const url = res?.tabUrl || "";

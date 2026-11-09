@@ -99,11 +99,16 @@
     // detect other languages and switch voice
     autoReadClaude: true,
     // on claude.ai: read each new reply from Claude as soon as it finishes
+    // Google's online voices when you're online (see online.js). Needs your own
+    // free Google key; without one, Murmur's own voices read as always.
+    onlineVoices: true,
+    googleKey: "",
+    onlineVoice: "Charon",
     // Mya's picks, Nov 8: Spanish Sharvard (native engine), Italian Nicola with a
     // touch of her voice, Portuguese the Alex+Santa blend.
     // Chosen by measurement (dev/clarity.mjs): the cleanest speaker per language,
     // least noise above 8 kHz. Mya hears that noise as "static".
-    langVoices: { es: "piper:es_MX-claude-high", fr: "ff_siwis", it: "im_nicola*0.7+bm_fable*0.3", pt: "piper:pt_BR-cadu-medium", hi: "piper:hi_IN-pratham-medium", zh: "zm_yunyang" }
+    langVoices: { es: "piper:es_MX-claude-high", fr: "ff_siwis", it: "im_nicola*0.7+bm_fable*0.3", pt: "piper:pt_BR-cadu-medium", hi: "piper:hi_IN-pratham-medium", zh: "zm_yunyang", la: "im_nicola" }
   };
   var SPEEDS = [0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3, 1.5, 1.7, 2, 2.2, 2.5, 2.8, 3, 3.5];
 
@@ -307,6 +312,16 @@
       if (S.bar) updateBar();
     });
     document.addEventListener("contextmenu", (e) => S.lastClickTarget = e.target, true);
+    document.addEventListener(
+      "pointerdown",
+      (e) => {
+        if (e.button !== 0 || e.composedPath().some((n) => /^murmur-/.test(n?.id || n?.className || ""))) return;
+        const hit = document.caretRangeFromPoint?.(e.clientX, e.clientY);
+        const node = hit?.startContainer;
+        if (node?.nodeType === Node.TEXT_NODE && node.textContent.trim()) S.lastTextClick = { el: node.parentElement, at: Date.now() };
+      },
+      true
+    );
     let pageParagraphChars = 1;
     let relaxed = false;
     function holdsMainContent(el) {
@@ -681,6 +696,15 @@
       const selRange = sel && !sel.isCollapsed && sel.rangeCount ? sel.getRangeAt(0).cloneRange() : null;
       if ((mode === "selection" || mode === "selection-only") && !selRange) mode = "from-click";
       if (mode === "page" && selRange && selRange.toString().trim().length > 0) mode = "selection";
+      if (mode === "page" && !selRange && S.lastTextClick && Date.now() - S.lastTextClick.at < 6e5 && S.lastTextClick.el.isConnected) {
+        mode = "from-click";
+        S.lastClickTarget = S.lastTextClick.el;
+      }
+      S.lastTextClick = null;
+      if (mode === "page" && !selRange && isClaudeChat()) {
+        const replies = document.querySelectorAll(CLAUDE_MSG);
+        if (replies.length) return readClaudeMessage(replies[replies.length - 1]);
+      }
       let sentences;
       let startIndex = 0;
       if (mode === "selection" || mode === "selection-only") {

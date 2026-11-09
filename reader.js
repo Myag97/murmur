@@ -206,12 +206,12 @@ var require_runtime = __commonJS({
         });
       };
       function makeInvokeMethod(innerFn, self2, context) {
-        var state = GenStateSuspendedStart;
+        var state2 = GenStateSuspendedStart;
         return function invoke(method, arg) {
-          if (state === GenStateExecuting) {
+          if (state2 === GenStateExecuting) {
             throw new Error("Generator is already running");
           }
-          if (state === GenStateCompleted) {
+          if (state2 === GenStateCompleted) {
             if (method === "throw") {
               throw arg;
             }
@@ -231,18 +231,18 @@ var require_runtime = __commonJS({
             if (context.method === "next") {
               context.sent = context._sent = context.arg;
             } else if (context.method === "throw") {
-              if (state === GenStateSuspendedStart) {
-                state = GenStateCompleted;
+              if (state2 === GenStateSuspendedStart) {
+                state2 = GenStateCompleted;
                 throw context.arg;
               }
               context.dispatchException(context.arg);
             } else if (context.method === "return") {
               context.abrupt("return", context.arg);
             }
-            state = GenStateExecuting;
+            state2 = GenStateExecuting;
             var record = tryCatch(innerFn, self2, context);
             if (record.type === "normal") {
-              state = context.done ? GenStateCompleted : GenStateSuspendedYield;
+              state2 = context.done ? GenStateCompleted : GenStateSuspendedYield;
               if (record.arg === ContinueSentinel) {
                 continue;
               }
@@ -251,7 +251,7 @@ var require_runtime = __commonJS({
                 done: context.done
               };
             } else if (record.type === "throw") {
-              state = GenStateCompleted;
+              state2 = GenStateCompleted;
               context.method = "throw";
               context.arg = record.arg;
             }
@@ -125642,11 +125642,16 @@ var DEFAULTS = {
   // detect other languages and switch voice
   autoReadClaude: true,
   // on claude.ai: read each new reply from Claude as soon as it finishes
+  // Google's online voices when you're online (see online.js). Needs your own
+  // free Google key; without one, Murmur's own voices read as always.
+  onlineVoices: true,
+  googleKey: "",
+  onlineVoice: "Charon",
   // Mya's picks, Nov 8: Spanish Sharvard (native engine), Italian Nicola with a
   // touch of her voice, Portuguese the Alex+Santa blend.
   // Chosen by measurement (dev/clarity.mjs): the cleanest speaker per language,
   // least noise above 8 kHz. Mya hears that noise as "static".
-  langVoices: { es: "piper:es_MX-claude-high", fr: "ff_siwis", it: "im_nicola*0.7+bm_fable*0.3", pt: "piper:pt_BR-cadu-medium", hi: "piper:hi_IN-pratham-medium", zh: "zm_yunyang" }
+  langVoices: { es: "piper:es_MX-claude-high", fr: "ff_siwis", it: "im_nicola*0.7+bm_fable*0.3", pt: "piper:pt_BR-cadu-medium", hi: "piper:hi_IN-pratham-medium", zh: "zm_yunyang", la: "im_nicola" }
 };
 var FOREIGN_SPEED_CAP = 0.8;
 var LANG_SPEED_CAP = { fr: 1 };
@@ -125746,12 +125751,12 @@ var LANG_TONES = {
   // Round 3 (Mya liked the Turkish, so its balance is the reference for these,
   // not the English voice): warm low end, body around 11 dB over the mids,
   // presence near −12, air near −13 (dev/piper-compare.mjs).
-  de: [["lowshelf", 150, -9, 0.7], ["peak", 300, -7, 0.9], ["peak", 3e3, 3, 1], ["highshelf", 6e3, 3, 0.7]],
-  // 21 dB of bass and no top: "muffled"
+  de: [["peak", 300, -1.5, 0.9], ["peak", 3e3, 1.5, 1]],
+  // light touch: the MLS readers are clean recordings already
   el: [["lowshelf", 150, 2, 0.7], ["peak", 300, -4, 0.9], ["peak", 3e3, 2.5, 1], ["highshelf", 6e3, 1.5, 0.7]],
   // joy: full but boxy
-  ru: [["lowshelf", 150, 5, 0.7], ["peak", 300, 3, 0.9], ["peak", 3e3, 2.5, 1], ["highshelf", 6e3, 3, 0.7]],
-  // denis: smooth but dark
+  ru: [["peak", 300, -1.5, 0.9], ["peak", 3e3, 1, 1]],
+  // ruslan: already full and present; light touch
   ar: [["lowshelf", 150, 3, 0.7], ["peak", 300, -2, 0.9], ["peak", 3e3, 3, 1], ["highshelf", 6e3, 3, 0.7]],
   // kareem: recessed consonants
   tr: [["lowshelf", 150, -3, 0.7], ["peak", 300, -4, 0.9], ["peak", 3e3, 1.5, 1], ["highshelf", 6e3, 1, 0.7]],
@@ -125968,6 +125973,33 @@ function withGap(samples, rate, seconds) {
   out.set(samples, 0);
   return out;
 }
+function speechLevel(x2, rate = 24e3) {
+  const F3 = Math.round(rate * 0.03);
+  const frames = [];
+  let max = 0;
+  for (let s3 = 0; s3 + F3 <= x2.length; s3 += F3) {
+    let e2 = 0;
+    for (let i3 = 0; i3 < F3; i3++) e2 += x2[s3 + i3] * x2[s3 + i3];
+    const r2 = Math.sqrt(e2 / F3);
+    frames.push(r2);
+    if (r2 > max) max = r2;
+  }
+  const active = frames.filter((r2) => r2 > max * 0.1);
+  if (!active.length) return 0;
+  return Math.sqrt(active.reduce((n2, r2) => n2 + r2 * r2, 0) / active.length);
+}
+var SPEECH_TARGET = 0.091;
+function matchLoudness(x2, rate = 24e3, target = SPEECH_TARGET) {
+  const level = speechLevel(x2, rate);
+  if (!level) return x2;
+  const g3 = Math.min(8, target / level);
+  const y3 = new Float32Array(x2.length);
+  for (let i3 = 0; i3 < x2.length; i3++) {
+    const v3 = x2[i3] * g3;
+    y3[i3] = Math.abs(v3) < 0.8 ? v3 : Math.sign(v3) * (0.8 + 0.17 * Math.tanh((Math.abs(v3) - 0.8) / 0.17));
+  }
+  return y3;
+}
 
 // src/mixed.js
 var LATIN_HINTS = [
@@ -126025,8 +126057,8 @@ function splitByLanguage(text, mainLang = "en", hints = null) {
 // src/piper.js
 var PIPER_VOICES = {
   tr: "tr_TR-dfki-medium",
-  ru: "ru_RU-denis-medium",
-  // the smoothest of the four Russians (dmitri and ruslan measure sharp)
+  ru: "ru_RU-ruslan-medium",
+  // Mya's pick in the A/B round (over Denis)
   el: "el_GR-joy-medium",
   // fuller than rapunzelina, which measured thin
   ar: "ar_JO-kareem-medium",
@@ -126177,6 +126209,7 @@ async function fetchVoiceFile(name, ext) {
 }
 var voices = /* @__PURE__ */ new Map();
 async function loadVoice(name) {
+  name = String(name).split("#")[0];
   if (!voices.has(name)) {
     voices.set(
       name,
@@ -126264,7 +126297,7 @@ function phonemesToIds(phonemes, idMap, missing) {
   if (eos !== void 0) ids.push(eos);
   return ids;
 }
-async function runModel(voice, ids, speed, lang) {
+async function runModel(voice, ids, speed, lang, sid = 0) {
   const { config, session } = voice;
   const inf = config.inference || {};
   const tune = { ...PIPER_TUNING.default, ...PIPER_TUNING[lang] || {} };
@@ -126274,7 +126307,7 @@ async function runModel(voice, ids, speed, lang) {
     input_lengths: new Ge("int64", BigInt64Array.from([BigInt(ids.length)]), [1]),
     scales: new Ge("float32", scales, [3])
   };
-  if (session.inputNames.includes("sid")) feeds.sid = new Ge("int64", BigInt64Array.from([0n]), [1]);
+  if (session.inputNames.includes("sid")) feeds.sid = new Ge("int64", BigInt64Array.from([BigInt(sid)]), [1]);
   const out = await session.run(feeds);
   const data = out.output.data;
   return data instanceof Float32Array ? data : Float32Array.from(data);
@@ -126316,6 +126349,7 @@ async function piperSynthesize({ lang, text, phonemizeIpa, speed = 1, voiceName 
   if (!name) throw new Error(`Piper: no voice for language "${lang}"`);
   if (typeof phonemizeIpa !== "function") throw new Error("Piper: a phonemizeIpa(text, espeakVoice) function is required");
   const voice = await loadVoice(name);
+  const sid = parseInt(String(name).split("#")[1] || "0", 10) || 0;
   const espeakVoice = voice.config.espeak?.voice || lang;
   const modelRate = voice.config.audio?.sample_rate || 22050;
   const missing = /* @__PURE__ */ new Set();
@@ -126327,10 +126361,206 @@ async function piperSynthesize({ lang, text, phonemizeIpa, speed = 1, voiceName 
     phonemeStrings.push(phonemes);
     const ids = phonemesToIds(phonemes, voice.idMap, missing);
     if (ids.length <= 3) continue;
-    parts.push(resampleHermite(await runModel(voice, ids, speed, lang), modelRate, PIPER_SAMPLE_RATE));
+    parts.push(resampleHermite(await runModel(voice, ids, speed, lang, sid), modelRate, PIPER_SAMPLE_RATE));
   }
   const audio = parts.length ? concatAudio(parts, Math.round(SENTENCE_GAP_SECONDS * PIPER_SAMPLE_RATE)) : new Float32Array(0);
   return { audio, sampleRate: PIPER_SAMPLE_RATE, phonemes: phonemeStrings.join(" "), missing: [...missing] };
+}
+
+// src/online.js
+var ONLINE_LOCALES = {
+  en: "en-GB",
+  es: "es-US",
+  fr: "fr-FR",
+  it: "it-IT",
+  pt: "pt-BR",
+  hi: "hi-IN",
+  zh: "cmn-CN",
+  de: "de-DE",
+  el: "el-GR",
+  ru: "ru-RU",
+  ar: "ar-XA",
+  tr: "tr-TR",
+  ja: "ja-JP",
+  ko: "ko-KR",
+  nl: "nl-NL",
+  pl: "pl-PL",
+  uk: "uk-UA",
+  vi: "vi-VN",
+  id: "id-ID",
+  th: "th-TH",
+  bn: "bn-IN",
+  sv: "sv-SE",
+  da: "da-DK",
+  fi: "fi-FI",
+  nb: "nb-NO",
+  no: "nb-NO",
+  cs: "cs-CZ",
+  hu: "hu-HU",
+  ro: "ro-RO",
+  sk: "sk-SK",
+  bg: "bg-BG",
+  hr: "hr-HR",
+  sr: "sr-RS",
+  he: "he-IL",
+  fa: "fa-IR",
+  ta: "ta-IN",
+  te: "te-IN",
+  mr: "mr-IN",
+  gu: "gu-IN",
+  kn: "kn-IN",
+  ml: "ml-IN",
+  ur: "ur-IN",
+  sw: "sw-KE"
+};
+var ONLINE_VOICES = [
+  { id: "Charon", desc: "informative" },
+  { id: "Iapetus", desc: "clear" },
+  { id: "Schedar", desc: "even" },
+  { id: "Sadaltager", desc: "knowledgeable" },
+  { id: "Rasalgethi", desc: "informative" },
+  { id: "Orus", desc: "firm" },
+  { id: "Alnilam", desc: "firm" },
+  { id: "Umbriel", desc: "easy-going" },
+  { id: "Achird", desc: "friendly" },
+  { id: "Puck", desc: "upbeat" },
+  { id: "Fenrir", desc: "excitable" },
+  { id: "Enceladus", desc: "breathy" },
+  { id: "Algieba", desc: "smooth" },
+  { id: "Algenib", desc: "gravelly" },
+  { id: "Zubenelgenubi", desc: "casual" },
+  { id: "Sadachbia", desc: "lively" }
+];
+var STOP_AT = 45e4;
+function addUsage(saved, add, month = monthKey()) {
+  const base = saved && saved.month === month ? saved.chars : 0;
+  return { month, chars: base + (add || 0) };
+}
+var ENDPOINT = "https://texttospeech.googleapis.com/v1/text:synthesize";
+var TIMEOUT_MS = 8e3;
+var monthKey = (d3 = /* @__PURE__ */ new Date()) => `${d3.getFullYear()}-${String(d3.getMonth() + 1).padStart(2, "0")}`;
+var state = {
+  usage: { month: monthKey(), chars: 0 },
+  // grows as we read; seeded from settings
+  pauseUntil: 0,
+  // after a network failure or Google saying "too many", wait a bit
+  badKey: "",
+  // a key Google refused; don't keep trying it
+  missing: /* @__PURE__ */ new Set(),
+  // language codes Google said it has no such voice for
+  lastProblem: ""
+};
+function syncUsage(saved) {
+  const m3 = monthKey();
+  if (state.usage.month !== m3) state.usage = { month: m3, chars: 0 };
+  if (saved && saved.month === m3 && saved.chars > state.usage.chars) state.usage.chars = saved.chars;
+}
+function usageNow(saved) {
+  syncUsage(saved);
+  return { ...state.usage };
+}
+function onlineReady(settings2, lang, { ignoreLimit = false } = {}) {
+  if (!settings2?.onlineVoices || !settings2.googleKey) return false;
+  if (settings2.googleKey === state.badKey) return false;
+  if (typeof navigator !== "undefined" && navigator.onLine === false) return false;
+  if (Date.now() < state.pauseUntil) return false;
+  const locale = ONLINE_LOCALES[lang || "en"];
+  if (!locale || state.missing.has(locale)) return false;
+  syncUsage(settings2.onlineUsage);
+  return ignoreLimit || state.usage.chars < STOP_AT;
+}
+function base64ToBytes(b64) {
+  const bin = atob(b64);
+  const out = new Uint8Array(bin.length);
+  for (let i3 = 0; i3 < bin.length; i3++) out[i3] = bin.charCodeAt(i3);
+  return out;
+}
+function wavToFloat(bytes) {
+  const v3 = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  let off = 12;
+  let rate = 24e3;
+  while (off + 8 <= bytes.length) {
+    const id2 = String.fromCharCode(bytes[off], bytes[off + 1], bytes[off + 2], bytes[off + 3]);
+    const size = v3.getUint32(off + 4, true);
+    if (id2 === "fmt ") rate = v3.getUint32(off + 12, true);
+    if (id2 === "data") {
+      const n3 = Math.floor(Math.min(size, bytes.length - off - 8) / 2);
+      const out2 = new Float32Array(n3);
+      for (let i3 = 0; i3 < n3; i3++) out2[i3] = v3.getInt16(off + 8 + i3 * 2, true) / 32768;
+      return { audio: out2, rate };
+    }
+    off += 8 + size + (size & 1);
+  }
+  const n2 = Math.floor(bytes.length / 2);
+  const out = new Float32Array(n2);
+  for (let i3 = 0; i3 < n2; i3++) out[i3] = v3.getInt16(i3 * 2, true) / 32768;
+  return { audio: out, rate };
+}
+async function onlineSynthesize({ text, lang, settings: settings2, speakingRate = 1, onUsage, ignoreLimit = false }) {
+  if (!onlineReady(settings2, lang, { ignoreLimit })) return null;
+  const locale = ONLINE_LOCALES[lang || "en"];
+  const speaker = settings2.onlineVoice || "Charon";
+  const body = {
+    input: { text },
+    voice: { languageCode: locale, name: `${locale}-Chirp3-HD-${speaker}` },
+    audioConfig: { audioEncoding: "LINEAR16", sampleRateHertz: 24e3, speakingRate: Math.max(0.25, Math.min(2, speakingRate)) }
+  };
+  const ctl = new AbortController();
+  const timer = setTimeout(() => ctl.abort(), TIMEOUT_MS);
+  let res;
+  try {
+    res = await fetch(ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Goog-Api-Key": settings2.googleKey },
+      body: JSON.stringify(body),
+      signal: ctl.signal
+    });
+  } catch {
+    state.pauseUntil = Date.now() + 6e4;
+    state.lastProblem = "Couldn't reach Google, so Murmur's own voice is reading.";
+    return null;
+  } finally {
+    clearTimeout(timer);
+  }
+  if (!res.ok) {
+    let msg = "";
+    try {
+      msg = (await res.json())?.error?.message || "";
+    } catch {
+    }
+    if (res.status === 400 && /voice|language/i.test(msg)) {
+      state.missing.add(locale);
+    } else if (res.status === 400 || res.status === 401 || res.status === 403) {
+      state.badKey = settings2.googleKey;
+      state.lastProblem = "Google did not accept the key: " + (msg || res.status);
+    } else {
+      state.pauseUntil = Date.now() + 6e4;
+      state.lastProblem = "Google was busy, so Murmur's own voice is reading for a minute.";
+    }
+    return null;
+  }
+  const json = await res.json();
+  if (!json?.audioContent) return null;
+  const { audio } = wavToFloat(base64ToBytes(json.audioContent));
+  syncUsage(settings2.onlineUsage);
+  state.usage.chars += text.length;
+  state.lastProblem = "";
+  onUsage?.({ month: state.usage.month, add: text.length });
+  return { audio, chars: text.length };
+}
+async function testOnlineVoice(key, speaker = "Charon", lang = "en") {
+  const s3 = { onlineVoices: true, googleKey: key, onlineVoice: speaker, onlineUsage: null };
+  state.badKey = "";
+  state.pauseUntil = 0;
+  const line = {
+    en: "Hello. This is how I sound when I read to you.",
+    es: "Hola. As\xED sueno cuando te leo en espa\xF1ol.",
+    fr: "Bonjour. Voici ma voix quand je lis en fran\xE7ais.",
+    de: "Guten Tag. So klinge ich, wenn ich auf Deutsch vorlese."
+  }[lang] || "Hello.";
+  const r2 = await onlineSynthesize({ text: line, lang, settings: s3, ignoreLimit: true });
+  if (!r2) return { ok: false, problem: state.lastProblem || "No answer from Google." };
+  return { ok: true, audio: r2.audio, chars: r2.chars };
 }
 
 // src/engine.js
@@ -126338,6 +126568,35 @@ var PLAIN_MODEL_ID = "onnx-community/Kokoro-82M-v1.0-ONNX";
 var LOOKAHEAD = 3;
 var KEEP_BEHIND = 3;
 var SAMPLE_RATE2 = 24e3;
+function spreadWords(text, audio) {
+  const F3 = 240;
+  let max = 0;
+  const lv = [];
+  for (let s3 = 0; s3 + F3 <= audio.length; s3 += F3) {
+    let e2 = 0;
+    for (let i3 = 0; i3 < F3; i3++) e2 = Math.max(e2, Math.abs(audio[s3 + i3]));
+    lv.push(e2);
+    if (e2 > max) max = e2;
+  }
+  let a2 = lv.findIndex((e2) => e2 > max * 0.08);
+  let b3 = lv.length - 1 - [...lv].reverse().findIndex((e2) => e2 > max * 0.08);
+  if (a2 < 0) {
+    a2 = 0;
+    b3 = lv.length - 1;
+  }
+  const t0 = a2 * F3 / SAMPLE_RATE2, t1 = (b3 + 1) * F3 / SAMPLE_RATE2;
+  const words = text.split(" ").filter(Boolean);
+  const lens = words.map((w3) => w3.replace(/[^\p{L}\p{N}]/gu, "").length + 1);
+  const sum = lens.reduce((x2, y3) => x2 + y3, 0) || 1;
+  const starts = [], ends = [];
+  let acc = 0;
+  for (const l2 of lens) {
+    starts.push(t0 + acc / sum * (t1 - t0));
+    acc += l2;
+    ends.push(t0 + acc / sum * (t1 - t0));
+  }
+  return { starts, ends };
+}
 function createEngine({ wasmPaths, onEvent }) {
   __webpack_exports__env.allowLocalModels = false;
   __webpack_exports__env.useBrowserCache = true;
@@ -126509,6 +126768,16 @@ function createEngine({ wasmPaths, onEvent }) {
     const { modelSpeed, squeeze } = splitSpeed(wanted);
     const opts = { voice, speed: modelSpeed / f3, lang: lang || "en" };
     let r2;
+    const online = await onlineSynthesize({ text, lang: lang || "en", settings: settings2, speakingRate: modelSpeed, onUsage: (usage) => emit("online-usage", { usage }) }).catch(() => null);
+    if (online && online.audio.length > 100) {
+      r2 = { audio: online.audio, ...spreadWords(text, online.audio) };
+      if (squeeze > 1.01) {
+        const q2 = squeezeSpeech(r2.audio, squeeze, SAMPLE_RATE2);
+        r2 = { audio: q2.audio, starts: r2.starts.map(q2.map), ends: r2.ends.map(q2.map) };
+      }
+      r2.audio = matchLoudness(r2.audio, SAMPLE_RATE2);
+      return r2;
+    }
     const piperName = voice.startsWith("piper:") ? voice.slice(6) : foreign && ownVoice && PIPER_VOICES[lang] ? PIPER_VOICES[lang] : null;
     if (piperName) {
       const p3 = await piperSynthesize({ lang, text, phonemizeIpa: rawIpa, speed: modelSpeed, voiceName: piperName });
@@ -126527,7 +126796,7 @@ function createEngine({ wasmPaths, onEvent }) {
         ends.push(acc / sum * dur);
       }
       r2 = { audio: p3.audio, starts, ends };
-      if (r2.audio && r2.audio.length > 100) r2.audio = shapeVoice(r2.audio, SAMPLE_RATE2, { tone: settings2.tone || "natural", speed: wanted, lang, ownVoice: false });
+      if (r2.audio && r2.audio.length > 100) r2.audio = matchLoudness(shapeVoice(r2.audio, SAMPLE_RATE2, { tone: settings2.tone || "natural", speed: wanted, lang, ownVoice: false }), SAMPLE_RATE2);
       return r2;
     }
     if (st2.timed) {
@@ -126554,6 +126823,7 @@ function createEngine({ wasmPaths, onEvent }) {
         }
       }
       r2.audio = shapeVoice(r2.audio, SAMPLE_RATE2, { tone: settings2.tone || "natural", speed: wanted, lang: lang || "en", ownVoice: ownVoice && !foreign ? true : !foreign });
+      if (foreign) r2.audio = matchLoudness(r2.audio, SAMPLE_RATE2);
     }
     return r2;
   }
@@ -130539,8 +130809,8 @@ var AnnotationEditorUIManager = class _AnnotationEditorUIManager {
         editor.show(visible);
       }
     }
-    const state = this.#showAllStates?.get(AnnotationEditorParamsType.HIGHLIGHT_SHOW_ALL) ?? true;
-    if (state !== visible) {
+    const state2 = this.#showAllStates?.get(AnnotationEditorParamsType.HIGHLIGHT_SHOW_ALL) ?? true;
+    if (state2 !== visible) {
       this.#dispatchUpdateUI([[AnnotationEditorParamsType.HIGHLIGHT_SHOW_ALL, visible]]);
     }
   }
@@ -141487,28 +141757,28 @@ var OptionalContentConfig = class _OptionalContentConfig {
     const operator = array[0];
     for (let i3 = 1; i3 < length; i3++) {
       const element = array[i3];
-      let state;
+      let state2;
       if (Array.isArray(element)) {
-        state = this.#evaluateVisibilityExpression(element);
+        state2 = this.#evaluateVisibilityExpression(element);
       } else if (this.#groups.has(element)) {
-        state = this.#groups.get(element).visible;
+        state2 = this.#groups.get(element).visible;
       } else {
         warn(`Optional content group not found: ${element}`);
         return true;
       }
       switch (operator) {
         case "And":
-          if (!state) {
+          if (!state2) {
             return false;
           }
           break;
         case "Or":
-          if (state) {
+          if (state2) {
             return true;
           }
           break;
         case "Not":
-          return !state;
+          return !state2;
         default:
           return true;
       }
@@ -141603,11 +141873,11 @@ var OptionalContentConfig = class _OptionalContentConfig {
     this.#cachedGetHash = null;
   }
   setOCGState({
-    state,
+    state: state2,
     preserveRB
   }) {
     let operator;
-    for (const elem of state) {
+    for (const elem of state2) {
       switch (elem) {
         case "ON":
         case "OFF":
@@ -155699,10 +155969,28 @@ var docTitle = "Murmur";
 var docLang = "en";
 var status = "idle";
 var saveCancelled = false;
-async function loadSettings() {
-  if (isExt && chrome.storage?.sync) return { ...DEFAULTS, ...await chrome.storage.sync.get(DEFAULTS) };
+async function loadUsage() {
   try {
-    return { ...DEFAULTS, ...JSON.parse(localStorage.getItem("murmur:settings") || "{}") };
+    if (isExt && chrome.storage?.local) return (await chrome.storage.local.get("onlineUsage")).onlineUsage || null;
+    return JSON.parse(localStorage.getItem("murmur:onlineUsage") || "null");
+  } catch {
+    return null;
+  }
+}
+function saveUsage(u3) {
+  const usage = addUsage(settings.onlineUsage, u3?.add, u3?.month);
+  settings.onlineUsage = usage;
+  try {
+    if (isExt && chrome.storage?.local) chrome.storage.local.set({ onlineUsage: usage });
+    else localStorage.setItem("murmur:onlineUsage", JSON.stringify(usage));
+  } catch {
+  }
+}
+async function loadSettings() {
+  const onlineUsage = await loadUsage();
+  if (isExt && chrome.storage?.sync) return { ...DEFAULTS, ...await chrome.storage.sync.get(DEFAULTS), onlineUsage };
+  try {
+    return { ...DEFAULTS, ...JSON.parse(localStorage.getItem("murmur:settings") || "{}"), onlineUsage };
   } catch {
     return { ...DEFAULTS };
   }
@@ -155712,7 +156000,8 @@ function saveSettings(patch) {
   if (isExt && chrome.storage?.sync) chrome.storage.sync.set(patch);
   else {
     try {
-      localStorage.setItem("murmur:settings", JSON.stringify(settings));
+      const { onlineUsage, ...keep } = settings;
+      localStorage.setItem("murmur:settings", JSON.stringify(keep));
     } catch {
     }
   }
@@ -155724,6 +156013,7 @@ var engine = createEngine({
     if (ev2.type === "sentence") setCurrent(ev2.index);
     else if (ev2.type === "word") setWord(ev2.index, ev2.word);
     else if (ev2.type === "state") setStatus(ev2.state, ev2.detail);
+    else if (ev2.type === "online-usage") saveUsage(ev2.usage);
     else if (ev2.type === "ended") {
       setStatus("idle", "Finished");
       savePosition(0);
@@ -155738,11 +156028,11 @@ function timeLeft() {
   for (let k4 = current; k4 < sentences.length; k4++) n2 += sentences[k4].text.length;
   return formatLeft(eta.secondsLeft(n2, settings.speed || 1));
 }
-function setStatus(state, detail = "") {
-  if (status === "playing" && state !== "playing") eta.pause();
-  status = state;
+function setStatus(state2, detail = "") {
+  if (status === "playing" && state2 !== "playing") eta.pause();
+  status = state2;
   const el2 = $3("status");
-  el2.classList.toggle("err", state === "error");
+  el2.classList.toggle("err", state2 === "error");
   const left = timeLeft();
   const map2 = {
     idle: detail || "Ready",
@@ -155752,9 +156042,9 @@ function setStatus(state, detail = "") {
     paused: "Paused" + (left ? " \xB7 " + left : ""),
     error: detail || "Something went wrong"
   };
-  el2.textContent = map2[state] ?? state;
-  $3("play").innerHTML = state === "playing" ? "&#10074;&#10074;" : "&#9654;";
-  document.title = (state === "playing" ? "\u25B6 " : "") + docTitle;
+  el2.textContent = map2[state2] ?? state2;
+  $3("play").innerHTML = state2 === "playing" ? "&#10074;&#10074;" : "&#9654;";
+  document.title = (state2 === "playing" ? "\u25B6 " : "") + docTitle;
 }
 function setCurrent(i3) {
   if (current >= 0 && sentences[current]) sentences[current].el.classList.remove("cur");
@@ -156684,6 +156974,7 @@ async function init() {
   $3("voice").value = settings.voice;
   $3("speed").value = String(settings.speed);
   if (!$3("speed").value) $3("speed").value = "1";
+  initOnline();
   $3("voice").onchange = () => saveSettings({ voice: $3("voice").value });
   $3("speed").onchange = () => saveSettings({ speed: parseFloat($3("speed").value) });
   engine.setSettings(settings, true);
@@ -156720,6 +157011,74 @@ init();
 window.murmurReader = { engine, get sentences() {
   return sentences;
 }, loadFile, render, textToBlocks, htmlToBlocks, pdfToBlocks, toMp3, toWav };
+function renderOnline(problem) {
+  $3("onlineVoices").checked = settings.onlineVoices !== false;
+  $3("onlineVoice").value = settings.onlineVoice || "Charon";
+  if (settings.googleKey) $3("googleKey").placeholder = "Key saved (paste a new one to change it)";
+  const used = usageNow(settings.onlineUsage).chars;
+  let text;
+  if (problem) text = problem;
+  else if (!settings.googleKey) text = "No key yet, so Murmur uses its own voices.";
+  else if (settings.onlineVoices === false) text = "Off: Murmur uses its own voices.";
+  else if (used >= STOP_AT) text = "This month's free amount is used up; Murmur's own voices read until next month.";
+  else text = "On. This month: " + used.toLocaleString() + " of " + STOP_AT.toLocaleString() + " free letters on this device.";
+  $3("onlineStatus").textContent = text;
+}
+var onlineSrc = null;
+function playOnlineSample(audio) {
+  const ctx = new AudioContext({ sampleRate: 24e3 });
+  const buf = ctx.createBuffer(1, audio.length, 24e3);
+  buf.copyToChannel(audio, 0);
+  onlineSrc = ctx.createBufferSource();
+  onlineSrc.buffer = buf;
+  onlineSrc.connect(ctx.destination);
+  onlineSrc.onended = () => {
+    onlineSrc = null;
+    ctx.close();
+  };
+  onlineSrc.start();
+}
+function initOnline() {
+  for (const v3 of ONLINE_VOICES) {
+    const o3 = document.createElement("option");
+    o3.value = v3.id;
+    o3.textContent = v3.id + " (" + v3.desc + ")";
+    $3("onlineVoice").appendChild(o3);
+  }
+  $3("onlineBtn").onclick = () => {
+    renderOnline();
+    $3("onlineDlg").showModal();
+  };
+  $3("onlineClose").onclick = () => $3("onlineDlg").close();
+  $3("onlineVoices").onchange = () => {
+    saveSettings({ onlineVoices: $3("onlineVoices").checked });
+    renderOnline();
+  };
+  $3("onlineVoice").onchange = () => saveSettings({ onlineVoice: $3("onlineVoice").value });
+  $3("onlineSave").onclick = async () => {
+    const key = $3("googleKey").value.trim();
+    if (!key) return $3("onlineDlg").close();
+    $3("onlineStatus").textContent = "Checking the key with Google\u2026";
+    const r2 = await testOnlineVoice(key, $3("onlineVoice").value);
+    if (!r2.ok) return renderOnline(r2.problem + " The key was not saved.");
+    saveUsage({ add: r2.chars });
+    $3("googleKey").value = "";
+    saveSettings({ googleKey: key, onlineVoices: true });
+    renderOnline();
+    playOnlineSample(r2.audio);
+  };
+  $3("onlineListen").onclick = async () => {
+    if (onlineSrc) return onlineSrc.stop();
+    const key = $3("googleKey").value.trim() || settings.googleKey;
+    if (!key) return renderOnline("Paste your Google key first, then you can listen.");
+    $3("onlineStatus").textContent = "Asking Google\u2026";
+    const r2 = await testOnlineVoice(key, $3("onlineVoice").value);
+    if (!r2.ok) return renderOnline(r2.problem);
+    saveUsage({ add: r2.chars });
+    renderOnline();
+    playOnlineSample(r2.audio);
+  };
+}
 /*! Bundled license information:
 
 jszip/dist/jszip.min.js:

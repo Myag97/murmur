@@ -91668,11 +91668,16 @@ var DEFAULTS = {
   // detect other languages and switch voice
   autoReadClaude: true,
   // on claude.ai: read each new reply from Claude as soon as it finishes
+  // Google's online voices when you're online (see online.js). Needs your own
+  // free Google key; without one, Murmur's own voices read as always.
+  onlineVoices: true,
+  googleKey: "",
+  onlineVoice: "Charon",
   // Mya's picks, Nov 8: Spanish Sharvard (native engine), Italian Nicola with a
   // touch of her voice, Portuguese the Alex+Santa blend.
   // Chosen by measurement (dev/clarity.mjs): the cleanest speaker per language,
   // least noise above 8 kHz. Mya hears that noise as "static".
-  langVoices: { es: "piper:es_MX-claude-high", fr: "ff_siwis", it: "im_nicola*0.7+bm_fable*0.3", pt: "piper:pt_BR-cadu-medium", hi: "piper:hi_IN-pratham-medium", zh: "zm_yunyang" }
+  langVoices: { es: "piper:es_MX-claude-high", fr: "ff_siwis", it: "im_nicola*0.7+bm_fable*0.3", pt: "piper:pt_BR-cadu-medium", hi: "piper:hi_IN-pratham-medium", zh: "zm_yunyang", la: "im_nicola" }
 };
 var FOREIGN_SPEED_CAP = 0.8;
 var LANG_SPEED_CAP = { fr: 1 };
@@ -91771,12 +91776,12 @@ var LANG_TONES = {
   // Round 3 (Mya liked the Turkish, so its balance is the reference for these,
   // not the English voice): warm low end, body around 11 dB over the mids,
   // presence near −12, air near −13 (dev/piper-compare.mjs).
-  de: [["lowshelf", 150, -9, 0.7], ["peak", 300, -7, 0.9], ["peak", 3e3, 3, 1], ["highshelf", 6e3, 3, 0.7]],
-  // 21 dB of bass and no top: "muffled"
+  de: [["peak", 300, -1.5, 0.9], ["peak", 3e3, 1.5, 1]],
+  // light touch: the MLS readers are clean recordings already
   el: [["lowshelf", 150, 2, 0.7], ["peak", 300, -4, 0.9], ["peak", 3e3, 2.5, 1], ["highshelf", 6e3, 1.5, 0.7]],
   // joy: full but boxy
-  ru: [["lowshelf", 150, 5, 0.7], ["peak", 300, 3, 0.9], ["peak", 3e3, 2.5, 1], ["highshelf", 6e3, 3, 0.7]],
-  // denis: smooth but dark
+  ru: [["peak", 300, -1.5, 0.9], ["peak", 3e3, 1, 1]],
+  // ruslan: already full and present; light touch
   ar: [["lowshelf", 150, 3, 0.7], ["peak", 300, -2, 0.9], ["peak", 3e3, 3, 1], ["highshelf", 6e3, 3, 0.7]],
   // kareem: recessed consonants
   tr: [["lowshelf", 150, -3, 0.7], ["peak", 300, -4, 0.9], ["peak", 3e3, 1.5, 1], ["highshelf", 6e3, 1, 0.7]],
@@ -91993,6 +91998,33 @@ function withGap(samples, rate, seconds) {
   out.set(samples, 0);
   return out;
 }
+function speechLevel(x2, rate = 24e3) {
+  const F3 = Math.round(rate * 0.03);
+  const frames = [];
+  let max = 0;
+  for (let s3 = 0; s3 + F3 <= x2.length; s3 += F3) {
+    let e2 = 0;
+    for (let i3 = 0; i3 < F3; i3++) e2 += x2[s3 + i3] * x2[s3 + i3];
+    const r2 = Math.sqrt(e2 / F3);
+    frames.push(r2);
+    if (r2 > max) max = r2;
+  }
+  const active = frames.filter((r2) => r2 > max * 0.1);
+  if (!active.length) return 0;
+  return Math.sqrt(active.reduce((n2, r2) => n2 + r2 * r2, 0) / active.length);
+}
+var SPEECH_TARGET = 0.091;
+function matchLoudness(x2, rate = 24e3, target = SPEECH_TARGET) {
+  const level = speechLevel(x2, rate);
+  if (!level) return x2;
+  const g3 = Math.min(8, target / level);
+  const y3 = new Float32Array(x2.length);
+  for (let i3 = 0; i3 < x2.length; i3++) {
+    const v3 = x2[i3] * g3;
+    y3[i3] = Math.abs(v3) < 0.8 ? v3 : Math.sign(v3) * (0.8 + 0.17 * Math.tanh((Math.abs(v3) - 0.8) / 0.17));
+  }
+  return y3;
+}
 
 // src/mixed.js
 var LATIN_HINTS = [
@@ -92050,8 +92082,8 @@ function splitByLanguage(text, mainLang = "en", hints = null) {
 // src/piper.js
 var PIPER_VOICES = {
   tr: "tr_TR-dfki-medium",
-  ru: "ru_RU-denis-medium",
-  // the smoothest of the four Russians (dmitri and ruslan measure sharp)
+  ru: "ru_RU-ruslan-medium",
+  // Mya's pick in the A/B round (over Denis)
   el: "el_GR-joy-medium",
   // fuller than rapunzelina, which measured thin
   ar: "ar_JO-kareem-medium",
@@ -92202,6 +92234,7 @@ async function fetchVoiceFile(name, ext) {
 }
 var voices = /* @__PURE__ */ new Map();
 async function loadVoice(name) {
+  name = String(name).split("#")[0];
   if (!voices.has(name)) {
     voices.set(
       name,
@@ -92289,7 +92322,7 @@ function phonemesToIds(phonemes, idMap, missing) {
   if (eos !== void 0) ids.push(eos);
   return ids;
 }
-async function runModel(voice, ids, speed, lang) {
+async function runModel(voice, ids, speed, lang, sid = 0) {
   const { config, session } = voice;
   const inf = config.inference || {};
   const tune = { ...PIPER_TUNING.default, ...PIPER_TUNING[lang] || {} };
@@ -92299,7 +92332,7 @@ async function runModel(voice, ids, speed, lang) {
     input_lengths: new Ge("int64", BigInt64Array.from([BigInt(ids.length)]), [1]),
     scales: new Ge("float32", scales, [3])
   };
-  if (session.inputNames.includes("sid")) feeds.sid = new Ge("int64", BigInt64Array.from([0n]), [1]);
+  if (session.inputNames.includes("sid")) feeds.sid = new Ge("int64", BigInt64Array.from([BigInt(sid)]), [1]);
   const out = await session.run(feeds);
   const data = out.output.data;
   return data instanceof Float32Array ? data : Float32Array.from(data);
@@ -92341,6 +92374,7 @@ async function piperSynthesize({ lang, text, phonemizeIpa, speed = 1, voiceName 
   if (!name) throw new Error(`Piper: no voice for language "${lang}"`);
   if (typeof phonemizeIpa !== "function") throw new Error("Piper: a phonemizeIpa(text, espeakVoice) function is required");
   const voice = await loadVoice(name);
+  const sid = parseInt(String(name).split("#")[1] || "0", 10) || 0;
   const espeakVoice = voice.config.espeak?.voice || lang;
   const modelRate = voice.config.audio?.sample_rate || 22050;
   const missing = /* @__PURE__ */ new Set();
@@ -92352,10 +92386,166 @@ async function piperSynthesize({ lang, text, phonemizeIpa, speed = 1, voiceName 
     phonemeStrings.push(phonemes);
     const ids = phonemesToIds(phonemes, voice.idMap, missing);
     if (ids.length <= 3) continue;
-    parts.push(resampleHermite(await runModel(voice, ids, speed, lang), modelRate, PIPER_SAMPLE_RATE));
+    parts.push(resampleHermite(await runModel(voice, ids, speed, lang, sid), modelRate, PIPER_SAMPLE_RATE));
   }
   const audio = parts.length ? concatAudio(parts, Math.round(SENTENCE_GAP_SECONDS * PIPER_SAMPLE_RATE)) : new Float32Array(0);
   return { audio, sampleRate: PIPER_SAMPLE_RATE, phonemes: phonemeStrings.join(" "), missing: [...missing] };
+}
+
+// src/online.js
+var ONLINE_LOCALES = {
+  en: "en-GB",
+  es: "es-US",
+  fr: "fr-FR",
+  it: "it-IT",
+  pt: "pt-BR",
+  hi: "hi-IN",
+  zh: "cmn-CN",
+  de: "de-DE",
+  el: "el-GR",
+  ru: "ru-RU",
+  ar: "ar-XA",
+  tr: "tr-TR",
+  ja: "ja-JP",
+  ko: "ko-KR",
+  nl: "nl-NL",
+  pl: "pl-PL",
+  uk: "uk-UA",
+  vi: "vi-VN",
+  id: "id-ID",
+  th: "th-TH",
+  bn: "bn-IN",
+  sv: "sv-SE",
+  da: "da-DK",
+  fi: "fi-FI",
+  nb: "nb-NO",
+  no: "nb-NO",
+  cs: "cs-CZ",
+  hu: "hu-HU",
+  ro: "ro-RO",
+  sk: "sk-SK",
+  bg: "bg-BG",
+  hr: "hr-HR",
+  sr: "sr-RS",
+  he: "he-IL",
+  fa: "fa-IR",
+  ta: "ta-IN",
+  te: "te-IN",
+  mr: "mr-IN",
+  gu: "gu-IN",
+  kn: "kn-IN",
+  ml: "ml-IN",
+  ur: "ur-IN",
+  sw: "sw-KE"
+};
+var STOP_AT = 45e4;
+var ENDPOINT = "https://texttospeech.googleapis.com/v1/text:synthesize";
+var TIMEOUT_MS = 8e3;
+var monthKey = (d3 = /* @__PURE__ */ new Date()) => `${d3.getFullYear()}-${String(d3.getMonth() + 1).padStart(2, "0")}`;
+var state = {
+  usage: { month: monthKey(), chars: 0 },
+  // grows as we read; seeded from settings
+  pauseUntil: 0,
+  // after a network failure or Google saying "too many", wait a bit
+  badKey: "",
+  // a key Google refused; don't keep trying it
+  missing: /* @__PURE__ */ new Set(),
+  // language codes Google said it has no such voice for
+  lastProblem: ""
+};
+function syncUsage(saved) {
+  const m3 = monthKey();
+  if (state.usage.month !== m3) state.usage = { month: m3, chars: 0 };
+  if (saved && saved.month === m3 && saved.chars > state.usage.chars) state.usage.chars = saved.chars;
+}
+function onlineReady(settings, lang, { ignoreLimit = false } = {}) {
+  if (!settings?.onlineVoices || !settings.googleKey) return false;
+  if (settings.googleKey === state.badKey) return false;
+  if (typeof navigator !== "undefined" && navigator.onLine === false) return false;
+  if (Date.now() < state.pauseUntil) return false;
+  const locale = ONLINE_LOCALES[lang || "en"];
+  if (!locale || state.missing.has(locale)) return false;
+  syncUsage(settings.onlineUsage);
+  return ignoreLimit || state.usage.chars < STOP_AT;
+}
+function base64ToBytes(b64) {
+  const bin = atob(b64);
+  const out = new Uint8Array(bin.length);
+  for (let i3 = 0; i3 < bin.length; i3++) out[i3] = bin.charCodeAt(i3);
+  return out;
+}
+function wavToFloat(bytes) {
+  const v3 = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  let off = 12;
+  let rate = 24e3;
+  while (off + 8 <= bytes.length) {
+    const id2 = String.fromCharCode(bytes[off], bytes[off + 1], bytes[off + 2], bytes[off + 3]);
+    const size = v3.getUint32(off + 4, true);
+    if (id2 === "fmt ") rate = v3.getUint32(off + 12, true);
+    if (id2 === "data") {
+      const n3 = Math.floor(Math.min(size, bytes.length - off - 8) / 2);
+      const out2 = new Float32Array(n3);
+      for (let i3 = 0; i3 < n3; i3++) out2[i3] = v3.getInt16(off + 8 + i3 * 2, true) / 32768;
+      return { audio: out2, rate };
+    }
+    off += 8 + size + (size & 1);
+  }
+  const n2 = Math.floor(bytes.length / 2);
+  const out = new Float32Array(n2);
+  for (let i3 = 0; i3 < n2; i3++) out[i3] = v3.getInt16(i3 * 2, true) / 32768;
+  return { audio: out, rate };
+}
+async function onlineSynthesize({ text, lang, settings, speakingRate = 1, onUsage, ignoreLimit = false }) {
+  if (!onlineReady(settings, lang, { ignoreLimit })) return null;
+  const locale = ONLINE_LOCALES[lang || "en"];
+  const speaker = settings.onlineVoice || "Charon";
+  const body = {
+    input: { text },
+    voice: { languageCode: locale, name: `${locale}-Chirp3-HD-${speaker}` },
+    audioConfig: { audioEncoding: "LINEAR16", sampleRateHertz: 24e3, speakingRate: Math.max(0.25, Math.min(2, speakingRate)) }
+  };
+  const ctl = new AbortController();
+  const timer = setTimeout(() => ctl.abort(), TIMEOUT_MS);
+  let res;
+  try {
+    res = await fetch(ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Goog-Api-Key": settings.googleKey },
+      body: JSON.stringify(body),
+      signal: ctl.signal
+    });
+  } catch {
+    state.pauseUntil = Date.now() + 6e4;
+    state.lastProblem = "Couldn't reach Google, so Murmur's own voice is reading.";
+    return null;
+  } finally {
+    clearTimeout(timer);
+  }
+  if (!res.ok) {
+    let msg = "";
+    try {
+      msg = (await res.json())?.error?.message || "";
+    } catch {
+    }
+    if (res.status === 400 && /voice|language/i.test(msg)) {
+      state.missing.add(locale);
+    } else if (res.status === 400 || res.status === 401 || res.status === 403) {
+      state.badKey = settings.googleKey;
+      state.lastProblem = "Google did not accept the key: " + (msg || res.status);
+    } else {
+      state.pauseUntil = Date.now() + 6e4;
+      state.lastProblem = "Google was busy, so Murmur's own voice is reading for a minute.";
+    }
+    return null;
+  }
+  const json = await res.json();
+  if (!json?.audioContent) return null;
+  const { audio } = wavToFloat(base64ToBytes(json.audioContent));
+  syncUsage(settings.onlineUsage);
+  state.usage.chars += text.length;
+  state.lastProblem = "";
+  onUsage?.({ month: state.usage.month, add: text.length });
+  return { audio, chars: text.length };
 }
 
 // src/engine.js
@@ -92363,6 +92553,35 @@ var PLAIN_MODEL_ID = "onnx-community/Kokoro-82M-v1.0-ONNX";
 var LOOKAHEAD = 3;
 var KEEP_BEHIND = 3;
 var SAMPLE_RATE2 = 24e3;
+function spreadWords(text, audio) {
+  const F3 = 240;
+  let max = 0;
+  const lv = [];
+  for (let s3 = 0; s3 + F3 <= audio.length; s3 += F3) {
+    let e2 = 0;
+    for (let i3 = 0; i3 < F3; i3++) e2 = Math.max(e2, Math.abs(audio[s3 + i3]));
+    lv.push(e2);
+    if (e2 > max) max = e2;
+  }
+  let a2 = lv.findIndex((e2) => e2 > max * 0.08);
+  let b3 = lv.length - 1 - [...lv].reverse().findIndex((e2) => e2 > max * 0.08);
+  if (a2 < 0) {
+    a2 = 0;
+    b3 = lv.length - 1;
+  }
+  const t0 = a2 * F3 / SAMPLE_RATE2, t1 = (b3 + 1) * F3 / SAMPLE_RATE2;
+  const words = text.split(" ").filter(Boolean);
+  const lens = words.map((w3) => w3.replace(/[^\p{L}\p{N}]/gu, "").length + 1);
+  const sum = lens.reduce((x2, y3) => x2 + y3, 0) || 1;
+  const starts = [], ends = [];
+  let acc = 0;
+  for (const l2 of lens) {
+    starts.push(t0 + acc / sum * (t1 - t0));
+    acc += l2;
+    ends.push(t0 + acc / sum * (t1 - t0));
+  }
+  return { starts, ends };
+}
 function createEngine({ wasmPaths, onEvent }) {
   __webpack_exports__env.allowLocalModels = false;
   __webpack_exports__env.useBrowserCache = true;
@@ -92534,6 +92753,16 @@ function createEngine({ wasmPaths, onEvent }) {
     const { modelSpeed, squeeze } = splitSpeed(wanted);
     const opts = { voice, speed: modelSpeed / f3, lang: lang || "en" };
     let r2;
+    const online = await onlineSynthesize({ text, lang: lang || "en", settings, speakingRate: modelSpeed, onUsage: (usage) => emit("online-usage", { usage }) }).catch(() => null);
+    if (online && online.audio.length > 100) {
+      r2 = { audio: online.audio, ...spreadWords(text, online.audio) };
+      if (squeeze > 1.01) {
+        const q2 = squeezeSpeech(r2.audio, squeeze, SAMPLE_RATE2);
+        r2 = { audio: q2.audio, starts: r2.starts.map(q2.map), ends: r2.ends.map(q2.map) };
+      }
+      r2.audio = matchLoudness(r2.audio, SAMPLE_RATE2);
+      return r2;
+    }
     const piperName = voice.startsWith("piper:") ? voice.slice(6) : foreign && ownVoice && PIPER_VOICES[lang] ? PIPER_VOICES[lang] : null;
     if (piperName) {
       const p3 = await piperSynthesize({ lang, text, phonemizeIpa: rawIpa, speed: modelSpeed, voiceName: piperName });
@@ -92552,7 +92781,7 @@ function createEngine({ wasmPaths, onEvent }) {
         ends.push(acc / sum * dur);
       }
       r2 = { audio: p3.audio, starts, ends };
-      if (r2.audio && r2.audio.length > 100) r2.audio = shapeVoice(r2.audio, SAMPLE_RATE2, { tone: settings.tone || "natural", speed: wanted, lang, ownVoice: false });
+      if (r2.audio && r2.audio.length > 100) r2.audio = matchLoudness(shapeVoice(r2.audio, SAMPLE_RATE2, { tone: settings.tone || "natural", speed: wanted, lang, ownVoice: false }), SAMPLE_RATE2);
       return r2;
     }
     if (st2.timed) {
@@ -92579,6 +92808,7 @@ function createEngine({ wasmPaths, onEvent }) {
         }
       }
       r2.audio = shapeVoice(r2.audio, SAMPLE_RATE2, { tone: settings.tone || "natural", speed: wanted, lang: lang || "en", ownVoice: ownVoice && !foreign ? true : !foreign });
+      if (foreign) r2.audio = matchLoudness(r2.audio, SAMPLE_RATE2);
     }
     return r2;
   }
@@ -92897,6 +93127,7 @@ var engine = createEngine({
     else if (ev2.type === "word") send({ type: "offscreen:word", index: ev2.index, word: ev2.word });
     else if (ev2.type === "state") send({ type: "offscreen:state", state: ev2.state, detail: ev2.detail });
     else if (ev2.type === "ended") send({ type: "offscreen:ended" });
+    else if (ev2.type === "online-usage") send({ type: "offscreen:online-usage", usage: ev2.usage });
     else if (ev2.type === "engine") console.log("[murmur] voice engine:", ev2.engine, ev2.dtype, ev2.wordTiming ? "with word timing" : "without word timing");
     else if (ev2.type === "perf") console.log(`[murmur] sentence ${ev2.index}: ${ev2.audioMs} ms of audio made in ${ev2.ms} ms`);
   }

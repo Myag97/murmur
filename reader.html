@@ -124,7 +124,24 @@
       <button id="ccBtn" class="cc" title="Big text: show the sentence being read large on the screen">CC</button>
       <select id="voice" title="Voice"></select>
       <select id="speed" title="Speed"></select>
+      <button id="onlineBtn" title="Google's voices when online">Google</button>
     </footer>
+
+    <dialog id="onlineDlg">
+      <h3>Google's voices (when online)</h3>
+      <label><input type="checkbox" id="onlineVoices" /> Use Google's voices when I'm online</label>
+      <p class="hint">Your Google key</p>
+      <input id="googleKey" type="password" placeholder="Paste it here" autocomplete="off" spellcheck="false" style="width: 100%; font: inherit; padding: 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--card); color: var(--fg)" />
+      <p class="hint">Voice (the same man reads every language)</p>
+      <select id="onlineVoice" style="width: 100%"></select>
+      <p id="onlineStatus" class="hint"></p>
+      <p class="hint"><a href="google-key.html" target="_blank" rel="noopener">How to get a free key</a></p>
+      <div class="row">
+        <button id="onlineListen">Listen</button>
+        <button id="onlineClose">Close</button>
+        <button id="onlineSave" class="primary">Save</button>
+      </div>
+    </dialog>
 
     <dialog id="saveDlg">
       <h3>Save as audio</h3>

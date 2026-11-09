@@ -22,11 +22,34 @@ var DEFAULTS = {
   // detect other languages and switch voice
   autoReadClaude: true,
   // on claude.ai: read each new reply from Claude as soon as it finishes
+  // Google's online voices when you're online (see online.js). Needs your own
+  // free Google key; without one, Murmur's own voices read as always.
+  onlineVoices: true,
+  googleKey: "",
+  onlineVoice: "Charon",
   // Mya's picks, Nov 8: Spanish Sharvard (native engine), Italian Nicola with a
   // touch of her voice, Portuguese the Alex+Santa blend.
   // Chosen by measurement (dev/clarity.mjs): the cleanest speaker per language,
   // least noise above 8 kHz. Mya hears that noise as "static".
-  langVoices: { es: "piper:es_MX-claude-high", fr: "ff_siwis", it: "im_nicola*0.7+bm_fable*0.3", pt: "piper:pt_BR-cadu-medium", hi: "piper:hi_IN-pratham-medium", zh: "zm_yunyang" }
+  langVoices: { es: "piper:es_MX-claude-high", fr: "ff_siwis", it: "im_nicola*0.7+bm_fable*0.3", pt: "piper:pt_BR-cadu-medium", hi: "piper:hi_IN-pratham-medium", zh: "zm_yunyang", la: "im_nicola" }
+};
+
+// src/online.js
+function addUsage(saved, add, month = monthKey()) {
+  const base = saved && saved.month === month ? saved.chars : 0;
+  return { month, chars: base + (add || 0) };
+}
+var monthKey = (d = /* @__PURE__ */ new Date()) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+var state = {
+  usage: { month: monthKey(), chars: 0 },
+  // grows as we read; seeded from settings
+  pauseUntil: 0,
+  // after a network failure or Google saying "too many", wait a bit
+  badKey: "",
+  // a key Google refused; don't keep trying it
+  missing: /* @__PURE__ */ new Set(),
+  // language codes Google said it has no such voice for
+  lastProblem: ""
 };
 
 // src/background.js
@@ -44,7 +67,8 @@ function saveSession() {
 }
 async function getSettings() {
   const s = await chrome.storage.sync.get(DEFAULTS);
-  return { ...DEFAULTS, ...s };
+  const { onlineUsage } = await chrome.storage.local.get("onlineUsage");
+  return { ...DEFAULTS, ...s, onlineUsage: onlineUsage || null };
 }
 async function ensureOffscreen() {
   if (await chrome.offscreen.hasDocument()) return;
@@ -209,6 +233,11 @@ async function handle(msg, sender) {
       session.detail = msg.detail || "";
       await broadcastState();
       return;
+    case "offscreen:online-usage": {
+      const { onlineUsage } = await chrome.storage.local.get("onlineUsage");
+      await chrome.storage.local.set({ onlineUsage: addUsage(onlineUsage, msg.usage?.add, msg.usage?.month) });
+      return;
+    }
     case "offscreen:ended":
       session.state = "idle";
       session.detail = "Finished";

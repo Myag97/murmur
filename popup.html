@@ -91,6 +91,26 @@
       <div class="small">Murmur switches to these by itself when it meets that language.</div>
     </details>
 
+    <details id="googleBox">
+      <summary>Google's voices (when online)</summary>
+      <label class="check"><input id="onlineVoices" type="checkbox" /> Use Google's voices when I'm online</label>
+      <div class="field" style="margin-top: 6px">
+        <span class="label">Your Google key</span>
+        <div class="voice-row">
+          <input id="googleKey" type="password" placeholder="Paste it here" autocomplete="off" spellcheck="false" style="flex: 1; min-width: 0; font: inherit; padding: 8px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--fg)" />
+          <button id="saveKey" class="listen">Save</button>
+        </div>
+      </div>
+      <div class="field">
+        <span class="label">Google voice (the same man reads every language)</span>
+        <div class="voice-row">
+          <select id="onlineVoice"></select>
+          <button id="onlineListen" class="listen" title="Hear this voice">&#9654; Listen</button>
+        </div>
+      </div>
+      <div id="onlineStatus" class="small"></div>
+      <div class="small">Google's first million letters a month are free. Murmur stops at 450,000 on this computer and 450,000 on your phone, so together they stay free; then its own voices read. Offline, or for Latin, Murmur's own voices read. <a id="keyHelp">How to get a free key</a></div>
+    </details>
     <details>
       <summary>More</summary>
       <button id="savePage" class="wide"><span>&#11015;</span> Save this page as an audio file</button>
