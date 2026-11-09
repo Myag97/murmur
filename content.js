@@ -795,6 +795,7 @@
     function continueIfPageGrew() {
       const last = S.sentences[S.sentences.length - 1];
       if (!last || !S.bar) return;
+      if (isClaudeChat()) return;
       setTimeout(() => {
         if (S.state !== "idle" || !S.bar) return;
         let fresh;
@@ -899,7 +900,7 @@
       toBg({ type: "content:seek", index: i, word: word || 0 });
     }
     const CLAUDE_MSG = '[data-testid="assistant-message"]';
-    const claude = { streaming: /* @__PURE__ */ new Set(), scanTimer: 0, readTimer: 0 };
+    const claude = { streaming: /* @__PURE__ */ new Set(), done: /* @__PURE__ */ new Set(), scanTimer: 0, readTimer: 0 };
     function isClaudeChat() {
       if (location.hostname === "claude.ai") return true;
       return /^(127\.0\.0\.1|localhost)$/.test(location.hostname) && document.documentElement.dataset.murmurSite === "claude";
@@ -959,9 +960,20 @@
         addReadButton(msg);
         if (key && claude.streaming.has(key)) {
           claude.streaming.delete(key);
-          if (S.settings.autoReadClaude === false) continue;
+          if (S.settings.autoReadClaude === false || claude.done.has(key)) continue;
           clearTimeout(claude.readTimer);
-          claude.readTimer = setTimeout(() => readClaudeMessage(msg), 400);
+          const tryRead = (n) => {
+            const el = claudeMessage(key, msg);
+            if (!el?.isConnected || el.getAttribute("data-is-streaming") === "true") return;
+            if (document.querySelector(`${CLAUDE_MSG}[data-is-streaming="true"]`)) return;
+            if (!el.querySelector('[data-testid="message-actions"]') && n < 8) {
+              claude.readTimer = setTimeout(() => tryRead(n + 1), 500);
+              return;
+            }
+            claude.done.add(key);
+            readClaudeMessage(el);
+          };
+          claude.readTimer = setTimeout(() => tryRead(0), 700);
         }
       }
     }

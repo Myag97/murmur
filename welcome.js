@@ -92310,7 +92310,7 @@ async function loadVoice(name) {
           throw new Error(`Piper: voice ${name} uses "${config.phoneme_type}" phonemes; only eSpeak voices are supported`);
         }
         hooks.onProgress?.(`Loading voice ${name}`);
-        const session = hooks.createSession ? await hooks.createSession(modelBytes, config) : await Gp.create(modelBytes, { executionProviders: hooks.executionProviders });
+        const session = hooks.createSession ? await hooks.createSession(modelBytes, config) : await Gp.create(modelBytes, { executionProviders: hooks.executionProviders, logSeverityLevel: 3 });
         const idMap = /* @__PURE__ */ new Map();
         for (const [ch2, ids] of Object.entries(config.phoneme_id_map || {})) idMap.set(ch2, ids[0]);
         return { config, session, idMap };
@@ -92752,7 +92752,7 @@ function createEngine({ wasmPaths, onEvent }) {
     files.clear();
     fromDisk = await modelCached(MODEL_ID, dtype);
     setStatus("loading", "Getting the voice ready\u2026");
-    const model = await __webpack_exports__StyleTextToSpeech2Model.from_pretrained(MODEL_ID, { dtype, device, progress_callback: onProgress });
+    const model = await __webpack_exports__StyleTextToSpeech2Model.from_pretrained(MODEL_ID, { dtype, device, progress_callback: onProgress, session_options: { logSeverityLevel: 3 } });
     const tok = await __webpack_exports__AutoTokenizer.from_pretrained(MODEL_ID);
     const vocab = tok.model.tokens_to_ids;
     setStatus("loading", "Warming up voice");
@@ -92764,7 +92764,7 @@ function createEngine({ wasmPaths, onEvent }) {
     files.clear();
     fromDisk = await modelCached(PLAIN_MODEL_ID, dtype);
     setStatus("loading", "Getting the voice ready\u2026");
-    const tts = await M3.from_pretrained(PLAIN_MODEL_ID, { dtype, device, progress_callback: onProgress });
+    const tts = await M3.from_pretrained(PLAIN_MODEL_ID, { dtype, device, progress_callback: onProgress, session_options: { logSeverityLevel: 3 } });
     setStatus("loading", "Warming up voice");
     const r2 = await tts.generate("Ready.", { voice: "bm_fable" });
     if (!soundOk(r2.audio)) throw new Error("voice produced no sound on " + device);
