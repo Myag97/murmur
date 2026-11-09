@@ -82,11 +82,8 @@
     speed: 1,
     engine: "auto",
     // 'auto' (GPU, then CPU), 'webgpu' or 'wasm'
-    skipCode: false,
-    // Mya asked for code to be read
     skipCitations: true,
     // leave out [12], (Smith, 2020), footnote marks and reference lists
-    autoScroll: true,
     caption: false,
     // big text of the current sentence in the middle of the screen
     selectButton: true,
@@ -112,6 +109,12 @@
     langVoices: { es: "piper:es_MX-claude-high", fr: "ff_siwis", it: "im_nicola*0.7+bm_fable*0.3", pt: "piper:pt_BR-cadu-medium", hi: "piper:hi_IN-pratham-medium", zh: "zm_yunyang", la: "im_nicola" }
   };
   var SPEEDS = [0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3, 1.5, 1.7, 2, 2.2, 2.5, 2.8, 3, 3.5];
+  var FIXED = ["tone", "depth", "autoLanguage", "engine"];
+  function withFixed(s) {
+    const out = { ...s };
+    for (const k of FIXED) out[k] = DEFAULTS[k];
+    return out;
+  }
 
   // src/lang.js
   var LANGS = {
@@ -237,16 +240,19 @@
     return guessLanguage(t);
   }
   async function tagLanguages(blocks, { pageLang = null } = {}) {
-    const whole = blocks.map((b) => b.text).join("\n").slice(0, 4e3);
-    const main = await detectLanguage(whole) || (SUPPORTED.includes(pageLang) ? pageLang : "en");
-    const out = [];
+    let whole = "";
     for (const b of blocks) {
-      let lang = null;
-      if (b.lang && SUPPORTED.includes(b.lang) && b.lang !== pageLang) lang = b.lang;
-      if (!lang && b.text.length >= 25) lang = await detectLanguage(b.text);
-      out.push(lang || main);
+      if (whole.length >= 4e3) break;
+      whole += (whole ? "\n" : "") + b.text;
     }
-    return { main, langs: out };
+    const main = await detectLanguage(whole.slice(0, 4e3)) || (SUPPORTED.includes(pageLang) ? pageLang : "en");
+    const langs = await Promise.all(
+      blocks.map(async (b) => {
+        if (b.lang && SUPPORTED.includes(b.lang) && b.lang !== pageLang) return b.lang;
+        return b.text.length >= 25 && await detectLanguage(b.text) || main;
+      })
+    );
+    return { main, langs };
   }
 
   // src/eta.js
@@ -306,10 +312,11 @@
       lastClickTarget: null,
       highlight: null
     };
-    chrome.storage.sync.get(DEFAULTS, (s) => Object.assign(S.settings, s));
+    chrome.storage.sync.get(DEFAULTS, (s) => Object.assign(S.settings, withFixed(s)));
     chrome.storage.onChanged.addListener((changes, area) => {
       if (area !== "sync") return;
       for (const k of Object.keys(changes)) S.settings[k] = changes[k].newValue;
+      Object.assign(S.settings, withFixed(S.settings));
       if (S.bar) updateBar();
     });
     document.addEventListener("contextmenu", (e) => S.lastClickTarget = e.target, true);
@@ -333,7 +340,6 @@
       if (SKIP_TAGS.has(tag)) return true;
       if ((tag === "HEADER" || tag === "FOOTER") && !el.closest('article, main, [role="main"], section')) return true;
       if (tag === "SUP" && /^\s*\[?\d+\]?\s*$/.test(el.textContent)) return true;
-      if ((tag === "PRE" || tag === "CODE") && S.settings.skipCode) return true;
       if (S.settings.skipCitations !== false && isCitation(el) && !holdsMainContent(el)) return true;
       if (el.hidden || el.getAttribute("aria-hidden") === "true") return true;
       if (!relaxed) {
@@ -355,7 +361,8 @@
       const role = el.getAttribute("role");
       if (role && CITE_ROLES.has(role)) return true;
       const cls = typeof el.className === "string" ? el.className : "";
-      const t = (el.textContent || "").trim();
+      const small = tag === "SUP" || tag === "A" || tag === "CITE" || tag === "SPAN";
+      const t = small ? (el.textContent || "").trim() : "";
       if (tag === "SUP") {
         if (t.length <= 12 && (/^[\[\(]?[\d,\s–-]+[\]\)]?$|^[a-z*†‡§¶]$/i.test(t) || el.querySelector("a"))) return true;
       }
@@ -499,8 +506,8 @@
       return a.compareBoundaryPoints(Range.END_TO_START, b) < 0 && a.compareBoundaryPoints(Range.START_TO_END, b) > 0;
     }
     function ensureHighlight() {
-      applyHighlightTheme();
       if (S.highlight || !("highlights" in CSS)) return;
+      applyHighlightTheme();
       S.highlight = new Highlight();
       S.wordHighlight = new Highlight();
       CSS.highlights.set("murmur-current", S.highlight);
@@ -531,7 +538,8 @@
         (document.head || document.documentElement).appendChild(st);
       }
       const word = "::highlight(murmur-word){background-color:#ffd54a!important;color:#141414!important;text-shadow:none!important}";
-      st.textContent = dark ? "::highlight(murmur-current){background-color:rgba(255,214,74,.24)!important;color:#ffffff!important;text-shadow:none!important}" + word : "::highlight(murmur-current){background-color:rgba(255,226,122,.5)!important;color:#141414!important;text-shadow:none!important}" + word;
+      const css = dark ? "::highlight(murmur-current){background-color:rgba(255,214,74,.24)!important;color:#ffffff!important;text-shadow:none!important}" + word : "::highlight(murmur-current){background-color:rgba(255,226,122,.5)!important;color:#141414!important;text-shadow:none!important}" + word;
+      if (st.textContent !== css) st.textContent = css;
     }
     try {
       matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => S.bar && applyHighlightTheme());
@@ -647,12 +655,10 @@
       const s = S.sentences[i];
       if (!s) return;
       if (S.highlight) S.highlight.add(s.range);
-      if (S.settings.autoScroll) {
-        const rect = s.range.getBoundingClientRect();
-        if (rect.height && !isInView(rect)) {
-          const el = s.range.startContainer.parentElement || s.el;
-          el.scrollIntoView({ block: "center", behavior: "smooth" });
-        }
+      const rect = s.range.getBoundingClientRect();
+      if (rect.height && !isInView(rect)) {
+        const el = s.range.startContainer.parentElement || s.el;
+        el.scrollIntoView({ block: "center", behavior: "smooth" });
       }
       renderCaption();
       updateBar();
@@ -668,12 +674,12 @@
       return location.hostname === "docs.google.com" && /^\/document\//.test(location.pathname);
     }
     function selectionPlan(selRange, onlySelection = false) {
+      const root = pickRoot();
       const all = buildSentences(document.body);
       const hit = all.filter((s) => rangesIntersect(s.range, selRange));
       if (!hit.length) return { sentences: all, startIndex: 0 };
       if (onlySelection) return { sentences: hit, startIndex: 0 };
-      const root = pickRoot();
-      const pool = root.contains(selRange.startContainer) ? buildSentences(root) : all;
+      const pool = root === document.body ? all : root.contains(selRange.startContainer) ? buildSentences(root) : all;
       const idx = pool.findIndex((s) => rangesIntersect(s.range, selRange));
       if (idx >= 0) return { sentences: pool, startIndex: idx };
       return { sentences: hit, startIndex: 0 };
@@ -736,12 +742,17 @@
       clearHighlight();
       showBar();
       setState("loading", "Starting\u2026");
+      sendRead(sentences, startIndex);
+    }
+    function sendRead(sentences, startIndex) {
+      S.starting = sentences;
       const breaks = sentences.map(
         (s, i) => /^H[1-6]$/.test(s.el.tagName) ? "heading" : sentences[i + 1]?.block !== s.block ? "paragraph" : "sentence"
       );
       languagesFor(sentences).then((langs) => {
         if (S.sentences !== sentences) return;
         chrome.runtime.sendMessage({ type: "content:read", sentences: sentences.map((s) => s.text), breaks, langs, startIndex }, (res) => {
+          if (S.starting === sentences) S.starting = null;
           if (chrome.runtime.lastError) setState("error", chrome.runtime.lastError.message);
           else if (res?.error) setState("error", res.error);
         });
@@ -772,14 +783,7 @@
         eta.pause();
         clearHighlight();
         setState("loading", "Carrying on with the new part\u2026");
-        const breaks = fresh.map((s, i) => /^H[1-6]$/.test(s.el.tagName) ? "heading" : fresh[i + 1]?.block !== s.block ? "paragraph" : "sentence");
-        languagesFor(fresh).then((langs) => {
-          if (S.sentences !== fresh) return;
-          chrome.runtime.sendMessage({ type: "content:read", sentences: fresh.map((s) => s.text), breaks, langs, startIndex: at + 1 }, (res) => {
-            if (chrome.runtime.lastError) setState("error", chrome.runtime.lastError.message);
-            else if (res?.error) setState("error", res.error);
-          });
-        });
+        sendRead(fresh, at + 1);
       }, 900);
     }
     async function languagesFor(sentences) {
@@ -800,14 +804,13 @@
       } catch {
         return sentences.map(() => "en");
       }
-      const out = [];
-      for (const s of sentences) {
-        const main = langs[indexOf.get(s.block)] || "en";
-        let hints = null;
-        if (main === "en") hints = await italicLanguageHints(s).catch(() => null);
-        out.push(hints ? { main, words: hints } : main);
-      }
-      return out;
+      return Promise.all(
+        sentences.map(async (s) => {
+          const main = langs[indexOf.get(s.block)] || "en";
+          const hints = main === "en" ? await italicLanguageHints(s).catch(() => null) : null;
+          return hints ? { main, words: hints } : main;
+        })
+      );
     }
     const EM = "em, i, cite, dfn, [lang]:not(html):not(body)";
     async function italicLanguageHints(s) {
@@ -1097,10 +1100,11 @@
       };
       bar.addEventListener("pointerup", end);
       bar.addEventListener("pointercancel", end);
-      window.addEventListener("resize", () => {
-        if (bar.style.left) placeBar(bar, parseFloat(bar.style.left), parseFloat(bar.style.top));
-      });
     }
+    window.addEventListener("resize", () => {
+      const bar = S.bar?.$(".bar");
+      if (bar?.style.left) placeBar(bar, parseFloat(bar.style.left), parseFloat(bar.style.top));
+    });
     function hideBar() {
       if (!S.bar) return;
       S.bar.host.remove();
@@ -1108,6 +1112,8 @@
       removeCaption();
       clearHighlight();
       S.state = "idle";
+      S.sentences = [];
+      S.starting = null;
     }
     const eta = makeEta();
     function remainingChars() {
@@ -1235,9 +1241,6 @@
     }
     chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
       switch (msg?.type) {
-        case "ping":
-          sendResponse({ ok: true });
-          break;
         case "start":
           start(msg.mode || "page");
           sendResponse({ ok: true });
@@ -1246,23 +1249,24 @@
           sendResponse(extractDoc());
           break;
         case "sentence":
-          if (!S.bar) break;
+          if (!S.bar || S.starting) break;
           if (msg.index !== S.current + 1) eta.pause();
           eta.tick(S.sentences[msg.index]?.text.length || 0);
           setCurrent(msg.index);
-          if (S.sentences[msg.index] && msg.starts) {
-            S.sentences[msg.index].starts = msg.starts;
-            startWordClock(msg.index, msg.offset || 0, msg.sentAt || Date.now());
+          if (S.sentences[msg.index]) {
+            S.sentences[msg.index].starts = msg.starts || null;
+            if (msg.starts) startWordClock(msg.index, msg.offset || 0, msg.sentAt || Date.now());
           }
           break;
         case "sync":
-          if (S.bar && msg.index === S.current) startWordClock(msg.index, msg.elapsed || 0, msg.sentAt || Date.now());
+          if (S.bar && !S.starting && msg.index === S.current) startWordClock(msg.index, msg.elapsed || 0, msg.sentAt || Date.now());
           break;
         case "word":
-          if (S.bar && !S.sentences[msg.index]?.starts) setWord(msg.index, msg.word);
+          if (S.bar && !S.starting && !S.sentences[msg.index]?.starts) setWord(msg.index, msg.word);
           break;
         case "state":
           if (msg.state === "idle" && !S.bar) break;
+          if (S.starting && msg.state !== "loading" && msg.state !== "error") break;
           if (msg.state !== "playing") {
             stopWordClock();
             eta.pause();
@@ -1271,6 +1275,7 @@
           setState(msg.state, msg.detail);
           break;
         case "ended":
+          if (S.starting) break;
           stopWordClock();
           clearHighlight();
           setState("idle", "Finished");

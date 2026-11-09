@@ -100404,54 +100404,6 @@ var VOICES = [
   { id: "af_sky", name: "Sky", desc: "American woman", group: "American women" }
 ];
 var GROUPS = [...new Set(VOICES.map((v3) => v3.group))];
-var SAME = { id: "same", name: "Your voice", desc: "Your usual voice, speaking this language" };
-var LANG_VOICES = {
-  es: [
-    { id: "piper:es_MX-claude-high", name: "Claude", desc: "Mexican man" },
-    { id: "piper:es_ES-sharvard-medium", name: "Sharvard", desc: "Spanish man, Spain" },
-    { id: "piper:es_MX-ald-medium", name: "Ald", desc: "Mexican man, softer" },
-    { id: "em_alex*0.5+em_santa*0.5", name: "Alex and Santa", desc: "Spanish man, blend" },
-    { id: "em_santa", name: "Santa", desc: "Spanish man, softer" },
-    SAME,
-    { id: "ef_dora", name: "Dora", desc: "Spanish woman" }
-  ],
-  fr: [
-    { id: "ff_siwis", name: "Siwis", desc: "French woman, the only native French speaker in this voice" },
-    { id: "ff_siwis*0.6+im_nicola*0.4", name: "Siwis, lower", desc: "Siwis blended with an Italian man: native accent, deeper" },
-    { id: "ff_siwis*0.5+em_alex*0.5", name: "Siwis and Alex", desc: "Half French woman, half Spanish man" },
-    { id: "im_nicola", name: "Nicola", desc: "Italian man, speaking French" },
-    SAME
-  ],
-  it: [
-    { id: "im_nicola*0.7+bm_fable*0.3", name: "Nicola, warmer", desc: "Italian man with a touch of your voice" },
-    { id: "im_nicola", name: "Nicola", desc: "Italian man" },
-    SAME,
-    { id: "if_sara", name: "Sara", desc: "Italian woman" }
-  ],
-  pt: [
-    { id: "piper:pt_BR-cadu-medium", name: "Cadu", desc: "Brazilian man" },
-    { id: "piper:pt_BR-jeff-medium", name: "Jeff", desc: "Brazilian man, darker" },
-    { id: "pm_alex*0.5+pm_santa*0.5", name: "Alex and Santa", desc: "Brazilian man, blend" },
-    { id: "pm_alex", name: "Alex", desc: "Brazilian man" },
-    { id: "pm_santa", name: "Santa", desc: "Brazilian man, softer" },
-    SAME,
-    { id: "pf_dora", name: "Dora", desc: "Brazilian woman" }
-  ],
-  hi: [
-    { id: "piper:hi_IN-pratham-medium", name: "Pratham", desc: "Hindi man" },
-    { id: "hm_psi", name: "Psi", desc: "Hindi man" },
-    { id: "hm_omega", name: "Omega", desc: "Hindi man" },
-    SAME,
-    { id: "hf_alpha", name: "Alpha", desc: "Hindi woman" }
-  ],
-  zh: [
-    { id: "zm_yunyang", name: "Yunyang", desc: "Mandarin man, clear" },
-    { id: "zm_yunxi", name: "Yunxi", desc: "Mandarin man" },
-    { id: "zm_yunjian", name: "Yunjian", desc: "Mandarin man, deeper" },
-    { id: "zf_xiaoxiao", name: "Xiaoxiao", desc: "Mandarin woman" }
-  ]
-};
-var DEFAULT_LANG_VOICES = Object.fromEntries(Object.entries(LANG_VOICES).map(([k4, v3]) => [k4, v3[0].id]));
 function voiceInfo(id2) {
   return VOICES.find((v3) => v3.id === id2) || { id: id2, name: id2, desc: "", group: "" };
 }
@@ -100592,16 +100544,19 @@ async function detectLanguage(text) {
   return guessLanguage(t2);
 }
 async function tagLanguages(blocks, { pageLang = null } = {}) {
-  const whole = blocks.map((b3) => b3.text).join("\n").slice(0, 4e3);
-  const main = await detectLanguage(whole) || (SUPPORTED.includes(pageLang) ? pageLang : "en");
-  const out = [];
+  let whole = "";
   for (const b3 of blocks) {
-    let lang = null;
-    if (b3.lang && SUPPORTED.includes(b3.lang) && b3.lang !== pageLang) lang = b3.lang;
-    if (!lang && b3.text.length >= 25) lang = await detectLanguage(b3.text);
-    out.push(lang || main);
+    if (whole.length >= 4e3) break;
+    whole += (whole ? "\n" : "") + b3.text;
   }
-  return { main, langs: out };
+  const main = await detectLanguage(whole.slice(0, 4e3)) || (SUPPORTED.includes(pageLang) ? pageLang : "en");
+  const langs = await Promise.all(
+    blocks.map(async (b3) => {
+      if (b3.lang && SUPPORTED.includes(b3.lang) && b3.lang !== pageLang) return b3.lang;
+      return b3.text.length >= 25 && await detectLanguage(b3.text) || main;
+    })
+  );
+  return { main, langs };
 }
 
 // src/lexicon.js
@@ -125625,11 +125580,8 @@ var DEFAULTS = {
   speed: 1,
   engine: "auto",
   // 'auto' (GPU, then CPU), 'webgpu' or 'wasm'
-  skipCode: false,
-  // Mya asked for code to be read
   skipCitations: true,
   // leave out [12], (Smith, 2020), footnote marks and reference lists
-  autoScroll: true,
   caption: false,
   // big text of the current sentence in the middle of the screen
   selectButton: true,
@@ -125657,6 +125609,12 @@ var DEFAULTS = {
 var FOREIGN_SPEED_CAP = 0.8;
 var LANG_SPEED_CAP = { fr: 1 };
 var SPEEDS = [0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3, 1.5, 1.7, 2, 2.2, 2.5, 2.8, 3, 3.5];
+var FIXED = ["tone", "depth", "autoLanguage", "engine"];
+function withFixed(s3) {
+  const out = { ...s3 };
+  for (const k4 of FIXED) out[k4] = DEFAULTS[k4];
+  return out;
+}
 
 // src/tone.js
 function coeffs(type, fs2, f0, gainDb, q2) {
@@ -126432,7 +126390,7 @@ var ONLINE_VOICES = [
   { id: "Zubenelgenubi", desc: "casual" },
   { id: "Sadachbia", desc: "lively" }
 ];
-var STOP_AT = 45e4;
+var STOP_AT = 3e5;
 function addUsage(saved, add, month = monthKey()) {
   const base = saved && saved.month === month ? saved.chars : 0;
   return { month, chars: base + (add || 0) };
@@ -126784,19 +126742,7 @@ function createEngine({ wasmPaths, onEvent }) {
       const p3 = await piperSynthesize({ lang, text, phonemizeIpa: rawIpa, speed: modelSpeed, voiceName: piperName });
       const lift = PIPER_TUNING[lang]?.pitch;
       if (lift && lift !== 1) p3.audio = pitchDown(p3.audio, lift);
-      const words = text.split(" ").filter(Boolean);
-      const lens = words.map((w3) => w3.replace(/[^\p{L}\p{N}]/gu, "").length + 1);
-      const sum = lens.reduce((a2, b3) => a2 + b3, 0) || 1;
-      const dur = p3.audio.length / SAMPLE_RATE2;
-      const starts = [];
-      const ends = [];
-      let acc = 0;
-      for (const l2 of lens) {
-        starts.push(acc / sum * dur);
-        acc += l2;
-        ends.push(acc / sum * dur);
-      }
-      r2 = { audio: p3.audio, starts, ends };
+      r2 = { audio: p3.audio, ...spreadWords(text, p3.audio) };
       if (r2.audio && r2.audio.length > 100) r2.audio = matchLoudness(shapeVoice(r2.audio, SAMPLE_RATE2, { tone: settings2.tone || "natural", speed: wanted, lang, ownVoice: false }), SAMPLE_RATE2);
       return r2;
     }
@@ -126875,8 +126821,9 @@ function createEngine({ wasmPaths, onEvent }) {
     setStatus2("loading", forcedDevice ? "Graphics chip is busy, switching the voice to the processor\u2026" : "Restarting the voice\u2026");
     await ensureModel();
   }
+  const nearPlaying = (i3) => i3 >= st2.index - KEEP_BEHIND && i3 <= st2.index + LOOKAHEAD;
   async function generate(i3, v3) {
-    if (v3 !== st2.genVersion) return null;
+    if (v3 !== st2.genVersion || !nearPlaying(i3)) return null;
     const text = st2.sentences[i3];
     await ensureModel();
     if (v3 !== st2.genVersion) return null;
@@ -126896,6 +126843,7 @@ function createEngine({ wasmPaths, onEvent }) {
   }
   function getItem(i3) {
     const v3 = st2.genVersion;
+    const doc = st2.sentences;
     const cached = st2.buffers.get(i3);
     if (cached && cached.v === v3) return Promise.resolve(cached.item);
     const pend = st2.pending.get(i3);
@@ -126903,17 +126851,26 @@ function createEngine({ wasmPaths, onEvent }) {
     const work = st2.chain.then(() => generate(i3, v3));
     st2.chain = work.catch(() => {
     });
-    const p3 = work.then((item) => {
+    const forget = () => {
       if (st2.pending.get(i3)?.p === p3) st2.pending.delete(i3);
-      if (item && v3 === st2.genVersion) st2.buffers.set(i3, { v: v3, item });
-      if (v3 !== st2.genVersion) return getItem(i3);
-      return item;
-    });
+    };
+    const p3 = work.then(
+      (item) => {
+        forget();
+        if (item && v3 === st2.genVersion) st2.buffers.set(i3, { v: v3, item });
+        if (v3 !== st2.genVersion) return doc === st2.sentences ? getItem(i3) : null;
+        return item;
+      },
+      (e2) => {
+        forget();
+        throw e2;
+      }
+    );
     st2.pending.set(i3, { v: v3, p: p3 });
     return p3;
   }
   function trimBuffers() {
-    for (const k4 of st2.buffers.keys()) if (k4 < st2.index - KEEP_BEHIND) st2.buffers.delete(k4);
+    for (const k4 of st2.buffers.keys()) if (!nearPlaying(k4)) st2.buffers.delete(k4);
   }
   function prefetch(from) {
     for (let k4 = 1; k4 <= LOOKAHEAD; k4++) {
@@ -127010,7 +126967,7 @@ function createEngine({ wasmPaths, onEvent }) {
       const was = st2.status;
       try {
         await ensureModel();
-        if (was === "idle" || st2.status === "loading") setStatus2("idle", "Voice ready");
+        if (!st2.sentences.length && (was === "idle" || st2.status === "loading")) setStatus2("idle", "Voice ready");
         return true;
       } catch (e2) {
         setStatus2("error", "Could not load the voice: " + String(e2?.message || e2));
@@ -155978,23 +155935,37 @@ async function loadUsage() {
     return null;
   }
 }
+var usageWrites = Promise.resolve();
 function saveUsage(u3) {
-  const usage = addUsage(settings.onlineUsage, u3?.add, u3?.month);
-  settings.onlineUsage = usage;
-  try {
-    if (isExt && chrome.storage?.local) chrome.storage.local.set({ onlineUsage: usage });
+  usageWrites = usageWrites.then(async () => {
+    const usage = addUsage(await loadUsage(), u3?.add, u3?.month);
+    settings.onlineUsage = usage;
+    if (isExt && chrome.storage?.local) await chrome.storage.local.set({ onlineUsage: usage });
     else localStorage.setItem("murmur:onlineUsage", JSON.stringify(usage));
-  } catch {
-  }
+  }).catch(() => {
+  });
+  return usageWrites;
 }
 async function loadSettings() {
   const onlineUsage = await loadUsage();
-  if (isExt && chrome.storage?.sync) return { ...DEFAULTS, ...await chrome.storage.sync.get(DEFAULTS), onlineUsage };
+  if (isExt && chrome.storage?.sync) return withFixed({ ...DEFAULTS, ...await chrome.storage.sync.get(DEFAULTS), onlineUsage });
   try {
-    return { ...DEFAULTS, ...JSON.parse(localStorage.getItem("murmur:settings") || "{}"), onlineUsage };
+    return withFixed({ ...DEFAULTS, ...JSON.parse(localStorage.getItem("murmur:settings") || "{}"), onlineUsage });
   } catch {
     return { ...DEFAULTS };
   }
+}
+if (isExt && chrome.storage?.onChanged) {
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area !== "sync") return;
+    const patch = {};
+    for (const [k4, c3] of Object.entries(changes)) patch[k4] = c3.newValue === void 0 ? DEFAULTS[k4] : c3.newValue;
+    Object.assign(settings, withFixed({ ...settings, ...patch }));
+    engine.setSettings(withFixed(settings));
+    if (patch.voice !== void 0) $3("voice").value = settings.voice;
+    if (patch.speed !== void 0) $3("speed").value = String(settings.speed);
+    if (patch.caption !== void 0) renderCaption();
+  });
 }
 function saveSettings(patch) {
   Object.assign(settings, patch);
@@ -156113,13 +156084,20 @@ $3("ccBtn").onclick = () => {
 };
 $3("caption").onclick = () => togglePlay();
 var DB_NAME = "murmur-library";
+var dbOpen = null;
 function openDb() {
-  return new Promise((res, rej) => {
-    const req = indexedDB.open(DB_NAME, 1);
-    req.onupgradeneeded = () => req.result.createObjectStore("docs", { keyPath: "key" });
-    req.onsuccess = () => res(req.result);
-    req.onerror = () => rej(req.error);
-  });
+  if (!dbOpen) {
+    dbOpen = new Promise((res, rej) => {
+      const req = indexedDB.open(DB_NAME, 1);
+      req.onupgradeneeded = () => req.result.createObjectStore("docs", { keyPath: "key" });
+      req.onsuccess = () => res(req.result);
+      req.onerror = () => rej(req.error);
+    }).catch((e2) => {
+      dbOpen = null;
+      throw e2;
+    });
+  }
+  return dbOpen;
 }
 async function dbAll() {
   const db = await openDb();

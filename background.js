@@ -5,11 +5,8 @@ var DEFAULTS = {
   speed: 1,
   engine: "auto",
   // 'auto' (GPU, then CPU), 'webgpu' or 'wasm'
-  skipCode: false,
-  // Mya asked for code to be read
   skipCitations: true,
   // leave out [12], (Smith, 2020), footnote marks and reference lists
-  autoScroll: true,
   caption: false,
   // big text of the current sentence in the middle of the screen
   selectButton: true,
@@ -34,6 +31,12 @@ var DEFAULTS = {
   // least noise above 8 kHz. Mya hears that noise as "static".
   langVoices: { es: "piper:es_MX-claude-high", fr: "ff_siwis", it: "im_nicola*0.7+bm_fable*0.3", pt: "piper:pt_BR-cadu-medium", hi: "piper:hi_IN-pratham-medium", zh: "zm_yunyang", la: "im_nicola" }
 };
+var FIXED = ["tone", "depth", "autoLanguage", "engine"];
+function withFixed(s) {
+  const out = { ...s };
+  for (const k of FIXED) out[k] = DEFAULTS[k];
+  return out;
+}
 
 // src/online.js
 function addUsage(saved, add, month = monthKey()) {
@@ -57,6 +60,7 @@ var state = {
 var session = { tabId: null, count: 0, index: -1, state: "idle", detail: "" };
 var sessionLoaded = false;
 var creatingOffscreen = null;
+var usageWrites = Promise.resolve();
 async function loadSession() {
   if (sessionLoaded) return;
   sessionLoaded = true;
@@ -69,7 +73,7 @@ function saveSession() {
 async function getSettings() {
   const s = await chrome.storage.sync.get(DEFAULTS);
   const { onlineUsage } = await chrome.storage.local.get("onlineUsage");
-  return { ...DEFAULTS, ...s, onlineUsage: onlineUsage || null };
+  return withFixed({ ...DEFAULTS, ...s, onlineUsage: onlineUsage || null });
 }
 async function ensureOffscreen() {
   if (await chrome.offscreen.hasDocument()) return;
@@ -104,7 +108,8 @@ function toTabQuiet(tabId, msg) {
   });
 }
 async function activeTab() {
-  const [tab] = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
+  const win = await chrome.windows.getLastFocused({ windowTypes: ["normal"] }).catch(() => null);
+  const [tab] = await chrome.tabs.query(win ? { active: true, windowId: win.id } : { active: true, lastFocusedWindow: true });
   return tab;
 }
 function isPdfUrl(url = "") {
@@ -192,6 +197,7 @@ async function handle(msg, sender) {
   switch (msg.type) {
     case "content:read": {
       const tabId = sender.tab.id;
+      if (session.tabId != null && session.tabId !== tabId) toTabQuiet(session.tabId, { type: "state", state: "idle", detail: "" });
       session = { tabId, count: msg.sentences.length, index: msg.startIndex, state: "loading", detail: "Starting\u2026" };
       await saveSession();
       await toOffscreen({
@@ -213,6 +219,7 @@ async function handle(msg, sender) {
     case "content:seek":
       return toOffscreen({ type: "seek", index: msg.index, word: msg.word || 0 });
     case "content:stop":
+      if (sender.tab && session.tabId != null && sender.tab.id !== session.tabId) return { ok: true };
       return stopAll();
     case "content:open-pdf":
       await openReader({ src: msg.url });
@@ -234,11 +241,13 @@ async function handle(msg, sender) {
       session.detail = msg.detail || "";
       await broadcastState();
       return;
-    case "offscreen:online-usage": {
-      const { onlineUsage } = await chrome.storage.local.get("onlineUsage");
-      await chrome.storage.local.set({ onlineUsage: addUsage(onlineUsage, msg.usage?.add, msg.usage?.month) });
-      return;
-    }
+    case "offscreen:online-usage":
+      usageWrites = usageWrites.then(async () => {
+        const { onlineUsage } = await chrome.storage.local.get("onlineUsage");
+        await chrome.storage.local.set({ onlineUsage: addUsage(onlineUsage, msg.usage?.add, msg.usage?.month) });
+      }).catch(() => {
+      });
+      return usageWrites;
     case "offscreen:ended":
       session.state = "idle";
       session.detail = "Finished";

@@ -66491,54 +66491,6 @@ var VOICES = [
   { id: "af_sky", name: "Sky", desc: "American woman", group: "American women" }
 ];
 var GROUPS = [...new Set(VOICES.map((v3) => v3.group))];
-var SAME = { id: "same", name: "Your voice", desc: "Your usual voice, speaking this language" };
-var LANG_VOICES = {
-  es: [
-    { id: "piper:es_MX-claude-high", name: "Claude", desc: "Mexican man" },
-    { id: "piper:es_ES-sharvard-medium", name: "Sharvard", desc: "Spanish man, Spain" },
-    { id: "piper:es_MX-ald-medium", name: "Ald", desc: "Mexican man, softer" },
-    { id: "em_alex*0.5+em_santa*0.5", name: "Alex and Santa", desc: "Spanish man, blend" },
-    { id: "em_santa", name: "Santa", desc: "Spanish man, softer" },
-    SAME,
-    { id: "ef_dora", name: "Dora", desc: "Spanish woman" }
-  ],
-  fr: [
-    { id: "ff_siwis", name: "Siwis", desc: "French woman, the only native French speaker in this voice" },
-    { id: "ff_siwis*0.6+im_nicola*0.4", name: "Siwis, lower", desc: "Siwis blended with an Italian man: native accent, deeper" },
-    { id: "ff_siwis*0.5+em_alex*0.5", name: "Siwis and Alex", desc: "Half French woman, half Spanish man" },
-    { id: "im_nicola", name: "Nicola", desc: "Italian man, speaking French" },
-    SAME
-  ],
-  it: [
-    { id: "im_nicola*0.7+bm_fable*0.3", name: "Nicola, warmer", desc: "Italian man with a touch of your voice" },
-    { id: "im_nicola", name: "Nicola", desc: "Italian man" },
-    SAME,
-    { id: "if_sara", name: "Sara", desc: "Italian woman" }
-  ],
-  pt: [
-    { id: "piper:pt_BR-cadu-medium", name: "Cadu", desc: "Brazilian man" },
-    { id: "piper:pt_BR-jeff-medium", name: "Jeff", desc: "Brazilian man, darker" },
-    { id: "pm_alex*0.5+pm_santa*0.5", name: "Alex and Santa", desc: "Brazilian man, blend" },
-    { id: "pm_alex", name: "Alex", desc: "Brazilian man" },
-    { id: "pm_santa", name: "Santa", desc: "Brazilian man, softer" },
-    SAME,
-    { id: "pf_dora", name: "Dora", desc: "Brazilian woman" }
-  ],
-  hi: [
-    { id: "piper:hi_IN-pratham-medium", name: "Pratham", desc: "Hindi man" },
-    { id: "hm_psi", name: "Psi", desc: "Hindi man" },
-    { id: "hm_omega", name: "Omega", desc: "Hindi man" },
-    SAME,
-    { id: "hf_alpha", name: "Alpha", desc: "Hindi woman" }
-  ],
-  zh: [
-    { id: "zm_yunyang", name: "Yunyang", desc: "Mandarin man, clear" },
-    { id: "zm_yunxi", name: "Yunxi", desc: "Mandarin man" },
-    { id: "zm_yunjian", name: "Yunjian", desc: "Mandarin man, deeper" },
-    { id: "zf_xiaoxiao", name: "Xiaoxiao", desc: "Mandarin woman" }
-  ]
-};
-var DEFAULT_LANG_VOICES = Object.fromEntries(Object.entries(LANG_VOICES).map(([k4, v3]) => [k4, v3[0].id]));
 function parseVoice(id2) {
   const parts = String(id2 || "bm_fable").split("+").map((p3) => {
     const [name, w3] = p3.trim().split("*");
@@ -91651,11 +91603,8 @@ var DEFAULTS = {
   speed: 1,
   engine: "auto",
   // 'auto' (GPU, then CPU), 'webgpu' or 'wasm'
-  skipCode: false,
-  // Mya asked for code to be read
   skipCitations: true,
   // leave out [12], (Smith, 2020), footnote marks and reference lists
-  autoScroll: true,
   caption: false,
   // big text of the current sentence in the middle of the screen
   selectButton: true,
@@ -92439,7 +92388,7 @@ var ONLINE_LOCALES = {
   ur: "ur-IN",
   sw: "sw-KE"
 };
-var STOP_AT = 45e4;
+var STOP_AT = 3e5;
 var ENDPOINT = "https://texttospeech.googleapis.com/v1/text:synthesize";
 var TIMEOUT_MS = 8e3;
 var monthKey = (d3 = /* @__PURE__ */ new Date()) => `${d3.getFullYear()}-${String(d3.getMonth() + 1).padStart(2, "0")}`;
@@ -92769,19 +92718,7 @@ function createEngine({ wasmPaths, onEvent }) {
       const p3 = await piperSynthesize({ lang, text, phonemizeIpa: rawIpa, speed: modelSpeed, voiceName: piperName });
       const lift = PIPER_TUNING[lang]?.pitch;
       if (lift && lift !== 1) p3.audio = pitchDown(p3.audio, lift);
-      const words = text.split(" ").filter(Boolean);
-      const lens = words.map((w3) => w3.replace(/[^\p{L}\p{N}]/gu, "").length + 1);
-      const sum = lens.reduce((a2, b3) => a2 + b3, 0) || 1;
-      const dur = p3.audio.length / SAMPLE_RATE2;
-      const starts = [];
-      const ends = [];
-      let acc = 0;
-      for (const l2 of lens) {
-        starts.push(acc / sum * dur);
-        acc += l2;
-        ends.push(acc / sum * dur);
-      }
-      r2 = { audio: p3.audio, starts, ends };
+      r2 = { audio: p3.audio, ...spreadWords(text, p3.audio) };
       if (r2.audio && r2.audio.length > 100) r2.audio = matchLoudness(shapeVoice(r2.audio, SAMPLE_RATE2, { tone: settings.tone || "natural", speed: wanted, lang, ownVoice: false }), SAMPLE_RATE2);
       return r2;
     }
@@ -92860,8 +92797,9 @@ function createEngine({ wasmPaths, onEvent }) {
     setStatus("loading", forcedDevice ? "Graphics chip is busy, switching the voice to the processor\u2026" : "Restarting the voice\u2026");
     await ensureModel();
   }
+  const nearPlaying = (i3) => i3 >= st2.index - KEEP_BEHIND && i3 <= st2.index + LOOKAHEAD;
   async function generate(i3, v3) {
-    if (v3 !== st2.genVersion) return null;
+    if (v3 !== st2.genVersion || !nearPlaying(i3)) return null;
     const text = st2.sentences[i3];
     await ensureModel();
     if (v3 !== st2.genVersion) return null;
@@ -92881,6 +92819,7 @@ function createEngine({ wasmPaths, onEvent }) {
   }
   function getItem(i3) {
     const v3 = st2.genVersion;
+    const doc = st2.sentences;
     const cached = st2.buffers.get(i3);
     if (cached && cached.v === v3) return Promise.resolve(cached.item);
     const pend = st2.pending.get(i3);
@@ -92888,17 +92827,26 @@ function createEngine({ wasmPaths, onEvent }) {
     const work = st2.chain.then(() => generate(i3, v3));
     st2.chain = work.catch(() => {
     });
-    const p3 = work.then((item) => {
+    const forget = () => {
       if (st2.pending.get(i3)?.p === p3) st2.pending.delete(i3);
-      if (item && v3 === st2.genVersion) st2.buffers.set(i3, { v: v3, item });
-      if (v3 !== st2.genVersion) return getItem(i3);
-      return item;
-    });
+    };
+    const p3 = work.then(
+      (item) => {
+        forget();
+        if (item && v3 === st2.genVersion) st2.buffers.set(i3, { v: v3, item });
+        if (v3 !== st2.genVersion) return doc === st2.sentences ? getItem(i3) : null;
+        return item;
+      },
+      (e2) => {
+        forget();
+        throw e2;
+      }
+    );
     st2.pending.set(i3, { v: v3, p: p3 });
     return p3;
   }
   function trimBuffers() {
-    for (const k4 of st2.buffers.keys()) if (k4 < st2.index - KEEP_BEHIND) st2.buffers.delete(k4);
+    for (const k4 of st2.buffers.keys()) if (!nearPlaying(k4)) st2.buffers.delete(k4);
   }
   function prefetch(from) {
     for (let k4 = 1; k4 <= LOOKAHEAD; k4++) {
@@ -92995,7 +92943,7 @@ function createEngine({ wasmPaths, onEvent }) {
       const was = st2.status;
       try {
         await ensureModel();
-        if (was === "idle" || st2.status === "loading") setStatus("idle", "Voice ready");
+        if (!st2.sentences.length && (was === "idle" || st2.status === "loading")) setStatus("idle", "Voice ready");
         return true;
       } catch (e2) {
         setStatus("error", "Could not load the voice: " + String(e2?.message || e2));
@@ -93158,9 +93106,6 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     case "settings":
       engine.setSettings(msg.settings);
       break;
-    case "get-state":
-      sendResponse(engine.state);
-      return false;
   }
   sendResponse({ ok: true });
   return false;

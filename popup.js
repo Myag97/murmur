@@ -94,7 +94,6 @@
       { id: "zf_xiaoxiao", name: "Xiaoxiao", desc: "Mandarin woman" }
     ]
   };
-  var DEFAULT_LANG_VOICES = Object.fromEntries(Object.entries(LANG_VOICES).map(([k, v]) => [k, v[0].id]));
   function voiceInfo(id) {
     return VOICES.find((v) => v.id === id) || { id, name: id, desc: "", group: "" };
   }
@@ -113,11 +112,8 @@
     speed: 1,
     engine: "auto",
     // 'auto' (GPU, then CPU), 'webgpu' or 'wasm'
-    skipCode: false,
-    // Mya asked for code to be read
     skipCitations: true,
     // leave out [12], (Smith, 2020), footnote marks and reference lists
-    autoScroll: true,
     caption: false,
     // big text of the current sentence in the middle of the screen
     selectButton: true,
@@ -273,7 +269,7 @@
     { id: "Zubenelgenubi", desc: "casual" },
     { id: "Sadachbia", desc: "lively" }
   ];
-  var STOP_AT = 45e4;
+  var STOP_AT = 3e5;
   function addUsage(saved, add, month = monthKey()) {
     const base = saved && saved.month === month ? saved.chars : 0;
     return { month, chars: base + (add || 0) };
