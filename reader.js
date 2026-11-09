@@ -100561,6 +100561,37 @@ async function tagLanguages(blocks, { pageLang = null } = {}) {
   );
   return { main, langs };
 }
+var EVERYDAY = {
+  fr: [...HINTS.fr, "bonne", "bon", "tr\xE8s", "avec", "mais", "ce", "cette", "au", "aux", "du", "sur", "sont", "\xEAtre", "\xE0", "o\xF9", "merci", "oui", "il", "elle", "mon", "ma", "votre", "notre", "tout", "bien", "chez"],
+  es: [...HINTS.es, "muy", "pero", "m\xE1s", "est\xE1", "como", "gracias", "buena", "buen", "s\xED", "su", "mi", "al", "lo", "hay", "todo", "bien"],
+  it: [...HINTS.it, "molto", "ma", "pi\xF9", "questo", "questa", "grazie", "buona", "buon", "s\xEC", "lo", "le", "mi", "ho", "\xE8", "tutto", "bene"],
+  pt: [...HINTS.pt, "muito", "mas", "mais", "est\xE1", "obrigado", "obrigada", "boa", "bom", "sim", "ao", "na", "no", "isso", "tudo", "bem"],
+  de: ["der", "das", "und", "ist", "nicht", "ich", "ein", "eine", "mit", "f\xFCr", "auf", "zu", "den", "dem", "sie", "wir", "sehr", "aber", "auch", "gut", "guten", "danke", "viel"]
+};
+var ALSO_ENGLISH = /* @__PURE__ */ new Set(["a", "as", "do", "no", "me", "he", "i", "in", "on", "or", "an", "so", "die", "den", "is", "us", "at", "am", "be", "we", "pour", "son", "come", "sure", "mi", "ma", "ho", "bon", "al", "lo", "tout", "chez", "per", "con", "non", "des", "du", "se", "les", "mon", "par", "e", "o", "y", "bien", "gut", "sie", "au", "ce", "le", "la", "de", "un", "il", "elle", "su", "si", "mas", "na", "ao"]);
+var ENGLISH_EVERYDAY = /* @__PURE__ */ new Set([...HINTS.en, "i", "i'll", "i'm", "it's", "a", "an", "on", "be", "at", "have", "has", "not", "we", "will", "your", "my", "by", "what", "when", "then", "from", "but", "or", "if", "so", "he", "she", "they", "as", "do", "can", "there", "here", "about", "more", "just", "all", "one", "would", "which", "their", "had", "been", "were"]);
+function everydayCounts(text) {
+  const words = (text.toLowerCase().match(/[\p{L}'’]+/gu) || []).map((w3) => w3.replace(/’/g, "'"));
+  const score = {};
+  for (const [lang, list] of Object.entries(EVERYDAY)) {
+    const set = new Set(list);
+    const sure = words.filter((w3) => set.has(w3) && !ALSO_ENGLISH.has(w3)).length;
+    const shared = words.filter((w3) => set.has(w3) && ALSO_ENGLISH.has(w3) && !ENGLISH_EVERYDAY.has(w3)).length;
+    score[lang] = { sure, all: sure + shared };
+  }
+  const english = words.filter((w3) => ENGLISH_EVERYDAY.has(w3)).length;
+  return { words, score, english };
+}
+function sentenceLanguage(text) {
+  const { words, score, english } = everydayCounts(text || "");
+  if (words.length < 3 || english > 0) return null;
+  const ranked = Object.entries(score).sort((a2, b3) => b3[1].all - a2[1].all || b3[1].sure - a2[1].sure);
+  const [lang, top] = ranked[0];
+  const next = ranked[1][1];
+  if (top.sure < 1 || top.all < 2 || top.all / words.length < 0.25) return null;
+  if (top.all === next.all && top.sure === next.sure) return null;
+  return lang;
+}
 
 // src/lexicon.js
 var VOWELS = new Set("AIOQWYaiu\xE6\u0251\u0252\u0254\u0259\u025B\u025C\u026A\u028A\u028C\u1D7B");
@@ -126872,8 +126903,9 @@ function createEngine({ wasmPaths, onEvent }) {
     return r2;
   }
   async function speak(text, settings2, breakKind = "sentence", lang = "en") {
-    const main = (typeof lang === "object" ? lang?.main : lang) || "en";
+    let main = (typeof lang === "object" ? lang?.main : lang) || "en";
     const hints = typeof lang === "object" ? lang?.words : null;
+    if (main === "en" && !hints && settings2.autoLanguage !== false) main = sentenceLanguage(text) || main;
     const runs = settings2.autoLanguage === false ? [{ text, lang: main, words: text.split(" ").filter(Boolean).length }] : splitByLanguage(text, main, hints);
     const parts = [];
     for (const run2 of runs) {

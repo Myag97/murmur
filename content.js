@@ -256,6 +256,39 @@
     );
     return { main, langs };
   }
+  var EVERYDAY = {
+    fr: [...HINTS.fr, "bonne", "bon", "tr\xE8s", "avec", "mais", "ce", "cette", "au", "aux", "du", "sur", "sont", "\xEAtre", "\xE0", "o\xF9", "merci", "oui", "il", "elle", "mon", "ma", "votre", "notre", "tout", "bien", "chez"],
+    es: [...HINTS.es, "muy", "pero", "m\xE1s", "est\xE1", "como", "gracias", "buena", "buen", "s\xED", "su", "mi", "al", "lo", "hay", "todo", "bien"],
+    it: [...HINTS.it, "molto", "ma", "pi\xF9", "questo", "questa", "grazie", "buona", "buon", "s\xEC", "lo", "le", "mi", "ho", "\xE8", "tutto", "bene"],
+    pt: [...HINTS.pt, "muito", "mas", "mais", "est\xE1", "obrigado", "obrigada", "boa", "bom", "sim", "ao", "na", "no", "isso", "tudo", "bem"],
+    de: ["der", "das", "und", "ist", "nicht", "ich", "ein", "eine", "mit", "f\xFCr", "auf", "zu", "den", "dem", "sie", "wir", "sehr", "aber", "auch", "gut", "guten", "danke", "viel"]
+  };
+  var ALSO_ENGLISH = /* @__PURE__ */ new Set(["a", "as", "do", "no", "me", "he", "i", "in", "on", "or", "an", "so", "die", "den", "is", "us", "at", "am", "be", "we", "pour", "son", "come", "sure", "mi", "ma", "ho", "bon", "al", "lo", "tout", "chez", "per", "con", "non", "des", "du", "se", "les", "mon", "par", "e", "o", "y", "bien", "gut", "sie", "au", "ce", "le", "la", "de", "un", "il", "elle", "su", "si", "mas", "na", "ao"]);
+  var ENGLISH_EVERYDAY = /* @__PURE__ */ new Set([...HINTS.en, "i", "i'll", "i'm", "it's", "a", "an", "on", "be", "at", "have", "has", "not", "we", "will", "your", "my", "by", "what", "when", "then", "from", "but", "or", "if", "so", "he", "she", "they", "as", "do", "can", "there", "here", "about", "more", "just", "all", "one", "would", "which", "their", "had", "been", "were"]);
+  function everydayCounts(text) {
+    const words = (text.toLowerCase().match(/[\p{L}'’]+/gu) || []).map((w) => w.replace(/’/g, "'"));
+    const score = {};
+    for (const [lang, list] of Object.entries(EVERYDAY)) {
+      const set = new Set(list);
+      const sure = words.filter((w) => set.has(w) && !ALSO_ENGLISH.has(w)).length;
+      const shared = words.filter((w) => set.has(w) && ALSO_ENGLISH.has(w) && !ENGLISH_EVERYDAY.has(w)).length;
+      score[lang] = { sure, all: sure + shared };
+    }
+    const english = words.filter((w) => ENGLISH_EVERYDAY.has(w)).length;
+    return { words, score, english };
+  }
+  function phraseLanguage(phrase) {
+    const { words, score, english } = everydayCounts(phrase || "");
+    if (!words.length || words.length > 8 || english > 0) return null;
+    const ranked = Object.entries(score).sort((a, b) => b[1].all - a[1].all || b[1].sure - a[1].sure);
+    if (ranked[0][1].all >= 1 && (ranked[0][1].all > ranked[1][1].all || ranked[0][1].sure > ranked[1][1].sure)) return ranked[0][0];
+    if (/[ñ¿¡]|[áíóú]/i.test(phrase)) return "es";
+    if (/[ãõ]/i.test(phrase)) return "pt";
+    if (/[şğıİöü]/.test(phrase)) return null;
+    if (/[äß]/i.test(phrase)) return "de";
+    if (/[éèêëçœàùâîôûï]/i.test(phrase)) return "fr";
+    return null;
+  }
 
   // src/eta.js
   var TYPICAL_CPS = 14;
@@ -887,6 +920,7 @@
             if (sure && (foreignLetters || top.percentage >= 85)) lang = code;
           } catch {
           }
+          if (!lang) lang = phraseLanguage(phrase.replace(/[.,;:!?]+$/, ""));
         }
         if (lang) {
           for (let k = i; k < j; k++) hints[k] = lang;

@@ -204,6 +204,21 @@
     ku: { name: "Kurdish", espeak: "ku", own: true }
   };
   var SUPPORTED = Object.keys(LANGS);
+  var HINTS = {
+    en: ["the", "and", "is", "of", "to", "in", "that", "it", "with", "for", "was", "are", "this", "you"],
+    es: ["el", "la", "de", "que", "y", "en", "los", "las", "es", "un", "una", "por", "con", "para", "del", "se", "no"],
+    fr: ["le", "la", "les", "de", "des", "et", "est", "un", "une", "que", "qui", "dans", "pour", "pas", "vous", "nous", "je"],
+    it: ["il", "la", "di", "che", "e", "un", "una", "per", "non", "con", "sono", "gli", "della", "del", "anche"],
+    pt: ["o", "a", "de", "que", "e", "do", "da", "em", "um", "uma", "para", "com", "n\xE3o", "os", "as", "se", "voc\xEA"]
+  };
+  var EVERYDAY = {
+    fr: [...HINTS.fr, "bonne", "bon", "tr\xE8s", "avec", "mais", "ce", "cette", "au", "aux", "du", "sur", "sont", "\xEAtre", "\xE0", "o\xF9", "merci", "oui", "il", "elle", "mon", "ma", "votre", "notre", "tout", "bien", "chez"],
+    es: [...HINTS.es, "muy", "pero", "m\xE1s", "est\xE1", "como", "gracias", "buena", "buen", "s\xED", "su", "mi", "al", "lo", "hay", "todo", "bien"],
+    it: [...HINTS.it, "molto", "ma", "pi\xF9", "questo", "questa", "grazie", "buona", "buon", "s\xEC", "lo", "le", "mi", "ho", "\xE8", "tutto", "bene"],
+    pt: [...HINTS.pt, "muito", "mas", "mais", "est\xE1", "obrigado", "obrigada", "boa", "bom", "sim", "ao", "na", "no", "isso", "tudo", "bem"],
+    de: ["der", "das", "und", "ist", "nicht", "ich", "ein", "eine", "mit", "f\xFCr", "auf", "zu", "den", "dem", "sie", "wir", "sehr", "aber", "auch", "gut", "guten", "danke", "viel"]
+  };
+  var ENGLISH_EVERYDAY = /* @__PURE__ */ new Set([...HINTS.en, "i", "i'll", "i'm", "it's", "a", "an", "on", "be", "at", "have", "has", "not", "we", "will", "your", "my", "by", "what", "when", "then", "from", "but", "or", "if", "so", "he", "she", "they", "as", "do", "can", "there", "here", "about", "more", "just", "all", "one", "would", "which", "their", "had", "been", "were"]);
 
   // src/online.js
   var ONLINE_LOCALES = {
