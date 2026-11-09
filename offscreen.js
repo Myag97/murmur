@@ -91756,7 +91756,7 @@ var LANG_TONES = {
   es: [["peak", 3e3, 1.5, 1], ["highshelf", 8e3, -2, 0.7]],
   // Claude (Mexican): her favourite; a little hiss above 8 kHz tamed
   fr: [["peak", 300, -3, 0.9], ["peak", 3e3, 2.5, 1]],
-  it: [["lowshelf", 150, -3, 0.7], ["peak", 300, -4, 0.9], ["peak", 3e3, 2, 1], ["highshelf", 8e3, -6, 0.7]],
+  it: [["lowshelf", 150, -3, 0.7], ["peak", 300, -4, 0.9], ["peak", 3200, 3.5, 0.9], ["highshelf", 8e3, -4, 0.7]],
   // Nicola+Fable blend ("nice"), its high buzz cut
   pt: [["peak", 3e3, 2.5, 1]],
   // Cadu: her pick, clean enough as is
