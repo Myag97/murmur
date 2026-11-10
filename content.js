@@ -996,7 +996,8 @@
             const top = r?.languages?.[0];
             const code = top?.language?.split("-")[0];
             const sure = top && code && code !== "en" && SUPPORTED.includes(code) && (r.isReliable || top.percentage >= 85);
-            if (sure && (foreignLetters || top.percentage >= 85)) lang = code;
+            const fewPlainWords = !foreignLetters && j - i < 5;
+            if (sure && !fewPlainWords && (foreignLetters || top.percentage >= 85)) lang = code;
           } catch {
           }
           if (!lang) lang = phraseLanguage(phrase.replace(/[.,;:!?]+$/, ""));
