@@ -93188,15 +93188,16 @@ function createEngine({ wasmPaths, onEvent }) {
 
 // src/applink.js
 var URL2 = "http://127.0.0.1:47816/talk";
-var RETRY_MS = 2e4;
+var RETRY_MS = 5e3;
+var SILENT_MS = 3e4;
 function watchApp(engine2) {
   let open = false;
   let lastTry = 0;
   let pausedForTalk = false;
+  let timer = 0;
   function heard(word) {
-    const status = engine2.state.status;
     if (word === "start") {
-      if (status === "playing") {
+      if (engine2.state.status === "playing") {
         engine2.pause();
         pausedForTalk = true;
       }
@@ -93205,17 +93206,24 @@ function watchApp(engine2) {
       pausedForTalk = false;
     }
   }
+  const reading = () => ["playing", "paused", "buffering", "loading"].includes(engine2.state.status);
   async function connect() {
     if (open || Date.now() - lastTry < RETRY_MS) return;
     open = true;
     lastTry = Date.now();
+    const stop = new AbortController();
+    let lastHeard = Date.now();
+    const watchdog = setInterval(() => {
+      if (Date.now() - lastHeard > SILENT_MS) stop.abort();
+    }, 5e3);
     try {
-      const res = await fetch(URL2, { cache: "no-store" });
+      const res = await fetch(URL2, { cache: "no-store", signal: stop.signal });
       const reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
       let buf = "";
       for (; ; ) {
         const { value, done } = await reader.read();
         if (done) break;
+        lastHeard = Date.now();
         buf += value;
         let cut;
         while ((cut = buf.indexOf("\n")) >= 0) {
@@ -93226,9 +93234,21 @@ function watchApp(engine2) {
       }
     } catch {
     }
+    clearInterval(watchdog);
     open = false;
   }
-  return { wake: connect };
+  function wake() {
+    connect();
+    if (timer) return;
+    timer = setInterval(() => {
+      if (reading()) connect();
+      else if (!open) {
+        clearInterval(timer);
+        timer = 0;
+      }
+    }, RETRY_MS);
+  }
+  return { wake };
 }
 
 // src/offscreen.js
