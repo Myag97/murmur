@@ -92513,7 +92513,7 @@ function onlineReady(settings, lang, { ignoreLimit = false } = {}) {
   if (!locale) return false;
   if (state.missing.has(locale + ":" + speakerFor(settings, lang))) return false;
   syncUsage(settings.onlineUsage);
-  return ignoreLimit || state.usage.chars < STOP_AT;
+  return ignoreLimit || state.usage.chars < (settings.onlineLimit || STOP_AT);
 }
 function base64ToBytes(b64) {
   const bin = atob(b64);

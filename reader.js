@@ -126561,7 +126561,7 @@ function onlineReady(settings2, lang, { ignoreLimit = false } = {}) {
   if (!locale) return false;
   if (state.missing.has(locale + ":" + speakerFor(settings2, lang))) return false;
   syncUsage(settings2.onlineUsage);
-  return ignoreLimit || state.usage.chars < STOP_AT;
+  return ignoreLimit || state.usage.chars < (settings2.onlineLimit || STOP_AT);
 }
 function base64ToBytes(b64) {
   const bin = atob(b64);
