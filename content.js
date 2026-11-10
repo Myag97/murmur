@@ -1140,6 +1140,10 @@
               return;
             }
             claude.done.add(key);
+            if (document.visibilityState !== "visible" || !document.hasFocus()) {
+              console.log("[murmur] reply finished while you were elsewhere: not read aloud");
+              return;
+            }
             readClaudeMessage(el);
           };
           claude.readTimer = setTimeout(() => tryRead(0), 700);
