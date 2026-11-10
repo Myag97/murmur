@@ -153,10 +153,10 @@ async function pickFrame(tabId) {
   const withSel = frames.filter((f) => f.sel > 0).sort((a, b) => b.sel - a.sel)[0];
   if (withSel) return withSel.id;
   const top = frames.find((f) => f.id === 0) || { text: 0 };
-  const inner = frames.filter((f) => f.id !== 0 && f.area > 4e4 && f.text >= 200).sort((a, b) => b.text - a.text);
+  const inner = frames.filter((f) => f.id !== 0 && f.area > 4e4 && f.text >= 30).sort((a, b) => b.text - a.text);
   const clicked = inner.find((f) => f.focused);
   if (clicked) return clicked.id;
-  if (inner[0] && top.text < 400 && inner[0].text > top.text * 2) return inner[0].id;
+  if (inner[0] && top.text < 400 && inner[0].text > top.text) return inner[0].id;
   return 0;
 }
 async function activeTab() {
