@@ -93186,6 +93186,51 @@ function createEngine({ wasmPaths, onEvent }) {
   };
 }
 
+// src/applink.js
+var URL2 = "http://127.0.0.1:47816/talk";
+var RETRY_MS = 2e4;
+function watchApp(engine2) {
+  let open = false;
+  let lastTry = 0;
+  let pausedForTalk = false;
+  function heard(word) {
+    const status = engine2.state.status;
+    if (word === "start") {
+      if (status === "playing") {
+        engine2.pause();
+        pausedForTalk = true;
+      }
+    } else if (word === "stop") {
+      if (pausedForTalk && engine2.state.status === "paused") engine2.resume();
+      pausedForTalk = false;
+    }
+  }
+  async function connect() {
+    if (open || Date.now() - lastTry < RETRY_MS) return;
+    open = true;
+    lastTry = Date.now();
+    try {
+      const res = await fetch(URL2, { cache: "no-store" });
+      const reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
+      let buf = "";
+      for (; ; ) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        buf += value;
+        let cut;
+        while ((cut = buf.indexOf("\n")) >= 0) {
+          const line = buf.slice(0, cut).trim();
+          buf = buf.slice(cut + 1);
+          if (line.startsWith("data:")) heard(line.slice(5).trim());
+        }
+      }
+    } catch {
+    }
+    open = false;
+  }
+  return { wake: connect };
+}
+
 // src/offscreen.js
 var send = (msg) => chrome.runtime.sendMessage(msg).catch(() => {
 });
@@ -93195,13 +93240,16 @@ var engine = createEngine({
     if (ev2.type === "sentence") send({ type: "offscreen:sentence", index: ev2.index, starts: ev2.starts, offset: ev2.offset, sentAt: ev2.sentAt });
     else if (ev2.type === "sync") send({ type: "offscreen:sync", index: ev2.index, elapsed: ev2.elapsed, sentAt: ev2.sentAt });
     else if (ev2.type === "word") send({ type: "offscreen:word", index: ev2.index, word: ev2.word });
-    else if (ev2.type === "state") send({ type: "offscreen:state", state: ev2.state, detail: ev2.detail });
-    else if (ev2.type === "ended") send({ type: "offscreen:ended" });
+    else if (ev2.type === "state") {
+      send({ type: "offscreen:state", state: ev2.state, detail: ev2.detail });
+      if (ev2.state === "playing") appLink.wake();
+    } else if (ev2.type === "ended") send({ type: "offscreen:ended" });
     else if (ev2.type === "online-usage") send({ type: "offscreen:online-usage", usage: ev2.usage });
     else if (ev2.type === "engine") console.log("[murmur] voice engine:", ev2.engine, ev2.dtype, ev2.wordTiming ? "with word timing" : "without word timing");
     else if (ev2.type === "perf") console.log(`[murmur] sentence ${ev2.index}: ${ev2.audioMs} ms of audio made in ${ev2.ms} ms`);
   }
 });
+var appLink = watchApp(engine);
 setInterval(() => send({ type: "offscreen:alive" }), 2e4);
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (!msg || msg.target !== "offscreen") return false;

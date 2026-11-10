@@ -903,7 +903,13 @@
             break;
           }
         }
-        if (at < 0 || at + 1 >= fresh.length) return;
+        if (at < 0) {
+          const old = new Set(S.sentences.map((x) => x.text));
+          const firstNew = fresh.findIndex((x) => !old.has(x.text));
+          if (firstNew < 0) return;
+          at = firstNew - 1;
+        }
+        if (at + 1 >= fresh.length) return;
         console.log(`[murmur] page grew: ${fresh.length - at - 1} new sentence(s) after the last one read; carrying on`);
         S.sentences = fresh;
         eta.pause();
@@ -911,6 +917,21 @@
         setState("loading", "Carrying on with the new part\u2026");
         sendRead(fresh, at + 1);
       }, 900);
+    }
+    let growWatch = null;
+    let growTimer = 0;
+    let growUntil = 0;
+    function watchForGrowth() {
+      growUntil = Date.now() + 10 * 60 * 1e3;
+      if (growWatch) return;
+      growWatch = new MutationObserver(() => {
+        if (S.state !== "idle" || !S.bar || S.current >= 0 || Date.now() > growUntil || growTimer) return;
+        growTimer = setTimeout(() => {
+          growTimer = 0;
+          if (S.state === "idle" && S.bar && S.current < 0 && S.sentences.length) continueIfPageGrew();
+        }, 1200);
+      });
+      growWatch.observe(document.body, { subtree: true, childList: true, characterData: true });
     }
     async function languagesFor(sentences) {
       if (!S.settings.autoLanguage) return sentences.map(() => "en");
@@ -1103,7 +1124,8 @@
         const i = S.sentences.findIndex((s) => inRange(s.range));
         if (i < 0) {
           const node = pos.offsetNode;
-          if (node.nodeType === Node.TEXT_NODE && node.nodeValue.trim().length >= 20) {
+          const around = node.parentElement?.closest("p, li, h1, h2, h3, h4, h5, h6, blockquote, td, dd, div, section, article") || node.parentElement;
+          if (node.nodeType === Node.TEXT_NODE && node.nodeValue.trim().length >= 2 && (around?.innerText || "").trim().length >= 20) {
             S.lastClickTarget = node.parentElement;
             start("from-click");
           }
@@ -1425,6 +1447,7 @@
           clearHighlight();
           setState("idle", "Finished");
           continueIfPageGrew();
+          watchForGrowth();
           break;
         case "settings":
           Object.assign(S.settings, msg.settings);

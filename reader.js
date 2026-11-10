@@ -156285,6 +156285,51 @@ async function download(id2, ask = true) {
   return (await call(tok, `${API}/files/${id2}?alt=media`)).blob();
 }
 
+// src/applink.js
+var URL2 = "http://127.0.0.1:47816/talk";
+var RETRY_MS = 2e4;
+function watchApp(engine2) {
+  let open = false;
+  let lastTry = 0;
+  let pausedForTalk = false;
+  function heard(word) {
+    const status2 = engine2.state.status;
+    if (word === "start") {
+      if (status2 === "playing") {
+        engine2.pause();
+        pausedForTalk = true;
+      }
+    } else if (word === "stop") {
+      if (pausedForTalk && engine2.state.status === "paused") engine2.resume();
+      pausedForTalk = false;
+    }
+  }
+  async function connect() {
+    if (open || Date.now() - lastTry < RETRY_MS) return;
+    open = true;
+    lastTry = Date.now();
+    try {
+      const res = await fetch(URL2, { cache: "no-store" });
+      const reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
+      let buf = "";
+      for (; ; ) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        buf += value;
+        let cut;
+        while ((cut = buf.indexOf("\n")) >= 0) {
+          const line = buf.slice(0, cut).trim();
+          buf = buf.slice(cut + 1);
+          if (line.startsWith("data:")) heard(line.slice(5).trim());
+        }
+      }
+    } catch {
+    }
+    open = false;
+  }
+  return { wake: connect };
+}
+
 // src/reader.js
 Object.assign(globalThis, { MPEGMode: import_MPEGMode.default, Lame: import_Lame.default, BitStream: import_BitStream.default });
 var isExt2 = typeof chrome !== "undefined" && !!chrome.runtime?.getURL;
@@ -156357,8 +156402,10 @@ var engine = createEngine({
   onEvent(ev2) {
     if (ev2.type === "sentence") setCurrent(ev2.index);
     else if (ev2.type === "word") setWord(ev2.index, ev2.word);
-    else if (ev2.type === "state") setStatus(ev2.state, ev2.detail);
-    else if (ev2.type === "online-usage") saveUsage(ev2.usage);
+    else if (ev2.type === "state") {
+      setStatus(ev2.state, ev2.detail);
+      if (ev2.state === "playing" && isExt2) appLink.wake();
+    } else if (ev2.type === "online-usage") saveUsage(ev2.usage);
     else if (ev2.type === "ended") {
       setStatus("idle", "Finished");
       savePosition(0);
@@ -156366,6 +156413,7 @@ var engine = createEngine({
     }
   }
 });
+var appLink = watchApp(engine);
 var eta = makeEta();
 function timeLeft() {
   if (current < 0) return "";
