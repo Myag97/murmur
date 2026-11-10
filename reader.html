@@ -56,6 +56,8 @@
       footer { position: fixed; left: 0; right: 0; bottom: 0; background: var(--card); border-top: 1px solid var(--line); padding: 10px 16px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
       footer .ctl { all: unset; cursor: pointer; width: 36px; height: 36px; display: grid; place-items: center; border-radius: 50%; font-size: 15px; }
       footer .ctl:hover { background: color-mix(in srgb, var(--fg) 10%, transparent); }
+      footer #locate { font-size: 19px; opacity: .55; }
+      footer #locate.away { opacity: 1; background: var(--accent); color: var(--on-accent); }
       footer .ctl.play { width: 44px; height: 44px; background: var(--accent); color: var(--on-accent); font-size: 18px; }
       #status { color: var(--muted); min-width: 120px; }
       /* On a phone: everything stays inside the screen, and the bars take less room. */
@@ -150,6 +152,7 @@
       <button id="prev" class="ctl" title="Previous sentence (←)">&#9198;</button>
       <button id="play" class="ctl play" title="Play / pause (Space)">&#9654;</button>
       <button id="next" class="ctl" title="Next sentence (→)">&#9197;</button>
+      <button id="locate" class="ctl" title="Go back to where it is reading">&#8982;</button>
       <span id="status">Ready</span>
       <div id="bar" title="Jump"><div></div></div>
       <button id="ccBtn" class="cc" title="Big text: show the sentence being read large on the screen">CC</button>

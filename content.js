@@ -330,6 +330,47 @@
     return mm ? `${h} h ${mm} min left` : `${h} h left`;
   }
 
+  // src/follow.js
+  function makeFollow(onChange) {
+    let on = true;
+    let pointerDown = false;
+    const set = (v) => {
+      if (on === v) return;
+      on = v;
+      try {
+        onChange?.(on);
+      } catch {
+      }
+    };
+    const away = () => set(false);
+    const KEYS = ["PageDown", "PageUp", "ArrowDown", "ArrowUp", "Home", "End"];
+    addEventListener("wheel", away, { passive: true, capture: true });
+    addEventListener("touchmove", away, { passive: true, capture: true });
+    addEventListener(
+      "keydown",
+      (e) => {
+        if (KEYS.includes(e.key) && !e.target?.closest?.("input, textarea, select, [contenteditable]")) away();
+      },
+      true
+    );
+    addEventListener("pointerdown", () => pointerDown = true, true);
+    addEventListener("pointerup", () => pointerDown = false, true);
+    addEventListener("pointercancel", () => pointerDown = false, true);
+    addEventListener(
+      "scroll",
+      () => {
+        if (pointerDown) away();
+      },
+      { passive: true, capture: true }
+    );
+    return {
+      get on() {
+        return on;
+      },
+      set
+    };
+  }
+
   // src/content.js
   (() => {
     if (window.__murmurLoaded) return;
@@ -770,6 +811,21 @@
       }
       return null;
     }
+    const follow = makeFollow(() => updateLocate());
+    function updateLocate() {
+      const b = S.bar && S.bar.$(".loc");
+      if (b) b.classList.toggle("away", !follow.on);
+    }
+    function scrollToCurrent() {
+      const s = S.sentences[S.current];
+      if (!s) return;
+      const rect = s.range.getBoundingClientRect();
+      if (!rect.height) return;
+      const want = Math.max(window.innerHeight * 0.33, 120);
+      const scroller = scrollParentOf(s.range.startContainer.parentElement || s.el);
+      if (scroller) scroller.scrollBy({ top: rect.top - want, behavior: "smooth" });
+      else window.scrollBy({ top: rect.top - want, behavior: "smooth" });
+    }
     function setCurrent(i) {
       S.current = i;
       ensureHighlight();
@@ -779,11 +835,10 @@
       if (!s) return;
       if (S.highlight) S.highlight.add(s.range);
       const rect = s.range.getBoundingClientRect();
-      if (rect.height && !isInView(rect)) {
-        const want = Math.max(window.innerHeight * 0.33, 120);
-        const scroller = scrollParentOf(s.range.startContainer.parentElement || s.el);
-        if (scroller) scroller.scrollBy({ top: rect.top - want, behavior: "smooth" });
-        else window.scrollBy({ top: rect.top - want, behavior: "smooth" });
+      if (rect.height) {
+        const inView = isInView(rect);
+        if (!follow.on && inView) follow.set(true);
+        if (follow.on && !inView) scrollToCurrent();
       }
       renderCaption();
       updateBar();
@@ -1163,6 +1218,8 @@
     .gear { opacity: .8; font-size: 14px; }
     button.cc { width: auto; padding: 0 9px; border-radius: 8px; font: 700 12px/1 system-ui, sans-serif; letter-spacing: .5px; border: 1.5px solid rgba(255,255,255,.35); height: 22px; }
     button.cc.on { background: #6d5dfc; color: #fff; border-color: #6d5dfc; }
+    button.loc { font-size: 17px; opacity: .55; }
+    button.loc.away { opacity: 1; background: #6d5dfc; color: #fff; }
     button.auto { width: auto; padding: 0 9px; border-radius: 8px; font: 600 12px/1 system-ui, sans-serif; white-space: nowrap; border: 1.5px solid rgba(255,255,255,.35); height: 22px; opacity: .8; }
     button.auto.on { background: #6d5dfc; color: #fff; border-color: #6d5dfc; opacity: 1; }
   `;
@@ -1179,6 +1236,7 @@
         <button class="prev" title="Back one sentence">&#9198;</button>
         <button class="play" title="Pause or play">&#9654;</button>
         <button class="next" title="Forward one sentence">&#9197;</button>
+        <button class="loc" title="Go back to where it is reading">&#8982;</button>
         <span class="status"></span>
         <button class="cc" title="Big text: show the sentence being read large on the screen">CC</button>
         ${isClaudeChat() ? '<button class="auto" title="Read each new reply from Claude out loud as soon as it arrives. Click to turn this off or on.">Auto-read</button>' : ""}
@@ -1194,6 +1252,10 @@
         toBg({ type: "content:next" });
       };
       $(".play").onclick = () => toBg({ type: "content:toggle" });
+      $(".loc").onclick = () => {
+        follow.set(true);
+        scrollToCurrent();
+      };
       $(".x").onclick = () => {
         toBg({ type: "content:stop" });
         hideBar();

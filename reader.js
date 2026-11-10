@@ -156330,6 +156330,47 @@ function watchApp(engine2) {
   return { wake: connect };
 }
 
+// src/follow.js
+function makeFollow(onChange) {
+  let on2 = true;
+  let pointerDown = false;
+  const set = (v3) => {
+    if (on2 === v3) return;
+    on2 = v3;
+    try {
+      onChange?.(on2);
+    } catch {
+    }
+  };
+  const away = () => set(false);
+  const KEYS = ["PageDown", "PageUp", "ArrowDown", "ArrowUp", "Home", "End"];
+  addEventListener("wheel", away, { passive: true, capture: true });
+  addEventListener("touchmove", away, { passive: true, capture: true });
+  addEventListener(
+    "keydown",
+    (e2) => {
+      if (KEYS.includes(e2.key) && !e2.target?.closest?.("input, textarea, select, [contenteditable]")) away();
+    },
+    true
+  );
+  addEventListener("pointerdown", () => pointerDown = true, true);
+  addEventListener("pointerup", () => pointerDown = false, true);
+  addEventListener("pointercancel", () => pointerDown = false, true);
+  addEventListener(
+    "scroll",
+    () => {
+      if (pointerDown) away();
+    },
+    { passive: true, capture: true }
+  );
+  return {
+    get on() {
+      return on2;
+    },
+    set
+  };
+}
+
 // src/reader.js
 Object.assign(globalThis, { MPEGMode: import_MPEGMode.default, Lame: import_Lame.default, BitStream: import_BitStream.default });
 var isExt2 = typeof chrome !== "undefined" && !!chrome.runtime?.getURL;
@@ -156397,6 +156438,21 @@ function saveSettings(patch) {
   }
   engine.setSettings(patch);
 }
+var follow = makeFollow((on2) => $3("locate")?.classList.toggle("away", !on2));
+var followEl = null;
+function followTo(el2) {
+  followEl = el2;
+  const r2 = el2.getBoundingClientRect();
+  const out = r2.top < 80 || r2.bottom > window.innerHeight - 140;
+  if (!follow.on && !out) follow.set(true);
+  if (follow.on && out) el2.scrollIntoView({ block: "center", behavior: "smooth" });
+}
+if ($3("locate")) {
+  $3("locate").onclick = () => {
+    follow.set(true);
+    followEl?.scrollIntoView({ block: "center", behavior: "smooth" });
+  };
+}
 var engine = createEngine({
   wasmPaths: BASE + "lib/",
   onEvent(ev2) {
@@ -156449,10 +156505,7 @@ function setCurrent(i3) {
   s3.el.classList.add("cur");
   s3.el.querySelectorAll(".w.cur").forEach((w3) => w3.classList.remove("cur"));
   if (pagesMode) markOnPage(s3);
-  else {
-    const r2 = s3.el.getBoundingClientRect();
-    if (r2.top < 80 || r2.bottom > window.innerHeight - 140) s3.el.scrollIntoView({ block: "center", behavior: "smooth" });
-  }
+  else followTo(s3.el);
   $3("bar").firstElementChild.style.width = `${(i3 + 1) / sentences.length * 100}%`;
   savePosition(i3);
   renderCaption();
@@ -157243,8 +157296,7 @@ function markOnPage(s3) {
   hl2.style.top = `${(1 - b3.top / size.h) * 100}%`;
   hl2.style.height = `${(b3.top - b3.bottom) / size.h * 100}%`;
   hl2.hidden = false;
-  const r2 = hl2.getBoundingClientRect();
-  if (r2.top < 80 || r2.bottom > window.innerHeight - 140) hl2.scrollIntoView({ block: "center", behavior: "smooth" });
+  followTo(hl2);
 }
 function jumpToPageSpot(n2, ev2) {
   const pg2 = pageEls[n2 - 1];
