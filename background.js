@@ -94,19 +94,49 @@ async function toOffscreen(msg) {
 async function offscreenExists() {
   return chrome.offscreen.hasDocument();
 }
-async function toTab(tabId, msg) {
+async function toTab(tabId, msg, frameId = 0) {
   try {
-    return await chrome.tabs.sendMessage(tabId, msg);
+    return await chrome.tabs.sendMessage(tabId, msg, { frameId });
   } catch {
-    await chrome.scripting.executeScript({ target: { tabId }, files: ["content.js"] });
-    await chrome.scripting.insertCSS({ target: { tabId }, files: ["content.css"] });
-    return chrome.tabs.sendMessage(tabId, msg);
+    await chrome.scripting.executeScript({ target: { tabId, frameIds: [frameId] }, files: ["content.js"] });
+    await chrome.scripting.insertCSS({ target: { tabId, frameIds: [frameId] }, files: ["content.css"] });
+    return chrome.tabs.sendMessage(tabId, msg, { frameId });
   }
 }
-function toTabQuiet(tabId, msg) {
+function toTabQuiet(tabId, msg, frameId = session.tabId === tabId ? session.frameId || 0 : 0) {
   if (tabId == null) return;
-  chrome.tabs.sendMessage(tabId, msg).catch(() => {
+  chrome.tabs.sendMessage(tabId, msg, { frameId }).catch(() => {
   });
+}
+async function pickFrame(tabId) {
+  let rows;
+  try {
+    rows = await chrome.scripting.executeScript({
+      target: { tabId, allFrames: true },
+      func: () => {
+        const sel = getSelection();
+        const ae = document.activeElement;
+        return {
+          sel: sel && !sel.isCollapsed ? sel.toString().trim().length : 0,
+          focused: document.hasFocus() && !(ae && /^(IFRAME|FRAME)$/.test(ae.tagName)),
+          text: (document.body?.innerText || "").trim().length,
+          area: innerWidth * innerHeight
+        };
+      }
+    });
+  } catch {
+    return 0;
+  }
+  const frames = (rows || []).filter((r) => r && r.result).map((r) => ({ id: r.frameId, ...r.result }));
+  if (frames.length < 2) return 0;
+  const withSel = frames.filter((f) => f.sel > 0).sort((a, b) => b.sel - a.sel)[0];
+  if (withSel) return withSel.id;
+  const top = frames.find((f) => f.id === 0) || { text: 0 };
+  const inner = frames.filter((f) => f.id !== 0 && f.area > 4e4 && f.text >= 200).sort((a, b) => b.text - a.text);
+  const clicked = inner.find((f) => f.focused);
+  if (clicked) return clicked.id;
+  if (inner[0] && top.text < 400 && inner[0].text > top.text * 2) return inner[0].id;
+  return 0;
 }
 async function activeTab() {
   const win = await chrome.windows.getLastFocused({ windowTypes: ["normal"] }).catch(() => null);
@@ -159,7 +189,9 @@ async function readTab(tab, mode = "page") {
   }
   if (googleDocId(tab.url)) return openGoogleDoc(tab.url, tab.title);
   try {
-    await toTab(tab.id, { type: "start", mode });
+    const frameId = await pickFrame(tab.id);
+    if (frameId) console.log("[murmur] reading inside a frame of this page");
+    await toTab(tab.id, { type: "start", mode }, frameId);
     return { ok: true };
   } catch (e) {
     console.warn("[murmur] could not reach the page:", e?.message || e);
@@ -178,8 +210,9 @@ async function stopAll() {
   if (await offscreenExists()) chrome.runtime.sendMessage({ target: "offscreen", type: "stop" }).catch(() => {
   });
   const oldTab = session.tabId;
+  const oldFrame = session.frameId || 0;
   session = { tabId: null, count: 0, index: -1, state: "idle", detail: "" };
-  toTabQuiet(oldTab, { type: "state", state: "idle", detail: "" });
+  toTabQuiet(oldTab, { type: "state", state: "idle", detail: "" }, oldFrame);
   chrome.runtime.sendMessage({ type: "state-broadcast", session }).catch(() => {
   });
   await saveSession();
@@ -198,8 +231,9 @@ async function handle(msg, sender) {
   switch (msg.type) {
     case "content:read": {
       const tabId = sender.tab.id;
-      if (session.tabId != null && session.tabId !== tabId) toTabQuiet(session.tabId, { type: "state", state: "idle", detail: "" });
-      session = { tabId, count: msg.sentences.length, index: msg.startIndex, state: "loading", detail: "Starting\u2026" };
+      const frameId = sender.frameId || 0;
+      if (session.tabId != null && (session.tabId !== tabId || (session.frameId || 0) !== frameId)) toTabQuiet(session.tabId, { type: "state", state: "idle", detail: "" }, session.frameId || 0);
+      session = { tabId, frameId, count: msg.sentences.length, index: msg.startIndex, state: "loading", detail: "Starting\u2026" };
       await saveSession();
       await toOffscreen({
         type: "read",
@@ -220,7 +254,7 @@ async function handle(msg, sender) {
     case "content:seek":
       return toOffscreen({ type: "seek", index: msg.index, word: msg.word || 0 });
     case "content:stop":
-      if (sender.tab && session.tabId != null && sender.tab.id !== session.tabId) return { ok: true };
+      if (sender.tab && session.tabId != null && (sender.tab.id !== session.tabId || (sender.frameId || 0) !== (session.frameId || 0))) return { ok: true };
       return stopAll();
     case "content:open-pdf":
       await openReader({ src: msg.url });
@@ -391,3 +425,4 @@ chrome.tabs.onRemoved.addListener(async (tabId) => {
   await loadSession();
   if (session.tabId === tabId) stopAll();
 });
+globalThis.murmurPickFrame = pickFrame;
