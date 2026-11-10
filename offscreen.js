@@ -92639,6 +92639,18 @@ function spreadWords(text, audio) {
   return { starts, ends };
 }
 function createEngine({ wasmPaths, onEvent }) {
+  try {
+    const gpu = typeof navigator !== "undefined" ? navigator.gpu : null;
+    if (gpu?.requestAdapter && !gpu.murmurQuiet) {
+      const ask = gpu.requestAdapter.bind(gpu);
+      gpu.requestAdapter = (opts) => {
+        const { powerPreference, ...rest } = opts || {};
+        return ask(rest);
+      };
+      gpu.murmurQuiet = true;
+    }
+  } catch {
+  }
   __webpack_exports__env.allowLocalModels = false;
   __webpack_exports__env.useBrowserCache = true;
   try {
