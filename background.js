@@ -94,10 +94,30 @@ async function toOffscreen(msg) {
 async function offscreenExists() {
   return chrome.offscreen.hasDocument();
 }
+var diagLines = [];
+var diagTimer = 0;
+function diag(text) {
+  diagLines.push(String(text).slice(0, 400));
+  if (diagTimer) return;
+  diagTimer = setTimeout(() => {
+    const body = diagLines.splice(0).join("\n");
+    diagTimer = 0;
+    fetch("http://127.0.0.1:47816/log", { method: "POST", body, headers: { "Content-Type": "text/plain" } }).catch(() => {
+    });
+  }, 300);
+}
+var hostOf = (url) => {
+  try {
+    return new URL(url).host;
+  } catch {
+    return "?";
+  }
+};
 async function toTab(tabId, msg, frameId = 0) {
   try {
     return await chrome.tabs.sendMessage(tabId, msg, { frameId });
-  } catch {
+  } catch (e) {
+    diag(`${msg.type} to frame ${frameId}: no Murmur there (${e?.message || e}); putting it in`);
     await chrome.scripting.executeScript({ target: { tabId, frameIds: [frameId] }, files: ["content.js"] });
     await chrome.scripting.insertCSS({ target: { tabId, frameIds: [frameId] }, files: ["content.css"] });
     return chrome.tabs.sendMessage(tabId, msg, { frameId });
@@ -128,6 +148,7 @@ async function pickFrame(tabId) {
     return 0;
   }
   const frames = (rows || []).filter((r) => r && r.result).map((r) => ({ id: r.frameId, ...r.result }));
+  diag("frames: " + frames.map((f) => `#${f.id} text ${f.text} area ${f.area}${f.focused ? " focused" : ""}${f.sel ? " sel " + f.sel : ""}`).join(" | "));
   if (frames.length < 2) return 0;
   const withSel = frames.filter((f) => f.sel > 0).sort((a, b) => b.sel - a.sel)[0];
   if (withSel) return withSel.id;
@@ -191,9 +212,11 @@ async function readTab(tab, mode = "page") {
   try {
     const frameId = await pickFrame(tab.id);
     if (frameId) console.log("[murmur] reading inside a frame of this page");
+    diag(`read asked on ${hostOf(tab.url)} (${mode}); frame chosen #${frameId}; before: ${session.state} in tab ${session.tabId === tab.id ? "this" : "other/none"} frame #${session.frameId || 0}`);
     await toTab(tab.id, { type: "start", mode }, frameId);
     return { ok: true };
   } catch (e) {
+    diag("read failed: " + (e?.message || e));
     console.warn("[murmur] could not reach the page:", e?.message || e);
     return {
       error: "Chrome doesn't let extensions read this page (Chrome's own pages and the Web Store are off limits). You can copy the text and paste it into the reader instead. (" + String(e?.message || e) + ")"
@@ -221,6 +244,7 @@ async function stopAll() {
 async function togglePlay(tab) {
   if (!tab) return;
   const tabId = tab.id;
+  diag(`play/pause key on ${hostOf(tab.url)}; reading is ${session.tabId === tabId ? session.state : "not in this tab"}`);
   if (session.tabId === tabId && session.state === "playing") return toOffscreen({ type: "pause" });
   if (session.tabId === tabId && session.state === "paused") return toOffscreen({ type: "resume" });
   if (session.tabId === tabId && (session.state === "loading" || session.state === "buffering")) return;
@@ -234,6 +258,7 @@ async function handle(msg, sender) {
       const frameId = sender.frameId || 0;
       if (session.tabId != null && (session.tabId !== tabId || (session.frameId || 0) !== frameId)) toTabQuiet(session.tabId, { type: "state", state: "idle", detail: "" }, session.frameId || 0);
       session = { tabId, frameId, count: msg.sentences.length, index: msg.startIndex, state: "loading", detail: "Starting\u2026" };
+      diag(`page handed over ${msg.sentences.length} sentence(s) from frame #${frameId}, starting at ${msg.startIndex}`);
       await saveSession();
       await toOffscreen({
         type: "read",
@@ -245,6 +270,9 @@ async function handle(msg, sender) {
       });
       return { ok: true };
     }
+    case "content:diag":
+      diag(`page (frame #${sender.frameId || 0}): ${msg.text}`);
+      return;
     case "content:toggle":
       return togglePlay(sender.tab);
     case "content:next":
@@ -272,6 +300,7 @@ async function handle(msg, sender) {
       toTabQuiet(session.tabId, { type: "word", index: msg.index, word: msg.word });
       return;
     case "offscreen:state":
+      if (session.state !== msg.state) diag(`voice: ${msg.state}${msg.state === "error" ? " " + (msg.detail || "") : ""}`);
       session.state = msg.state;
       session.detail = msg.detail || "";
       await broadcastState();
@@ -284,6 +313,7 @@ async function handle(msg, sender) {
       });
       return usageWrites;
     case "offscreen:ended":
+      diag("voice: finished");
       session.state = "idle";
       session.detail = "Finished";
       toTabQuiet(session.tabId, { type: "ended" });

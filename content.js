@@ -396,6 +396,7 @@
       "murmur-takeover",
       () => {
         retired = true;
+        console.log("[murmur] a newer Murmur arrived on this page; this copy steps aside");
         for (const tidy of [stopWordClock, clearHighlight, removeCaption, hidePill, hideBar]) {
           try {
             tidy();
@@ -406,6 +407,7 @@
       },
       { once: true }
     );
+    const note = (text) => toBg({ type: "content:diag", text });
     function toBg(msg, reply) {
       if (!alive()) return Promise.resolve();
       try {
@@ -885,6 +887,7 @@
     }
     function start(mode) {
       hidePill();
+      note(`start (${mode})${retired ? " BUT this copy has stepped aside" : ""}; bar ${S.bar ? S.bar.host.isConnected ? "up" : "lost from page" : "none"}; state ${S.state}`);
       if (document.contentType === "application/pdf") {
         toBg({ type: "content:open-pdf", url: location.href });
         return;
@@ -932,6 +935,7 @@
     }
     function beginReading(sentences, startIndex = 0) {
       if (!sentences.length) {
+        note("found no text to read");
         showBar();
         setState("error", "I couldn't find any text to read on this page");
         return;
@@ -963,6 +967,7 @@
       if (isClaudeChat()) return;
       setTimeout(() => {
         if (S.state !== "idle" || !S.bar) return;
+        showBar();
         let fresh;
         try {
           fresh = buildSentences(pickRoot());
@@ -977,6 +982,7 @@
             break;
           }
         }
+        note(`page changed after finishing: ${fresh.length} sentence(s) now, old ending ${at < 0 ? "gone" : "found at " + at}`);
         if (at < 0) {
           const old = new Set(S.sentences.map((x) => x.text));
           const firstNew = fresh.findIndex((x) => !old.has(x.text));
@@ -1248,7 +1254,11 @@
   `;
     function showBar() {
       applyHighlightTheme();
-      if (S.bar || retired) return;
+      if (retired) return;
+      if (S.bar) {
+        if (!S.bar.host.isConnected) (document.body || document.documentElement).appendChild(S.bar.host);
+        return;
+      }
       for (const old of document.querySelectorAll("#murmur-player")) old.remove();
       const host = document.createElement("div");
       host.id = "murmur-player";
