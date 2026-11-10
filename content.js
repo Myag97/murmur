@@ -387,6 +387,25 @@
         return false;
       }
     };
+    document.dispatchEvent(new CustomEvent("murmur-takeover"));
+    for (const id of ["murmur-player", "murmur-caption", "murmur-select"]) {
+      for (const old of document.querySelectorAll("#" + id)) old.remove();
+    }
+    let retired = false;
+    document.addEventListener(
+      "murmur-takeover",
+      () => {
+        retired = true;
+        for (const tidy of [stopWordClock, clearHighlight, removeCaption, hidePill, hideBar]) {
+          try {
+            tidy();
+          } catch {
+          }
+        }
+        for (const id of ["murmur-player", "murmur-caption", "murmur-select"]) document.getElementById(id)?.remove();
+      },
+      { once: true }
+    );
     function toBg(msg, reply) {
       if (!alive()) return Promise.resolve();
       try {
@@ -1229,7 +1248,8 @@
   `;
     function showBar() {
       applyHighlightTheme();
-      if (S.bar) return;
+      if (S.bar || retired) return;
+      for (const old of document.querySelectorAll("#murmur-player")) old.remove();
       const host = document.createElement("div");
       host.id = "murmur-player";
       const root = host.attachShadow({ mode: "open" });
