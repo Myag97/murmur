@@ -479,10 +479,13 @@
           if (cls && SKIP_CLASS.test(cls) && !holdsMainContent(el)) return "class name " + (cls.match(SKIP_CLASS)?.[2] || "");
         }
       }
-      if (el.checkVisibility && !el.checkVisibility({ checkOpacity: true, checkVisibilityCSS: true })) {
+      if (el.checkVisibility && !el.checkVisibility({ checkOpacity: true })) {
         if (getComputedStyle(el).display !== "contents") return "not visible";
       }
       return "";
+    }
+    function ownTextHidden(el) {
+      return !!el.checkVisibility && !el.checkVisibility({ checkVisibilityCSS: true }) && el.checkVisibility();
     }
     function skipElement(el) {
       const why = skipReason(el);
@@ -548,12 +551,13 @@
       };
       function visit(el) {
         if (skipElement(el)) return;
+        const mute = ownTextHidden(el);
         const block = isBlock(el);
         if (block) open(el);
         for (const child of el.childNodes) {
           if (child.nodeType === Node.TEXT_NODE) {
             const t = child.nodeValue;
-            if (!t || !t.trim()) continue;
+            if (mute || !t || !t.trim()) continue;
             if (!cur) open(el);
             cur.nodes.push({ node: child, start: cur.text.length, end: cur.text.length + t.length });
             cur.text += t;
@@ -565,7 +569,7 @@
             visit(child);
           }
         }
-        if (relaxed && el.shadowRoot) {
+        if (el.shadowRoot && (relaxed || window !== window.top || wanted.length)) {
           for (const child of el.shadowRoot.childNodes) {
             if (child.nodeType === Node.ELEMENT_NODE && child.tagName !== "STYLE" && child.tagName !== "SLOT") visit(child);
           }
@@ -645,11 +649,11 @@
       const chars = (list) => list.reduce((n, s) => n + s.text.length, 0);
       const visible = visibleTextLength();
       const inFrame = window !== window.top;
-      if (inFrame ? visible > 100 && chars(out) < visible * 0.8 : visible > 400 && chars(out) < visible * 0.3) {
+      if (inFrame ? visible > 100 && chars(out) < visible * 0.92 : visible > 400 && chars(out) < visible * 0.3) {
         relaxed = true;
         try {
           const again = sentencesIn(document.body);
-          if (chars(again) > chars(out) * (inFrame ? 1.15 : 1.5)) {
+          if (chars(again) > chars(out) * (inFrame ? 1.05 : 1.5)) {
             console.log(`[murmur] relaxed text pass used: ${chars(out)} -> ${chars(again)} of ${visible} visible characters`);
             out = again;
           }
