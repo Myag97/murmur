@@ -457,24 +457,58 @@
     function holdsMainContent(el) {
       return paragraphTextLength(el) >= pageParagraphChars * 0.3;
     }
-    function skipElement(el) {
+    let wanted = [];
+    let leftOut = null;
+    const SOFT_TAGS = /* @__PURE__ */ new Set(["ASIDE", "NAV", "DIALOG", "MENU"]);
+    function skipReason(el) {
       const tag = el.tagName;
-      if (SKIP_TAGS.has(tag)) return true;
-      if ((tag === "HEADER" || tag === "FOOTER") && !el.closest('article, main, [role="main"], section')) return true;
-      if (tag === "SUP" && /^\s*\[?\d+\]?\s*$/.test(el.textContent)) return true;
-      if (S.settings.skipCitations !== false && isCitation(el) && !holdsMainContent(el)) return true;
-      if (el.hidden || el.getAttribute("aria-hidden") === "true") return true;
-      if (!relaxed) {
-        const role = el.getAttribute("role");
-        if (role && SKIP_ROLES.has(role) && !holdsMainContent(el)) return true;
-        if (el.id && SKIP_CLASS.test(el.id) && !holdsMainContent(el)) return true;
-        const cls = typeof el.className === "string" ? el.className : "";
-        if (cls && SKIP_CLASS.test(cls) && !holdsMainContent(el)) return true;
+      const asked = wanted.length && wanted.some((w) => w === el || w.contains(el));
+      const easy = asked || relaxed && tag === "ASIDE";
+      if (SKIP_TAGS.has(tag) && !(easy && SOFT_TAGS.has(tag))) return "tag";
+      if (el.hidden) return "hidden";
+      if (!asked) {
+        if ((tag === "HEADER" || tag === "FOOTER") && !el.closest('article, main, [role="main"], section')) return "page header/footer";
+        if (tag === "SUP" && /^\s*\[?\d+\]?\s*$/.test(el.textContent)) return "footnote mark";
+        if (S.settings.skipCitations !== false && isCitation(el) && !holdsMainContent(el)) return "citation";
+        if (el.getAttribute("aria-hidden") === "true") return "aria-hidden";
+        if (!relaxed) {
+          const role = el.getAttribute("role");
+          if (role && SKIP_ROLES.has(role) && !holdsMainContent(el)) return "role " + role;
+          if (el.id && SKIP_CLASS.test(el.id) && !holdsMainContent(el)) return "id name";
+          const cls = typeof el.className === "string" ? el.className : "";
+          if (cls && SKIP_CLASS.test(cls) && !holdsMainContent(el)) return "class name " + (cls.match(SKIP_CLASS)?.[2] || "");
+        }
       }
       if (el.checkVisibility && !el.checkVisibility({ checkOpacity: true, checkVisibilityCSS: true })) {
-        if (getComputedStyle(el).display !== "contents") return true;
+        if (getComputedStyle(el).display !== "contents") return "not visible";
       }
-      return false;
+      return "";
+    }
+    function skipElement(el) {
+      const why = skipReason(el);
+      if (why && leftOut && leftOut.length < 6 && why !== "not visible" && why !== "hidden") {
+        const n = (el.textContent || "").trim().length;
+        if (n >= 80 && !/^(SCRIPT|STYLE|NOSCRIPT|TEMPLATE|HEAD|SVG)$/i.test(el.tagName)) leftOut.push(`${el.tagName.toLowerCase()} (${why}) ${n} letters`);
+      }
+      return !!why;
+    }
+    function want(target) {
+      if (!target || !target.isConnected || (target.innerText || target.textContent || "").trim().length < 2) return false;
+      let top = null;
+      let why = "";
+      for (let el = target; el && el !== document.documentElement; el = el.parentElement) {
+        const r = skipReason(el);
+        if (r === "not visible" || r === "hidden") return false;
+        if (r) {
+          top = el;
+          why = r;
+        }
+      }
+      if (!top) return false;
+      wanted = wanted.filter((w) => w.isConnected && !top.contains(w));
+      wanted.push(top);
+      note(`the text pointed at was being left out: ${top.tagName.toLowerCase()} (${why}); reading it now`);
+      return true;
     }
     const CITE_CLASS = /(^|[\s_-])(footnotes?|endnotes?|references?|reflist|citations?|cite|bibliography|works-cited|fn|footnote-ref|footnote-anchor|ltx_cite|ltx_bibliography)([\s_-]|$)/i;
     const CITE_ROLES = /* @__PURE__ */ new Set(["doc-endnotes", "doc-footnote", "doc-bibliography", "doc-biblioentry", "doc-noteref", "doc-backlink"]);
@@ -610,11 +644,12 @@
       let out = sentencesIn(root);
       const chars = (list) => list.reduce((n, s) => n + s.text.length, 0);
       const visible = visibleTextLength();
-      if (visible > 400 && chars(out) < visible * 0.3) {
+      const inFrame = window !== window.top;
+      if (inFrame ? visible > 100 && chars(out) < visible * 0.8 : visible > 400 && chars(out) < visible * 0.3) {
         relaxed = true;
         try {
           const again = sentencesIn(document.body);
-          if (chars(again) > chars(out) * 1.5) {
+          if (chars(again) > chars(out) * (inFrame ? 1.15 : 1.5)) {
             console.log(`[murmur] relaxed text pass used: ${chars(out)} -> ${chars(again)} of ${visible} visible characters`);
             out = again;
           }
@@ -622,8 +657,10 @@
           relaxed = false;
         }
       }
+      lastRead = { got: chars(out), visible };
       return out;
     }
+    let lastRead = { got: 0, visible: 0 };
     function rangesIntersect(a, b) {
       return a.compareBoundaryPoints(Range.END_TO_START, b) < 0 && a.compareBoundaryPoints(Range.START_TO_END, b) > 0;
     }
@@ -842,10 +879,10 @@
       if (!s) return;
       const rect = s.range.getBoundingClientRect();
       if (!rect.height) return;
-      const want = Math.max(window.innerHeight * 0.33, 120);
+      const want2 = Math.max(window.innerHeight * 0.33, 120);
       const scroller = scrollParentOf(s.range.startContainer.parentElement || s.el);
-      if (scroller) scroller.scrollBy({ top: rect.top - want, behavior: "smooth" });
-      else window.scrollBy({ top: rect.top - want, behavior: "smooth" });
+      if (scroller) scroller.scrollBy({ top: rect.top - want2, behavior: "smooth" });
+      else window.scrollBy({ top: rect.top - want2, behavior: "smooth" });
     }
     function setCurrent(i) {
       S.current = i;
@@ -876,8 +913,15 @@
     }
     function selectionPlan(selRange, onlySelection = false) {
       const root = pickRoot();
-      const all = buildSentences(document.body);
-      const hit = all.filter((s) => rangesIntersect(s.range, selRange));
+      let all = buildSentences(document.body);
+      let hit = all.filter((s) => rangesIntersect(s.range, selRange));
+      if (!hit.length) {
+        const node = selRange.startContainer;
+        if (want(node.nodeType === Node.TEXT_NODE ? node.parentElement : node)) {
+          all = buildSentences(document.body);
+          hit = all.filter((s) => rangesIntersect(s.range, selRange));
+        }
+      }
       if (!hit.length) return { sentences: all, startIndex: 0 };
       if (onlySelection) return { sentences: hit, startIndex: 0 };
       const pool = root === document.body ? all : root.contains(selRange.startContainer) ? buildSentences(root) : all;
@@ -919,17 +963,26 @@
       if (mode === "selection" || mode === "selection-only") {
         ({ sentences, startIndex } = selectionPlan(selRange, mode === "selection-only"));
       } else {
+        leftOut = [];
         sentences = buildSentences(pickRoot());
+        const skipped = leftOut;
+        leftOut = null;
         if (mode === "from-click" && S.lastClickTarget) {
           const target = S.lastClickTarget;
-          const idx = sentences.findIndex((s) => target.contains(s.range.startContainer) || s.el.contains(target));
+          const find = () => sentences.findIndex((s) => target.contains(s.range.startContainer) || s.el.contains(target));
+          let idx = find();
+          if (idx < 0 && (want(target) || !pickRoot().contains(target))) {
+            sentences = buildSentences(document.body);
+            idx = find();
+          }
+          note(`found ${lastRead.got} of ${lastRead.visible} letters on show${skipped.length ? "; left out: " + skipped.join(", ") : ""}`);
           if (idx >= 0) startIndex = idx;
           else {
             const y = target.getBoundingClientRect().top;
             const below = sentences.findIndex((s) => s.range.getBoundingClientRect().top >= y - 4);
             if (below >= 0) startIndex = below;
           }
-        }
+        } else note(`found ${lastRead.got} of ${lastRead.visible} letters on show${skipped.length ? "; left out: " + skipped.join(", ") : ""}`);
       }
       beginReading(sentences, startIndex);
     }
