@@ -66,9 +66,9 @@ var init_fastText_common = __esm({
             if (typeof readbuffer == "function") {
               return new Uint8Array(readbuffer(f3));
             }
-            let data = read(f3, "binary");
-            assert(typeof data == "object");
-            return data;
+            let data2 = read(f3, "binary");
+            assert(typeof data2 == "object");
+            return data2;
           };
           readAsync = (f3, onload, onerror) => {
             setTimeout(() => onload(readBinary(f3)));
@@ -2025,8 +2025,8 @@ Originally allocated`);
           var TA2 = typeMapping[dataTypeIndex];
           function decodeMemoryView(handle) {
             var size = HEAPU32[handle >> 2];
-            var data = HEAPU32[handle + 4 >> 2];
-            return new TA2(HEAP8.buffer, data, size);
+            var data2 = HEAPU32[handle + 4 >> 2];
+            return new TA2(HEAP8.buffer, data2, size);
           }
           name = readLatin1String(name);
           registerType(rawType, { name, "fromWireType": decodeMemoryView, "argPackAdvance": GenericWireTypeSize, "readValueFromPointer": decodeMemoryView }, { ignoreDuplicateRegistrations: true });
@@ -2810,19 +2810,19 @@ Originally allocated`);
           mode |= 32768;
           return FS_mknod(path, mode, 0);
         };
-        var FS_writeFile = (path, data) => withStackSave(() => {
+        var FS_writeFile = (path, data2) => withStackSave(() => {
           var pathBuffer = stringToUTF8OnStack(path);
-          if (typeof data == "string") {
-            var buf = new Uint8Array(lengthBytesUTF8(data) + 1);
-            var actualNumBytes = stringToUTF8Array(data, buf, 0, buf.length);
-            data = buf.slice(0, actualNumBytes);
+          if (typeof data2 == "string") {
+            var buf = new Uint8Array(lengthBytesUTF8(data2) + 1);
+            var actualNumBytes = stringToUTF8Array(data2, buf, 0, buf.length);
+            data2 = buf.slice(0, actualNumBytes);
           }
-          var dataBuffer = _malloc(data.length);
+          var dataBuffer = _malloc(data2.length);
           assert(dataBuffer);
-          for (var i3 = 0; i3 < data.length; i3++) {
-            HEAP8[dataBuffer + i3] = data[i3];
+          for (var i3 = 0; i3 < data2.length; i3++) {
+            HEAP8[dataBuffer + i3] = data2[i3];
           }
-          var ret = __wasmfs_write_file(pathBuffer, dataBuffer, data.length);
+          var ret = __wasmfs_write_file(pathBuffer, dataBuffer, data2.length);
           _free(dataBuffer);
           return ret;
         });
@@ -3065,7 +3065,7 @@ Originally allocated`);
           return bytesRead;
         }, allocate(stream, offset, length) {
           return FS.handleError(__wasmfs_allocate(stream.fd, offset >>> 0, (tempDouble = offset, +Math.abs(tempDouble) >= 1 ? tempDouble > 0 ? +Math.floor(tempDouble / 4294967296) >>> 0 : ~~+Math.ceil((tempDouble - +(~~tempDouble >>> 0)) / 4294967296) >>> 0 : 0), length >>> 0, (tempDouble = length, +Math.abs(tempDouble) >= 1 ? tempDouble > 0 ? +Math.floor(tempDouble / 4294967296) >>> 0 : ~~+Math.ceil((tempDouble - +(~~tempDouble >>> 0)) / 4294967296) >>> 0 : 0)));
-        }, writeFile: (path, data) => FS_writeFile(path, data), mmap: (stream, length, offset, prot, flags) => {
+        }, writeFile: (path, data2) => FS_writeFile(path, data2), mmap: (stream, length, offset, prot, flags) => {
           var buf = FS.handleError(__wasmfs_mmap(length, prot, flags, stream.fd, offset >>> 0, (tempDouble = offset, +Math.abs(tempDouble) >= 1 ? tempDouble > 0 ? +Math.floor(tempDouble / 4294967296) >>> 0 : ~~+Math.ceil((tempDouble - +(~~tempDouble >>> 0)) / 4294967296) >>> 0 : 0)));
           return { ptr: buf, allocated: true };
         }, msync: (stream, bufferPtr, offset, length, mmapFlags) => {
@@ -3755,7 +3755,7 @@ var tensorFromImage = async (image, options) => {
   const isImageDataEle = typeof ImageData !== "undefined" && image instanceof ImageData;
   const isImageBitmap = typeof ImageBitmap !== "undefined" && image instanceof ImageBitmap;
   const isString = typeof image === "string";
-  let data;
+  let data2;
   let bufferToTensorOptions = options ?? {};
   const createCanvas = () => {
     if (typeof document !== "undefined") {
@@ -3802,7 +3802,7 @@ var tensorFromImage = async (image, options) => {
         bufferToTensorOptions.width = width;
       }
       pixels2DContext.drawImage(image, 0, 0);
-      data = pixels2DContext.getImageData(0, 0, width, height).data;
+      data2 = pixels2DContext.getImageData(0, 0, width, height).data;
     } else {
       throw new Error("Can not access image data");
     }
@@ -3829,12 +3829,12 @@ var tensorFromImage = async (image, options) => {
       const pixels2DContext = createCanvasContext(tempCanvas);
       if (pixels2DContext != null) {
         pixels2DContext.putImageData(image, 0, 0);
-        data = pixels2DContext.getImageData(0, 0, width, height).data;
+        data2 = pixels2DContext.getImageData(0, 0, width, height).data;
       } else {
         throw new Error("Can not access image data");
       }
     } else {
-      data = image.data;
+      data2 = image.data;
     }
   } else if (isImageBitmap) {
     if (options === void 0) {
@@ -3848,10 +3848,10 @@ var tensorFromImage = async (image, options) => {
       const height = image.height;
       const width = image.width;
       pixels2DContext.drawImage(image, 0, 0, width, height);
-      data = pixels2DContext.getImageData(0, 0, width, height).data;
+      data2 = pixels2DContext.getImageData(0, 0, width, height).data;
       bufferToTensorOptions.height = height;
       bufferToTensorOptions.width = width;
-      return bufferToTensor(data, bufferToTensorOptions);
+      return bufferToTensor(data2, bufferToTensorOptions);
     } else {
       throw new Error("Can not access image data");
     }
@@ -3878,8 +3878,8 @@ var tensorFromImage = async (image, options) => {
   } else {
     throw new Error("Input data provided is not supported - aborted tensor creation");
   }
-  if (data !== void 0) {
-    return bufferToTensor(data, bufferToTensorOptions);
+  if (data2 !== void 0) {
+    return bufferToTensor(data2, bufferToTensorOptions);
   } else {
     throw new Error("Input data provided is not supported - aborted tensor creation");
   }
@@ -4056,7 +4056,7 @@ var Tensor = class {
           throw new Error(`Tensor constructor: unsupported location '${this.dataLocation}'`);
       }
     } else {
-      let data;
+      let data2;
       let maybeDims;
       if (typeof arg0 === "string") {
         type = arg0;
@@ -4065,7 +4065,7 @@ var Tensor = class {
           if (!Array.isArray(arg1)) {
             throw new TypeError("A string tensor's data must be a string array.");
           }
-          data = arg1;
+          data2 = arg1;
         } else {
           const typedArrayConstructor = NUMERIC_TENSOR_TYPE_TO_TYPEDARRAY_MAP.get(arg0);
           if (typedArrayConstructor === void 0) {
@@ -4075,20 +4075,20 @@ var Tensor = class {
             if (arg0 === "float16" && typedArrayConstructor === Uint16Array || arg0 === "uint4" || arg0 === "int4") {
               throw new TypeError(`Creating a ${arg0} tensor from number array is not supported. Please use ${typedArrayConstructor.name} as data.`);
             } else if (arg0 === "uint64" || arg0 === "int64") {
-              data = typedArrayConstructor.from(arg1, BigInt);
+              data2 = typedArrayConstructor.from(arg1, BigInt);
             } else {
-              data = typedArrayConstructor.from(arg1);
+              data2 = typedArrayConstructor.from(arg1);
             }
           } else if (arg1 instanceof typedArrayConstructor) {
-            data = arg1;
+            data2 = arg1;
           } else if (arg1 instanceof Uint8ClampedArray) {
             if (arg0 === "uint8") {
-              data = Uint8Array.from(arg1);
+              data2 = Uint8Array.from(arg1);
             } else {
               throw new TypeError(`A Uint8ClampedArray tensor's data must be type of uint8`);
             }
           } else if (arg0 === "float16" && arg1 instanceof Uint16Array && typedArrayConstructor !== Uint16Array) {
-            data = new globalThis.Float16Array(arg1.buffer, arg1.byteOffset, arg1.length);
+            data2 = new globalThis.Float16Array(arg1.buffer, arg1.byteOffset, arg1.length);
           } else {
             throw new TypeError(`A ${type} tensor's data must be type of ${typedArrayConstructor}`);
           }
@@ -4102,32 +4102,32 @@ var Tensor = class {
           const firstElementType = typeof arg0[0];
           if (firstElementType === "string") {
             type = "string";
-            data = arg0;
+            data2 = arg0;
           } else if (firstElementType === "boolean") {
             type = "bool";
-            data = Uint8Array.from(arg0);
+            data2 = Uint8Array.from(arg0);
           } else {
             throw new TypeError(`Invalid element type of data array: ${firstElementType}.`);
           }
         } else if (arg0 instanceof Uint8ClampedArray) {
           type = "uint8";
-          data = Uint8Array.from(arg0);
+          data2 = Uint8Array.from(arg0);
         } else {
           const mappedType = NUMERIC_TENSOR_TYPEDARRAY_TO_TYPE_MAP.get(arg0.constructor);
           if (mappedType === void 0) {
             throw new TypeError(`Unsupported type for tensor data: ${arg0.constructor}.`);
           }
           type = mappedType;
-          data = arg0;
+          data2 = arg0;
         }
       }
       if (maybeDims === void 0) {
-        maybeDims = [data.length];
+        maybeDims = [data2.length];
       } else if (!Array.isArray(maybeDims)) {
         throw new TypeError("A tensor's dims must be a number array");
       }
       dims = maybeDims;
-      this.cpuData = data;
+      this.cpuData = data2;
       this.dataLocation = "cpu";
     }
     const size = calculateSize(dims);
@@ -4218,15 +4218,15 @@ var Tensor = class {
         }
         try {
           this.isDownloading = true;
-          const data = await this.downloader();
+          const data2 = await this.downloader();
           this.downloader = void 0;
           this.dataLocation = "cpu";
-          this.cpuData = data;
+          this.cpuData = data2;
           if (releaseData && this.disposer) {
             this.disposer();
             this.disposer = void 0;
           }
-          return data;
+          return data2;
         } finally {
           this.isDownloading = false;
         }
@@ -14852,7 +14852,7 @@ var __webpack_modules__ = {
         return template.replace(/{%\s*(end)?generation\s*%}/gs, "");
       }
       function tokenize(source, options = {}) {
-        const tokens = [];
+        const tokens2 = [];
         const src = preprocess(source, options);
         let cursorPosition = 0;
         let curlyBracketDepth = 0;
@@ -14878,11 +14878,11 @@ var __webpack_modules__ = {
           return str;
         };
         const stripTrailingWhitespace = () => {
-          const lastToken = tokens.at(-1);
+          const lastToken = tokens2.at(-1);
           if (lastToken && lastToken.type === TOKEN_TYPES.Text) {
             lastToken.value = lastToken.value.trimEnd();
             if (lastToken.value === "") {
-              tokens.pop();
+              tokens2.pop();
             }
           }
         };
@@ -14893,7 +14893,7 @@ var __webpack_modules__ = {
         };
         main:
           while (cursorPosition < src.length) {
-            const lastTokenType = tokens.at(-1)?.type;
+            const lastTokenType = tokens2.at(-1)?.type;
             if (lastTokenType === void 0 || lastTokenType === TOKEN_TYPES.CloseStatement || lastTokenType === TOKEN_TYPES.CloseExpression || lastTokenType === TOKEN_TYPES.Comment) {
               let text = "";
               while (cursorPosition < src.length && // Keep going until we hit the next Jinja statement or expression
@@ -14901,7 +14901,7 @@ var __webpack_modules__ = {
                 text += src[cursorPosition++];
               }
               if (text.length > 0) {
-                tokens.push(new Token(text, TOKEN_TYPES.Text));
+                tokens2.push(new Token(text, TOKEN_TYPES.Text));
                 continue;
               }
             }
@@ -14925,7 +14925,7 @@ var __webpack_modules__ = {
               if (stripBefore) {
                 stripTrailingWhitespace();
               }
-              tokens.push(new Token(comment, TOKEN_TYPES.Comment));
+              tokens2.push(new Token(comment, TOKEN_TYPES.Comment));
               cursorPosition += 2;
               if (stripAfter) {
                 skipLeadingWhitespace();
@@ -14934,33 +14934,33 @@ var __webpack_modules__ = {
             }
             if (src.slice(cursorPosition, cursorPosition + 3) === "{%-") {
               stripTrailingWhitespace();
-              tokens.push(new Token("{%", TOKEN_TYPES.OpenStatement));
+              tokens2.push(new Token("{%", TOKEN_TYPES.OpenStatement));
               cursorPosition += 3;
               continue;
             }
             if (src.slice(cursorPosition, cursorPosition + 3) === "{{-") {
               stripTrailingWhitespace();
-              tokens.push(new Token("{{", TOKEN_TYPES.OpenExpression));
+              tokens2.push(new Token("{{", TOKEN_TYPES.OpenExpression));
               curlyBracketDepth = 0;
               cursorPosition += 3;
               continue;
             }
             consumeWhile(isWhitespace);
             if (src.slice(cursorPosition, cursorPosition + 3) === "-%}") {
-              tokens.push(new Token("%}", TOKEN_TYPES.CloseStatement));
+              tokens2.push(new Token("%}", TOKEN_TYPES.CloseStatement));
               cursorPosition += 3;
               skipLeadingWhitespace();
               continue;
             }
             if (src.slice(cursorPosition, cursorPosition + 3) === "-}}") {
-              tokens.push(new Token("}}", TOKEN_TYPES.CloseExpression));
+              tokens2.push(new Token("}}", TOKEN_TYPES.CloseExpression));
               cursorPosition += 3;
               skipLeadingWhitespace();
               continue;
             }
             const char = src[cursorPosition];
             if (char === "-" || char === "+") {
-              const lastTokenType2 = tokens.at(-1)?.type;
+              const lastTokenType2 = tokens2.at(-1)?.type;
               if (lastTokenType2 === TOKEN_TYPES.Text || lastTokenType2 === void 0) {
                 throw new SyntaxError(`Unexpected character: ${char}`);
               }
@@ -14974,7 +14974,7 @@ var __webpack_modules__ = {
                 default: {
                   ++cursorPosition;
                   const num = consumeWhile(isInteger);
-                  tokens.push(
+                  tokens2.push(
                     new Token(`${char}${num}`, num.length > 0 ? TOKEN_TYPES.NumericLiteral : TOKEN_TYPES.UnaryOperator)
                   );
                   continue;
@@ -14987,7 +14987,7 @@ var __webpack_modules__ = {
               }
               const slice2 = src.slice(cursorPosition, cursorPosition + seq.length);
               if (slice2 === seq) {
-                tokens.push(new Token(seq, type));
+                tokens2.push(new Token(seq, type));
                 if (type === TOKEN_TYPES.OpenExpression) {
                   curlyBracketDepth = 0;
                 } else if (type === TOKEN_TYPES.OpenCurlyBracket) {
@@ -15002,7 +15002,7 @@ var __webpack_modules__ = {
             if (char === "'" || char === '"') {
               ++cursorPosition;
               const str = consumeWhile((c3) => c3 !== char);
-              tokens.push(new Token(str, TOKEN_TYPES.StringLiteral));
+              tokens2.push(new Token(str, TOKEN_TYPES.StringLiteral));
               ++cursorPosition;
               continue;
             }
@@ -15013,17 +15013,17 @@ var __webpack_modules__ = {
                 const frac = consumeWhile(isInteger);
                 num = `${num}.${frac}`;
               }
-              tokens.push(new Token(num, TOKEN_TYPES.NumericLiteral));
+              tokens2.push(new Token(num, TOKEN_TYPES.NumericLiteral));
               continue;
             }
             if (isWord(char)) {
               const word = consumeWhile(isWord);
-              tokens.push(new Token(word, TOKEN_TYPES.Identifier));
+              tokens2.push(new Token(word, TOKEN_TYPES.Identifier));
               continue;
             }
             throw new SyntaxError(`Unexpected character: ${char}`);
           }
-        return tokens;
+        return tokens2;
       }
       var Statement = class {
         type = "Statement";
@@ -15232,11 +15232,11 @@ var __webpack_modules__ = {
         }
         type = "Ternary";
       };
-      function parse(tokens) {
+      function parse(tokens2) {
         const program = new Program([]);
         let current = 0;
         function expect(type, error) {
-          const prev = tokens[current++];
+          const prev = tokens2[current++];
           if (!prev || prev.type !== type) {
             throw new Error(`Parser Error: ${error}. ${prev.type} !== ${type}.`);
           }
@@ -15249,9 +15249,9 @@ var __webpack_modules__ = {
           ++current;
         }
         function parseAny() {
-          switch (tokens[current].type) {
+          switch (tokens2[current].type) {
             case TOKEN_TYPES.Comment:
-              return new Comment(tokens[current++].value);
+              return new Comment(tokens2[current++].value);
             case TOKEN_TYPES.Text:
               return parseText();
             case TOKEN_TYPES.OpenStatement:
@@ -15259,27 +15259,27 @@ var __webpack_modules__ = {
             case TOKEN_TYPES.OpenExpression:
               return parseJinjaExpression();
             default:
-              throw new SyntaxError(`Unexpected token type: ${tokens[current].type}`);
+              throw new SyntaxError(`Unexpected token type: ${tokens2[current].type}`);
           }
         }
         function is3(...types) {
-          return current + types.length <= tokens.length && types.every((type, i3) => type === tokens[current + i3].type);
+          return current + types.length <= tokens2.length && types.every((type, i3) => type === tokens2[current + i3].type);
         }
         function isStatement(...names) {
-          return tokens[current]?.type === TOKEN_TYPES.OpenStatement && tokens[current + 1]?.type === TOKEN_TYPES.Identifier && names.includes(tokens[current + 1]?.value);
+          return tokens2[current]?.type === TOKEN_TYPES.OpenStatement && tokens2[current + 1]?.type === TOKEN_TYPES.Identifier && names.includes(tokens2[current + 1]?.value);
         }
         function isIdentifier(...names) {
-          return current + names.length <= tokens.length && names.every((name, i3) => tokens[current + i3].type === "Identifier" && name === tokens[current + i3].value);
+          return current + names.length <= tokens2.length && names.every((name, i3) => tokens2[current + i3].type === "Identifier" && name === tokens2[current + i3].value);
         }
         function parseText() {
           return new StringLiteral(expect(TOKEN_TYPES.Text, "Expected text token").value);
         }
         function parseJinjaStatement() {
           expect(TOKEN_TYPES.OpenStatement, "Expected opening statement token");
-          if (tokens[current].type !== TOKEN_TYPES.Identifier) {
-            throw new SyntaxError(`Unknown statement, got ${tokens[current].type}`);
+          if (tokens2[current].type !== TOKEN_TYPES.Identifier) {
+            throw new SyntaxError(`Unknown statement, got ${tokens2[current].type}`);
           }
-          const name = tokens[current].value;
+          const name = tokens2[current].value;
           let result;
           switch (name) {
             case "set":
@@ -15482,7 +15482,7 @@ var __webpack_modules__ = {
         function parseLogicalOrExpression() {
           let left = parseLogicalAndExpression();
           while (isIdentifier("or")) {
-            const operator = tokens[current];
+            const operator = tokens2[current];
             ++current;
             const right = parseLogicalAndExpression();
             left = new BinaryExpression(operator, left, right);
@@ -15492,7 +15492,7 @@ var __webpack_modules__ = {
         function parseLogicalAndExpression() {
           let left = parseLogicalNegationExpression();
           while (isIdentifier("and")) {
-            const operator = tokens[current];
+            const operator = tokens2[current];
             ++current;
             const right = parseLogicalNegationExpression();
             left = new BinaryExpression(operator, left, right);
@@ -15502,7 +15502,7 @@ var __webpack_modules__ = {
         function parseLogicalNegationExpression() {
           let right;
           while (isIdentifier("not")) {
-            const operator = tokens[current];
+            const operator = tokens2[current];
             ++current;
             const arg = parseLogicalNegationExpression();
             right = new UnaryExpression(operator, arg);
@@ -15517,9 +15517,9 @@ var __webpack_modules__ = {
               operator = new Token("not in", TOKEN_TYPES.Identifier);
               current += 2;
             } else if (isIdentifier("in")) {
-              operator = tokens[current++];
+              operator = tokens2[current++];
             } else if (is3(TOKEN_TYPES.ComparisonBinaryOperator)) {
-              operator = tokens[current++];
+              operator = tokens2[current++];
             } else {
               break;
             }
@@ -15531,7 +15531,7 @@ var __webpack_modules__ = {
         function parseAdditiveExpression() {
           let left = parseMultiplicativeExpression();
           while (is3(TOKEN_TYPES.AdditiveBinaryOperator)) {
-            const operator = tokens[current];
+            const operator = tokens2[current];
             ++current;
             const right = parseMultiplicativeExpression();
             left = new BinaryExpression(operator, left, right);
@@ -15563,7 +15563,7 @@ var __webpack_modules__ = {
           const args = [];
           while (!is3(TOKEN_TYPES.CloseParen)) {
             let argument;
-            if (tokens[current].type === TOKEN_TYPES.MultiplicativeBinaryOperator && tokens[current].value === "*") {
+            if (tokens2[current].type === TOKEN_TYPES.MultiplicativeBinaryOperator && tokens2[current].value === "*") {
               ++current;
               const expr = parseExpression();
               argument = new SpreadExpression(expr);
@@ -15614,7 +15614,7 @@ var __webpack_modules__ = {
         }
         function parseMemberExpression(object) {
           while (is3(TOKEN_TYPES.Dot) || is3(TOKEN_TYPES.OpenSquareBracket)) {
-            const operator = tokens[current];
+            const operator = tokens2[current];
             ++current;
             let property;
             const computed = operator.type === TOKEN_TYPES.OpenSquareBracket;
@@ -15634,7 +15634,7 @@ var __webpack_modules__ = {
         function parseMultiplicativeExpression() {
           let left = parseTestExpression();
           while (is3(TOKEN_TYPES.MultiplicativeBinaryOperator)) {
-            const operator = tokens[current++];
+            const operator = tokens2[current++];
             const right = parseTestExpression();
             left = new BinaryExpression(operator, left, right);
           }
@@ -15672,7 +15672,7 @@ var __webpack_modules__ = {
           return operand;
         }
         function parsePrimaryExpression() {
-          const token = tokens[current++];
+          const token = tokens2[current++];
           switch (token.type) {
             case TOKEN_TYPES.NumericLiteral: {
               const num = token.value;
@@ -15681,7 +15681,7 @@ var __webpack_modules__ = {
             case TOKEN_TYPES.StringLiteral: {
               let value = token.value;
               while (is3(TOKEN_TYPES.StringLiteral)) {
-                value += tokens[current++].value;
+                value += tokens2[current++].value;
               }
               return new StringLiteral(value);
             }
@@ -15721,7 +15721,7 @@ var __webpack_modules__ = {
               throw new SyntaxError(`Unexpected token: ${token.type}`);
           }
         }
-        while (current < tokens.length) {
+        while (current < tokens2.length) {
           program.body.push(parseAny());
         }
         return program;
@@ -17432,11 +17432,11 @@ var __webpack_modules__ = {
          * @param {string} template The template string
          */
         constructor(template) {
-          const tokens = tokenize(template, {
+          const tokens2 = tokenize(template, {
             lstrip_blocks: true,
             trim_blocks: true
           });
-          this.parsed = parse(tokens);
+          this.parsed = parse(tokens2);
         }
         render(items) {
           const env3 = new Environment();
@@ -17856,20 +17856,20 @@ var __webpack_modules__ = {
         const toReturn = [];
         for (let i3 = 0; i3 < batch_size; ++i3) {
           const target_size = target_sizes !== null ? target_sizes[i3] : null;
-          let data = logits[i3];
+          let data2 = logits[i3];
           if (target_size !== null) {
-            data = (0, _utils_tensor_js__WEBPACK_IMPORTED_MODULE_1__.interpolate)(data, target_size, "bilinear", false);
+            data2 = (0, _utils_tensor_js__WEBPACK_IMPORTED_MODULE_1__.interpolate)(data2, target_size, "bilinear", false);
           }
-          const [height, width] = target_size ?? data.dims.slice(-2);
+          const [height, width] = target_size ?? data2.dims.slice(-2);
           const segmentation = new _utils_tensor_js__WEBPACK_IMPORTED_MODULE_1__.Tensor(
             "int32",
             new Int32Array(height * width),
             [height, width]
           );
-          const buffer = data[0].data;
+          const buffer = data2[0].data;
           const segmentation_data = segmentation.data;
-          for (let j2 = 1; j2 < data.dims[0]; ++j2) {
-            const row = data[j2].data;
+          for (let j2 = 1; j2 < data2.dims[0]; ++j2) {
+            const row = data2[j2].data;
             for (let k4 = 0; k4 < row.length; ++k4) {
               if (row[k4] > buffer[k4]) {
                 buffer[k4] = row[k4];
@@ -17877,7 +17877,7 @@ var __webpack_modules__ = {
               }
             }
           }
-          const hasLabel = new Array(data.dims[0]);
+          const hasLabel = new Array(data2.dims[0]);
           for (let j2 = 0; j2 < segmentation_data.length; ++j2) {
             const index = segmentation_data[j2];
             hasLabel[index] = index;
@@ -18925,14 +18925,14 @@ var __webpack_modules__ = {
           if (config && !(config instanceof PretrainedConfig)) {
             config = new PretrainedConfig(config);
           }
-          const data = config ?? await loadConfig(pretrained_model_name_or_path, {
+          const data2 = config ?? await loadConfig(pretrained_model_name_or_path, {
             progress_callback,
             config,
             cache_dir,
             local_files_only,
             revision
           });
-          return new this(data);
+          return new this(data2);
         }
       }
       class AutoConfig {
@@ -20500,9 +20500,9 @@ var __webpack_modules__ = {
             this.next_tokens_are_prompt = false;
             if (this.skip_prompt) return;
           }
-          const tokens = value[0];
-          this.token_callback_function?.(tokens);
-          this.token_cache = (0, _utils_core_js__WEBPACK_IMPORTED_MODULE_0__.mergeArrays)(this.token_cache, tokens);
+          const tokens2 = value[0];
+          this.token_callback_function?.(tokens2);
+          this.token_cache = (0, _utils_core_js__WEBPACK_IMPORTED_MODULE_0__.mergeArrays)(this.token_cache, tokens2);
           const text = this.tokenizer.decode(this.token_cache, this.decode_kwargs);
           let printable_text;
           if (is_prompt || text.endsWith("\n")) {
@@ -20594,9 +20594,9 @@ var __webpack_modules__ = {
           if (value.length > 1) {
             throw Error("WhisperTextStreamer only supports batch size of 1");
           }
-          const tokens = value[0];
-          if (tokens.length === 1) {
-            const offset = Number(tokens[0]) - this.timestamp_begin;
+          const tokens2 = value[0];
+          if (tokens2.length === 1) {
+            const offset = Number(tokens2[0]) - this.timestamp_begin;
             if (offset >= 0) {
               const time = offset * this.time_precision;
               if (this.waiting_for_timestamp) {
@@ -20605,7 +20605,7 @@ var __webpack_modules__ = {
                 this.on_chunk_start?.(time);
               }
               this.waiting_for_timestamp = !this.waiting_for_timestamp;
-              this.token_callback_function?.(tokens);
+              this.token_callback_function?.(tokens2);
               return;
             }
           }
@@ -23801,8 +23801,8 @@ var __webpack_modules__ = {
             const path = `${baseName}_data${i3 === 0 ? "" : "_" + i3}`;
             const fullPath = `${options.subfolder ?? ""}/${path}`;
             externalDataPromises.push(new Promise(async (resolve, reject) => {
-              const data = await (0, _utils_hub_js__WEBPACK_IMPORTED_MODULE_5__.getModelFile)(pretrained_model_name_or_path, fullPath, true, options, return_path);
-              resolve(data instanceof Uint8Array ? { path, data } : path);
+              const data2 = await (0, _utils_hub_js__WEBPACK_IMPORTED_MODULE_5__.getModelFile)(pretrained_model_name_or_path, fullPath, true, options, return_path);
+              resolve(data2 instanceof Uint8Array ? { path, data: data2 } : path);
             }));
           }
         } else if (session_options.externalData !== void 0) {
@@ -24013,10 +24013,10 @@ var __webpack_modules__ = {
         }
         let img = 0;
         for (let i3 = 0; i3 < token_positions.length; ++i3) {
-          const tokens = token_positions[i3];
+          const tokens2 = token_positions[i3];
           const embeds = inputs_embeds[i3];
-          for (let j2 = 0; j2 < tokens.length; ++j2) {
-            embeds[tokens[j2]].data.set(modality_features[img++].data);
+          for (let j2 = 0; j2 < tokens2.length; ++j2) {
+            embeds[tokens2[j2]].data.set(modality_features[img++].data);
           }
         }
         return { inputs_embeds, attention_mask };
@@ -24132,26 +24132,26 @@ var __webpack_modules__ = {
       function cumsum_masked_fill(attention_mask, start_index = 0) {
         const [bz, seq_len] = attention_mask.dims;
         const attn_mask_data = attention_mask.data;
-        const data = new BigInt64Array(attn_mask_data.length);
+        const data2 = new BigInt64Array(attn_mask_data.length);
         for (let i3 = 0; i3 < bz; ++i3) {
           const start = i3 * seq_len;
           let sum = BigInt(start_index);
           for (let j2 = 0; j2 < seq_len; ++j2) {
             const index = start + j2;
             if (attn_mask_data[index] === 0n) {
-              data[index] = BigInt(1);
+              data2[index] = BigInt(1);
             } else {
-              data[index] = sum;
+              data2[index] = sum;
               sum += attn_mask_data[index];
             }
           }
         }
-        return { data, dims: attention_mask.dims };
+        return { data: data2, dims: attention_mask.dims };
       }
       function createPositionIds(model_inputs, past_key_values = null, start_index = 0) {
         const { input_ids, inputs_embeds, attention_mask } = model_inputs;
-        const { data, dims } = cumsum_masked_fill(attention_mask, start_index);
-        let position_ids = new _utils_tensor_js__WEBPACK_IMPORTED_MODULE_9__.Tensor("int64", data, dims);
+        const { data: data2, dims } = cumsum_masked_fill(attention_mask, start_index);
+        let position_ids = new _utils_tensor_js__WEBPACK_IMPORTED_MODULE_9__.Tensor("int64", data2, dims);
         if (past_key_values) {
           const offset = -(input_ids ?? inputs_embeds).dims.at(1);
           position_ids = position_ids.slice(null, [offset, null]);
@@ -26916,14 +26916,14 @@ var __webpack_modules__ = {
             ];
           } else {
             if (attention_mask) {
-              const { data, dims } = cumsum_masked_fill(attention_mask);
+              const { data: data2, dims } = cumsum_masked_fill(attention_mask);
               const position_ids = BigInt64Array.from(
-                { length: 3 * data.length },
-                (_3, i3) => data[i3 % data.length]
+                { length: 3 * data2.length },
+                (_3, i3) => data2[i3 % data2.length]
               );
               const mrope_position_deltas2 = Array.from(
                 { length: dims[0] },
-                (_3, i3) => (0, _utils_maths_js__WEBPACK_IMPORTED_MODULE_11__.max)(data.subarray(dims[1] * i3, dims[1] * (i3 + 1)))[0] + 1n + BigInt(dims[1])
+                (_3, i3) => (0, _utils_maths_js__WEBPACK_IMPORTED_MODULE_11__.max)(data2.subarray(dims[1] * i3, dims[1] * (i3 + 1)))[0] + 1n + BigInt(dims[1])
               );
               return [
                 new _utils_tensor_js__WEBPACK_IMPORTED_MODULE_9__.Tensor("int64", position_ids, [3, ...dims]),
@@ -31888,13 +31888,13 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           let images_seq_mask = new Array(input_ids.length).fill(false);
           for (let i3 = 1; i3 < parts.length; ++i3) {
             const placeholder_image_tokens = new Array(this.num_image_tokens).fill(image_placeholder_tag_id);
-            const tokens = encode(parts[i3]);
+            const tokens2 = encode(parts[i3]);
             input_ids = (0, _utils_core_js__WEBPACK_IMPORTED_MODULE_3__.mergeArrays)(
               input_ids,
               [image_start_tag_id],
               placeholder_image_tokens,
               [image_end_tag_id],
-              tokens
+              tokens2
             );
             const image_mask = new Array(this.num_image_tokens).fill(true);
             images_seq_mask = (0, _utils_core_js__WEBPACK_IMPORTED_MODULE_3__.mergeArrays)(
@@ -31902,7 +31902,7 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
               [false],
               image_mask,
               [false],
-              new Array(tokens.length).fill(false)
+              new Array(tokens2.length).fill(false)
             );
           }
           const dims = [1, input_ids.length];
@@ -33983,10 +33983,10 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
               { mode: "bilinear", size: original_size }
             );
             if (binarize) {
-              const data = interpolated_mask.data;
-              const binarizedMaskData = new Uint8Array(data.length);
-              for (let i4 = 0; i4 < data.length; ++i4) {
-                if (data[i4] > mask_threshold) {
+              const data2 = interpolated_mask.data;
+              const binarizedMaskData = new Uint8Array(data2.length);
+              for (let i4 = 0; i4 < data2.length; ++i4) {
+                if (data2[i4] > mask_threshold) {
                   binarizedMaskData[i4] = 1;
                 }
               }
@@ -34243,37 +34243,37 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           let features = await this._extract_fbank_features(audio, this.config.max_length);
           if (do_normalize_per_mel_bins) {
             const [num_features, feature_size] = features.dims;
-            const data = features.data;
+            const data2 = features.data;
             for (let i3 = 0; i3 < feature_size; ++i3) {
               let sum = 0;
               for (let j2 = 0; j2 < num_features; ++j2) {
-                sum += data[j2 * feature_size + i3];
+                sum += data2[j2 * feature_size + i3];
               }
               const mean = sum / num_features;
               let variance = 0;
               for (let j2 = 0; j2 < num_features; ++j2) {
-                variance += (data[j2 * feature_size + i3] - mean) ** 2;
+                variance += (data2[j2 * feature_size + i3] - mean) ** 2;
               }
               variance /= num_features - 1;
               const std = Math.sqrt(variance + 1e-7);
               for (let j2 = 0; j2 < num_features; ++j2) {
                 const index = j2 * feature_size + i3;
-                data[index] = (data[index] - mean) / std;
+                data2[index] = (data2[index] - mean) / std;
               }
             }
           }
           let padded_attention_mask;
           if (padding) {
             const [num_frames2, num_channels2] = features.dims;
-            const data = (
+            const data2 = (
               /** @type {Float32Array} */
               features.data
             );
             const pad_size = num_frames2 % pad_to_multiple_of;
             if (pad_size > 0) {
               const padded_data = new Float32Array(num_channels2 * (num_frames2 + pad_size));
-              padded_data.set(data);
-              padded_data.fill(this.config.padding_value, data.length);
+              padded_data.set(data2);
+              padded_data.fill(this.config.padding_value, data2.length);
               const numPaddedFrames = num_frames2 + pad_size;
               features = new _utils_tensor_js__WEBPACK_IMPORTED_MODULE_1__.Tensor(
                 features.type,
@@ -35413,13 +35413,13 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
               )
             }
           );
-          const data = features.data;
+          const data2 = features.data;
           const maxValue = (0, _utils_maths_js__WEBPACK_IMPORTED_MODULE_3__.max)(
             /** @type {Float32Array} */
-            data
+            data2
           )[0];
-          for (let i3 = 0; i3 < data.length; ++i3) {
-            data[i3] = (Math.max(data[i3], maxValue - 8) + 4) / 4;
+          for (let i3 = 0; i3 < data2.length; ++i3) {
+            data2[i3] = (Math.max(data2[i3], maxValue - 8) + 4) / 4;
           }
           return features;
         }
@@ -36072,7 +36072,7 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           for (let i3 = 0; i3 < logits.dims[0]; ++i3) {
             const ids = model_inputs.input_ids[i3];
             const batch = logits[i3];
-            const tokens = [];
+            const tokens2 = [];
             for (let j2 = 0; j2 < batch.dims[0]; ++j2) {
               const tokenData = batch[j2];
               const topScoreIndex = (0, _utils_maths_js__WEBPACK_IMPORTED_MODULE_6__.max)(tokenData.data)[1];
@@ -36085,7 +36085,7 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
                 continue;
               }
               const scores = (0, _utils_maths_js__WEBPACK_IMPORTED_MODULE_6__.softmax)(tokenData.data);
-              tokens.push({
+              tokens2.push({
                 entity,
                 score: scores[topScoreIndex],
                 index: j2,
@@ -36095,7 +36095,7 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
                 // end: null,
               });
             }
-            toReturn.push(tokens);
+            toReturn.push(tokens2);
           }
           return isBatched ? toReturn : toReturn[0];
         }
@@ -36744,18 +36744,18 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
             }
             for (const chunk of chunks) {
               generation_config.num_frames = Math.floor(chunk.stride[0] / hop_length);
-              const data = await this.model.generate({
+              const data2 = await this.model.generate({
                 inputs: chunk.input_features,
                 ...generation_config
               });
               if (return_timestamps === "word") {
-                chunk.tokens = data.sequences.tolist()[0];
-                chunk.token_timestamps = data.token_timestamps.tolist()[0].map(
+                chunk.tokens = data2.sequences.tolist()[0];
+                chunk.token_timestamps = data2.token_timestamps.tolist()[0].map(
                   (x2) => (0, _utils_maths_js__WEBPACK_IMPORTED_MODULE_6__.round)(x2, 2)
                 );
               } else {
                 chunk.tokens = /** @type {Tensor} */
-                data[0].tolist();
+                data2[0].tolist();
               }
               chunk.stride = chunk.stride.map((x2) => x2 / sampling_rate);
             }
@@ -38208,12 +38208,12 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @param {string[]} tokens The tokens to encode.
          * @returns {string[]} The encoded tokens.
          */
-        _call(tokens) {
-          tokens = this.encode(tokens);
+        _call(tokens2) {
+          tokens2 = this.encode(tokens2);
           if (this.fuse_unk) {
-            tokens = fuse_unk(tokens, this.tokens_to_ids, this.unk_token_id);
+            tokens2 = fuse_unk(tokens2, this.tokens_to_ids, this.unk_token_id);
           }
-          return tokens;
+          return tokens2;
         }
         /**
          * Encodes a list of tokens into a list of token IDs.
@@ -38221,7 +38221,7 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @returns {string[]} The encoded tokens.
          * @throws Will throw an error if not implemented in a subclass.
          */
-        encode(tokens) {
+        encode(tokens2) {
           throw Error("encode should be implemented in subclass.");
         }
         /**
@@ -38229,8 +38229,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @param {string[]} tokens The tokens to convert.
          * @returns {number[]} The converted token IDs.
          */
-        convert_tokens_to_ids(tokens) {
-          return tokens.map((t2) => this.tokens_to_ids.get(t2) ?? this.unk_token_id);
+        convert_tokens_to_ids(tokens2) {
+          return tokens2.map((t2) => this.tokens_to_ids.get(t2) ?? this.unk_token_id);
         }
         /**
          * Converts a list of token IDs into a list of tokens.
@@ -38265,9 +38265,9 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @param {string[]} tokens The tokens to encode.
          * @returns {string[]} An array of encoded tokens.
          */
-        encode(tokens) {
+        encode(tokens2) {
           const outputTokens = [];
-          for (const token of tokens) {
+          for (const token of tokens2) {
             const chars = [...token];
             if (chars.length > this.max_input_chars_per_word) {
               outputTokens.push(this.unk_token);
@@ -38347,11 +38347,11 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           let beginPos = 0;
           while (beginPos < chars.length) {
             let hasSingleNode = false;
-            const tokens = [];
+            const tokens2 = [];
             const sliced = chars.slice(beginPos).join("");
             const prefixedTokens = this.trie.commonPrefixSearch(sliced);
             for (const token of prefixedTokens) {
-              tokens.push(token);
+              tokens2.push(token);
               const tokenId = this.tokens_to_ids.get(token);
               const tokenScore = this.scores[tokenId];
               const n2 = (0, _utils_core_js__WEBPACK_IMPORTED_MODULE_1__.len)(token);
@@ -38382,9 +38382,9 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @param {string[]} tokens The tokens to encode.
          * @returns {string[]} An array of encoded tokens.
          */
-        encode(tokens) {
+        encode(tokens2) {
           const toReturn = [];
-          for (const token of tokens) {
+          for (const token of tokens2) {
             const tokenized = this.tokenize(token);
             toReturn.push(...tokenized);
           }
@@ -38566,9 +38566,9 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @param {string[]} tokens The input sequence of tokens to encode.
          * @returns {string[]} The resulting subword tokens after applying the BPE algorithm to the input sequence of tokens.
          */
-        encode(tokens) {
+        encode(tokens2) {
           const outputTokens = [];
-          for (const token of tokens) {
+          for (const token of tokens2) {
             if (this.ignore_merges && this.tokens_to_ids.has(token)) {
               outputTokens.push(token);
               continue;
@@ -38617,8 +38617,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
             this.vocab[value] = key;
           }
         }
-        encode(tokens) {
-          return tokens;
+        encode(tokens2) {
+          return tokens2;
         }
       }
       class Normalizer extends _utils_generic_js__WEBPACK_IMPORTED_MODULE_0__.Callable {
@@ -39005,8 +39005,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           if (this.add_prefix_space && !text.startsWith(" ")) {
             text = " " + text;
           }
-          const tokens = this.use_regex ? text.match(this.pattern) || [] : [text];
-          return tokens.map(
+          const tokens2 = this.use_regex ? text.match(this.pattern) || [] : [text];
+          return tokens2.map(
             (token) => Array.from(this.text_encoder.encode(token), (byte) => this.byte_encoder[byte]).join("")
           );
         }
@@ -39125,7 +39125,7 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @returns {PostProcessedOutput} The post-processed tokens.
          * @throws {Error} If the method is not implemented in subclass.
          */
-        post_process(tokens, ...args) {
+        post_process(tokens2, ...args) {
           throw Error("post_process should be implemented in subclass.");
         }
         /**
@@ -39134,8 +39134,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @param {...*} args Additional arguments required by the post-processing logic.
          * @returns {PostProcessedOutput} The post-processed tokens.
          */
-        _call(tokens, ...args) {
-          return this.post_process(tokens, ...args);
+        _call(tokens2, ...args) {
+          return this.post_process(tokens2, ...args);
         }
       }
       class BertProcessing extends PostProcessor {
@@ -39155,20 +39155,20 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @param {string[]} [tokens_pair=null] An optional second set of input tokens.
          * @returns {PostProcessedOutput} The post-processed tokens with the special tokens added to the beginning and end.
          */
-        post_process(tokens, tokens_pair = null, {
+        post_process(tokens2, tokens_pair = null, {
           add_special_tokens = true
         } = {}) {
           if (add_special_tokens) {
-            tokens = (0, _utils_core_js__WEBPACK_IMPORTED_MODULE_1__.mergeArrays)([this.cls], tokens, [this.sep]);
+            tokens2 = (0, _utils_core_js__WEBPACK_IMPORTED_MODULE_1__.mergeArrays)([this.cls], tokens2, [this.sep]);
           }
-          let token_type_ids = new Array(tokens.length).fill(0);
+          let token_type_ids = new Array(tokens2.length).fill(0);
           if (tokens_pair !== null) {
             const middle = add_special_tokens && this instanceof RobertaProcessing ? [this.sep] : [];
             const after = add_special_tokens ? [this.sep] : [];
-            tokens = (0, _utils_core_js__WEBPACK_IMPORTED_MODULE_1__.mergeArrays)(tokens, middle, tokens_pair, after);
+            tokens2 = (0, _utils_core_js__WEBPACK_IMPORTED_MODULE_1__.mergeArrays)(tokens2, middle, tokens_pair, after);
             token_type_ids = (0, _utils_core_js__WEBPACK_IMPORTED_MODULE_1__.mergeArrays)(token_type_ids, new Array(tokens_pair.length + middle.length + after.length).fill(1));
           }
-          return { tokens, token_type_ids };
+          return { tokens: tokens2, token_type_ids };
         }
       }
       class RobertaProcessing extends BertProcessing {
@@ -39191,7 +39191,7 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @param {string[]} [tokens_pair=null] The list of tokens for the second sequence (optional).
          * @returns {PostProcessedOutput} An object containing the list of tokens with the special tokens replaced with actual tokens.
          */
-        post_process(tokens, tokens_pair = null, {
+        post_process(tokens2, tokens_pair = null, {
           add_special_tokens = true
         } = {}) {
           const type = tokens_pair === null ? this.single : this.pair;
@@ -39205,8 +39205,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
               }
             } else if ("Sequence" in item) {
               if (item.Sequence.id === "A") {
-                processedTokens = (0, _utils_core_js__WEBPACK_IMPORTED_MODULE_1__.mergeArrays)(processedTokens, tokens);
-                types = (0, _utils_core_js__WEBPACK_IMPORTED_MODULE_1__.mergeArrays)(types, new Array(tokens.length).fill(item.Sequence.type_id));
+                processedTokens = (0, _utils_core_js__WEBPACK_IMPORTED_MODULE_1__.mergeArrays)(processedTokens, tokens2);
+                types = (0, _utils_core_js__WEBPACK_IMPORTED_MODULE_1__.mergeArrays)(types, new Array(tokens2.length).fill(item.Sequence.type_id));
               } else if (item.Sequence.id === "B") {
                 processedTokens = (0, _utils_core_js__WEBPACK_IMPORTED_MODULE_1__.mergeArrays)(processedTokens, tokens_pair);
                 types = (0, _utils_core_js__WEBPACK_IMPORTED_MODULE_1__.mergeArrays)(types, new Array(tokens_pair.length).fill(item.Sequence.type_id));
@@ -39223,11 +39223,11 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @param {string[]} [tokens_pair=null] The list of tokens for the second sequence (optional).
          * @returns {PostProcessedOutput} An object containing the post-processed tokens.
          */
-        post_process(tokens, tokens_pair = null) {
+        post_process(tokens2, tokens_pair = null) {
           if (tokens_pair) {
-            tokens = (0, _utils_core_js__WEBPACK_IMPORTED_MODULE_1__.mergeArrays)(tokens, tokens_pair);
+            tokens2 = (0, _utils_core_js__WEBPACK_IMPORTED_MODULE_1__.mergeArrays)(tokens2, tokens_pair);
           }
-          return { tokens };
+          return { tokens: tokens2 };
         }
       }
       class PostProcessorSequence extends PostProcessor {
@@ -39246,23 +39246,23 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @param {string[]} [tokens_pair=null] The list of tokens for the second sequence (optional).
          * @returns {PostProcessedOutput} An object containing the post-processed tokens.
          */
-        post_process(tokens, tokens_pair = null, options = {}) {
+        post_process(tokens2, tokens_pair = null, options = {}) {
           let token_type_ids;
           for (const processor of this.processors) {
             if (processor instanceof ByteLevelPostProcessor) {
-              const output = processor.post_process(tokens);
-              tokens = output.tokens;
+              const output = processor.post_process(tokens2);
+              tokens2 = output.tokens;
               if (tokens_pair) {
                 const pair_output = processor.post_process(tokens_pair);
                 tokens_pair = pair_output.tokens;
               }
             } else {
-              const output = processor.post_process(tokens, tokens_pair, options);
-              tokens = output.tokens;
+              const output = processor.post_process(tokens2, tokens_pair, options);
+              tokens2 = output.tokens;
               token_type_ids = output.token_type_ids;
             }
           }
-          return { tokens, token_type_ids };
+          return { tokens: tokens2, token_type_ids };
         }
       }
       class Decoder extends _utils_generic_js__WEBPACK_IMPORTED_MODULE_0__.Callable {
@@ -39318,16 +39318,16 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
         * @param {string[]} tokens The list of tokens.
         * @returns {string} The decoded string.
         */
-        _call(tokens) {
-          return this.decode(tokens);
+        _call(tokens2) {
+          return this.decode(tokens2);
         }
         /**
         * Decodes a list of tokens.
         * @param {string[]} tokens The list of tokens.
         * @returns {string} The decoded string.
         */
-        decode(tokens) {
-          return this.decode_chain(tokens).join("");
+        decode(tokens2) {
+          return this.decode_chain(tokens2).join("");
         }
         /**
          * Apply the decoder to a list of tokens.
@@ -39336,15 +39336,15 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @returns {string[]} The decoded list of tokens.
          * @throws {Error} If the `decode_chain` method is not implemented in the subclass.
          */
-        decode_chain(tokens) {
+        decode_chain(tokens2) {
           throw Error("`decode_chain` should be implemented in subclass.");
         }
       }
       class ReplaceDecoder extends Decoder {
         /** @type {Decoder['decode_chain']} */
-        decode_chain(tokens) {
+        decode_chain(tokens2) {
           const pattern = createPattern(this.config.pattern);
-          return pattern === null ? tokens : tokens.map((token) => token.replaceAll(pattern, this.config.content));
+          return pattern === null ? tokens2 : tokens2.map((token) => token.replaceAll(pattern, this.config.content));
         }
       }
       class ByteFallback extends Decoder {
@@ -39353,10 +39353,10 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           this.text_decoder = new TextDecoder();
         }
         /** @type {Decoder['decode_chain']} */
-        decode_chain(tokens) {
+        decode_chain(tokens2) {
           const new_tokens = [];
           let previous_byte_tokens = [];
-          for (const token of tokens) {
+          for (const token of tokens2) {
             let bytes = null;
             if (token.length === 6 && token.startsWith("<0x") && token.endsWith(">")) {
               const byte = parseInt(token.slice(3, 5), 16);
@@ -39385,8 +39385,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
       }
       class FuseDecoder extends Decoder {
         /** @type {Decoder['decode_chain']} */
-        decode_chain(tokens) {
-          return [tokens.join("")];
+        decode_chain(tokens2) {
+          return [tokens2.join("")];
         }
       }
       class StripDecoder extends Decoder {
@@ -39397,8 +39397,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           this.stop = this.config.stop;
         }
         /** @type {Decoder['decode_chain']} */
-        decode_chain(tokens) {
-          return tokens.map((token) => {
+        decode_chain(tokens2) {
+          return tokens2.map((token) => {
             let start_cut = 0;
             for (let i3 = 0; i3 < this.start; ++i3) {
               if (token[i3] === this.content) {
@@ -39434,8 +39434,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           this.cleanup = config.cleanup;
         }
         /** @type {Decoder['decode_chain']} */
-        decode_chain(tokens) {
-          return tokens.map((token, i3) => {
+        decode_chain(tokens2) {
+          return tokens2.map((token, i3) => {
             if (i3 !== 0) {
               if (token.startsWith(this.config.prefix)) {
                 token = token.replace(this.config.prefix, "");
@@ -39469,17 +39469,17 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @param {string[]} tokens Array of tokens to be decoded.
          * @returns {string} The decoded string.
          */
-        convert_tokens_to_string(tokens) {
-          const text = tokens.join("");
+        convert_tokens_to_string(tokens2) {
+          const text = tokens2.join("");
           const byteArray = new Uint8Array([...text].map((c3) => this.byte_decoder[c3]));
           const decoded_text = this.text_decoder.decode(byteArray);
           return decoded_text;
         }
         /** @type {Decoder['decode_chain']} */
-        decode_chain(tokens) {
+        decode_chain(tokens2) {
           const sub_texts = [];
           let current_sub_text = [];
-          for (const token of tokens) {
+          for (const token of tokens2) {
             if (this.added_tokens.find((x2) => x2.content === token) !== void 0) {
               if (current_sub_text.length > 0) {
                 sub_texts.push(this.convert_tokens_to_string(current_sub_text));
@@ -39508,12 +39508,12 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @param {string[]} tokens Array of tokens to be decoded.
          * @returns {string} The decoded string.
          */
-        convert_tokens_to_string(tokens) {
-          if (tokens.length === 0) return "";
-          const grouped_tokens = [tokens[0]];
-          for (let i3 = 1; i3 < tokens.length; ++i3) {
-            if (tokens[i3] !== grouped_tokens.at(-1)) {
-              grouped_tokens.push(tokens[i3]);
+        convert_tokens_to_string(tokens2) {
+          if (tokens2.length === 0) return "";
+          const grouped_tokens = [tokens2[0]];
+          for (let i3 = 1; i3 < tokens2.length; ++i3) {
+            if (tokens2[i3] !== grouped_tokens.at(-1)) {
+              grouped_tokens.push(tokens2[i3]);
             }
           }
           const filtered_tokens = grouped_tokens.filter((token) => token !== this.pad_token);
@@ -39524,8 +39524,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           return text;
         }
         /** @type {Decoder['decode_chain']} */
-        decode_chain(tokens) {
-          return [this.convert_tokens_to_string(tokens)];
+        decode_chain(tokens2) {
+          return [this.convert_tokens_to_string(tokens2)];
         }
       }
       class DecoderSequence extends Decoder {
@@ -39539,10 +39539,10 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           this.decoders = config.decoders.map((x2) => Decoder.fromConfig(x2));
         }
         /** @type {Decoder['decode_chain']} */
-        decode_chain(tokens) {
+        decode_chain(tokens2) {
           return this.decoders.reduce((toks, decoder) => {
             return decoder.decode_chain(toks);
-          }, tokens);
+          }, tokens2);
         }
       }
       class BPEDecoder extends Decoder {
@@ -39551,18 +39551,18 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           this.suffix = this.config.suffix;
         }
         /** @type {Decoder['decode_chain']} */
-        decode_chain(tokens) {
-          return tokens.map((token, i3) => {
-            return token.replaceAll(this.suffix, i3 === tokens.length - 1 ? "" : " ");
+        decode_chain(tokens2) {
+          return tokens2.map((token, i3) => {
+            return token.replaceAll(this.suffix, i3 === tokens2.length - 1 ? "" : " ");
           });
         }
       }
       class VitsDecoder extends Decoder {
         /** @type {Decoder['decode_chain']} */
-        decode_chain(tokens) {
+        decode_chain(tokens2) {
           let decoded = "";
-          for (let i3 = 1; i3 < tokens.length; i3 += 2) {
-            decoded += tokens[i3];
+          for (let i3 = 1; i3 < tokens2.length; i3 += 2) {
+            decoded += tokens2[i3];
           }
           return [decoded];
         }
@@ -39613,10 +39613,10 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           this.replacement = config.replacement;
         }
         /** @type {Decoder['decode_chain']} */
-        decode_chain(tokens) {
+        decode_chain(tokens2) {
           const result = [];
-          for (let i3 = 0; i3 < tokens.length; ++i3) {
-            let normalized = tokens[i3].replaceAll(this.replacement, " ");
+          for (let i3 = 0; i3 < tokens2.length; ++i3) {
+            let normalized = tokens2[i3].replaceAll(this.replacement, " ");
             if (i3 == 0 && normalized.startsWith(" ")) {
               normalized = normalized.substring(1);
             }
@@ -39751,11 +39751,11 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @returns {string[]} An array of tokens produced by splitting the input text into fixed-length tokens.
          */
         pre_tokenize_text(text, options) {
-          const tokens = [];
+          const tokens2 = [];
           for (let i3 = 0; i3 < text.length; i3 += this._length) {
-            tokens.push(text.slice(i3, i3 + this._length));
+            tokens2.push(text.slice(i3, i3 + this._length));
           }
-          return tokens;
+          return tokens2;
         }
       }
       const SPECIAL_TOKEN_ATTRIBUTES = [
@@ -40060,7 +40060,7 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
               }
             }
           }
-          const tokens = sections.flatMap((x2, section_index) => {
+          const tokens2 = sections.flatMap((x2, section_index) => {
             if (x2.length === 0) return [];
             if (this.added_tokens_map.has(x2)) return [x2];
             if (this.remove_space === true) {
@@ -40078,10 +40078,10 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
             const sectionTokens = this.pre_tokenizer !== null ? this.pre_tokenizer(x2, {
               section_index
             }) : [x2];
-            const tokens2 = this.model(sectionTokens);
-            return tokens2;
+            const tokens3 = this.model(sectionTokens);
+            return tokens3;
           });
-          return tokens;
+          return tokens2;
         }
         /**
          * Encodes a single text or a pair of texts using the model's tokenizer.
@@ -40099,8 +40099,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           add_special_tokens = true,
           return_token_type_ids = null
         } = {}) {
-          const { tokens, token_type_ids } = this._tokenize_helper(text, { pair: text_pair, add_special_tokens });
-          const input_ids = this.model.convert_tokens_to_ids(tokens);
+          const { tokens: tokens2, token_type_ids } = this._tokenize_helper(text, { pair: text_pair, add_special_tokens });
+          const input_ids = this.model.convert_tokens_to_ids(tokens2);
           const result = {
             input_ids,
             attention_mask: new Array(input_ids.length).fill(1)
@@ -40122,9 +40122,9 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           pair = null,
           add_special_tokens = false
         } = {}) {
-          const tokens = this._encode_text(text);
-          const tokens2 = this._encode_text(pair);
-          return this.post_processor ? this.post_processor(tokens, tokens2, { add_special_tokens }) : { tokens: (0, _utils_core_js__WEBPACK_IMPORTED_MODULE_1__.mergeArrays)(tokens ?? [], tokens2 ?? []) };
+          const tokens2 = this._encode_text(text);
+          const tokens22 = this._encode_text(pair);
+          return this.post_processor ? this.post_processor(tokens2, tokens22, { add_special_tokens }) : { tokens: (0, _utils_core_js__WEBPACK_IMPORTED_MODULE_1__.mergeArrays)(tokens2 ?? [], tokens22 ?? []) };
         }
         /**
          * Converts a string into a sequence of tokens.
@@ -40206,11 +40206,11 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           skip_special_tokens = false,
           clean_up_tokenization_spaces = null
         }) {
-          let tokens = this.model.convert_ids_to_tokens(token_ids);
+          let tokens2 = this.model.convert_ids_to_tokens(token_ids);
           if (skip_special_tokens) {
-            tokens = tokens.filter((x2) => !this.special_tokens.includes(x2));
+            tokens2 = tokens2.filter((x2) => !this.special_tokens.includes(x2));
           }
-          let decoded = this.decoder ? this.decoder(tokens) : tokens.join(" ");
+          let decoded = this.decoder ? this.decoder(tokens2) : tokens2.join(" ");
           if (this.decoder && this.decoder.end_of_word_suffix) {
             decoded = decoded.replaceAll(this.decoder.end_of_word_suffix, " ");
             if (skip_special_tokens) {
@@ -40476,11 +40476,11 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           if (this.legacy || text.length === 0) {
             return super._encode_text(text);
           }
-          let tokens = super._encode_text(SPIECE_UNDERLINE + text.replaceAll(SPIECE_UNDERLINE, " "));
-          if (tokens.length > 1 && tokens[0] === SPIECE_UNDERLINE && this.special_tokens.includes(tokens[1])) {
-            tokens = tokens.slice(1);
+          let tokens2 = super._encode_text(SPIECE_UNDERLINE + text.replaceAll(SPIECE_UNDERLINE, " "));
+          if (tokens2.length > 1 && tokens2[0] === SPIECE_UNDERLINE && this.special_tokens.includes(tokens2[1])) {
+            tokens2 = tokens2.slice(1);
           }
-          return tokens;
+          return tokens2;
         }
       }
       class CodeLlamaTokenizer extends PreTrainedTokenizer {
@@ -40825,8 +40825,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           }
         }
         /** @private */
-        collateWordTimestamps(tokens, token_timestamps, language) {
-          const [words, _3, token_indices] = this.combineTokensIntoWords(tokens, language);
+        collateWordTimestamps(tokens2, token_timestamps, language) {
+          const [words, _3, token_indices] = this.combineTokensIntoWords(tokens2, language);
           const timings = [];
           for (let i3 = 0; i3 < words.length; ++i3) {
             const indices = token_indices[i3];
@@ -40850,13 +40850,13 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * 
          * @private
          */
-        combineTokensIntoWords(tokens, language, prepend_punctionations = `"'\u201C\xA1\xBF([{-`, append_punctuations = `"'.\u3002,\uFF0C!\uFF01?\uFF1F:\uFF1A\u201D)]}\u3001`) {
+        combineTokensIntoWords(tokens2, language, prepend_punctionations = `"'\u201C\xA1\xBF([{-`, append_punctuations = `"'.\u3002,\uFF0C!\uFF01?\uFF1F:\uFF1A\u201D)]}\u3001`) {
           language = language ?? "english";
           let words, word_tokens, token_indices;
           if (["chinese", "japanese", "thai", "lao", "myanmar"].includes(language)) {
-            [words, word_tokens, token_indices] = this.splitTokensOnUnicode(tokens);
+            [words, word_tokens, token_indices] = this.splitTokensOnUnicode(tokens2);
           } else {
-            [words, word_tokens, token_indices] = this.splitTokensOnSpaces(tokens);
+            [words, word_tokens, token_indices] = this.splitTokensOnSpaces(tokens2);
           }
           return this.mergePunctuations(words, word_tokens, token_indices, prepend_punctionations, append_punctuations);
         }
@@ -40903,8 +40903,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @returns {*}
          * @private
          */
-        splitTokensOnUnicode(tokens) {
-          const decoded_full = this.decode(tokens, {
+        splitTokensOnUnicode(tokens2) {
+          const decoded_full = this.decode(tokens2, {
             // @ts-ignore
             decode_with_timestamps: true
           });
@@ -40915,8 +40915,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           let current_tokens = [];
           let current_indices = [];
           let unicode_offset = 0;
-          for (let token_idx = 0; token_idx < tokens.length; ++token_idx) {
-            const token = tokens[token_idx];
+          for (let token_idx = 0; token_idx < tokens2.length; ++token_idx) {
+            const token = tokens2[token_idx];
             current_tokens.push(token);
             current_indices.push(token_idx);
             const decoded = this.decode(current_tokens, {
@@ -40939,8 +40939,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @param {number[]} tokens 
          * @private
          */
-        splitTokensOnSpaces(tokens) {
-          const [subwords, subword_tokens_list, subword_indices_list] = this.splitTokensOnUnicode(tokens);
+        splitTokensOnSpaces(tokens2) {
+          const [subwords, subword_tokens_list, subword_indices_list] = this.splitTokensOnUnicode(tokens2);
           const words = [];
           const word_tokens = [];
           const token_indices = [];
@@ -40975,9 +40975,9 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @param {string} appended 
          * @private
          */
-        mergePunctuations(words, tokens, indices, prepended, appended) {
+        mergePunctuations(words, tokens2, indices, prepended, appended) {
           const newWords = structuredClone(words);
-          const newTokens = structuredClone(tokens);
+          const newTokens = structuredClone(tokens2);
           const newIndices = structuredClone(indices);
           let i3 = newWords.length - 2;
           let j2 = newWords.length - 1;
@@ -41838,11 +41838,11 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
         )
         /* harmony export */
       });
-      function dispatchCallback(progress_callback, data) {
-        if (progress_callback) progress_callback(data);
+      function dispatchCallback(progress_callback, data2) {
+        if (progress_callback) progress_callback(data2);
       }
-      function reverseDictionary(data) {
-        return Object.fromEntries(Object.entries(data).map(([key, value]) => [value, key]));
+      function reverseDictionary(data2) {
+        return Object.fromEntries(Object.entries(data2).map(([key, value]) => [value, key]));
       }
       function escapeRegExp(string) {
         return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -42728,10 +42728,10 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @throws {Error} If the file cannot be read.
          */
         async arrayBuffer() {
-          const data = await node_fs__WEBPACK_IMPORTED_MODULE_0__.promises.readFile(this.filePath);
+          const data2 = await node_fs__WEBPACK_IMPORTED_MODULE_0__.promises.readFile(this.filePath);
           return (
             /** @type {ArrayBuffer} */
-            data.buffer
+            data2.buffer
           );
         }
         /**
@@ -42741,8 +42741,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @throws {Error} If the file cannot be read.
          */
         async blob() {
-          const data = await node_fs__WEBPACK_IMPORTED_MODULE_0__.promises.readFile(this.filePath);
-          return new Blob([data], { type: this.headers.get("content-type") });
+          const data2 = await node_fs__WEBPACK_IMPORTED_MODULE_0__.promises.readFile(this.filePath);
+          return new Blob([data2], { type: this.headers.get("content-type") });
         }
         /**
          * Reads the contents of the file specified by the filePath property and returns a Promise that
@@ -42751,8 +42751,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @throws {Error} If the file cannot be read.
          */
         async text() {
-          const data = await node_fs__WEBPACK_IMPORTED_MODULE_0__.promises.readFile(this.filePath, "utf8");
-          return data;
+          const data2 = await node_fs__WEBPACK_IMPORTED_MODULE_0__.promises.readFile(this.filePath, "utf8");
+          return data2;
         }
         /**
          * Reads the contents of the file specified by the filePath property and returns a Promise that
@@ -43027,12 +43027,12 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
               total: buffer.length
             });
           } else {
-            buffer = await readResponse(response, (data) => {
+            buffer = await readResponse(response, (data2) => {
               (0, _core_js__WEBPACK_IMPORTED_MODULE_3__.dispatchCallback)(options.progress_callback, {
                 status: "progress",
                 name: path_or_repo_id,
                 file: filename,
-                ...data
+                ...data2
               });
             });
           }
@@ -43045,11 +43045,11 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           await cache2.match(cacheKey) === void 0
         ) {
           if (!result) {
-            const wrapped_progress = options.progress_callback ? (data) => (0, _core_js__WEBPACK_IMPORTED_MODULE_3__.dispatchCallback)(options.progress_callback, {
+            const wrapped_progress = options.progress_callback ? (data2) => (0, _core_js__WEBPACK_IMPORTED_MODULE_3__.dispatchCallback)(options.progress_callback, {
               status: "progress",
               name: path_or_repo_id,
               file: filename,
-              ...data
+              ...data2
             }) : void 0;
             await cache2.put(
               cacheKey,
@@ -43207,8 +43207,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
         loadImageFunction = async (img) => {
           const metadata = await img.metadata();
           const rawChannels = metadata.channels;
-          const { data, info } = await img.rotate().raw().toBuffer({ resolveWithObject: true });
-          const newImage = new RawImage(new Uint8ClampedArray(data), info.width, info.height, info.channels);
+          const { data: data2, info } = await img.rotate().raw().toBuffer({ resolveWithObject: true });
+          const newImage = new RawImage(new Uint8ClampedArray(data2), info.width, info.height, info.channels);
           if (rawChannels !== void 0 && rawChannels !== info.channels) {
             newImage.convert(rawChannels);
           }
@@ -43239,8 +43239,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @param {number} height The height of the image.
          * @param {1|2|3|4} channels The number of channels.
          */
-        constructor(data, width, height, channels) {
-          this.data = data;
+        constructor(data2, width, height, channels) {
+          this.data = data2;
           this.width = width;
           this.height = height;
           this.channels = channels;
@@ -43294,8 +43294,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
             /** @type {CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D} */
             canvas.getContext("2d")
           );
-          const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-          return new RawImage(data, canvas.width, canvas.height, 4);
+          const data2 = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+          return new RawImage(data2, canvas.width, canvas.height, 4);
         }
         /**
          * Read an image from a URL or file path.
@@ -43724,8 +43724,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           }
           const cloned = this.clone().rgba();
           const clonedCanvas = createCanvasFunction(cloned.width, cloned.height);
-          const data = new ImageDataClass(cloned.data, cloned.width, cloned.height);
-          clonedCanvas.getContext("2d").putImageData(data, 0, 0);
+          const data2 = new ImageDataClass(cloned.data, cloned.width, cloned.height);
+          clonedCanvas.getContext("2d").putImageData(data2, 0, 0);
           return clonedCanvas;
         }
         /**
@@ -43736,12 +43736,12 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @returns {RawImage[]} An array containing bands.
          */
         split() {
-          const { data, width, height, channels } = this;
+          const { data: data2, width, height, channels } = this;
           const data_type = (
             /** @type {any} */
-            data.constructor
+            data2.constructor
           );
-          const per_channel_length = data.length / channels;
+          const per_channel_length = data2.length / channels;
           const split_data = Array.from(
             { length: channels },
             () => new data_type(per_channel_length)
@@ -43749,10 +43749,10 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           for (let i3 = 0; i3 < per_channel_length; ++i3) {
             const data_offset = channels * i3;
             for (let j2 = 0; j2 < channels; ++j2) {
-              split_data[j2][i3] = data[data_offset + j2];
+              split_data[j2][i3] = data2[data_offset + j2];
             }
           }
-          return split_data.map((data2) => new RawImage(data2, width, height, 1));
+          return split_data.map((data3) => new RawImage(data3, width, height, 1));
         }
         /**
          * Helper method to update the image data.
@@ -43762,8 +43762,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @param {1|2|3|4|null} [channels] The new number of channels of the image.
          * @private
          */
-        _update(data, width, height, channels = null) {
-          this.data = data;
+        _update(data2, width, height, channels = null) {
+          this.data = data2;
           this.width = width;
           this.height = height;
           if (channels !== null) {
@@ -44121,12 +44121,12 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * 
          * @returns {void}
          */
-        transform(out, data) {
-          if (out === data)
+        transform(out, data2) {
+          if (out === data2)
             throw new Error("Input and output buffers must be different");
           this._transform4(
             out,
-            data,
+            data2,
             1
             /* DONE */
           );
@@ -44141,12 +44141,12 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          *
          * @throws {Error} If the input and output buffers are the same.
          */
-        realTransform(out, data) {
-          if (out === data)
+        realTransform(out, data2) {
+          if (out === data2)
             throw new Error("Input and output buffers must be different");
           this._realTransform4(
             out,
-            data,
+            data2,
             1
             /* DONE */
           );
@@ -44161,12 +44161,12 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @throws {Error} If `out` and `data` refer to the same buffer.
          * @returns {void}
          */
-        inverseTransform(out, data) {
-          if (out === data)
+        inverseTransform(out, data2) {
+          if (out === data2)
             throw new Error("Input and output buffers must be different");
           this._transform4(
             out,
-            data,
+            data2,
             -1
             /* DONE */
           );
@@ -44181,7 +44181,7 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @param {number} inv A scaling factor to apply to the transform.
          * @returns {void}
          */
-        _transform4(out, data, inv) {
+        _transform4(out, data2, inv) {
           const size = this._csize;
           const width = this._width;
           let step = 1 << width;
@@ -44192,12 +44192,12 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           if (len === 4) {
             for (outOff = 0, t2 = 0; outOff < size; outOff += len, ++t2) {
               const off = bitrev[t2];
-              this._singleTransform2(data, out, outOff, off, step);
+              this._singleTransform2(data2, out, outOff, off, step);
             }
           } else {
             for (outOff = 0, t2 = 0; outOff < size; outOff += len, ++t2) {
               const off = bitrev[t2];
-              this._singleTransform4(data, out, outOff, off, step, inv);
+              this._singleTransform4(data2, out, outOff, off, step, inv);
             }
           }
           const table = this.table;
@@ -44261,11 +44261,11 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @param {number} step The step size for indexing the input data.
          * @returns {void}
          */
-        _singleTransform2(data, out, outOff, off, step) {
-          const evenR = data[off];
-          const evenI = data[off + 1];
-          const oddR = data[off + step];
-          const oddI = data[off + step + 1];
+        _singleTransform2(data2, out, outOff, off, step) {
+          const evenR = data2[off];
+          const evenI = data2[off + 1];
+          const oddR = data2[off + step];
+          const oddI = data2[off + step + 1];
           out[outOff] = evenR + oddR;
           out[outOff + 1] = evenI + oddI;
           out[outOff + 2] = evenR - oddR;
@@ -44283,17 +44283,17 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * 
          * @returns {void}
          */
-        _singleTransform4(data, out, outOff, off, step, inv) {
+        _singleTransform4(data2, out, outOff, off, step, inv) {
           const step2 = step * 2;
           const step3 = step * 3;
-          const Ar2 = data[off];
-          const Ai = data[off + 1];
-          const Br2 = data[off + step];
-          const Bi = data[off + step + 1];
-          const Cr2 = data[off + step2];
-          const Ci = data[off + step2 + 1];
-          const Dr2 = data[off + step3];
-          const Di = data[off + step3 + 1];
+          const Ar2 = data2[off];
+          const Ai = data2[off + 1];
+          const Br2 = data2[off + step];
+          const Bi = data2[off + step + 1];
+          const Cr2 = data2[off + step2];
+          const Ci = data2[off + step2 + 1];
+          const Dr2 = data2[off + step3];
+          const Di = data2[off + step3 + 1];
           const T0r = Ar2 + Cr2;
           const T0i = Ai + Ci;
           const T1r = Ar2 - Cr2;
@@ -44317,7 +44317,7 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @param {Float64Array} data Input array of real data to be transformed
          * @param {number} inv The scale factor used to normalize the inverse transform
          */
-        _realTransform4(out, data, inv) {
+        _realTransform4(out, data2, inv) {
           const size = this._csize;
           const width = this._width;
           let step = 1 << width;
@@ -44328,12 +44328,12 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           if (len === 4) {
             for (outOff = 0, t2 = 0; outOff < size; outOff += len, ++t2) {
               const off = bitrev[t2];
-              this._singleRealTransform2(data, out, outOff, off >>> 1, step >>> 1);
+              this._singleRealTransform2(data2, out, outOff, off >>> 1, step >>> 1);
             }
           } else {
             for (outOff = 0, t2 = 0; outOff < size; outOff += len, ++t2) {
               const off = bitrev[t2];
-              this._singleRealTransform4(data, out, outOff, off >>> 1, step >>> 1, inv);
+              this._singleRealTransform4(data2, out, outOff, off >>> 1, step >>> 1, inv);
             }
           }
           const table = this.table;
@@ -44415,9 +44415,9 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * 
          * @returns {void}
          */
-        _singleRealTransform2(data, out, outOff, off, step) {
-          const evenR = data[off];
-          const oddR = data[off + step];
+        _singleRealTransform2(data2, out, outOff, off, step) {
+          const evenR = data2[off];
+          const oddR = data2[off + step];
           out[outOff] = evenR + oddR;
           out[outOff + 1] = 0;
           out[outOff + 2] = evenR - oddR;
@@ -44434,13 +44434,13 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @param {number} step The step size for the input array.
          * @param {number} inv The value of inverse.
          */
-        _singleRealTransform4(data, out, outOff, off, step, inv) {
+        _singleRealTransform4(data2, out, outOff, off, step, inv) {
           const step2 = step * 2;
           const step3 = step * 3;
-          const Ar2 = data[off];
-          const Br2 = data[off + step];
-          const Cr2 = data[off + step2];
-          const Dr2 = data[off + step3];
+          const Ar2 = data2[off];
+          const Br2 = data2[off + step];
+          const Cr2 = data2[off + step2];
+          const Dr2 = data2[off + step3];
           const T0r = Ar2 + Cr2;
           const T1r = Ar2 - Cr2;
           const T2r = Br2 + Dr2;
@@ -44555,23 +44555,23 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           this.fft.transform(out, input);
         }
       }
-      function medianFilter(data, windowSize) {
+      function medianFilter(data2, windowSize) {
         if (windowSize % 2 === 0 || windowSize <= 0) {
           throw new Error("Window size must be a positive odd number");
         }
-        const outputArray = new data.constructor(data.length);
-        const buffer = new data.constructor(windowSize);
+        const outputArray = new data2.constructor(data2.length);
+        const buffer = new data2.constructor(windowSize);
         const halfWindowSize = Math.floor(windowSize / 2);
-        for (let i3 = 0; i3 < data.length; ++i3) {
+        for (let i3 = 0; i3 < data2.length; ++i3) {
           let valuesIndex = 0;
           for (let j2 = -halfWindowSize; j2 <= halfWindowSize; ++j2) {
             let index = i3 + j2;
             if (index < 0) {
               index = Math.abs(index);
-            } else if (index >= data.length) {
-              index = 2 * (data.length - 1) - index;
+            } else if (index >= data2.length) {
+              index = 2 * (data2.length - 1) - index;
             }
-            buffer[valuesIndex++] = data[index];
+            buffer[valuesIndex++] = data2[index];
           }
           buffer.sort();
           outputArray[i3] = buffer[halfWindowSize];
@@ -44933,8 +44933,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
         _subarray(index, iterSize, iterDims) {
           const o1 = index * iterSize;
           const o22 = (index + 1) * iterSize;
-          const data = "subarray" in this.data ? this.data.subarray(o1, o22) : this.data.slice(o1, o22);
-          return new Tensor3(this.type, data, iterDims);
+          const data2 = "subarray" in this.data ? this.data.subarray(o1, o22) : this.data.slice(o1, o22);
+          return new Tensor3(this.type, data2, iterDims);
         }
         /**
          * Returns the value of this tensor as a standard JavaScript Number. This only works
@@ -45143,7 +45143,7 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           const newDims = newOffsets.map(([start, end]) => end - start);
           const newBufferSize = newDims.reduce((a2, b3) => a2 * b3);
           const this_data = this.data;
-          const data = new this_data.constructor(newBufferSize);
+          const data2 = new this_data.constructor(newBufferSize);
           const stride = this.stride();
           let isContiguous = true;
           for (let i3 = 1; i3 < newDims.length; ++i3) {
@@ -45156,11 +45156,11 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
             const start = newOffsets[0][0] * stride[0];
             const end = newOffsets[0][1] * stride[0];
             if (ArrayBuffer.isView(this_data)) {
-              data.set(this_data.subarray(start, end));
+              data2.set(this_data.subarray(start, end));
             } else if (Array.isArray(this_data)) {
               const slicedData = this_data.slice(start, end);
               for (let i3 = 0; i3 < slicedData.length; ++i3) {
-                data[i3] = slicedData[i3];
+                data2[i3] = slicedData[i3];
               }
             } else {
               throw new Error("Unsupported data type for slicing");
@@ -45173,10 +45173,10 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
                 originalIndex += (num % size + newOffsets[j2][0]) * stride[j2];
                 num = Math.floor(num / size);
               }
-              data[i3] = this_data[originalIndex];
+              data2[i3] = this_data[originalIndex];
             }
           }
-          return new Tensor3(this.type, data, newTensorDims);
+          return new Tensor3(this.type, data2, newTensorDims);
         }
         /**
          * Return a permuted version of this Tensor, according to the provided dimensions.
@@ -45496,13 +45496,13 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           return new Tensor3(type, DataTypeMap[type].from(this.data, map_fn), this.dims);
         }
       }
-      function reshape(data, dimensions) {
-        const totalElements = data.length;
+      function reshape(data2, dimensions) {
+        const totalElements = data2.length;
         const dimensionSize = dimensions.reduce((a2, b3) => a2 * b3);
         if (totalElements !== dimensionSize) {
           throw Error(`cannot reshape array of size ${totalElements} into shape (${dimensions})`);
         }
-        let reshapedArray = data;
+        let reshapedArray = data2;
         for (let i3 = dimensions.length - 1; i3 >= 0; i3--) {
           reshapedArray = reshapedArray.reduce((acc, val) => {
             let lastArray = acc[acc.length - 1];
@@ -45592,10 +45592,10 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
         });
       }
       const arrayToIndexTensor = (array) => new Tensor3("int64", array, [array.length]);
-      async function slice(data, starts, ends, axes, steps) {
+      async function slice(data2, starts, ends, axes, steps) {
         const op = await _ops_registry_js__WEBPACK_IMPORTED_MODULE_2__.TensorOpRegistry.slice;
         return await op({
-          x: data,
+          x: data2,
           s: arrayToIndexTensor(starts),
           e: arrayToIndexTensor(ends),
           a: arrayToIndexTensor(axes),
@@ -45715,8 +45715,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
         } else {
           let currentDim = 0;
           for (let t2 = 0; t2 < tensors.length; ++t2) {
-            const { data, dims } = tensors[t2];
-            for (let i3 = 0; i3 < data.length; ++i3) {
+            const { data: data2, dims } = tensors[t2];
+            for (let i3 = 0; i3 < data2.length; ++i3) {
               let resultIndex = 0;
               for (let j2 = dims.length - 1, num = i3, resultMultiplier = 1; j2 >= 0; --j2) {
                 const size = dims[j2];
@@ -45728,7 +45728,7 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
                 resultMultiplier *= resultDims[j2];
                 num = Math.floor(num / size);
               }
-              result[resultIndex] = data[i3];
+              result[resultIndex] = data2[i3];
             }
             currentDim += dims[dim];
           }
@@ -71618,6 +71618,212 @@ var EVERYDAY = {
 };
 var ENGLISH_EVERYDAY = /* @__PURE__ */ new Set([...HINTS.en, "i", "i'll", "i'm", "it's", "a", "an", "on", "be", "at", "have", "has", "not", "we", "will", "your", "my", "by", "what", "when", "then", "from", "but", "or", "if", "so", "he", "she", "they", "as", "do", "can", "there", "here", "about", "more", "just", "all", "one", "would", "which", "their", "had", "been", "were"]);
 
+// src/phrases.js
+var loader = null;
+var dataP = null;
+function configureWords(fn) {
+  loader = fn;
+}
+async function load() {
+  let raw;
+  if (loader) raw = await loader();
+  else {
+    const { readFile: readFile2 } = await import("fs/promises");
+    raw = JSON.parse(await readFile2(new URL("../data/words/words.json", import.meta.url), "utf8"));
+  }
+  const freq = {};
+  for (const [lang, v3] of Object.entries(raw)) {
+    if (!v3 || !Array.isArray(v3.b)) continue;
+    const m3 = /* @__PURE__ */ new Map();
+    v3.b.forEach((b3, i3) => {
+      const per = 2 ** (b3 / 2) / 100;
+      for (const w3 of v3.w[i3].split(" ")) m3.set(w3, per);
+    });
+    freq[lang] = m3;
+  }
+  return { freq, loan: new Set(String(raw.loan || "").split(" ")) };
+}
+function data() {
+  if (!dataP) {
+    dataP = load();
+    dataP.catch(() => dataP = null);
+  }
+  return dataP;
+}
+var PHRASE_LANGS = ["en", "fr", "es", "it", "pt", "de"];
+var PARTICLES = /* @__PURE__ */ new Set(["de", "la", "le", "du", "des", "del", "della", "di", "da", "do", "dos", "das", "van", "von", "der", "den", "el", "los", "las", "y", "e", "i", "o", "a", "al", "en", "un", "una", "il", "lo", "se", "si", "no", "me", "te"]);
+var LATIN = new Set("prima facie facto jure bono bona fide vice versa hoc status quo alia inter circa via versus sic ergo vide infra supra ibid ibidem habeas corpus mens rea modus operandi vivendi alma mater persona grata absentia quid carpe diem causa mortis res ipsa loquitur ratio decidendi obiter dictum dicta stare decisis certiorari mandamus amicus curiae ultra vires intra locus standi sui generis juris ex parte post ante mortem tempore lite pendente nisi prius subpoena affidavit verbatim passim idem opus magnum cum laude summa magna erga omnes mutatis mutandis ceteris paribus pari passu per capita annum diem cent contra bonos mores terra nullius incognita".split(" "));
+var GREETINGS = new Set("oui merci bonjour bonsoir adieu voil\xE0 salut allez alors monsieur madame mademoiselle gracias adi\xF3s adios hola s\xED bueno vamos se\xF1or se\xF1ora se\xF1orita ciao grazie prego signore signora danke bitte nein obrigado obrigada".split(" "));
+var RATIO = 12;
+function freqOf(m3, w3, lang) {
+  if (!m3) return 0;
+  const direct = m3.get(w3) || 0;
+  if (w3.includes("-")) {
+    let least = Infinity;
+    for (const part of w3.split("-")) {
+      if (!part) continue;
+      const f3 = m3.get(part);
+      if (!f3) return direct;
+      least = Math.min(least, f3);
+    }
+    return Math.max(direct, least === Infinity ? 0 : least);
+  }
+  if (direct) return direct;
+  const q2 = w3.indexOf("'");
+  if (q2 > 0) {
+    if (lang === "en") return m3.get(w3.slice(0, q2)) || 0;
+    const pre = m3.get(w3.slice(0, q2 + 1));
+    const rest = w3.slice(q2 + 1);
+    if (pre && (!rest || m3.get(rest))) return Math.min(pre, rest ? m3.get(rest) : pre);
+    return 0;
+  }
+  return 0;
+}
+function tokens(text) {
+  const out = [];
+  let segStart = true;
+  for (const tk2 of text.split(" ").filter(Boolean)) {
+    const m3 = /^([^\p{L}]*)([\p{L}][\p{L}'’-]*[\p{L}]|[\p{L}])?(.*)$/u.exec(tk2) || [];
+    const lead = m3[1] || "";
+    const core = m3[2] || "";
+    const trail = m3[3] || "";
+    const opens = /[“"«(‘—–]/.test(lead);
+    const closes = /[,;:.!?…”"»)—–]/.test(trail) || !core && /[—–-]/.test(tk2);
+    const t2 = {
+      core,
+      lower: core.toLowerCase().replace(/’/g, "'"),
+      start: segStart || opens,
+      end: closes,
+      upper: new RegExp("^\\p{Lu}", "u").test(core),
+      letters: (core.match(new RegExp("\\p{L}", "gu")) || []).length
+    };
+    if (!core) {
+      if (/[,;:.!?…”"»)]/.test(tk2) && out.length) out[out.length - 1].end = true;
+      out.push(t2);
+      segStart = segStart || opens || /[,;:.!?…”"»)—–-]/.test(tk2);
+      continue;
+    }
+    out.push(t2);
+    segStart = closes;
+  }
+  for (let i3 = 0; i3 + 1 < out.length; i3++) if (out[i3 + 1].start) out[i3].end = true;
+  if (out.length) out[out.length - 1].end = true;
+  return out;
+}
+function runsFor(toks, lang, main, d3) {
+  const L2 = d3.freq[lang];
+  const M4 = d3.freq[main];
+  const kind = toks.map((t2) => {
+    if (!t2.core) return { k: "gap" };
+    const fL = freqOf(L2, t2.lower, lang);
+    if (!fL || main === "en" && LATIN.has(t2.lower)) return { k: "none" };
+    const fM = freqOf(M4, t2.lower, main);
+    let sure = fL >= RATIO * fM && fL >= 0.3;
+    if (sure && t2.lower.includes("-")) {
+      for (const part of t2.lower.split("-")) if (part && (M4.get(part) || 0) > (L2.get(part) || 0)) sure = false;
+    }
+    const nameLike = t2.upper && !t2.start && fL < 100;
+    const strong = sure && !PARTICLES.has(t2.lower) && t2.letters >= 3 && (!t2.upper || t2.start && fL >= 100);
+    if (sure && !nameLike) return { k: "sure", strong, loan: main === "en" && d3.loan.has(t2.lower), fL, fM };
+    if (fL >= 5 && fL >= fM / 10) return { k: "shared", fL, fM };
+    return { k: "none" };
+  });
+  const runs = [];
+  for (let i3 = 0; i3 < toks.length; ) {
+    if (kind[i3].k !== "sure" && kind[i3].k !== "shared") {
+      i3++;
+      continue;
+    }
+    let j2 = i3;
+    while (j2 < toks.length && kind[j2].k !== "none") j2++;
+    let a2 = i3;
+    let b3 = j2 - 1;
+    const whole = () => toks[a2].start && toks[b3].end;
+    for (; ; ) {
+      if (a2 > b3) break;
+      if (kind[b3].k === "gap") b3--;
+      else if (kind[a2].k === "gap") a2++;
+      else if (!whole() && kind[b3].k === "shared" && kind[b3].fM > kind[b3].fL) b3--;
+      else if (!whole() && kind[a2].k === "shared" && kind[a2].fM > kind[a2].fL) a2++;
+      else break;
+    }
+    if (a2 <= b3) {
+      let strong = 0;
+      let own = 0;
+      let allSure = true;
+      let words = 0;
+      let letters = 0;
+      let score = 0;
+      let onlyParticles = true;
+      let greeting = false;
+      const distinct = /* @__PURE__ */ new Set();
+      for (let k4 = a2; k4 <= b3; k4++) {
+        if (kind[k4].k === "gap") continue;
+        words++;
+        letters += toks[k4].letters;
+        if (kind[k4].strong) strong++;
+        if (kind[k4].strong && !kind[k4].loan) own++;
+        if (kind[k4].k !== "sure") allSure = false;
+        if (kind[k4].k === "sure") score += Math.log2(kind[k4].fL / (kind[k4].fM || 0.05));
+        if (!PARTICLES.has(toks[k4].lower)) onlyParticles = false;
+        if (GREETINGS.has(toks[k4].lower)) greeting = true;
+        distinct.add(toks[k4].lower);
+      }
+      const alone = whole();
+      let ok = strong >= 1 && !onlyParticles;
+      if (ok && words === 1) {
+        const t2 = toks[a2];
+        ok = own ? alone || !t2.upper && letters >= 4 && kind[a2].fL >= 3 : alone && greeting;
+      } else if (ok && !own) {
+        ok = alone && allSure && (distinct.size >= 2 || greeting);
+      }
+      if (ok && main !== "en" && strong < 2 && !(alone && (words >= 2 || kind[a2].fL >= 100))) ok = false;
+      if (ok) runs.push({ lang, a: a2, b: b3, strong, words, score });
+    }
+    i3 = j2;
+  }
+  return runs;
+}
+async function tagPhrases(texts, bases) {
+  let d3;
+  try {
+    d3 = await data();
+  } catch (e2) {
+    console.warn("[murmur] word lists unavailable:", e2?.message || e2);
+    return bases.slice();
+  }
+  const found = texts.map((text, i3) => {
+    const main = bases[i3];
+    if (!PHRASE_LANGS.includes(main) || !d3.freq[main]) return null;
+    const toks = tokens(text);
+    let all = [];
+    for (const lang of main === "en" ? PHRASE_LANGS : ["en"]) if (lang !== main && d3.freq[lang]) all = all.concat(runsFor(toks, lang, main, d3));
+    return all.length ? { toks, runs: all } : null;
+  });
+  const lean = {};
+  for (const f3 of found) {
+    if (!f3) continue;
+    const best = Math.max(...f3.runs.map((r2) => r2.strong));
+    const tops = f3.runs.filter((r2) => r2.strong === best);
+    if (new Set(tops.map((r2) => r2.lang)).size === 1) lean[tops[0].lang] = (lean[tops[0].lang] || 0) + best;
+  }
+  return texts.map((text, i3) => {
+    const f3 = found[i3];
+    const main = bases[i3];
+    if (!f3) return main;
+    const order = f3.runs.slice().sort((x2, y3) => y3.strong - x2.strong || (lean[y3.lang] || 0) - (lean[x2.lang] || 0) || y3.score - x2.score || PHRASE_LANGS.indexOf(x2.lang) - PHRASE_LANGS.indexOf(y3.lang));
+    const words = new Array(f3.toks.length).fill(null);
+    for (const r2 of order) {
+      let free = true;
+      for (let k4 = r2.a; k4 <= r2.b; k4++) if (words[k4]) free = false;
+      if (free) for (let k4 = r2.a; k4 <= r2.b; k4++) words[k4] = r2.lang;
+    }
+    const langs = new Set(words.filter((w3, k4) => f3.toks[k4].core).map((w3) => w3 || main));
+    if (langs.size === 1 && !langs.has(main)) return [...langs][0];
+    return { main, words };
+  });
+}
+
 // src/lang.js
 var SAME_SCRIPT = {
   zh: ["zh", "ja"],
@@ -71674,7 +71880,7 @@ async function mainLanguage(texts, pageLang) {
   const best = Object.entries(votes).filter(([l2]) => SUPPORTED.includes(l2) && !LANGS[l2].hidden).sort((a2, b3) => b3[1] - a2[1])[0];
   return best ? best[0] : SUPPORTED.includes(pageLang) ? pageLang : "en";
 }
-async function tagSentences(items, { pageLang = null } = {}) {
+async function tagSentences(items, { pageLang = null, phrases = true } = {}) {
   pageLang = pageLang && SUPPORTED.includes(pageLang) ? pageLang : null;
   const blocks = [];
   const blockOf = /* @__PURE__ */ new Map();
@@ -71707,6 +71913,7 @@ async function tagSentences(items, { pageLang = null } = {}) {
       prev = langs[i3];
     }
   }
+  if (phrases) return { main, langs: await tagPhrases(items.map((it2) => it2.text), langs) };
   return { main, langs };
 }
 async function phraseModelLanguage(phrase) {
@@ -71723,9 +71930,9 @@ async function phraseModelLanguage(phrase) {
 var VOWELS = new Set("AIOQWYaiu\xE6\u0251\u0252\u0254\u0259\u025B\u025C\u026A\u028A\u028C\u1D7B");
 var SYMBOLS = { "%": "percent", "&": "and", "+": "plus", "@": "at" };
 var US_TAUS = new Set("AIOWYiu\xE6\u0251\u0259\u025B\u026A\u0279\u028A\u028C");
-var loader = null;
+var loader2 = null;
 function configureLexicon(fn) {
-  loader = fn;
+  loader2 = fn;
 }
 var cache = /* @__PURE__ */ new Map();
 function getLexicon(accent = "b") {
@@ -71734,9 +71941,9 @@ function getLexicon(accent = "b") {
     cache.set(
       key,
       (async () => {
-        if (!loader) throw new Error("lexicon loader not configured");
+        if (!loader2) throw new Error("lexicon loader not configured");
         const p3 = key === "b" ? "gb" : "us";
-        const [gold, silver, names] = await Promise.all([loader(`${p3}_gold.json`), loader(`${p3}_silver.json`), Promise.resolve(loader(`names_${p3}.json`)).catch(() => null)]);
+        const [gold, silver, names] = await Promise.all([loader2(`${p3}_gold.json`), loader2(`${p3}_silver.json`), Promise.resolve(loader2(`names_${p3}.json`)).catch(() => null)]);
         return new Lexicon(gold, silver, key === "b", names);
       })()
     );
@@ -97478,8 +97685,8 @@ async function runModel(voice, ids, speed, lang, sid = 0) {
   };
   if (session.inputNames.includes("sid")) feeds.sid = new Ge("int64", BigInt64Array.from([BigInt(sid)]), [1]);
   const out = await session.run(feeds);
-  const data = out.output.data;
-  return data instanceof Float32Array ? data : Float32Array.from(data);
+  const data2 = out.output.data;
+  return data2 instanceof Float32Array ? data2 : Float32Array.from(data2);
 }
 function resampleHermite(input, fromRate, toRate) {
   if (fromRate === toRate) return input;
@@ -97763,6 +97970,7 @@ function createEngine({ wasmPaths, onEvent }) {
     configureEspeak(wasmPaths + "espeak-ng.js");
     configureLexicon((f3) => fetch(wasmPaths + "lexicon/" + f3).then((r2) => r2.json()));
     configureLangId({ wasmPath: wasmPaths + "fasttext/fastText.common.wasm", modelPath: wasmPaths + "fasttext/lid.176.ftz" });
+    configureWords(() => fetch(wasmPaths + "words/words.json").then((r2) => r2.json()));
   }
   configurePiper({ wasmPaths: wasmPaths || void 0, onProgress: (msg) => {
     if (st2.status === "loading" || st2.status === "buffering" || st2.status === "idle") setStatus(st2.status === "idle" ? "loading" : st2.status, msg);
@@ -97803,7 +98011,7 @@ function createEngine({ wasmPaths, onEvent }) {
     genVersion: 0,
     playToken: 0
   };
-  const emit = (type, data = {}) => onEvent({ type, ...data });
+  const emit = (type, data2 = {}) => onEvent({ type, ...data2 });
   const setStatus = (status, detail = "") => {
     st2.status = status;
     emit("state", { state: status, detail });
@@ -97885,9 +98093,9 @@ function createEngine({ wasmPaths, onEvent }) {
     else attempts = await webgpuUsable() ? [["webgpu", "fp32"], ["wasm", "q8"]] : [["wasm", "q8"]];
     let lastErr = null;
     for (const [device, dtype] of attempts) {
-      for (const [name, load] of [["timed", loadTimed], ["plain", loadPlain]]) {
+      for (const [name, load2] of [["timed", loadTimed], ["plain", loadPlain]]) {
         try {
-          await load(device, dtype);
+          await load2(device, dtype);
           st2.engine = device;
           emit("engine", { engine: device, dtype, wordTiming: name === "timed" });
           return;

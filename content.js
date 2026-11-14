@@ -1027,13 +1027,24 @@
         return sentences.map(() => fallback);
       }
       const counts = {};
-      for (const l of langs) counts[l] = (counts[l] || 0) + 1;
-      note("languages: " + Object.entries(counts).map(([l, n]) => `${l} ${n}`).join(", "));
+      let mixed = 0;
+      for (const l of langs) {
+        const m = typeof l === "string" ? l : l?.main || fallback;
+        counts[m] = (counts[m] || 0) + 1;
+        if (typeof l !== "string") mixed++;
+      }
+      note("languages: " + Object.entries(counts).map(([l, n]) => `${l} ${n}`).join(", ") + (mixed ? `; ${mixed} with foreign words inside` : ""));
       return Promise.all(
         sentences.map(async (s, i) => {
-          const main = langs[i] || fallback;
-          const hints = main === "en" ? await italicLanguageHints(s).catch(() => null) : null;
-          return hints ? { main, words: hints } : main;
+          const got = langs[i] || fallback;
+          const main = typeof got === "string" ? got : got.main || fallback;
+          const found = typeof got === "string" ? null : got.words;
+          const marked = main === "en" ? await italicLanguageHints(s).catch(() => null) : null;
+          if (!found && !marked) return main;
+          const n = s.text.split(" ").filter(Boolean).length;
+          const words = [];
+          for (let k = 0; k < n; k++) words.push(marked && marked[k] || found && found[k] || null);
+          return { main, words };
         })
       );
     }

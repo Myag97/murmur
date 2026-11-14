@@ -67728,13 +67728,21 @@ var EVERYDAY = {
 };
 var ENGLISH_EVERYDAY = /* @__PURE__ */ new Set([...HINTS.en, "i", "i'll", "i'm", "it's", "a", "an", "on", "be", "at", "have", "has", "not", "we", "will", "your", "my", "by", "what", "when", "then", "from", "but", "or", "if", "so", "he", "she", "they", "as", "do", "can", "there", "here", "about", "more", "just", "all", "one", "would", "which", "their", "had", "been", "were"]);
 
+// src/phrases.js
+var loader = null;
+function configureWords(fn) {
+  loader = fn;
+}
+var LATIN = new Set("prima facie facto jure bono bona fide vice versa hoc status quo alia inter circa via versus sic ergo vide infra supra ibid ibidem habeas corpus mens rea modus operandi vivendi alma mater persona grata absentia quid carpe diem causa mortis res ipsa loquitur ratio decidendi obiter dictum dicta stare decisis certiorari mandamus amicus curiae ultra vires intra locus standi sui generis juris ex parte post ante mortem tempore lite pendente nisi prius subpoena affidavit verbatim passim idem opus magnum cum laude summa magna erga omnes mutatis mutandis ceteris paribus pari passu per capita annum diem cent contra bonos mores terra nullius incognita".split(" "));
+var GREETINGS = new Set("oui merci bonjour bonsoir adieu voil\xE0 salut allez alors monsieur madame mademoiselle gracias adi\xF3s adios hola s\xED bueno vamos se\xF1or se\xF1ora se\xF1orita ciao grazie prego signore signora danke bitte nein obrigado obrigada".split(" "));
+
 // src/lexicon.js
 var VOWELS = new Set("AIOQWYaiu\xE6\u0251\u0252\u0254\u0259\u025B\u025C\u026A\u028A\u028C\u1D7B");
 var SYMBOLS = { "%": "percent", "&": "and", "+": "plus", "@": "at" };
 var US_TAUS = new Set("AIOWYiu\xE6\u0251\u0259\u025B\u026A\u0279\u028A\u028C");
-var loader = null;
+var loader2 = null;
 function configureLexicon(fn) {
-  loader = fn;
+  loader2 = fn;
 }
 var cache = /* @__PURE__ */ new Map();
 function getLexicon(accent = "b") {
@@ -67743,9 +67751,9 @@ function getLexicon(accent = "b") {
     cache.set(
       key,
       (async () => {
-        if (!loader) throw new Error("lexicon loader not configured");
+        if (!loader2) throw new Error("lexicon loader not configured");
         const p3 = key === "b" ? "gb" : "us";
-        const [gold, silver, names] = await Promise.all([loader(`${p3}_gold.json`), loader(`${p3}_silver.json`), Promise.resolve(loader(`names_${p3}.json`)).catch(() => null)]);
+        const [gold, silver, names] = await Promise.all([loader2(`${p3}_gold.json`), loader2(`${p3}_silver.json`), Promise.resolve(loader2(`names_${p3}.json`)).catch(() => null)]);
         return new Lexicon(gold, silver, key === "b", names);
       })()
     );
@@ -93778,6 +93786,7 @@ function createEngine({ wasmPaths, onEvent }) {
     configureEspeak(wasmPaths + "espeak-ng.js");
     configureLexicon((f3) => fetch(wasmPaths + "lexicon/" + f3).then((r2) => r2.json()));
     configureLangId({ wasmPath: wasmPaths + "fasttext/fastText.common.wasm", modelPath: wasmPaths + "fasttext/lid.176.ftz" });
+    configureWords(() => fetch(wasmPaths + "words/words.json").then((r2) => r2.json()));
   }
   configurePiper({ wasmPaths: wasmPaths || void 0, onProgress: (msg) => {
     if (st2.status === "loading" || st2.status === "buffering" || st2.status === "idle") setStatus(st2.status === "idle" ? "loading" : st2.status, msg);

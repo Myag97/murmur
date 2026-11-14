@@ -89,9 +89,9 @@ var init_fastText_common = __esm({
             if (typeof readbuffer == "function") {
               return new Uint8Array(readbuffer(f3));
             }
-            let data = read(f3, "binary");
-            assert2(typeof data == "object");
-            return data;
+            let data2 = read(f3, "binary");
+            assert2(typeof data2 == "object");
+            return data2;
           };
           readAsync = (f3, onload, onerror) => {
             setTimeout(() => onload(readBinary(f3)));
@@ -2048,8 +2048,8 @@ Originally allocated`);
           var TA2 = typeMapping[dataTypeIndex];
           function decodeMemoryView(handle) {
             var size = HEAPU32[handle >> 2];
-            var data = HEAPU32[handle + 4 >> 2];
-            return new TA2(HEAP8.buffer, data, size);
+            var data2 = HEAPU32[handle + 4 >> 2];
+            return new TA2(HEAP8.buffer, data2, size);
           }
           name = readLatin1String(name);
           registerType(rawType, { name, "fromWireType": decodeMemoryView, "argPackAdvance": GenericWireTypeSize, "readValueFromPointer": decodeMemoryView }, { ignoreDuplicateRegistrations: true });
@@ -2833,19 +2833,19 @@ Originally allocated`);
           mode |= 32768;
           return FS_mknod(path, mode, 0);
         };
-        var FS_writeFile = (path, data) => withStackSave(() => {
+        var FS_writeFile = (path, data2) => withStackSave(() => {
           var pathBuffer = stringToUTF8OnStack(path);
-          if (typeof data == "string") {
-            var buf = new Uint8Array(lengthBytesUTF8(data) + 1);
-            var actualNumBytes = stringToUTF8Array(data, buf, 0, buf.length);
-            data = buf.slice(0, actualNumBytes);
+          if (typeof data2 == "string") {
+            var buf = new Uint8Array(lengthBytesUTF8(data2) + 1);
+            var actualNumBytes = stringToUTF8Array(data2, buf, 0, buf.length);
+            data2 = buf.slice(0, actualNumBytes);
           }
-          var dataBuffer = _malloc(data.length);
+          var dataBuffer = _malloc(data2.length);
           assert2(dataBuffer);
-          for (var i3 = 0; i3 < data.length; i3++) {
-            HEAP8[dataBuffer + i3] = data[i3];
+          for (var i3 = 0; i3 < data2.length; i3++) {
+            HEAP8[dataBuffer + i3] = data2[i3];
           }
-          var ret = __wasmfs_write_file(pathBuffer, dataBuffer, data.length);
+          var ret = __wasmfs_write_file(pathBuffer, dataBuffer, data2.length);
           _free(dataBuffer);
           return ret;
         });
@@ -3088,7 +3088,7 @@ Originally allocated`);
           return bytesRead;
         }, allocate(stream, offset, length) {
           return FS.handleError(__wasmfs_allocate(stream.fd, offset >>> 0, (tempDouble = offset, +Math.abs(tempDouble) >= 1 ? tempDouble > 0 ? +Math.floor(tempDouble / 4294967296) >>> 0 : ~~+Math.ceil((tempDouble - +(~~tempDouble >>> 0)) / 4294967296) >>> 0 : 0), length >>> 0, (tempDouble = length, +Math.abs(tempDouble) >= 1 ? tempDouble > 0 ? +Math.floor(tempDouble / 4294967296) >>> 0 : ~~+Math.ceil((tempDouble - +(~~tempDouble >>> 0)) / 4294967296) >>> 0 : 0)));
-        }, writeFile: (path, data) => FS_writeFile(path, data), mmap: (stream, length, offset, prot, flags) => {
+        }, writeFile: (path, data2) => FS_writeFile(path, data2), mmap: (stream, length, offset, prot, flags) => {
           var buf = FS.handleError(__wasmfs_mmap(length, prot, flags, stream.fd, offset >>> 0, (tempDouble = offset, +Math.abs(tempDouble) >= 1 ? tempDouble > 0 ? +Math.floor(tempDouble / 4294967296) >>> 0 : ~~+Math.ceil((tempDouble - +(~~tempDouble >>> 0)) / 4294967296) >>> 0 : 0)));
           return { ptr: buf, allocated: true };
         }, msync: (stream, bufferPtr, offset, length, mmapFlags) => {
@@ -4335,8 +4335,8 @@ var require_terminateWorker = __commonJS({
 var require_onMessage = __commonJS({
   "node_modules/tesseract.js/src/worker/browser/onMessage.js"(exports, module) {
     module.exports = (worker, handler) => {
-      worker.onmessage = ({ data }) => {
-        handler(data);
+      worker.onmessage = ({ data: data2 }) => {
+        handler(data2);
       };
     };
   }
@@ -4365,39 +4365,39 @@ var require_loadImage = __commonJS({
       fileReader.readAsArrayBuffer(blob);
     });
     var loadImage = async (image) => {
-      let data = image;
+      let data2 = image;
       if (typeof image === "undefined") {
         return "undefined";
       }
       if (typeof image === "string") {
         if (/data:image\/([a-zA-Z]*);base64,([^"]*)/.test(image)) {
-          data = atob(image.split(",")[1]).split("").map((c3) => c3.charCodeAt(0));
+          data2 = atob(image.split(",")[1]).split("").map((c3) => c3.charCodeAt(0));
         } else {
           const resp = await fetch(image);
-          data = await resp.arrayBuffer();
+          data2 = await resp.arrayBuffer();
         }
       } else if (typeof HTMLElement !== "undefined" && image instanceof HTMLElement) {
         if (image.tagName === "IMG") {
-          data = await loadImage(image.src);
+          data2 = await loadImage(image.src);
         }
         if (image.tagName === "VIDEO") {
-          data = await loadImage(image.poster);
+          data2 = await loadImage(image.poster);
         }
         if (image.tagName === "CANVAS") {
           await new Promise((resolve) => {
             image.toBlob(async (blob) => {
-              data = await readFromBlobOrFile(blob);
+              data2 = await readFromBlobOrFile(blob);
               resolve();
             });
           });
         }
       } else if (typeof OffscreenCanvas !== "undefined" && image instanceof OffscreenCanvas) {
         const blob = await image.convertToBlob();
-        data = await readFromBlobOrFile(blob);
+        data2 = await readFromBlobOrFile(blob);
       } else if (image instanceof File || image instanceof Blob) {
-        data = await readFromBlobOrFile(image);
+        data2 = await readFromBlobOrFile(image);
       }
-      return new Uint8Array(data);
+      return new Uint8Array(data2);
     };
     module.exports = loadImage;
   }
@@ -4487,7 +4487,7 @@ var require_createWorker = __commonJS({
           payload
         });
       });
-      const load = () => console.warn("`load` is depreciated and should be removed from code (workers now come pre-loaded)");
+      const load2 = () => console.warn("`load` is depreciated and should be removed from code (workers now come pre-loaded)");
       const loadInternal = (jobId) => startJob(createJob({
         id: jobId,
         action: "load",
@@ -4592,28 +4592,28 @@ var require_createWorker = __commonJS({
         jobId,
         status: status2,
         action,
-        data
+        data: data2
       }) => {
         const promiseId = `${action}-${jobId}`;
         if (status2 === "resolve") {
           log(`[${workerId}]: Complete ${jobId}`);
-          let d3 = data;
+          let d3 = data2;
           if (action === "recognize") {
-            d3 = circularize(data);
+            d3 = circularize(data2);
           } else if (action === "getPDF") {
-            d3 = Array.from({ ...data, length: Object.keys(data).length });
+            d3 = Array.from({ ...data2, length: Object.keys(data2).length });
           }
           resolves[promiseId]({ jobId, data: d3 });
         } else if (status2 === "reject") {
-          rejects[promiseId](data);
-          if (action === "load") workerResReject(data);
+          rejects[promiseId](data2);
+          if (action === "load") workerResReject(data2);
           if (errorHandler) {
-            errorHandler(data);
+            errorHandler(data2);
           } else {
-            throw Error(data);
+            throw Error(data2);
           }
         } else if (status2 === "progress") {
-          logger({ ...data, userJobId: jobId });
+          logger({ ...data2, userJobId: jobId });
         }
       });
       const resolveObj = {
@@ -4621,7 +4621,7 @@ var require_createWorker = __commonJS({
         worker,
         setResolve,
         setReject,
-        load,
+        load: load2,
         writeText,
         readText,
         removeFile,
@@ -5426,8 +5426,8 @@ var require_underscore_umd = __commonJS({
           e2.source = source;
           throw e2;
         }
-        var template2 = function(data) {
-          return render2.call(this, data, _$1);
+        var template2 = function(data2) {
+          return render2.call(this, data2, _$1);
         };
         template2.source = "function(" + argument + "){\n" + source + "}";
         return template2;
@@ -10359,16 +10359,16 @@ var require_dom = __commonJS({
         node.childNodes = new NodeList();
         return node;
       },
-      createTextNode: function(data) {
+      createTextNode: function(data2) {
         var node = new Text();
         node.ownerDocument = this;
-        node.appendData(data);
+        node.appendData(data2);
         return node;
       },
-      createComment: function(data) {
+      createComment: function(data2) {
         var node = new Comment2();
         node.ownerDocument = this;
-        node.appendData(data);
+        node.appendData(data2);
         return node;
       },
       /**
@@ -10383,13 +10383,13 @@ var require_dom = __commonJS({
        * @see https://developer.mozilla.org/en-US/docs/Web/API/Document/createCDATASection
        * @see https://dom.spec.whatwg.org/#dom-document-createcdatasection
        */
-      createCDATASection: function(data) {
-        if (data.indexOf("]]>") !== -1) {
+      createCDATASection: function(data2) {
+        if (data2.indexOf("]]>") !== -1) {
           throw new DOMException(INVALID_CHARACTER_ERR, 'data contains "]]>"');
         }
         var node = new CDATASection();
         node.ownerDocument = this;
-        node.appendData(data);
+        node.appendData(data2);
         return node;
       },
       /**
@@ -10411,11 +10411,11 @@ var require_dom = __commonJS({
        * @see https://dom.spec.whatwg.org/#dom-document-createprocessinginstruction
        * @see https://www.w3.org/TR/DOM-Parsing/#dfn-concept-serialize-xml §3.2.1.7
        */
-      createProcessingInstruction: function(target, data) {
+      createProcessingInstruction: function(target, data2) {
         var node = new ProcessingInstruction();
         node.ownerDocument = this;
         node.tagName = node.nodeName = node.target = target;
-        node.nodeValue = node.data = data;
+        node.nodeValue = node.data = data2;
         return node;
       },
       createAttribute: function(name) {
@@ -11012,21 +11012,21 @@ var require_dom = __commonJS({
             }
             return this.nodeValue;
           },
-          set: function(data) {
+          set: function(data2) {
             switch (this.nodeType) {
               case ELEMENT_NODE:
               case DOCUMENT_FRAGMENT_NODE:
                 while (this.firstChild) {
                   this.removeChild(this.firstChild);
                 }
-                if (data || String(data)) {
-                  this.appendChild(this.ownerDocument.createTextNode(data));
+                if (data2 || String(data2)) {
+                  this.appendChild(this.ownerDocument.createTextNode(data2));
                 }
                 break;
               default:
-                this.data = data;
-                this.value = data;
-                this.nodeValue = data;
+                this.data = data2;
+                this.value = data2;
+                this.nodeValue = data2;
             }
           }
         });
@@ -13896,8 +13896,8 @@ var require_dom_parser = __commonJS({
       },
       endPrefixMapping: function(prefix) {
       },
-      processingInstruction: function(target, data) {
-        var ins = this.doc.createProcessingInstruction(target, data);
+      processingInstruction: function(target, data2) {
+        var ins = this.doc.createProcessingInstruction(target, data2);
         this.locator && position(this.locator, ins);
         appendElement(this, ins);
       },
@@ -20257,8 +20257,8 @@ var require_raw_text = __commonJS({
 // node_modules/lop/lib/TokenIterator.js
 var require_TokenIterator = __commonJS({
   "node_modules/lop/lib/TokenIterator.js"(exports, module) {
-    var TokenIterator = module.exports = function(tokens, startIndex) {
-      this._tokens = tokens;
+    var TokenIterator = module.exports = function(tokens2, startIndex) {
+      this._tokens = tokens2;
       this._startIndex = startIndex || 0;
     };
     TokenIterator.prototype.head = function() {
@@ -20286,8 +20286,8 @@ var require_parser = __commonJS({
   "node_modules/lop/lib/parser.js"(exports) {
     var TokenIterator = require_TokenIterator();
     exports.Parser = function(options) {
-      var parseTokens = function(parser, tokens) {
-        return parser(new TokenIterator(tokens));
+      var parseTokens = function(parser, tokens2) {
+        return parser(new TokenIterator(tokens2));
       };
       return {
         parseTokens
@@ -20958,8 +20958,8 @@ var require_bottom_up = __commonJS({
       function createRule(infixRules2) {
         return apply.bind(null, infixRules2);
       }
-      function apply(infixRules2, tokens) {
-        var leftResult = prefixRule(tokens);
+      function apply(infixRules2, tokens2) {
+        var leftResult = prefixRule(tokens2);
         if (leftResult.isSuccess()) {
           return infixRules2.apply(leftResult);
         } else {
@@ -20999,10 +20999,10 @@ var require_bottom_up = __commonJS({
           }
         }
       }
-      function applyToTokens(tokens) {
+      function applyToTokens(tokens2) {
         return rules.firstOf("infix", infixRules.map(function(infix) {
           return infix.rule;
-        }))(tokens);
+        }))(tokens2);
       }
       return {
         apply,
@@ -21014,8 +21014,8 @@ var require_bottom_up = __commonJS({
       function map2(func) {
         return exports.infix(name, function(parser) {
           var rule = ruleBuilder(parser);
-          return function(tokens) {
-            var result = rule(tokens);
+          return function(tokens2) {
+            var result = rule(tokens2);
             return result.map(function(right) {
               return function(left, source) {
                 return func(left, right, source);
@@ -21058,14 +21058,14 @@ var require_regex_tokeniser = __commonJS({
       function tokenise(input, description) {
         var source = new StringSource(input, description);
         var index = 0;
-        var tokens = [];
+        var tokens2 = [];
         while (index < input.length) {
           var result = readNextToken(input, index, source);
           index = result.endIndex;
-          tokens.push(result.token);
+          tokens2.push(result.token);
         }
-        tokens.push(endToken(input, source));
-        return tokens;
+        tokens2.push(endToken(input, source));
+        return tokens2;
       }
       function readNextToken(string, startIndex, source) {
         for (var i3 = 0; i3 < rules.length; i3++) {
@@ -21559,9 +21559,9 @@ var require_style_reader = __commonJS({
       classRule
     );
     function parseString(rule, string) {
-      var tokens = tokenise(string);
+      var tokens2 = tokenise(string);
       var parser = lop.Parser();
-      var parseResult = parser.parseTokens(rule, tokens);
+      var parseResult = parser.parseTokens(rule, tokens2);
       if (parseResult.isSuccess()) {
         return results.success(parseResult.value());
       } else {
@@ -37281,12 +37281,12 @@ var require_js = __commonJS({
           throw "extended fmt chunk not implemented";
       }
       pos += fmtLen;
-      var data = WavHeader.data;
+      var data2 = WavHeader.data;
       var len = 0;
-      while (data != header) {
+      while (data2 != header) {
         header = dataView.getUint32(pos, false);
         len = dataView.getUint32(pos + 4, true);
-        if (data == header) {
+        if (data2 == header) {
           break;
         }
         pos += len + 8;
@@ -37667,7 +37667,7 @@ var tensorFromImage = async (image, options) => {
   const isImageDataEle = typeof ImageData !== "undefined" && image instanceof ImageData;
   const isImageBitmap = typeof ImageBitmap !== "undefined" && image instanceof ImageBitmap;
   const isString = typeof image === "string";
-  let data;
+  let data2;
   let bufferToTensorOptions = options ?? {};
   const createCanvas = () => {
     if (typeof document !== "undefined") {
@@ -37714,7 +37714,7 @@ var tensorFromImage = async (image, options) => {
         bufferToTensorOptions.width = width;
       }
       pixels2DContext.drawImage(image, 0, 0);
-      data = pixels2DContext.getImageData(0, 0, width, height).data;
+      data2 = pixels2DContext.getImageData(0, 0, width, height).data;
     } else {
       throw new Error("Can not access image data");
     }
@@ -37741,12 +37741,12 @@ var tensorFromImage = async (image, options) => {
       const pixels2DContext = createCanvasContext(tempCanvas);
       if (pixels2DContext != null) {
         pixels2DContext.putImageData(image, 0, 0);
-        data = pixels2DContext.getImageData(0, 0, width, height).data;
+        data2 = pixels2DContext.getImageData(0, 0, width, height).data;
       } else {
         throw new Error("Can not access image data");
       }
     } else {
-      data = image.data;
+      data2 = image.data;
     }
   } else if (isImageBitmap) {
     if (options === void 0) {
@@ -37760,10 +37760,10 @@ var tensorFromImage = async (image, options) => {
       const height = image.height;
       const width = image.width;
       pixels2DContext.drawImage(image, 0, 0, width, height);
-      data = pixels2DContext.getImageData(0, 0, width, height).data;
+      data2 = pixels2DContext.getImageData(0, 0, width, height).data;
       bufferToTensorOptions.height = height;
       bufferToTensorOptions.width = width;
-      return bufferToTensor(data, bufferToTensorOptions);
+      return bufferToTensor(data2, bufferToTensorOptions);
     } else {
       throw new Error("Can not access image data");
     }
@@ -37790,8 +37790,8 @@ var tensorFromImage = async (image, options) => {
   } else {
     throw new Error("Input data provided is not supported - aborted tensor creation");
   }
-  if (data !== void 0) {
-    return bufferToTensor(data, bufferToTensorOptions);
+  if (data2 !== void 0) {
+    return bufferToTensor(data2, bufferToTensorOptions);
   } else {
     throw new Error("Input data provided is not supported - aborted tensor creation");
   }
@@ -37968,7 +37968,7 @@ var Tensor = class {
           throw new Error(`Tensor constructor: unsupported location '${this.dataLocation}'`);
       }
     } else {
-      let data;
+      let data2;
       let maybeDims;
       if (typeof arg0 === "string") {
         type = arg0;
@@ -37977,7 +37977,7 @@ var Tensor = class {
           if (!Array.isArray(arg1)) {
             throw new TypeError("A string tensor's data must be a string array.");
           }
-          data = arg1;
+          data2 = arg1;
         } else {
           const typedArrayConstructor = NUMERIC_TENSOR_TYPE_TO_TYPEDARRAY_MAP.get(arg0);
           if (typedArrayConstructor === void 0) {
@@ -37987,20 +37987,20 @@ var Tensor = class {
             if (arg0 === "float16" && typedArrayConstructor === Uint16Array || arg0 === "uint4" || arg0 === "int4") {
               throw new TypeError(`Creating a ${arg0} tensor from number array is not supported. Please use ${typedArrayConstructor.name} as data.`);
             } else if (arg0 === "uint64" || arg0 === "int64") {
-              data = typedArrayConstructor.from(arg1, BigInt);
+              data2 = typedArrayConstructor.from(arg1, BigInt);
             } else {
-              data = typedArrayConstructor.from(arg1);
+              data2 = typedArrayConstructor.from(arg1);
             }
           } else if (arg1 instanceof typedArrayConstructor) {
-            data = arg1;
+            data2 = arg1;
           } else if (arg1 instanceof Uint8ClampedArray) {
             if (arg0 === "uint8") {
-              data = Uint8Array.from(arg1);
+              data2 = Uint8Array.from(arg1);
             } else {
               throw new TypeError(`A Uint8ClampedArray tensor's data must be type of uint8`);
             }
           } else if (arg0 === "float16" && arg1 instanceof Uint16Array && typedArrayConstructor !== Uint16Array) {
-            data = new globalThis.Float16Array(arg1.buffer, arg1.byteOffset, arg1.length);
+            data2 = new globalThis.Float16Array(arg1.buffer, arg1.byteOffset, arg1.length);
           } else {
             throw new TypeError(`A ${type} tensor's data must be type of ${typedArrayConstructor}`);
           }
@@ -38014,32 +38014,32 @@ var Tensor = class {
           const firstElementType = typeof arg0[0];
           if (firstElementType === "string") {
             type = "string";
-            data = arg0;
+            data2 = arg0;
           } else if (firstElementType === "boolean") {
             type = "bool";
-            data = Uint8Array.from(arg0);
+            data2 = Uint8Array.from(arg0);
           } else {
             throw new TypeError(`Invalid element type of data array: ${firstElementType}.`);
           }
         } else if (arg0 instanceof Uint8ClampedArray) {
           type = "uint8";
-          data = Uint8Array.from(arg0);
+          data2 = Uint8Array.from(arg0);
         } else {
           const mappedType = NUMERIC_TENSOR_TYPEDARRAY_TO_TYPE_MAP.get(arg0.constructor);
           if (mappedType === void 0) {
             throw new TypeError(`Unsupported type for tensor data: ${arg0.constructor}.`);
           }
           type = mappedType;
-          data = arg0;
+          data2 = arg0;
         }
       }
       if (maybeDims === void 0) {
-        maybeDims = [data.length];
+        maybeDims = [data2.length];
       } else if (!Array.isArray(maybeDims)) {
         throw new TypeError("A tensor's dims must be a number array");
       }
       dims = maybeDims;
-      this.cpuData = data;
+      this.cpuData = data2;
       this.dataLocation = "cpu";
     }
     const size = calculateSize(dims);
@@ -38130,15 +38130,15 @@ var Tensor = class {
         }
         try {
           this.isDownloading = true;
-          const data = await this.downloader();
+          const data2 = await this.downloader();
           this.downloader = void 0;
           this.dataLocation = "cpu";
-          this.cpuData = data;
+          this.cpuData = data2;
           if (releaseData && this.disposer) {
             this.disposer();
             this.disposer = void 0;
           }
-          return data;
+          return data2;
         } finally {
           this.isDownloading = false;
         }
@@ -48764,7 +48764,7 @@ var __webpack_modules__ = {
         return template.replace(/{%\s*(end)?generation\s*%}/gs, "");
       }
       function tokenize(source, options = {}) {
-        const tokens = [];
+        const tokens2 = [];
         const src = preprocess(source, options);
         let cursorPosition = 0;
         let curlyBracketDepth = 0;
@@ -48790,11 +48790,11 @@ var __webpack_modules__ = {
           return str;
         };
         const stripTrailingWhitespace = () => {
-          const lastToken = tokens.at(-1);
+          const lastToken = tokens2.at(-1);
           if (lastToken && lastToken.type === TOKEN_TYPES.Text) {
             lastToken.value = lastToken.value.trimEnd();
             if (lastToken.value === "") {
-              tokens.pop();
+              tokens2.pop();
             }
           }
         };
@@ -48805,7 +48805,7 @@ var __webpack_modules__ = {
         };
         main:
           while (cursorPosition < src.length) {
-            const lastTokenType = tokens.at(-1)?.type;
+            const lastTokenType = tokens2.at(-1)?.type;
             if (lastTokenType === void 0 || lastTokenType === TOKEN_TYPES.CloseStatement || lastTokenType === TOKEN_TYPES.CloseExpression || lastTokenType === TOKEN_TYPES.Comment) {
               let text = "";
               while (cursorPosition < src.length && // Keep going until we hit the next Jinja statement or expression
@@ -48813,7 +48813,7 @@ var __webpack_modules__ = {
                 text += src[cursorPosition++];
               }
               if (text.length > 0) {
-                tokens.push(new Token(text, TOKEN_TYPES.Text));
+                tokens2.push(new Token(text, TOKEN_TYPES.Text));
                 continue;
               }
             }
@@ -48837,7 +48837,7 @@ var __webpack_modules__ = {
               if (stripBefore) {
                 stripTrailingWhitespace();
               }
-              tokens.push(new Token(comment, TOKEN_TYPES.Comment));
+              tokens2.push(new Token(comment, TOKEN_TYPES.Comment));
               cursorPosition += 2;
               if (stripAfter) {
                 skipLeadingWhitespace();
@@ -48846,33 +48846,33 @@ var __webpack_modules__ = {
             }
             if (src.slice(cursorPosition, cursorPosition + 3) === "{%-") {
               stripTrailingWhitespace();
-              tokens.push(new Token("{%", TOKEN_TYPES.OpenStatement));
+              tokens2.push(new Token("{%", TOKEN_TYPES.OpenStatement));
               cursorPosition += 3;
               continue;
             }
             if (src.slice(cursorPosition, cursorPosition + 3) === "{{-") {
               stripTrailingWhitespace();
-              tokens.push(new Token("{{", TOKEN_TYPES.OpenExpression));
+              tokens2.push(new Token("{{", TOKEN_TYPES.OpenExpression));
               curlyBracketDepth = 0;
               cursorPosition += 3;
               continue;
             }
             consumeWhile(isWhitespace);
             if (src.slice(cursorPosition, cursorPosition + 3) === "-%}") {
-              tokens.push(new Token("%}", TOKEN_TYPES.CloseStatement));
+              tokens2.push(new Token("%}", TOKEN_TYPES.CloseStatement));
               cursorPosition += 3;
               skipLeadingWhitespace();
               continue;
             }
             if (src.slice(cursorPosition, cursorPosition + 3) === "-}}") {
-              tokens.push(new Token("}}", TOKEN_TYPES.CloseExpression));
+              tokens2.push(new Token("}}", TOKEN_TYPES.CloseExpression));
               cursorPosition += 3;
               skipLeadingWhitespace();
               continue;
             }
             const char = src[cursorPosition];
             if (char === "-" || char === "+") {
-              const lastTokenType2 = tokens.at(-1)?.type;
+              const lastTokenType2 = tokens2.at(-1)?.type;
               if (lastTokenType2 === TOKEN_TYPES.Text || lastTokenType2 === void 0) {
                 throw new SyntaxError(`Unexpected character: ${char}`);
               }
@@ -48886,7 +48886,7 @@ var __webpack_modules__ = {
                 default: {
                   ++cursorPosition;
                   const num = consumeWhile(isInteger);
-                  tokens.push(
+                  tokens2.push(
                     new Token(`${char}${num}`, num.length > 0 ? TOKEN_TYPES.NumericLiteral : TOKEN_TYPES.UnaryOperator)
                   );
                   continue;
@@ -48899,7 +48899,7 @@ var __webpack_modules__ = {
               }
               const slice2 = src.slice(cursorPosition, cursorPosition + seq.length);
               if (slice2 === seq) {
-                tokens.push(new Token(seq, type));
+                tokens2.push(new Token(seq, type));
                 if (type === TOKEN_TYPES.OpenExpression) {
                   curlyBracketDepth = 0;
                 } else if (type === TOKEN_TYPES.OpenCurlyBracket) {
@@ -48914,7 +48914,7 @@ var __webpack_modules__ = {
             if (char === "'" || char === '"') {
               ++cursorPosition;
               const str = consumeWhile((c3) => c3 !== char);
-              tokens.push(new Token(str, TOKEN_TYPES.StringLiteral));
+              tokens2.push(new Token(str, TOKEN_TYPES.StringLiteral));
               ++cursorPosition;
               continue;
             }
@@ -48925,17 +48925,17 @@ var __webpack_modules__ = {
                 const frac = consumeWhile(isInteger);
                 num = `${num}.${frac}`;
               }
-              tokens.push(new Token(num, TOKEN_TYPES.NumericLiteral));
+              tokens2.push(new Token(num, TOKEN_TYPES.NumericLiteral));
               continue;
             }
             if (isWord(char)) {
               const word = consumeWhile(isWord);
-              tokens.push(new Token(word, TOKEN_TYPES.Identifier));
+              tokens2.push(new Token(word, TOKEN_TYPES.Identifier));
               continue;
             }
             throw new SyntaxError(`Unexpected character: ${char}`);
           }
-        return tokens;
+        return tokens2;
       }
       var Statement = class {
         type = "Statement";
@@ -49144,11 +49144,11 @@ var __webpack_modules__ = {
         }
         type = "Ternary";
       };
-      function parse(tokens) {
+      function parse(tokens2) {
         const program = new Program([]);
         let current2 = 0;
         function expect(type, error) {
-          const prev = tokens[current2++];
+          const prev = tokens2[current2++];
           if (!prev || prev.type !== type) {
             throw new Error(`Parser Error: ${error}. ${prev.type} !== ${type}.`);
           }
@@ -49161,9 +49161,9 @@ var __webpack_modules__ = {
           ++current2;
         }
         function parseAny() {
-          switch (tokens[current2].type) {
+          switch (tokens2[current2].type) {
             case TOKEN_TYPES.Comment:
-              return new Comment2(tokens[current2++].value);
+              return new Comment2(tokens2[current2++].value);
             case TOKEN_TYPES.Text:
               return parseText();
             case TOKEN_TYPES.OpenStatement:
@@ -49171,27 +49171,27 @@ var __webpack_modules__ = {
             case TOKEN_TYPES.OpenExpression:
               return parseJinjaExpression();
             default:
-              throw new SyntaxError(`Unexpected token type: ${tokens[current2].type}`);
+              throw new SyntaxError(`Unexpected token type: ${tokens2[current2].type}`);
           }
         }
         function is3(...types) {
-          return current2 + types.length <= tokens.length && types.every((type, i3) => type === tokens[current2 + i3].type);
+          return current2 + types.length <= tokens2.length && types.every((type, i3) => type === tokens2[current2 + i3].type);
         }
         function isStatement(...names) {
-          return tokens[current2]?.type === TOKEN_TYPES.OpenStatement && tokens[current2 + 1]?.type === TOKEN_TYPES.Identifier && names.includes(tokens[current2 + 1]?.value);
+          return tokens2[current2]?.type === TOKEN_TYPES.OpenStatement && tokens2[current2 + 1]?.type === TOKEN_TYPES.Identifier && names.includes(tokens2[current2 + 1]?.value);
         }
         function isIdentifier(...names) {
-          return current2 + names.length <= tokens.length && names.every((name, i3) => tokens[current2 + i3].type === "Identifier" && name === tokens[current2 + i3].value);
+          return current2 + names.length <= tokens2.length && names.every((name, i3) => tokens2[current2 + i3].type === "Identifier" && name === tokens2[current2 + i3].value);
         }
         function parseText() {
           return new StringLiteral(expect(TOKEN_TYPES.Text, "Expected text token").value);
         }
         function parseJinjaStatement() {
           expect(TOKEN_TYPES.OpenStatement, "Expected opening statement token");
-          if (tokens[current2].type !== TOKEN_TYPES.Identifier) {
-            throw new SyntaxError(`Unknown statement, got ${tokens[current2].type}`);
+          if (tokens2[current2].type !== TOKEN_TYPES.Identifier) {
+            throw new SyntaxError(`Unknown statement, got ${tokens2[current2].type}`);
           }
-          const name = tokens[current2].value;
+          const name = tokens2[current2].value;
           let result;
           switch (name) {
             case "set":
@@ -49394,7 +49394,7 @@ var __webpack_modules__ = {
         function parseLogicalOrExpression() {
           let left = parseLogicalAndExpression();
           while (isIdentifier("or")) {
-            const operator = tokens[current2];
+            const operator = tokens2[current2];
             ++current2;
             const right = parseLogicalAndExpression();
             left = new BinaryExpression(operator, left, right);
@@ -49404,7 +49404,7 @@ var __webpack_modules__ = {
         function parseLogicalAndExpression() {
           let left = parseLogicalNegationExpression();
           while (isIdentifier("and")) {
-            const operator = tokens[current2];
+            const operator = tokens2[current2];
             ++current2;
             const right = parseLogicalNegationExpression();
             left = new BinaryExpression(operator, left, right);
@@ -49414,7 +49414,7 @@ var __webpack_modules__ = {
         function parseLogicalNegationExpression() {
           let right;
           while (isIdentifier("not")) {
-            const operator = tokens[current2];
+            const operator = tokens2[current2];
             ++current2;
             const arg = parseLogicalNegationExpression();
             right = new UnaryExpression(operator, arg);
@@ -49429,9 +49429,9 @@ var __webpack_modules__ = {
               operator = new Token("not in", TOKEN_TYPES.Identifier);
               current2 += 2;
             } else if (isIdentifier("in")) {
-              operator = tokens[current2++];
+              operator = tokens2[current2++];
             } else if (is3(TOKEN_TYPES.ComparisonBinaryOperator)) {
-              operator = tokens[current2++];
+              operator = tokens2[current2++];
             } else {
               break;
             }
@@ -49443,7 +49443,7 @@ var __webpack_modules__ = {
         function parseAdditiveExpression() {
           let left = parseMultiplicativeExpression();
           while (is3(TOKEN_TYPES.AdditiveBinaryOperator)) {
-            const operator = tokens[current2];
+            const operator = tokens2[current2];
             ++current2;
             const right = parseMultiplicativeExpression();
             left = new BinaryExpression(operator, left, right);
@@ -49475,7 +49475,7 @@ var __webpack_modules__ = {
           const args = [];
           while (!is3(TOKEN_TYPES.CloseParen)) {
             let argument;
-            if (tokens[current2].type === TOKEN_TYPES.MultiplicativeBinaryOperator && tokens[current2].value === "*") {
+            if (tokens2[current2].type === TOKEN_TYPES.MultiplicativeBinaryOperator && tokens2[current2].value === "*") {
               ++current2;
               const expr = parseExpression();
               argument = new SpreadExpression(expr);
@@ -49526,7 +49526,7 @@ var __webpack_modules__ = {
         }
         function parseMemberExpression(object) {
           while (is3(TOKEN_TYPES.Dot) || is3(TOKEN_TYPES.OpenSquareBracket)) {
-            const operator = tokens[current2];
+            const operator = tokens2[current2];
             ++current2;
             let property;
             const computed = operator.type === TOKEN_TYPES.OpenSquareBracket;
@@ -49546,7 +49546,7 @@ var __webpack_modules__ = {
         function parseMultiplicativeExpression() {
           let left = parseTestExpression();
           while (is3(TOKEN_TYPES.MultiplicativeBinaryOperator)) {
-            const operator = tokens[current2++];
+            const operator = tokens2[current2++];
             const right = parseTestExpression();
             left = new BinaryExpression(operator, left, right);
           }
@@ -49584,7 +49584,7 @@ var __webpack_modules__ = {
           return operand;
         }
         function parsePrimaryExpression() {
-          const token2 = tokens[current2++];
+          const token2 = tokens2[current2++];
           switch (token2.type) {
             case TOKEN_TYPES.NumericLiteral: {
               const num = token2.value;
@@ -49593,7 +49593,7 @@ var __webpack_modules__ = {
             case TOKEN_TYPES.StringLiteral: {
               let value = token2.value;
               while (is3(TOKEN_TYPES.StringLiteral)) {
-                value += tokens[current2++].value;
+                value += tokens2[current2++].value;
               }
               return new StringLiteral(value);
             }
@@ -49633,7 +49633,7 @@ var __webpack_modules__ = {
               throw new SyntaxError(`Unexpected token: ${token2.type}`);
           }
         }
-        while (current2 < tokens.length) {
+        while (current2 < tokens2.length) {
           program.body.push(parseAny());
         }
         return program;
@@ -51344,11 +51344,11 @@ var __webpack_modules__ = {
          * @param {string} template The template string
          */
         constructor(template) {
-          const tokens = tokenize(template, {
+          const tokens2 = tokenize(template, {
             lstrip_blocks: true,
             trim_blocks: true
           });
-          this.parsed = parse(tokens);
+          this.parsed = parse(tokens2);
         }
         render(items) {
           const env3 = new Environment();
@@ -51768,20 +51768,20 @@ var __webpack_modules__ = {
         const toReturn = [];
         for (let i3 = 0; i3 < batch_size; ++i3) {
           const target_size = target_sizes !== null ? target_sizes[i3] : null;
-          let data = logits[i3];
+          let data2 = logits[i3];
           if (target_size !== null) {
-            data = (0, _utils_tensor_js__WEBPACK_IMPORTED_MODULE_1__.interpolate)(data, target_size, "bilinear", false);
+            data2 = (0, _utils_tensor_js__WEBPACK_IMPORTED_MODULE_1__.interpolate)(data2, target_size, "bilinear", false);
           }
-          const [height, width] = target_size ?? data.dims.slice(-2);
+          const [height, width] = target_size ?? data2.dims.slice(-2);
           const segmentation = new _utils_tensor_js__WEBPACK_IMPORTED_MODULE_1__.Tensor(
             "int32",
             new Int32Array(height * width),
             [height, width]
           );
-          const buffer = data[0].data;
+          const buffer = data2[0].data;
           const segmentation_data = segmentation.data;
-          for (let j2 = 1; j2 < data.dims[0]; ++j2) {
-            const row = data[j2].data;
+          for (let j2 = 1; j2 < data2.dims[0]; ++j2) {
+            const row = data2[j2].data;
             for (let k4 = 0; k4 < row.length; ++k4) {
               if (row[k4] > buffer[k4]) {
                 buffer[k4] = row[k4];
@@ -51789,7 +51789,7 @@ var __webpack_modules__ = {
               }
             }
           }
-          const hasLabel = new Array(data.dims[0]);
+          const hasLabel = new Array(data2.dims[0]);
           for (let j2 = 0; j2 < segmentation_data.length; ++j2) {
             const index = segmentation_data[j2];
             hasLabel[index] = index;
@@ -52837,14 +52837,14 @@ var __webpack_modules__ = {
           if (config && !(config instanceof PretrainedConfig)) {
             config = new PretrainedConfig(config);
           }
-          const data = config ?? await loadConfig(pretrained_model_name_or_path, {
+          const data2 = config ?? await loadConfig(pretrained_model_name_or_path, {
             progress_callback,
             config,
             cache_dir,
             local_files_only,
             revision
           });
-          return new this(data);
+          return new this(data2);
         }
       }
       class AutoConfig {
@@ -54412,9 +54412,9 @@ var __webpack_modules__ = {
             this.next_tokens_are_prompt = false;
             if (this.skip_prompt) return;
           }
-          const tokens = value[0];
-          this.token_callback_function?.(tokens);
-          this.token_cache = (0, _utils_core_js__WEBPACK_IMPORTED_MODULE_0__.mergeArrays)(this.token_cache, tokens);
+          const tokens2 = value[0];
+          this.token_callback_function?.(tokens2);
+          this.token_cache = (0, _utils_core_js__WEBPACK_IMPORTED_MODULE_0__.mergeArrays)(this.token_cache, tokens2);
           const text = this.tokenizer.decode(this.token_cache, this.decode_kwargs);
           let printable_text;
           if (is_prompt || text.endsWith("\n")) {
@@ -54506,9 +54506,9 @@ var __webpack_modules__ = {
           if (value.length > 1) {
             throw Error("WhisperTextStreamer only supports batch size of 1");
           }
-          const tokens = value[0];
-          if (tokens.length === 1) {
-            const offset = Number(tokens[0]) - this.timestamp_begin;
+          const tokens2 = value[0];
+          if (tokens2.length === 1) {
+            const offset = Number(tokens2[0]) - this.timestamp_begin;
             if (offset >= 0) {
               const time = offset * this.time_precision;
               if (this.waiting_for_timestamp) {
@@ -54517,7 +54517,7 @@ var __webpack_modules__ = {
                 this.on_chunk_start?.(time);
               }
               this.waiting_for_timestamp = !this.waiting_for_timestamp;
-              this.token_callback_function?.(tokens);
+              this.token_callback_function?.(tokens2);
               return;
             }
           }
@@ -57713,8 +57713,8 @@ var __webpack_modules__ = {
             const path = `${baseName}_data${i3 === 0 ? "" : "_" + i3}`;
             const fullPath = `${options.subfolder ?? ""}/${path}`;
             externalDataPromises.push(new Promise(async (resolve, reject) => {
-              const data = await (0, _utils_hub_js__WEBPACK_IMPORTED_MODULE_5__.getModelFile)(pretrained_model_name_or_path, fullPath, true, options, return_path);
-              resolve(data instanceof Uint8Array ? { path, data } : path);
+              const data2 = await (0, _utils_hub_js__WEBPACK_IMPORTED_MODULE_5__.getModelFile)(pretrained_model_name_or_path, fullPath, true, options, return_path);
+              resolve(data2 instanceof Uint8Array ? { path, data: data2 } : path);
             }));
           }
         } else if (session_options.externalData !== void 0) {
@@ -57925,10 +57925,10 @@ var __webpack_modules__ = {
         }
         let img = 0;
         for (let i3 = 0; i3 < token_positions.length; ++i3) {
-          const tokens = token_positions[i3];
+          const tokens2 = token_positions[i3];
           const embeds = inputs_embeds[i3];
-          for (let j2 = 0; j2 < tokens.length; ++j2) {
-            embeds[tokens[j2]].data.set(modality_features[img++].data);
+          for (let j2 = 0; j2 < tokens2.length; ++j2) {
+            embeds[tokens2[j2]].data.set(modality_features[img++].data);
           }
         }
         return { inputs_embeds, attention_mask };
@@ -58044,26 +58044,26 @@ var __webpack_modules__ = {
       function cumsum_masked_fill(attention_mask, start_index = 0) {
         const [bz, seq_len] = attention_mask.dims;
         const attn_mask_data = attention_mask.data;
-        const data = new BigInt64Array(attn_mask_data.length);
+        const data2 = new BigInt64Array(attn_mask_data.length);
         for (let i3 = 0; i3 < bz; ++i3) {
           const start = i3 * seq_len;
           let sum = BigInt(start_index);
           for (let j2 = 0; j2 < seq_len; ++j2) {
             const index = start + j2;
             if (attn_mask_data[index] === 0n) {
-              data[index] = BigInt(1);
+              data2[index] = BigInt(1);
             } else {
-              data[index] = sum;
+              data2[index] = sum;
               sum += attn_mask_data[index];
             }
           }
         }
-        return { data, dims: attention_mask.dims };
+        return { data: data2, dims: attention_mask.dims };
       }
       function createPositionIds(model_inputs, past_key_values = null, start_index = 0) {
         const { input_ids, inputs_embeds, attention_mask } = model_inputs;
-        const { data, dims } = cumsum_masked_fill(attention_mask, start_index);
-        let position_ids = new _utils_tensor_js__WEBPACK_IMPORTED_MODULE_9__.Tensor("int64", data, dims);
+        const { data: data2, dims } = cumsum_masked_fill(attention_mask, start_index);
+        let position_ids = new _utils_tensor_js__WEBPACK_IMPORTED_MODULE_9__.Tensor("int64", data2, dims);
         if (past_key_values) {
           const offset = -(input_ids ?? inputs_embeds).dims.at(1);
           position_ids = position_ids.slice(null, [offset, null]);
@@ -60828,14 +60828,14 @@ var __webpack_modules__ = {
             ];
           } else {
             if (attention_mask) {
-              const { data, dims } = cumsum_masked_fill(attention_mask);
+              const { data: data2, dims } = cumsum_masked_fill(attention_mask);
               const position_ids = BigInt64Array.from(
-                { length: 3 * data.length },
-                (_3, i3) => data[i3 % data.length]
+                { length: 3 * data2.length },
+                (_3, i3) => data2[i3 % data2.length]
               );
               const mrope_position_deltas2 = Array.from(
                 { length: dims[0] },
-                (_3, i3) => (0, _utils_maths_js__WEBPACK_IMPORTED_MODULE_11__.max)(data.subarray(dims[1] * i3, dims[1] * (i3 + 1)))[0] + 1n + BigInt(dims[1])
+                (_3, i3) => (0, _utils_maths_js__WEBPACK_IMPORTED_MODULE_11__.max)(data2.subarray(dims[1] * i3, dims[1] * (i3 + 1)))[0] + 1n + BigInt(dims[1])
               );
               return [
                 new _utils_tensor_js__WEBPACK_IMPORTED_MODULE_9__.Tensor("int64", position_ids, [3, ...dims]),
@@ -65800,13 +65800,13 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           let images_seq_mask = new Array(input_ids.length).fill(false);
           for (let i3 = 1; i3 < parts.length; ++i3) {
             const placeholder_image_tokens = new Array(this.num_image_tokens).fill(image_placeholder_tag_id);
-            const tokens = encode(parts[i3]);
+            const tokens2 = encode(parts[i3]);
             input_ids = (0, _utils_core_js__WEBPACK_IMPORTED_MODULE_3__.mergeArrays)(
               input_ids,
               [image_start_tag_id],
               placeholder_image_tokens,
               [image_end_tag_id],
-              tokens
+              tokens2
             );
             const image_mask = new Array(this.num_image_tokens).fill(true);
             images_seq_mask = (0, _utils_core_js__WEBPACK_IMPORTED_MODULE_3__.mergeArrays)(
@@ -65814,7 +65814,7 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
               [false],
               image_mask,
               [false],
-              new Array(tokens.length).fill(false)
+              new Array(tokens2.length).fill(false)
             );
           }
           const dims = [1, input_ids.length];
@@ -67895,10 +67895,10 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
               { mode: "bilinear", size: original_size }
             );
             if (binarize) {
-              const data = interpolated_mask.data;
-              const binarizedMaskData = new Uint8Array(data.length);
-              for (let i4 = 0; i4 < data.length; ++i4) {
-                if (data[i4] > mask_threshold) {
+              const data2 = interpolated_mask.data;
+              const binarizedMaskData = new Uint8Array(data2.length);
+              for (let i4 = 0; i4 < data2.length; ++i4) {
+                if (data2[i4] > mask_threshold) {
                   binarizedMaskData[i4] = 1;
                 }
               }
@@ -68155,37 +68155,37 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           let features = await this._extract_fbank_features(audio, this.config.max_length);
           if (do_normalize_per_mel_bins) {
             const [num_features, feature_size] = features.dims;
-            const data = features.data;
+            const data2 = features.data;
             for (let i3 = 0; i3 < feature_size; ++i3) {
               let sum = 0;
               for (let j2 = 0; j2 < num_features; ++j2) {
-                sum += data[j2 * feature_size + i3];
+                sum += data2[j2 * feature_size + i3];
               }
               const mean = sum / num_features;
               let variance = 0;
               for (let j2 = 0; j2 < num_features; ++j2) {
-                variance += (data[j2 * feature_size + i3] - mean) ** 2;
+                variance += (data2[j2 * feature_size + i3] - mean) ** 2;
               }
               variance /= num_features - 1;
               const std = Math.sqrt(variance + 1e-7);
               for (let j2 = 0; j2 < num_features; ++j2) {
                 const index = j2 * feature_size + i3;
-                data[index] = (data[index] - mean) / std;
+                data2[index] = (data2[index] - mean) / std;
               }
             }
           }
           let padded_attention_mask;
           if (padding) {
             const [num_frames2, num_channels2] = features.dims;
-            const data = (
+            const data2 = (
               /** @type {Float32Array} */
               features.data
             );
             const pad_size = num_frames2 % pad_to_multiple_of;
             if (pad_size > 0) {
               const padded_data = new Float32Array(num_channels2 * (num_frames2 + pad_size));
-              padded_data.set(data);
-              padded_data.fill(this.config.padding_value, data.length);
+              padded_data.set(data2);
+              padded_data.fill(this.config.padding_value, data2.length);
               const numPaddedFrames = num_frames2 + pad_size;
               features = new _utils_tensor_js__WEBPACK_IMPORTED_MODULE_1__.Tensor(
                 features.type,
@@ -69325,13 +69325,13 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
               )
             }
           );
-          const data = features.data;
+          const data2 = features.data;
           const maxValue = (0, _utils_maths_js__WEBPACK_IMPORTED_MODULE_3__.max)(
             /** @type {Float32Array} */
-            data
+            data2
           )[0];
-          for (let i3 = 0; i3 < data.length; ++i3) {
-            data[i3] = (Math.max(data[i3], maxValue - 8) + 4) / 4;
+          for (let i3 = 0; i3 < data2.length; ++i3) {
+            data2[i3] = (Math.max(data2[i3], maxValue - 8) + 4) / 4;
           }
           return features;
         }
@@ -69984,7 +69984,7 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           for (let i3 = 0; i3 < logits.dims[0]; ++i3) {
             const ids = model_inputs.input_ids[i3];
             const batch = logits[i3];
-            const tokens = [];
+            const tokens2 = [];
             for (let j2 = 0; j2 < batch.dims[0]; ++j2) {
               const tokenData = batch[j2];
               const topScoreIndex = (0, _utils_maths_js__WEBPACK_IMPORTED_MODULE_6__.max)(tokenData.data)[1];
@@ -69997,7 +69997,7 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
                 continue;
               }
               const scores = (0, _utils_maths_js__WEBPACK_IMPORTED_MODULE_6__.softmax)(tokenData.data);
-              tokens.push({
+              tokens2.push({
                 entity,
                 score: scores[topScoreIndex],
                 index: j2,
@@ -70007,7 +70007,7 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
                 // end: null,
               });
             }
-            toReturn.push(tokens);
+            toReturn.push(tokens2);
           }
           return isBatched ? toReturn : toReturn[0];
         }
@@ -70656,18 +70656,18 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
             }
             for (const chunk of chunks) {
               generation_config.num_frames = Math.floor(chunk.stride[0] / hop_length);
-              const data = await this.model.generate({
+              const data2 = await this.model.generate({
                 inputs: chunk.input_features,
                 ...generation_config
               });
               if (return_timestamps === "word") {
-                chunk.tokens = data.sequences.tolist()[0];
-                chunk.token_timestamps = data.token_timestamps.tolist()[0].map(
+                chunk.tokens = data2.sequences.tolist()[0];
+                chunk.token_timestamps = data2.token_timestamps.tolist()[0].map(
                   (x2) => (0, _utils_maths_js__WEBPACK_IMPORTED_MODULE_6__.round)(x2, 2)
                 );
               } else {
                 chunk.tokens = /** @type {Tensor} */
-                data[0].tolist();
+                data2[0].tolist();
               }
               chunk.stride = chunk.stride.map((x2) => x2 / sampling_rate);
             }
@@ -72120,12 +72120,12 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @param {string[]} tokens The tokens to encode.
          * @returns {string[]} The encoded tokens.
          */
-        _call(tokens) {
-          tokens = this.encode(tokens);
+        _call(tokens2) {
+          tokens2 = this.encode(tokens2);
           if (this.fuse_unk) {
-            tokens = fuse_unk(tokens, this.tokens_to_ids, this.unk_token_id);
+            tokens2 = fuse_unk(tokens2, this.tokens_to_ids, this.unk_token_id);
           }
-          return tokens;
+          return tokens2;
         }
         /**
          * Encodes a list of tokens into a list of token IDs.
@@ -72133,7 +72133,7 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @returns {string[]} The encoded tokens.
          * @throws Will throw an error if not implemented in a subclass.
          */
-        encode(tokens) {
+        encode(tokens2) {
           throw Error("encode should be implemented in subclass.");
         }
         /**
@@ -72141,8 +72141,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @param {string[]} tokens The tokens to convert.
          * @returns {number[]} The converted token IDs.
          */
-        convert_tokens_to_ids(tokens) {
-          return tokens.map((t2) => this.tokens_to_ids.get(t2) ?? this.unk_token_id);
+        convert_tokens_to_ids(tokens2) {
+          return tokens2.map((t2) => this.tokens_to_ids.get(t2) ?? this.unk_token_id);
         }
         /**
          * Converts a list of token IDs into a list of tokens.
@@ -72177,9 +72177,9 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @param {string[]} tokens The tokens to encode.
          * @returns {string[]} An array of encoded tokens.
          */
-        encode(tokens) {
+        encode(tokens2) {
           const outputTokens = [];
-          for (const token2 of tokens) {
+          for (const token2 of tokens2) {
             const chars = [...token2];
             if (chars.length > this.max_input_chars_per_word) {
               outputTokens.push(this.unk_token);
@@ -72259,11 +72259,11 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           let beginPos = 0;
           while (beginPos < chars.length) {
             let hasSingleNode = false;
-            const tokens = [];
+            const tokens2 = [];
             const sliced = chars.slice(beginPos).join("");
             const prefixedTokens = this.trie.commonPrefixSearch(sliced);
             for (const token2 of prefixedTokens) {
-              tokens.push(token2);
+              tokens2.push(token2);
               const tokenId = this.tokens_to_ids.get(token2);
               const tokenScore = this.scores[tokenId];
               const n2 = (0, _utils_core_js__WEBPACK_IMPORTED_MODULE_1__.len)(token2);
@@ -72294,9 +72294,9 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @param {string[]} tokens The tokens to encode.
          * @returns {string[]} An array of encoded tokens.
          */
-        encode(tokens) {
+        encode(tokens2) {
           const toReturn = [];
-          for (const token2 of tokens) {
+          for (const token2 of tokens2) {
             const tokenized = this.tokenize(token2);
             toReturn.push(...tokenized);
           }
@@ -72478,9 +72478,9 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @param {string[]} tokens The input sequence of tokens to encode.
          * @returns {string[]} The resulting subword tokens after applying the BPE algorithm to the input sequence of tokens.
          */
-        encode(tokens) {
+        encode(tokens2) {
           const outputTokens = [];
-          for (const token2 of tokens) {
+          for (const token2 of tokens2) {
             if (this.ignore_merges && this.tokens_to_ids.has(token2)) {
               outputTokens.push(token2);
               continue;
@@ -72529,8 +72529,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
             this.vocab[value] = key;
           }
         }
-        encode(tokens) {
-          return tokens;
+        encode(tokens2) {
+          return tokens2;
         }
       }
       class Normalizer extends _utils_generic_js__WEBPACK_IMPORTED_MODULE_0__.Callable {
@@ -72917,8 +72917,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           if (this.add_prefix_space && !text.startsWith(" ")) {
             text = " " + text;
           }
-          const tokens = this.use_regex ? text.match(this.pattern) || [] : [text];
-          return tokens.map(
+          const tokens2 = this.use_regex ? text.match(this.pattern) || [] : [text];
+          return tokens2.map(
             (token2) => Array.from(this.text_encoder.encode(token2), (byte2) => this.byte_encoder[byte2]).join("")
           );
         }
@@ -73037,7 +73037,7 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @returns {PostProcessedOutput} The post-processed tokens.
          * @throws {Error} If the method is not implemented in subclass.
          */
-        post_process(tokens, ...args) {
+        post_process(tokens2, ...args) {
           throw Error("post_process should be implemented in subclass.");
         }
         /**
@@ -73046,8 +73046,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @param {...*} args Additional arguments required by the post-processing logic.
          * @returns {PostProcessedOutput} The post-processed tokens.
          */
-        _call(tokens, ...args) {
-          return this.post_process(tokens, ...args);
+        _call(tokens2, ...args) {
+          return this.post_process(tokens2, ...args);
         }
       }
       class BertProcessing extends PostProcessor {
@@ -73067,20 +73067,20 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @param {string[]} [tokens_pair=null] An optional second set of input tokens.
          * @returns {PostProcessedOutput} The post-processed tokens with the special tokens added to the beginning and end.
          */
-        post_process(tokens, tokens_pair = null, {
+        post_process(tokens2, tokens_pair = null, {
           add_special_tokens = true
         } = {}) {
           if (add_special_tokens) {
-            tokens = (0, _utils_core_js__WEBPACK_IMPORTED_MODULE_1__.mergeArrays)([this.cls], tokens, [this.sep]);
+            tokens2 = (0, _utils_core_js__WEBPACK_IMPORTED_MODULE_1__.mergeArrays)([this.cls], tokens2, [this.sep]);
           }
-          let token_type_ids = new Array(tokens.length).fill(0);
+          let token_type_ids = new Array(tokens2.length).fill(0);
           if (tokens_pair !== null) {
             const middle = add_special_tokens && this instanceof RobertaProcessing ? [this.sep] : [];
             const after = add_special_tokens ? [this.sep] : [];
-            tokens = (0, _utils_core_js__WEBPACK_IMPORTED_MODULE_1__.mergeArrays)(tokens, middle, tokens_pair, after);
+            tokens2 = (0, _utils_core_js__WEBPACK_IMPORTED_MODULE_1__.mergeArrays)(tokens2, middle, tokens_pair, after);
             token_type_ids = (0, _utils_core_js__WEBPACK_IMPORTED_MODULE_1__.mergeArrays)(token_type_ids, new Array(tokens_pair.length + middle.length + after.length).fill(1));
           }
-          return { tokens, token_type_ids };
+          return { tokens: tokens2, token_type_ids };
         }
       }
       class RobertaProcessing extends BertProcessing {
@@ -73103,7 +73103,7 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @param {string[]} [tokens_pair=null] The list of tokens for the second sequence (optional).
          * @returns {PostProcessedOutput} An object containing the list of tokens with the special tokens replaced with actual tokens.
          */
-        post_process(tokens, tokens_pair = null, {
+        post_process(tokens2, tokens_pair = null, {
           add_special_tokens = true
         } = {}) {
           const type = tokens_pair === null ? this.single : this.pair;
@@ -73117,8 +73117,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
               }
             } else if ("Sequence" in item) {
               if (item.Sequence.id === "A") {
-                processedTokens = (0, _utils_core_js__WEBPACK_IMPORTED_MODULE_1__.mergeArrays)(processedTokens, tokens);
-                types = (0, _utils_core_js__WEBPACK_IMPORTED_MODULE_1__.mergeArrays)(types, new Array(tokens.length).fill(item.Sequence.type_id));
+                processedTokens = (0, _utils_core_js__WEBPACK_IMPORTED_MODULE_1__.mergeArrays)(processedTokens, tokens2);
+                types = (0, _utils_core_js__WEBPACK_IMPORTED_MODULE_1__.mergeArrays)(types, new Array(tokens2.length).fill(item.Sequence.type_id));
               } else if (item.Sequence.id === "B") {
                 processedTokens = (0, _utils_core_js__WEBPACK_IMPORTED_MODULE_1__.mergeArrays)(processedTokens, tokens_pair);
                 types = (0, _utils_core_js__WEBPACK_IMPORTED_MODULE_1__.mergeArrays)(types, new Array(tokens_pair.length).fill(item.Sequence.type_id));
@@ -73135,11 +73135,11 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @param {string[]} [tokens_pair=null] The list of tokens for the second sequence (optional).
          * @returns {PostProcessedOutput} An object containing the post-processed tokens.
          */
-        post_process(tokens, tokens_pair = null) {
+        post_process(tokens2, tokens_pair = null) {
           if (tokens_pair) {
-            tokens = (0, _utils_core_js__WEBPACK_IMPORTED_MODULE_1__.mergeArrays)(tokens, tokens_pair);
+            tokens2 = (0, _utils_core_js__WEBPACK_IMPORTED_MODULE_1__.mergeArrays)(tokens2, tokens_pair);
           }
-          return { tokens };
+          return { tokens: tokens2 };
         }
       }
       class PostProcessorSequence extends PostProcessor {
@@ -73158,23 +73158,23 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @param {string[]} [tokens_pair=null] The list of tokens for the second sequence (optional).
          * @returns {PostProcessedOutput} An object containing the post-processed tokens.
          */
-        post_process(tokens, tokens_pair = null, options = {}) {
+        post_process(tokens2, tokens_pair = null, options = {}) {
           let token_type_ids;
           for (const processor of this.processors) {
             if (processor instanceof ByteLevelPostProcessor) {
-              const output = processor.post_process(tokens);
-              tokens = output.tokens;
+              const output = processor.post_process(tokens2);
+              tokens2 = output.tokens;
               if (tokens_pair) {
                 const pair_output = processor.post_process(tokens_pair);
                 tokens_pair = pair_output.tokens;
               }
             } else {
-              const output = processor.post_process(tokens, tokens_pair, options);
-              tokens = output.tokens;
+              const output = processor.post_process(tokens2, tokens_pair, options);
+              tokens2 = output.tokens;
               token_type_ids = output.token_type_ids;
             }
           }
-          return { tokens, token_type_ids };
+          return { tokens: tokens2, token_type_ids };
         }
       }
       class Decoder extends _utils_generic_js__WEBPACK_IMPORTED_MODULE_0__.Callable {
@@ -73230,16 +73230,16 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
         * @param {string[]} tokens The list of tokens.
         * @returns {string} The decoded string.
         */
-        _call(tokens) {
-          return this.decode(tokens);
+        _call(tokens2) {
+          return this.decode(tokens2);
         }
         /**
         * Decodes a list of tokens.
         * @param {string[]} tokens The list of tokens.
         * @returns {string} The decoded string.
         */
-        decode(tokens) {
-          return this.decode_chain(tokens).join("");
+        decode(tokens2) {
+          return this.decode_chain(tokens2).join("");
         }
         /**
          * Apply the decoder to a list of tokens.
@@ -73248,15 +73248,15 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @returns {string[]} The decoded list of tokens.
          * @throws {Error} If the `decode_chain` method is not implemented in the subclass.
          */
-        decode_chain(tokens) {
+        decode_chain(tokens2) {
           throw Error("`decode_chain` should be implemented in subclass.");
         }
       }
       class ReplaceDecoder extends Decoder {
         /** @type {Decoder['decode_chain']} */
-        decode_chain(tokens) {
+        decode_chain(tokens2) {
           const pattern = createPattern(this.config.pattern);
-          return pattern === null ? tokens : tokens.map((token2) => token2.replaceAll(pattern, this.config.content));
+          return pattern === null ? tokens2 : tokens2.map((token2) => token2.replaceAll(pattern, this.config.content));
         }
       }
       class ByteFallback extends Decoder {
@@ -73265,10 +73265,10 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           this.text_decoder = new TextDecoder();
         }
         /** @type {Decoder['decode_chain']} */
-        decode_chain(tokens) {
+        decode_chain(tokens2) {
           const new_tokens = [];
           let previous_byte_tokens = [];
-          for (const token2 of tokens) {
+          for (const token2 of tokens2) {
             let bytes = null;
             if (token2.length === 6 && token2.startsWith("<0x") && token2.endsWith(">")) {
               const byte2 = parseInt(token2.slice(3, 5), 16);
@@ -73297,8 +73297,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
       }
       class FuseDecoder extends Decoder {
         /** @type {Decoder['decode_chain']} */
-        decode_chain(tokens) {
-          return [tokens.join("")];
+        decode_chain(tokens2) {
+          return [tokens2.join("")];
         }
       }
       class StripDecoder extends Decoder {
@@ -73309,8 +73309,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           this.stop = this.config.stop;
         }
         /** @type {Decoder['decode_chain']} */
-        decode_chain(tokens) {
-          return tokens.map((token2) => {
+        decode_chain(tokens2) {
+          return tokens2.map((token2) => {
             let start_cut = 0;
             for (let i3 = 0; i3 < this.start; ++i3) {
               if (token2[i3] === this.content) {
@@ -73346,8 +73346,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           this.cleanup = config.cleanup;
         }
         /** @type {Decoder['decode_chain']} */
-        decode_chain(tokens) {
-          return tokens.map((token2, i3) => {
+        decode_chain(tokens2) {
+          return tokens2.map((token2, i3) => {
             if (i3 !== 0) {
               if (token2.startsWith(this.config.prefix)) {
                 token2 = token2.replace(this.config.prefix, "");
@@ -73381,17 +73381,17 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @param {string[]} tokens Array of tokens to be decoded.
          * @returns {string} The decoded string.
          */
-        convert_tokens_to_string(tokens) {
-          const text = tokens.join("");
+        convert_tokens_to_string(tokens2) {
+          const text = tokens2.join("");
           const byteArray = new Uint8Array([...text].map((c3) => this.byte_decoder[c3]));
           const decoded_text = this.text_decoder.decode(byteArray);
           return decoded_text;
         }
         /** @type {Decoder['decode_chain']} */
-        decode_chain(tokens) {
+        decode_chain(tokens2) {
           const sub_texts = [];
           let current_sub_text = [];
-          for (const token2 of tokens) {
+          for (const token2 of tokens2) {
             if (this.added_tokens.find((x2) => x2.content === token2) !== void 0) {
               if (current_sub_text.length > 0) {
                 sub_texts.push(this.convert_tokens_to_string(current_sub_text));
@@ -73420,12 +73420,12 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @param {string[]} tokens Array of tokens to be decoded.
          * @returns {string} The decoded string.
          */
-        convert_tokens_to_string(tokens) {
-          if (tokens.length === 0) return "";
-          const grouped_tokens = [tokens[0]];
-          for (let i3 = 1; i3 < tokens.length; ++i3) {
-            if (tokens[i3] !== grouped_tokens.at(-1)) {
-              grouped_tokens.push(tokens[i3]);
+        convert_tokens_to_string(tokens2) {
+          if (tokens2.length === 0) return "";
+          const grouped_tokens = [tokens2[0]];
+          for (let i3 = 1; i3 < tokens2.length; ++i3) {
+            if (tokens2[i3] !== grouped_tokens.at(-1)) {
+              grouped_tokens.push(tokens2[i3]);
             }
           }
           const filtered_tokens = grouped_tokens.filter((token2) => token2 !== this.pad_token);
@@ -73436,8 +73436,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           return text;
         }
         /** @type {Decoder['decode_chain']} */
-        decode_chain(tokens) {
-          return [this.convert_tokens_to_string(tokens)];
+        decode_chain(tokens2) {
+          return [this.convert_tokens_to_string(tokens2)];
         }
       }
       class DecoderSequence extends Decoder {
@@ -73451,10 +73451,10 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           this.decoders = config.decoders.map((x2) => Decoder.fromConfig(x2));
         }
         /** @type {Decoder['decode_chain']} */
-        decode_chain(tokens) {
+        decode_chain(tokens2) {
           return this.decoders.reduce((toks, decoder) => {
             return decoder.decode_chain(toks);
-          }, tokens);
+          }, tokens2);
         }
       }
       class BPEDecoder extends Decoder {
@@ -73463,18 +73463,18 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           this.suffix = this.config.suffix;
         }
         /** @type {Decoder['decode_chain']} */
-        decode_chain(tokens) {
-          return tokens.map((token2, i3) => {
-            return token2.replaceAll(this.suffix, i3 === tokens.length - 1 ? "" : " ");
+        decode_chain(tokens2) {
+          return tokens2.map((token2, i3) => {
+            return token2.replaceAll(this.suffix, i3 === tokens2.length - 1 ? "" : " ");
           });
         }
       }
       class VitsDecoder extends Decoder {
         /** @type {Decoder['decode_chain']} */
-        decode_chain(tokens) {
+        decode_chain(tokens2) {
           let decoded = "";
-          for (let i3 = 1; i3 < tokens.length; i3 += 2) {
-            decoded += tokens[i3];
+          for (let i3 = 1; i3 < tokens2.length; i3 += 2) {
+            decoded += tokens2[i3];
           }
           return [decoded];
         }
@@ -73525,10 +73525,10 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           this.replacement = config.replacement;
         }
         /** @type {Decoder['decode_chain']} */
-        decode_chain(tokens) {
+        decode_chain(tokens2) {
           const result = [];
-          for (let i3 = 0; i3 < tokens.length; ++i3) {
-            let normalized = tokens[i3].replaceAll(this.replacement, " ");
+          for (let i3 = 0; i3 < tokens2.length; ++i3) {
+            let normalized = tokens2[i3].replaceAll(this.replacement, " ");
             if (i3 == 0 && normalized.startsWith(" ")) {
               normalized = normalized.substring(1);
             }
@@ -73663,11 +73663,11 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @returns {string[]} An array of tokens produced by splitting the input text into fixed-length tokens.
          */
         pre_tokenize_text(text, options) {
-          const tokens = [];
+          const tokens2 = [];
           for (let i3 = 0; i3 < text.length; i3 += this._length) {
-            tokens.push(text.slice(i3, i3 + this._length));
+            tokens2.push(text.slice(i3, i3 + this._length));
           }
-          return tokens;
+          return tokens2;
         }
       }
       const SPECIAL_TOKEN_ATTRIBUTES = [
@@ -73972,7 +73972,7 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
               }
             }
           }
-          const tokens = sections.flatMap((x2, section_index) => {
+          const tokens2 = sections.flatMap((x2, section_index) => {
             if (x2.length === 0) return [];
             if (this.added_tokens_map.has(x2)) return [x2];
             if (this.remove_space === true) {
@@ -73990,10 +73990,10 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
             const sectionTokens = this.pre_tokenizer !== null ? this.pre_tokenizer(x2, {
               section_index
             }) : [x2];
-            const tokens2 = this.model(sectionTokens);
-            return tokens2;
+            const tokens3 = this.model(sectionTokens);
+            return tokens3;
           });
-          return tokens;
+          return tokens2;
         }
         /**
          * Encodes a single text or a pair of texts using the model's tokenizer.
@@ -74011,8 +74011,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           add_special_tokens = true,
           return_token_type_ids = null
         } = {}) {
-          const { tokens, token_type_ids } = this._tokenize_helper(text, { pair: text_pair, add_special_tokens });
-          const input_ids = this.model.convert_tokens_to_ids(tokens);
+          const { tokens: tokens2, token_type_ids } = this._tokenize_helper(text, { pair: text_pair, add_special_tokens });
+          const input_ids = this.model.convert_tokens_to_ids(tokens2);
           const result = {
             input_ids,
             attention_mask: new Array(input_ids.length).fill(1)
@@ -74034,9 +74034,9 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           pair = null,
           add_special_tokens = false
         } = {}) {
-          const tokens = this._encode_text(text);
-          const tokens2 = this._encode_text(pair);
-          return this.post_processor ? this.post_processor(tokens, tokens2, { add_special_tokens }) : { tokens: (0, _utils_core_js__WEBPACK_IMPORTED_MODULE_1__.mergeArrays)(tokens ?? [], tokens2 ?? []) };
+          const tokens2 = this._encode_text(text);
+          const tokens22 = this._encode_text(pair);
+          return this.post_processor ? this.post_processor(tokens2, tokens22, { add_special_tokens }) : { tokens: (0, _utils_core_js__WEBPACK_IMPORTED_MODULE_1__.mergeArrays)(tokens2 ?? [], tokens22 ?? []) };
         }
         /**
          * Converts a string into a sequence of tokens.
@@ -74118,11 +74118,11 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           skip_special_tokens = false,
           clean_up_tokenization_spaces = null
         }) {
-          let tokens = this.model.convert_ids_to_tokens(token_ids);
+          let tokens2 = this.model.convert_ids_to_tokens(token_ids);
           if (skip_special_tokens) {
-            tokens = tokens.filter((x2) => !this.special_tokens.includes(x2));
+            tokens2 = tokens2.filter((x2) => !this.special_tokens.includes(x2));
           }
-          let decoded = this.decoder ? this.decoder(tokens) : tokens.join(" ");
+          let decoded = this.decoder ? this.decoder(tokens2) : tokens2.join(" ");
           if (this.decoder && this.decoder.end_of_word_suffix) {
             decoded = decoded.replaceAll(this.decoder.end_of_word_suffix, " ");
             if (skip_special_tokens) {
@@ -74388,11 +74388,11 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           if (this.legacy || text.length === 0) {
             return super._encode_text(text);
           }
-          let tokens = super._encode_text(SPIECE_UNDERLINE + text.replaceAll(SPIECE_UNDERLINE, " "));
-          if (tokens.length > 1 && tokens[0] === SPIECE_UNDERLINE && this.special_tokens.includes(tokens[1])) {
-            tokens = tokens.slice(1);
+          let tokens2 = super._encode_text(SPIECE_UNDERLINE + text.replaceAll(SPIECE_UNDERLINE, " "));
+          if (tokens2.length > 1 && tokens2[0] === SPIECE_UNDERLINE && this.special_tokens.includes(tokens2[1])) {
+            tokens2 = tokens2.slice(1);
           }
-          return tokens;
+          return tokens2;
         }
       }
       class CodeLlamaTokenizer extends PreTrainedTokenizer {
@@ -74737,8 +74737,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           }
         }
         /** @private */
-        collateWordTimestamps(tokens, token_timestamps, language) {
-          const [words, _3, token_indices] = this.combineTokensIntoWords(tokens, language);
+        collateWordTimestamps(tokens2, token_timestamps, language) {
+          const [words, _3, token_indices] = this.combineTokensIntoWords(tokens2, language);
           const timings = [];
           for (let i3 = 0; i3 < words.length; ++i3) {
             const indices = token_indices[i3];
@@ -74762,13 +74762,13 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * 
          * @private
          */
-        combineTokensIntoWords(tokens, language, prepend_punctionations = `"'\u201C\xA1\xBF([{-`, append_punctuations = `"'.\u3002,\uFF0C!\uFF01?\uFF1F:\uFF1A\u201D)]}\u3001`) {
+        combineTokensIntoWords(tokens2, language, prepend_punctionations = `"'\u201C\xA1\xBF([{-`, append_punctuations = `"'.\u3002,\uFF0C!\uFF01?\uFF1F:\uFF1A\u201D)]}\u3001`) {
           language = language ?? "english";
           let words, word_tokens, token_indices;
           if (["chinese", "japanese", "thai", "lao", "myanmar"].includes(language)) {
-            [words, word_tokens, token_indices] = this.splitTokensOnUnicode(tokens);
+            [words, word_tokens, token_indices] = this.splitTokensOnUnicode(tokens2);
           } else {
-            [words, word_tokens, token_indices] = this.splitTokensOnSpaces(tokens);
+            [words, word_tokens, token_indices] = this.splitTokensOnSpaces(tokens2);
           }
           return this.mergePunctuations(words, word_tokens, token_indices, prepend_punctionations, append_punctuations);
         }
@@ -74815,8 +74815,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @returns {*}
          * @private
          */
-        splitTokensOnUnicode(tokens) {
-          const decoded_full = this.decode(tokens, {
+        splitTokensOnUnicode(tokens2) {
+          const decoded_full = this.decode(tokens2, {
             // @ts-ignore
             decode_with_timestamps: true
           });
@@ -74827,8 +74827,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           let current_tokens = [];
           let current_indices = [];
           let unicode_offset = 0;
-          for (let token_idx = 0; token_idx < tokens.length; ++token_idx) {
-            const token2 = tokens[token_idx];
+          for (let token_idx = 0; token_idx < tokens2.length; ++token_idx) {
+            const token2 = tokens2[token_idx];
             current_tokens.push(token2);
             current_indices.push(token_idx);
             const decoded = this.decode(current_tokens, {
@@ -74851,8 +74851,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @param {number[]} tokens 
          * @private
          */
-        splitTokensOnSpaces(tokens) {
-          const [subwords, subword_tokens_list, subword_indices_list] = this.splitTokensOnUnicode(tokens);
+        splitTokensOnSpaces(tokens2) {
+          const [subwords, subword_tokens_list, subword_indices_list] = this.splitTokensOnUnicode(tokens2);
           const words = [];
           const word_tokens = [];
           const token_indices = [];
@@ -74887,9 +74887,9 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @param {string} appended 
          * @private
          */
-        mergePunctuations(words, tokens, indices, prepended, appended) {
+        mergePunctuations(words, tokens2, indices, prepended, appended) {
           const newWords = structuredClone(words);
-          const newTokens = structuredClone(tokens);
+          const newTokens = structuredClone(tokens2);
           const newIndices = structuredClone(indices);
           let i3 = newWords.length - 2;
           let j2 = newWords.length - 1;
@@ -75750,11 +75750,11 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
         )
         /* harmony export */
       });
-      function dispatchCallback(progress_callback, data) {
-        if (progress_callback) progress_callback(data);
+      function dispatchCallback(progress_callback, data2) {
+        if (progress_callback) progress_callback(data2);
       }
-      function reverseDictionary(data) {
-        return Object.fromEntries(Object.entries(data).map(([key, value]) => [value, key]));
+      function reverseDictionary(data2) {
+        return Object.fromEntries(Object.entries(data2).map(([key, value]) => [value, key]));
       }
       function escapeRegExp(string) {
         return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -76640,10 +76640,10 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @throws {Error} If the file cannot be read.
          */
         async arrayBuffer() {
-          const data = await node_fs__WEBPACK_IMPORTED_MODULE_0__.promises.readFile(this.filePath);
+          const data2 = await node_fs__WEBPACK_IMPORTED_MODULE_0__.promises.readFile(this.filePath);
           return (
             /** @type {ArrayBuffer} */
-            data.buffer
+            data2.buffer
           );
         }
         /**
@@ -76653,8 +76653,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @throws {Error} If the file cannot be read.
          */
         async blob() {
-          const data = await node_fs__WEBPACK_IMPORTED_MODULE_0__.promises.readFile(this.filePath);
-          return new Blob([data], { type: this.headers.get("content-type") });
+          const data2 = await node_fs__WEBPACK_IMPORTED_MODULE_0__.promises.readFile(this.filePath);
+          return new Blob([data2], { type: this.headers.get("content-type") });
         }
         /**
          * Reads the contents of the file specified by the filePath property and returns a Promise that
@@ -76663,8 +76663,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @throws {Error} If the file cannot be read.
          */
         async text() {
-          const data = await node_fs__WEBPACK_IMPORTED_MODULE_0__.promises.readFile(this.filePath, "utf8");
-          return data;
+          const data2 = await node_fs__WEBPACK_IMPORTED_MODULE_0__.promises.readFile(this.filePath, "utf8");
+          return data2;
         }
         /**
          * Reads the contents of the file specified by the filePath property and returns a Promise that
@@ -76939,12 +76939,12 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
               total: buffer.length
             });
           } else {
-            buffer = await readResponse(response, (data) => {
+            buffer = await readResponse(response, (data2) => {
               (0, _core_js__WEBPACK_IMPORTED_MODULE_3__.dispatchCallback)(options.progress_callback, {
                 status: "progress",
                 name: path_or_repo_id,
                 file: filename,
-                ...data
+                ...data2
               });
             });
           }
@@ -76957,11 +76957,11 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           await cache2.match(cacheKey) === void 0
         ) {
           if (!result) {
-            const wrapped_progress = options.progress_callback ? (data) => (0, _core_js__WEBPACK_IMPORTED_MODULE_3__.dispatchCallback)(options.progress_callback, {
+            const wrapped_progress = options.progress_callback ? (data2) => (0, _core_js__WEBPACK_IMPORTED_MODULE_3__.dispatchCallback)(options.progress_callback, {
               status: "progress",
               name: path_or_repo_id,
               file: filename,
-              ...data
+              ...data2
             }) : void 0;
             await cache2.put(
               cacheKey,
@@ -77119,8 +77119,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
         loadImageFunction = async (img) => {
           const metadata = await img.metadata();
           const rawChannels = metadata.channels;
-          const { data, info: info2 } = await img.rotate().raw().toBuffer({ resolveWithObject: true });
-          const newImage = new RawImage(new Uint8ClampedArray(data), info2.width, info2.height, info2.channels);
+          const { data: data2, info: info2 } = await img.rotate().raw().toBuffer({ resolveWithObject: true });
+          const newImage = new RawImage(new Uint8ClampedArray(data2), info2.width, info2.height, info2.channels);
           if (rawChannels !== void 0 && rawChannels !== info2.channels) {
             newImage.convert(rawChannels);
           }
@@ -77151,8 +77151,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @param {number} height The height of the image.
          * @param {1|2|3|4} channels The number of channels.
          */
-        constructor(data, width, height, channels) {
-          this.data = data;
+        constructor(data2, width, height, channels) {
+          this.data = data2;
           this.width = width;
           this.height = height;
           this.channels = channels;
@@ -77206,8 +77206,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
             /** @type {CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D} */
             canvas.getContext("2d")
           );
-          const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-          return new RawImage(data, canvas.width, canvas.height, 4);
+          const data2 = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+          return new RawImage(data2, canvas.width, canvas.height, 4);
         }
         /**
          * Read an image from a URL or file path.
@@ -77636,8 +77636,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           }
           const cloned = this.clone().rgba();
           const clonedCanvas = createCanvasFunction(cloned.width, cloned.height);
-          const data = new ImageDataClass(cloned.data, cloned.width, cloned.height);
-          clonedCanvas.getContext("2d").putImageData(data, 0, 0);
+          const data2 = new ImageDataClass(cloned.data, cloned.width, cloned.height);
+          clonedCanvas.getContext("2d").putImageData(data2, 0, 0);
           return clonedCanvas;
         }
         /**
@@ -77648,12 +77648,12 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @returns {RawImage[]} An array containing bands.
          */
         split() {
-          const { data, width, height, channels } = this;
+          const { data: data2, width, height, channels } = this;
           const data_type = (
             /** @type {any} */
-            data.constructor
+            data2.constructor
           );
-          const per_channel_length = data.length / channels;
+          const per_channel_length = data2.length / channels;
           const split_data = Array.from(
             { length: channels },
             () => new data_type(per_channel_length)
@@ -77661,10 +77661,10 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           for (let i3 = 0; i3 < per_channel_length; ++i3) {
             const data_offset = channels * i3;
             for (let j2 = 0; j2 < channels; ++j2) {
-              split_data[j2][i3] = data[data_offset + j2];
+              split_data[j2][i3] = data2[data_offset + j2];
             }
           }
-          return split_data.map((data2) => new RawImage(data2, width, height, 1));
+          return split_data.map((data3) => new RawImage(data3, width, height, 1));
         }
         /**
          * Helper method to update the image data.
@@ -77674,8 +77674,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @param {1|2|3|4|null} [channels] The new number of channels of the image.
          * @private
          */
-        _update(data, width, height, channels = null) {
-          this.data = data;
+        _update(data2, width, height, channels = null) {
+          this.data = data2;
           this.width = width;
           this.height = height;
           if (channels !== null) {
@@ -78033,12 +78033,12 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * 
          * @returns {void}
          */
-        transform(out, data) {
-          if (out === data)
+        transform(out, data2) {
+          if (out === data2)
             throw new Error("Input and output buffers must be different");
           this._transform4(
             out,
-            data,
+            data2,
             1
             /* DONE */
           );
@@ -78053,12 +78053,12 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          *
          * @throws {Error} If the input and output buffers are the same.
          */
-        realTransform(out, data) {
-          if (out === data)
+        realTransform(out, data2) {
+          if (out === data2)
             throw new Error("Input and output buffers must be different");
           this._realTransform4(
             out,
-            data,
+            data2,
             1
             /* DONE */
           );
@@ -78073,12 +78073,12 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @throws {Error} If `out` and `data` refer to the same buffer.
          * @returns {void}
          */
-        inverseTransform(out, data) {
-          if (out === data)
+        inverseTransform(out, data2) {
+          if (out === data2)
             throw new Error("Input and output buffers must be different");
           this._transform4(
             out,
-            data,
+            data2,
             -1
             /* DONE */
           );
@@ -78093,7 +78093,7 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @param {number} inv A scaling factor to apply to the transform.
          * @returns {void}
          */
-        _transform4(out, data, inv) {
+        _transform4(out, data2, inv) {
           const size = this._csize;
           const width = this._width;
           let step = 1 << width;
@@ -78104,12 +78104,12 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           if (len === 4) {
             for (outOff = 0, t2 = 0; outOff < size; outOff += len, ++t2) {
               const off = bitrev[t2];
-              this._singleTransform2(data, out, outOff, off, step);
+              this._singleTransform2(data2, out, outOff, off, step);
             }
           } else {
             for (outOff = 0, t2 = 0; outOff < size; outOff += len, ++t2) {
               const off = bitrev[t2];
-              this._singleTransform4(data, out, outOff, off, step, inv);
+              this._singleTransform4(data2, out, outOff, off, step, inv);
             }
           }
           const table = this.table;
@@ -78173,11 +78173,11 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @param {number} step The step size for indexing the input data.
          * @returns {void}
          */
-        _singleTransform2(data, out, outOff, off, step) {
-          const evenR = data[off];
-          const evenI = data[off + 1];
-          const oddR = data[off + step];
-          const oddI = data[off + step + 1];
+        _singleTransform2(data2, out, outOff, off, step) {
+          const evenR = data2[off];
+          const evenI = data2[off + 1];
+          const oddR = data2[off + step];
+          const oddI = data2[off + step + 1];
           out[outOff] = evenR + oddR;
           out[outOff + 1] = evenI + oddI;
           out[outOff + 2] = evenR - oddR;
@@ -78195,17 +78195,17 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * 
          * @returns {void}
          */
-        _singleTransform4(data, out, outOff, off, step, inv) {
+        _singleTransform4(data2, out, outOff, off, step, inv) {
           const step2 = step * 2;
           const step3 = step * 3;
-          const Ar2 = data[off];
-          const Ai = data[off + 1];
-          const Br2 = data[off + step];
-          const Bi = data[off + step + 1];
-          const Cr2 = data[off + step2];
-          const Ci = data[off + step2 + 1];
-          const Dr2 = data[off + step3];
-          const Di = data[off + step3 + 1];
+          const Ar2 = data2[off];
+          const Ai = data2[off + 1];
+          const Br2 = data2[off + step];
+          const Bi = data2[off + step + 1];
+          const Cr2 = data2[off + step2];
+          const Ci = data2[off + step2 + 1];
+          const Dr2 = data2[off + step3];
+          const Di = data2[off + step3 + 1];
           const T0r = Ar2 + Cr2;
           const T0i = Ai + Ci;
           const T1r = Ar2 - Cr2;
@@ -78229,7 +78229,7 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @param {Float64Array} data Input array of real data to be transformed
          * @param {number} inv The scale factor used to normalize the inverse transform
          */
-        _realTransform4(out, data, inv) {
+        _realTransform4(out, data2, inv) {
           const size = this._csize;
           const width = this._width;
           let step = 1 << width;
@@ -78240,12 +78240,12 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           if (len === 4) {
             for (outOff = 0, t2 = 0; outOff < size; outOff += len, ++t2) {
               const off = bitrev[t2];
-              this._singleRealTransform2(data, out, outOff, off >>> 1, step >>> 1);
+              this._singleRealTransform2(data2, out, outOff, off >>> 1, step >>> 1);
             }
           } else {
             for (outOff = 0, t2 = 0; outOff < size; outOff += len, ++t2) {
               const off = bitrev[t2];
-              this._singleRealTransform4(data, out, outOff, off >>> 1, step >>> 1, inv);
+              this._singleRealTransform4(data2, out, outOff, off >>> 1, step >>> 1, inv);
             }
           }
           const table = this.table;
@@ -78327,9 +78327,9 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * 
          * @returns {void}
          */
-        _singleRealTransform2(data, out, outOff, off, step) {
-          const evenR = data[off];
-          const oddR = data[off + step];
+        _singleRealTransform2(data2, out, outOff, off, step) {
+          const evenR = data2[off];
+          const oddR = data2[off + step];
           out[outOff] = evenR + oddR;
           out[outOff + 1] = 0;
           out[outOff + 2] = evenR - oddR;
@@ -78346,13 +78346,13 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @param {number} step The step size for the input array.
          * @param {number} inv The value of inverse.
          */
-        _singleRealTransform4(data, out, outOff, off, step, inv) {
+        _singleRealTransform4(data2, out, outOff, off, step, inv) {
           const step2 = step * 2;
           const step3 = step * 3;
-          const Ar2 = data[off];
-          const Br2 = data[off + step];
-          const Cr2 = data[off + step2];
-          const Dr2 = data[off + step3];
+          const Ar2 = data2[off];
+          const Br2 = data2[off + step];
+          const Cr2 = data2[off + step2];
+          const Dr2 = data2[off + step3];
           const T0r = Ar2 + Cr2;
           const T1r = Ar2 - Cr2;
           const T2r = Br2 + Dr2;
@@ -78467,23 +78467,23 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           this.fft.transform(out, input);
         }
       }
-      function medianFilter(data, windowSize) {
+      function medianFilter(data2, windowSize) {
         if (windowSize % 2 === 0 || windowSize <= 0) {
           throw new Error("Window size must be a positive odd number");
         }
-        const outputArray = new data.constructor(data.length);
-        const buffer = new data.constructor(windowSize);
+        const outputArray = new data2.constructor(data2.length);
+        const buffer = new data2.constructor(windowSize);
         const halfWindowSize = Math.floor(windowSize / 2);
-        for (let i3 = 0; i3 < data.length; ++i3) {
+        for (let i3 = 0; i3 < data2.length; ++i3) {
           let valuesIndex = 0;
           for (let j2 = -halfWindowSize; j2 <= halfWindowSize; ++j2) {
             let index = i3 + j2;
             if (index < 0) {
               index = Math.abs(index);
-            } else if (index >= data.length) {
-              index = 2 * (data.length - 1) - index;
+            } else if (index >= data2.length) {
+              index = 2 * (data2.length - 1) - index;
             }
-            buffer[valuesIndex++] = data[index];
+            buffer[valuesIndex++] = data2[index];
           }
           buffer.sort();
           outputArray[i3] = buffer[halfWindowSize];
@@ -78845,8 +78845,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
         _subarray(index, iterSize, iterDims) {
           const o1 = index * iterSize;
           const o22 = (index + 1) * iterSize;
-          const data = "subarray" in this.data ? this.data.subarray(o1, o22) : this.data.slice(o1, o22);
-          return new Tensor3(this.type, data, iterDims);
+          const data2 = "subarray" in this.data ? this.data.subarray(o1, o22) : this.data.slice(o1, o22);
+          return new Tensor3(this.type, data2, iterDims);
         }
         /**
          * Returns the value of this tensor as a standard JavaScript Number. This only works
@@ -79055,7 +79055,7 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           const newDims = newOffsets.map(([start, end]) => end - start);
           const newBufferSize = newDims.reduce((a2, b3) => a2 * b3);
           const this_data = this.data;
-          const data = new this_data.constructor(newBufferSize);
+          const data2 = new this_data.constructor(newBufferSize);
           const stride = this.stride();
           let isContiguous = true;
           for (let i3 = 1; i3 < newDims.length; ++i3) {
@@ -79068,11 +79068,11 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
             const start = newOffsets[0][0] * stride[0];
             const end = newOffsets[0][1] * stride[0];
             if (ArrayBuffer.isView(this_data)) {
-              data.set(this_data.subarray(start, end));
+              data2.set(this_data.subarray(start, end));
             } else if (Array.isArray(this_data)) {
               const slicedData = this_data.slice(start, end);
               for (let i3 = 0; i3 < slicedData.length; ++i3) {
-                data[i3] = slicedData[i3];
+                data2[i3] = slicedData[i3];
               }
             } else {
               throw new Error("Unsupported data type for slicing");
@@ -79085,10 +79085,10 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
                 originalIndex += (num % size + newOffsets[j2][0]) * stride[j2];
                 num = Math.floor(num / size);
               }
-              data[i3] = this_data[originalIndex];
+              data2[i3] = this_data[originalIndex];
             }
           }
-          return new Tensor3(this.type, data, newTensorDims);
+          return new Tensor3(this.type, data2, newTensorDims);
         }
         /**
          * Return a permuted version of this Tensor, according to the provided dimensions.
@@ -79408,13 +79408,13 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           return new Tensor3(type, DataTypeMap[type].from(this.data, map_fn), this.dims);
         }
       }
-      function reshape(data, dimensions) {
-        const totalElements = data.length;
+      function reshape(data2, dimensions) {
+        const totalElements = data2.length;
         const dimensionSize = dimensions.reduce((a2, b3) => a2 * b3);
         if (totalElements !== dimensionSize) {
           throw Error(`cannot reshape array of size ${totalElements} into shape (${dimensions})`);
         }
-        let reshapedArray = data;
+        let reshapedArray = data2;
         for (let i3 = dimensions.length - 1; i3 >= 0; i3--) {
           reshapedArray = reshapedArray.reduce((acc, val) => {
             let lastArray = acc[acc.length - 1];
@@ -79504,10 +79504,10 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
         });
       }
       const arrayToIndexTensor = (array) => new Tensor3("int64", array, [array.length]);
-      async function slice(data, starts, ends, axes, steps) {
+      async function slice(data2, starts, ends, axes, steps) {
         const op = await _ops_registry_js__WEBPACK_IMPORTED_MODULE_2__.TensorOpRegistry.slice;
         return await op({
-          x: data,
+          x: data2,
           s: arrayToIndexTensor(starts),
           e: arrayToIndexTensor(ends),
           a: arrayToIndexTensor(axes),
@@ -79627,8 +79627,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
         } else {
           let currentDim = 0;
           for (let t2 = 0; t2 < tensors.length; ++t2) {
-            const { data, dims } = tensors[t2];
-            for (let i3 = 0; i3 < data.length; ++i3) {
+            const { data: data2, dims } = tensors[t2];
+            for (let i3 = 0; i3 < data2.length; ++i3) {
               let resultIndex = 0;
               for (let j2 = dims.length - 1, num = i3, resultMultiplier = 1; j2 >= 0; --j2) {
                 const size = dims[j2];
@@ -79640,7 +79640,7 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
                 resultMultiplier *= resultDims[j2];
                 num = Math.floor(num / size);
               }
-              result[resultIndex] = data[i3];
+              result[resultIndex] = data2[i3];
             }
             currentDim += dims[dim];
           }
@@ -105533,6 +105533,212 @@ var EVERYDAY = {
 };
 var ENGLISH_EVERYDAY = /* @__PURE__ */ new Set([...HINTS.en, "i", "i'll", "i'm", "it's", "a", "an", "on", "be", "at", "have", "has", "not", "we", "will", "your", "my", "by", "what", "when", "then", "from", "but", "or", "if", "so", "he", "she", "they", "as", "do", "can", "there", "here", "about", "more", "just", "all", "one", "would", "which", "their", "had", "been", "were"]);
 
+// src/phrases.js
+var loader = null;
+var dataP = null;
+function configureWords(fn) {
+  loader = fn;
+}
+async function load() {
+  let raw;
+  if (loader) raw = await loader();
+  else {
+    const { readFile: readFile2 } = await import("fs/promises");
+    raw = JSON.parse(await readFile2(new URL("../data/words/words.json", import.meta.url), "utf8"));
+  }
+  const freq = {};
+  for (const [lang, v3] of Object.entries(raw)) {
+    if (!v3 || !Array.isArray(v3.b)) continue;
+    const m3 = /* @__PURE__ */ new Map();
+    v3.b.forEach((b3, i3) => {
+      const per = 2 ** (b3 / 2) / 100;
+      for (const w3 of v3.w[i3].split(" ")) m3.set(w3, per);
+    });
+    freq[lang] = m3;
+  }
+  return { freq, loan: new Set(String(raw.loan || "").split(" ")) };
+}
+function data() {
+  if (!dataP) {
+    dataP = load();
+    dataP.catch(() => dataP = null);
+  }
+  return dataP;
+}
+var PHRASE_LANGS = ["en", "fr", "es", "it", "pt", "de"];
+var PARTICLES = /* @__PURE__ */ new Set(["de", "la", "le", "du", "des", "del", "della", "di", "da", "do", "dos", "das", "van", "von", "der", "den", "el", "los", "las", "y", "e", "i", "o", "a", "al", "en", "un", "una", "il", "lo", "se", "si", "no", "me", "te"]);
+var LATIN = new Set("prima facie facto jure bono bona fide vice versa hoc status quo alia inter circa via versus sic ergo vide infra supra ibid ibidem habeas corpus mens rea modus operandi vivendi alma mater persona grata absentia quid carpe diem causa mortis res ipsa loquitur ratio decidendi obiter dictum dicta stare decisis certiorari mandamus amicus curiae ultra vires intra locus standi sui generis juris ex parte post ante mortem tempore lite pendente nisi prius subpoena affidavit verbatim passim idem opus magnum cum laude summa magna erga omnes mutatis mutandis ceteris paribus pari passu per capita annum diem cent contra bonos mores terra nullius incognita".split(" "));
+var GREETINGS = new Set("oui merci bonjour bonsoir adieu voil\xE0 salut allez alors monsieur madame mademoiselle gracias adi\xF3s adios hola s\xED bueno vamos se\xF1or se\xF1ora se\xF1orita ciao grazie prego signore signora danke bitte nein obrigado obrigada".split(" "));
+var RATIO = 12;
+function freqOf(m3, w3, lang) {
+  if (!m3) return 0;
+  const direct = m3.get(w3) || 0;
+  if (w3.includes("-")) {
+    let least = Infinity;
+    for (const part of w3.split("-")) {
+      if (!part) continue;
+      const f3 = m3.get(part);
+      if (!f3) return direct;
+      least = Math.min(least, f3);
+    }
+    return Math.max(direct, least === Infinity ? 0 : least);
+  }
+  if (direct) return direct;
+  const q3 = w3.indexOf("'");
+  if (q3 > 0) {
+    if (lang === "en") return m3.get(w3.slice(0, q3)) || 0;
+    const pre = m3.get(w3.slice(0, q3 + 1));
+    const rest = w3.slice(q3 + 1);
+    if (pre && (!rest || m3.get(rest))) return Math.min(pre, rest ? m3.get(rest) : pre);
+    return 0;
+  }
+  return 0;
+}
+function tokens(text) {
+  const out = [];
+  let segStart = true;
+  for (const tk2 of text.split(" ").filter(Boolean)) {
+    const m3 = /^([^\p{L}]*)([\p{L}][\p{L}'’-]*[\p{L}]|[\p{L}])?(.*)$/u.exec(tk2) || [];
+    const lead = m3[1] || "";
+    const core = m3[2] || "";
+    const trail = m3[3] || "";
+    const opens = /[“"«(‘—–]/.test(lead);
+    const closes = /[,;:.!?…”"»)—–]/.test(trail) || !core && /[—–-]/.test(tk2);
+    const t2 = {
+      core,
+      lower: core.toLowerCase().replace(/’/g, "'"),
+      start: segStart || opens,
+      end: closes,
+      upper: new RegExp("^\\p{Lu}", "u").test(core),
+      letters: (core.match(new RegExp("\\p{L}", "gu")) || []).length
+    };
+    if (!core) {
+      if (/[,;:.!?…”"»)]/.test(tk2) && out.length) out[out.length - 1].end = true;
+      out.push(t2);
+      segStart = segStart || opens || /[,;:.!?…”"»)—–-]/.test(tk2);
+      continue;
+    }
+    out.push(t2);
+    segStart = closes;
+  }
+  for (let i3 = 0; i3 + 1 < out.length; i3++) if (out[i3 + 1].start) out[i3].end = true;
+  if (out.length) out[out.length - 1].end = true;
+  return out;
+}
+function runsFor(toks, lang, main, d3) {
+  const L2 = d3.freq[lang];
+  const M4 = d3.freq[main];
+  const kind = toks.map((t2) => {
+    if (!t2.core) return { k: "gap" };
+    const fL = freqOf(L2, t2.lower, lang);
+    if (!fL || main === "en" && LATIN.has(t2.lower)) return { k: "none" };
+    const fM = freqOf(M4, t2.lower, main);
+    let sure = fL >= RATIO * fM && fL >= 0.3;
+    if (sure && t2.lower.includes("-")) {
+      for (const part of t2.lower.split("-")) if (part && (M4.get(part) || 0) > (L2.get(part) || 0)) sure = false;
+    }
+    const nameLike = t2.upper && !t2.start && fL < 100;
+    const strong = sure && !PARTICLES.has(t2.lower) && t2.letters >= 3 && (!t2.upper || t2.start && fL >= 100);
+    if (sure && !nameLike) return { k: "sure", strong, loan: main === "en" && d3.loan.has(t2.lower), fL, fM };
+    if (fL >= 5 && fL >= fM / 10) return { k: "shared", fL, fM };
+    return { k: "none" };
+  });
+  const runs = [];
+  for (let i3 = 0; i3 < toks.length; ) {
+    if (kind[i3].k !== "sure" && kind[i3].k !== "shared") {
+      i3++;
+      continue;
+    }
+    let j2 = i3;
+    while (j2 < toks.length && kind[j2].k !== "none") j2++;
+    let a2 = i3;
+    let b3 = j2 - 1;
+    const whole = () => toks[a2].start && toks[b3].end;
+    for (; ; ) {
+      if (a2 > b3) break;
+      if (kind[b3].k === "gap") b3--;
+      else if (kind[a2].k === "gap") a2++;
+      else if (!whole() && kind[b3].k === "shared" && kind[b3].fM > kind[b3].fL) b3--;
+      else if (!whole() && kind[a2].k === "shared" && kind[a2].fM > kind[a2].fL) a2++;
+      else break;
+    }
+    if (a2 <= b3) {
+      let strong = 0;
+      let own = 0;
+      let allSure = true;
+      let words = 0;
+      let letters = 0;
+      let score = 0;
+      let onlyParticles = true;
+      let greeting = false;
+      const distinct = /* @__PURE__ */ new Set();
+      for (let k4 = a2; k4 <= b3; k4++) {
+        if (kind[k4].k === "gap") continue;
+        words++;
+        letters += toks[k4].letters;
+        if (kind[k4].strong) strong++;
+        if (kind[k4].strong && !kind[k4].loan) own++;
+        if (kind[k4].k !== "sure") allSure = false;
+        if (kind[k4].k === "sure") score += Math.log2(kind[k4].fL / (kind[k4].fM || 0.05));
+        if (!PARTICLES.has(toks[k4].lower)) onlyParticles = false;
+        if (GREETINGS.has(toks[k4].lower)) greeting = true;
+        distinct.add(toks[k4].lower);
+      }
+      const alone = whole();
+      let ok = strong >= 1 && !onlyParticles;
+      if (ok && words === 1) {
+        const t2 = toks[a2];
+        ok = own ? alone || !t2.upper && letters >= 4 && kind[a2].fL >= 3 : alone && greeting;
+      } else if (ok && !own) {
+        ok = alone && allSure && (distinct.size >= 2 || greeting);
+      }
+      if (ok && main !== "en" && strong < 2 && !(alone && (words >= 2 || kind[a2].fL >= 100))) ok = false;
+      if (ok) runs.push({ lang, a: a2, b: b3, strong, words, score });
+    }
+    i3 = j2;
+  }
+  return runs;
+}
+async function tagPhrases(texts, bases) {
+  let d3;
+  try {
+    d3 = await data();
+  } catch (e2) {
+    console.warn("[murmur] word lists unavailable:", e2?.message || e2);
+    return bases.slice();
+  }
+  const found = texts.map((text, i3) => {
+    const main = bases[i3];
+    if (!PHRASE_LANGS.includes(main) || !d3.freq[main]) return null;
+    const toks = tokens(text);
+    let all = [];
+    for (const lang of main === "en" ? PHRASE_LANGS : ["en"]) if (lang !== main && d3.freq[lang]) all = all.concat(runsFor(toks, lang, main, d3));
+    return all.length ? { toks, runs: all } : null;
+  });
+  const lean = {};
+  for (const f3 of found) {
+    if (!f3) continue;
+    const best = Math.max(...f3.runs.map((r2) => r2.strong));
+    const tops = f3.runs.filter((r2) => r2.strong === best);
+    if (new Set(tops.map((r2) => r2.lang)).size === 1) lean[tops[0].lang] = (lean[tops[0].lang] || 0) + best;
+  }
+  return texts.map((text, i3) => {
+    const f3 = found[i3];
+    const main = bases[i3];
+    if (!f3) return main;
+    const order = f3.runs.slice().sort((x2, y3) => y3.strong - x2.strong || (lean[y3.lang] || 0) - (lean[x2.lang] || 0) || y3.score - x2.score || PHRASE_LANGS.indexOf(x2.lang) - PHRASE_LANGS.indexOf(y3.lang));
+    const words = new Array(f3.toks.length).fill(null);
+    for (const r2 of order) {
+      let free = true;
+      for (let k4 = r2.a; k4 <= r2.b; k4++) if (words[k4]) free = false;
+      if (free) for (let k4 = r2.a; k4 <= r2.b; k4++) words[k4] = r2.lang;
+    }
+    const langs = new Set(words.filter((w3, k4) => f3.toks[k4].core).map((w3) => w3 || main));
+    if (langs.size === 1 && !langs.has(main)) return [...langs][0];
+    return { main, words };
+  });
+}
+
 // src/lang.js
 var SAME_SCRIPT = {
   zh: ["zh", "ja"],
@@ -105589,7 +105795,7 @@ async function mainLanguage(texts, pageLang) {
   const best = Object.entries(votes).filter(([l2]) => SUPPORTED.includes(l2) && !LANGS[l2].hidden).sort((a2, b3) => b3[1] - a2[1])[0];
   return best ? best[0] : SUPPORTED.includes(pageLang) ? pageLang : "en";
 }
-async function tagSentences(items, { pageLang = null } = {}) {
+async function tagSentences(items, { pageLang = null, phrases = true } = {}) {
   pageLang = pageLang && SUPPORTED.includes(pageLang) ? pageLang : null;
   const blocks = [];
   const blockOf = /* @__PURE__ */ new Map();
@@ -105622,6 +105828,7 @@ async function tagSentences(items, { pageLang = null } = {}) {
       prev = langs[i3];
     }
   }
+  if (phrases) return { main, langs: await tagPhrases(items.map((it2) => it2.text), langs) };
   return { main, langs };
 }
 
@@ -105629,9 +105836,9 @@ async function tagSentences(items, { pageLang = null } = {}) {
 var VOWELS = new Set("AIOQWYaiu\xE6\u0251\u0252\u0254\u0259\u025B\u025C\u026A\u028A\u028C\u1D7B");
 var SYMBOLS = { "%": "percent", "&": "and", "+": "plus", "@": "at" };
 var US_TAUS = new Set("AIOWYiu\xE6\u0251\u0259\u025B\u026A\u0279\u028A\u028C");
-var loader = null;
+var loader2 = null;
 function configureLexicon(fn) {
-  loader = fn;
+  loader2 = fn;
 }
 var cache = /* @__PURE__ */ new Map();
 function getLexicon(accent = "b") {
@@ -105640,9 +105847,9 @@ function getLexicon(accent = "b") {
     cache.set(
       key,
       (async () => {
-        if (!loader) throw new Error("lexicon loader not configured");
+        if (!loader2) throw new Error("lexicon loader not configured");
         const p3 = key === "b" ? "gb" : "us";
-        const [gold, silver, names] = await Promise.all([loader(`${p3}_gold.json`), loader(`${p3}_silver.json`), Promise.resolve(loader(`names_${p3}.json`)).catch(() => null)]);
+        const [gold, silver, names] = await Promise.all([loader2(`${p3}_gold.json`), loader2(`${p3}_silver.json`), Promise.resolve(loader2(`names_${p3}.json`)).catch(() => null)]);
         return new Lexicon(gold, silver, key === "b", names);
       })()
     );
@@ -131431,8 +131638,8 @@ async function runModel(voice, ids, speed, lang, sid = 0) {
   };
   if (session.inputNames.includes("sid")) feeds.sid = new Ge("int64", BigInt64Array.from([BigInt(sid)]), [1]);
   const out = await session.run(feeds);
-  const data = out.output.data;
-  return data instanceof Float32Array ? data : Float32Array.from(data);
+  const data2 = out.output.data;
+  return data2 instanceof Float32Array ? data2 : Float32Array.from(data2);
 }
 function resampleHermite(input, fromRate, toRate) {
   if (fromRate === toRate) return input;
@@ -131766,6 +131973,7 @@ function createEngine({ wasmPaths, onEvent }) {
     configureEspeak(wasmPaths + "espeak-ng.js");
     configureLexicon((f3) => fetch(wasmPaths + "lexicon/" + f3).then((r2) => r2.json()));
     configureLangId({ wasmPath: wasmPaths + "fasttext/fastText.common.wasm", modelPath: wasmPaths + "fasttext/lid.176.ftz" });
+    configureWords(() => fetch(wasmPaths + "words/words.json").then((r2) => r2.json()));
   }
   configurePiper({ wasmPaths: wasmPaths || void 0, onProgress: (msg) => {
     if (st2.status === "loading" || st2.status === "buffering" || st2.status === "idle") setStatus2(st2.status === "idle" ? "loading" : st2.status, msg);
@@ -131806,7 +132014,7 @@ function createEngine({ wasmPaths, onEvent }) {
     genVersion: 0,
     playToken: 0
   };
-  const emit = (type, data = {}) => onEvent({ type, ...data });
+  const emit = (type, data2 = {}) => onEvent({ type, ...data2 });
   const setStatus2 = (status2, detail = "") => {
     st2.status = status2;
     emit("state", { state: status2, detail });
@@ -131888,9 +132096,9 @@ function createEngine({ wasmPaths, onEvent }) {
     else attempts = await webgpuUsable() ? [["webgpu", "fp32"], ["wasm", "q8"]] : [["wasm", "q8"]];
     let lastErr = null;
     for (const [device, dtype] of attempts) {
-      for (const [name, load] of [["timed", loadTimed], ["plain", loadPlain]]) {
+      for (const [name, load2] of [["timed", loadTimed], ["plain", loadPlain]]) {
         try {
-          await load(device, dtype);
+          await load2(device, dtype);
           st2.engine = device;
           emit("engine", { engine: device, dtype, wordTiming: name === "timed" });
           return;
@@ -133333,30 +133541,30 @@ function findContrastColor(baseColor, fixedColor) {
   contrastCache.set(key, cachedValue);
   return cachedValue;
 }
-function makePathFromDrawOPS(data) {
+function makePathFromDrawOPS(data2) {
   const path = new Path2D();
-  if (!data) {
+  if (!data2) {
     return path;
   }
-  for (let i3 = 0, ii = data.length; i3 < ii; ) {
-    switch (data[i3++]) {
+  for (let i3 = 0, ii = data2.length; i3 < ii; ) {
+    switch (data2[i3++]) {
       case DrawOPS.moveTo:
-        path.moveTo(data[i3++], data[i3++]);
+        path.moveTo(data2[i3++], data2[i3++]);
         break;
       case DrawOPS.lineTo:
-        path.lineTo(data[i3++], data[i3++]);
+        path.lineTo(data2[i3++], data2[i3++]);
         break;
       case DrawOPS.curveTo:
-        path.bezierCurveTo(data[i3++], data[i3++], data[i3++], data[i3++], data[i3++], data[i3++]);
+        path.bezierCurveTo(data2[i3++], data2[i3++], data2[i3++], data2[i3++], data2[i3++], data2[i3++]);
         break;
       case DrawOPS.quadraticCurveTo:
-        path.quadraticCurveTo(data[i3++], data[i3++], data[i3++], data[i3++]);
+        path.quadraticCurveTo(data2[i3++], data2[i3++], data2[i3++], data2[i3++]);
         break;
       case DrawOPS.closePath:
         path.closePath();
         break;
       default:
-        warn(`Unrecognized drawing path operator: ${data[i3 - 1]}`);
+        warn(`Unrecognized drawing path operator: ${data2[i3 - 1]}`);
         break;
     }
   }
@@ -134434,16 +134642,16 @@ var ImageManager = class _ImageManager {
   }
   async #get(key, rawData) {
     this.#cache ||= /* @__PURE__ */ new Map();
-    let data = this.#cache.get(key);
-    if (data === null) {
+    let data2 = this.#cache.get(key);
+    if (data2 === null) {
       return null;
     }
-    if (data?.bitmap) {
-      data.refCounter += 1;
-      return data;
+    if (data2?.bitmap) {
+      data2.refCounter += 1;
+      return data2;
     }
     try {
-      data ||= {
+      data2 ||= {
         bitmap: null,
         id: `image_${this.#baseId}_${this.#id++}`,
         refCounter: 0,
@@ -134451,10 +134659,10 @@ var ImageManager = class _ImageManager {
       };
       let image;
       if (typeof rawData === "string") {
-        data.url = rawData;
+        data2.url = rawData;
         image = await fetchData(rawData, "blob");
       } else if (rawData instanceof File) {
-        image = data.file = rawData;
+        image = data2.file = rawData;
       } else if (rawData instanceof Blob) {
         image = rawData;
       }
@@ -134464,12 +134672,12 @@ var ImageManager = class _ImageManager {
         const imageElement = new Image();
         const imagePromise = new Promise((resolve, reject) => {
           imageElement.onload = () => {
-            data.bitmap = imageElement;
-            data.isSvg = true;
+            data2.bitmap = imageElement;
+            data2.isSvg = true;
             resolve();
           };
           fileReader.onload = async () => {
-            const url = data.svgUrl = fileReader.result;
+            const url = data2.svgUrl = fileReader.result;
             imageElement.src = await mustRemoveAspectRatioPromise ? `${url}#svgView(preserveAspectRatio(none))` : url;
           };
           imageElement.onerror = fileReader.onerror = reject;
@@ -134477,18 +134685,18 @@ var ImageManager = class _ImageManager {
         fileReader.readAsDataURL(image);
         await imagePromise;
       } else {
-        data.bitmap = await createImageBitmap(image);
+        data2.bitmap = await createImageBitmap(image);
       }
-      data.refCounter = 1;
+      data2.refCounter = 1;
     } catch (e2) {
       warn(e2);
-      data = null;
+      data2 = null;
     }
-    this.#cache.set(key, data);
-    if (data) {
-      this.#cache.set(data.id, data);
+    this.#cache.set(key, data2);
+    if (data2) {
+      this.#cache.set(data2.id, data2);
     }
-    return data;
+    return data2;
   }
   async getFromFile(file) {
     const {
@@ -134508,71 +134716,71 @@ var ImageManager = class _ImageManager {
   }
   async getFromId(id3) {
     this.#cache ||= /* @__PURE__ */ new Map();
-    const data = this.#cache.get(id3);
-    if (!data) {
+    const data2 = this.#cache.get(id3);
+    if (!data2) {
       return null;
     }
-    if (data.bitmap) {
-      data.refCounter += 1;
-      return data;
+    if (data2.bitmap) {
+      data2.refCounter += 1;
+      return data2;
     }
-    if (data.file) {
-      return this.getFromFile(data.file);
+    if (data2.file) {
+      return this.getFromFile(data2.file);
     }
-    if (data.blobPromise) {
+    if (data2.blobPromise) {
       const {
         blobPromise
-      } = data;
-      delete data.blobPromise;
-      return this.getFromBlob(data.id, blobPromise);
+      } = data2;
+      delete data2.blobPromise;
+      return this.getFromBlob(data2.id, blobPromise);
     }
-    return this.getFromUrl(data.url);
+    return this.getFromUrl(data2.url);
   }
   getFromCanvas(id3, canvas) {
     this.#cache ||= /* @__PURE__ */ new Map();
-    let data = this.#cache.get(id3);
-    if (data?.bitmap) {
-      data.refCounter += 1;
-      return data;
+    let data2 = this.#cache.get(id3);
+    if (data2?.bitmap) {
+      data2.refCounter += 1;
+      return data2;
     }
     const offscreen = new OffscreenCanvas(canvas.width, canvas.height);
     const ctx = offscreen.getContext("2d");
     ctx.drawImage(canvas, 0, 0);
-    data = {
+    data2 = {
       bitmap: offscreen.transferToImageBitmap(),
       id: `image_${this.#baseId}_${this.#id++}`,
       refCounter: 1,
       isSvg: false
     };
-    this.#cache.set(id3, data);
-    this.#cache.set(data.id, data);
-    return data;
+    this.#cache.set(id3, data2);
+    this.#cache.set(data2.id, data2);
+    return data2;
   }
   getSvgUrl(id3) {
-    const data = this.#cache.get(id3);
-    return !data?.isSvg ? null : data.svgUrl;
+    const data2 = this.#cache.get(id3);
+    return !data2?.isSvg ? null : data2.svgUrl;
   }
   deleteId(id3) {
     this.#cache ||= /* @__PURE__ */ new Map();
-    const data = this.#cache.get(id3);
-    if (!data) {
+    const data2 = this.#cache.get(id3);
+    if (!data2) {
       return;
     }
-    data.refCounter -= 1;
-    if (data.refCounter !== 0) {
+    data2.refCounter -= 1;
+    if (data2.refCounter !== 0) {
       return;
     }
     const {
       bitmap
-    } = data;
-    if (!data.url && !data.file) {
+    } = data2;
+    if (!data2.url && !data2.file) {
       const canvas = new OffscreenCanvas(bitmap.width, bitmap.height);
       const ctx = canvas.getContext("bitmaprenderer");
       ctx.transferFromImageBitmap(bitmap);
-      data.blobPromise = canvas.convertToBlob();
+      data2.blobPromise = canvas.convertToBlob();
     }
     bitmap.close?.();
-    data.bitmap = null;
+    data2.bitmap = null;
   }
   isValidId(id3) {
     return id3.startsWith(`image_${this.#baseId}_`);
@@ -135610,24 +135818,24 @@ var AnnotationEditorUIManager = class _AnnotationEditorUIManager {
         }
       }
     }
-    let data = clipboardData.getData("application/pdfjs");
-    if (!data) {
+    let data2 = clipboardData.getData("application/pdfjs");
+    if (!data2) {
       return;
     }
     try {
-      data = JSON.parse(data);
+      data2 = JSON.parse(data2);
     } catch (ex) {
       warn(`paste: "${ex.message}".`);
       return;
     }
-    if (!Array.isArray(data)) {
+    if (!Array.isArray(data2)) {
       return;
     }
     this.unselectAll();
     const layer = this.currentLayer;
     try {
       const newEditors = [];
-      for (const editor of data) {
+      for (const editor of data2) {
         const deserializedEditor = await layer.deserialize(editor);
         if (!deserializedEditor) {
           return;
@@ -138104,11 +138312,11 @@ var AnnotationEditor = class _AnnotationEditor {
   get altTextData() {
     return this.#altText?.data;
   }
-  set altTextData(data) {
+  set altTextData(data2) {
     if (!this.#altText) {
       return;
     }
-    this.#altText.data = data;
+    this.#altText.data = data2;
   }
   get guessedAltText() {
     return this.#altText?.guessedText;
@@ -138631,20 +138839,20 @@ var AnnotationEditor = class _AnnotationEditor {
       popupRef: this._initialData?.popupRef || ""
     };
   }
-  static async deserialize(data, parent, uiManager) {
+  static async deserialize(data2, parent, uiManager) {
     const editor = new this.prototype.constructor({
       parent,
       id: uiManager.getId(),
       uiManager,
-      annotationElementId: data.annotationElementId,
-      creationDate: data.creationDate,
-      modificationDate: data.modificationDate
+      annotationElementId: data2.annotationElementId,
+      creationDate: data2.creationDate,
+      modificationDate: data2.modificationDate
     });
-    editor.rotation = data.rotation;
-    editor.#accessibilityData = data.accessibilityData;
-    editor._isCopy = data.isCopy || false;
+    editor.rotation = data2.rotation;
+    editor.#accessibilityData = data2.accessibilityData;
+    editor._isCopy = data2.isCopy || false;
     const [pageWidth, pageHeight] = editor.pageDimensions;
-    const [x2, y3, width, height] = editor.getRectInCurrentCoords(data.rect, pageHeight);
+    const [x2, y3, width, height] = editor.getRectInCurrentCoords(data2.rect, pageHeight);
     editor.x = x2 / pageWidth;
     editor.y = y3 / pageHeight;
     editor.width = width / pageWidth;
@@ -138946,18 +139154,18 @@ var AnnotationEditor = class _AnnotationEditor {
   get telemetryFinalData() {
     return null;
   }
-  _reportTelemetry(data, mustWait = false) {
+  _reportTelemetry(data2, mustWait = false) {
     if (mustWait) {
       this.#telemetryTimeouts ||= /* @__PURE__ */ new Map();
       const {
         action
-      } = data;
+      } = data2;
       let timeout = this.#telemetryTimeouts.get(action);
       if (timeout) {
         clearTimeout(timeout);
       }
       timeout = setTimeout(() => {
-        this._reportTelemetry(data);
+        this._reportTelemetry(data2);
         this.#telemetryTimeouts.delete(action);
         if (this.#telemetryTimeouts.size === 0) {
           this.#telemetryTimeouts = null;
@@ -138966,12 +139174,12 @@ var AnnotationEditor = class _AnnotationEditor {
       this.#telemetryTimeouts.set(action, timeout);
       return;
     }
-    data.type ||= this.editorType;
+    data2.type ||= this.editorType;
     this._uiManager._eventBus.dispatch("reporttelemetry", {
       source: this,
       details: {
         type: "editing",
-        data
+        data: data2
       }
     });
   }
@@ -139054,28 +139262,28 @@ var MurmurHash3_64 = class {
     this.h2 = seed ? seed & 4294967295 : SEED;
   }
   update(input) {
-    let data, length;
+    let data2, length;
     if (typeof input === "string") {
-      data = new Uint8Array(input.length * 2);
+      data2 = new Uint8Array(input.length * 2);
       length = 0;
       for (let i3 = 0, ii = input.length; i3 < ii; i3++) {
         const code = input.charCodeAt(i3);
         if (code <= 255) {
-          data[length++] = code;
+          data2[length++] = code;
         } else {
-          data[length++] = code >>> 8;
-          data[length++] = code & 255;
+          data2[length++] = code >>> 8;
+          data2[length++] = code & 255;
         }
       }
     } else if (ArrayBuffer.isView(input)) {
-      data = input.slice();
-      length = data.byteLength;
+      data2 = input.slice();
+      length = data2.byteLength;
     } else {
       throw new Error("Invalid data format, must be a string or TypedArray.");
     }
     const blockCounts = length >> 2;
     const tailLength = length - blockCounts * 4;
-    const dataUint32 = new Uint32Array(data.buffer, 0, blockCounts);
+    const dataUint32 = new Uint32Array(data2.buffer, 0, blockCounts);
     let k1 = 0, k22 = 0;
     let h1 = this.h1, h22 = this.h2;
     const C1 = 3432918353, C2 = 461845907;
@@ -139102,11 +139310,11 @@ var MurmurHash3_64 = class {
     k1 = 0;
     switch (tailLength) {
       case 3:
-        k1 ^= data[blockCounts * 4 + 2] << 16;
+        k1 ^= data2[blockCounts * 4 + 2] << 16;
       case 2:
-        k1 ^= data[blockCounts * 4 + 1] << 8;
+        k1 ^= data2[blockCounts * 4 + 1] << 8;
       case 1:
-        k1 ^= data[blockCounts * 4];
+        k1 ^= data2[blockCounts * 4];
         k1 = k1 * C1 & MASK_HIGH | k1 * C1_LOW & MASK_LOW;
         k1 = k1 << 15 | k1 >>> 17;
         k1 = k1 * C2 & MASK_HIGH | k1 * C2_LOW & MASK_LOW;
@@ -139300,10 +139508,10 @@ var AnnotationStorage = class {
   resetModifiedIds() {
     this.#modifiedIds = null;
   }
-  updateEditor(annotationId, data) {
+  updateEditor(annotationId, data2) {
     const value = this.#editorsMap?.get(annotationId);
     if (value) {
-      value.updateFromAnnotationLayer(data);
+      value.updateFromAnnotationLayer(data2);
       return true;
     }
     return false;
@@ -139768,46 +139976,46 @@ var MessageHandler = class {
     });
   }
   #onMessage({
-    data
+    data: data2
   }) {
-    if (data.targetName !== this.#sourceName) {
+    if (data2.targetName !== this.#sourceName) {
       return;
     }
-    if (data.stream) {
-      this.#processStreamMessage(data);
+    if (data2.stream) {
+      this.#processStreamMessage(data2);
       return;
     }
-    if (data.callback) {
+    if (data2.callback) {
       const {
         callbackId,
         callback
-      } = data;
+      } = data2;
       const capability = this.#callbackCapabilities.get(callbackId);
       if (!capability) {
         throw new Error(`Cannot resolve callback ${callbackId}`);
       }
       this.#callbackCapabilities.delete(callbackId);
       if (callback === CallbackKind.DATA) {
-        capability.resolve(data.data);
+        capability.resolve(data2.data);
       } else if (callback === CallbackKind.ERROR) {
-        capability.reject(wrapReason(data.reason));
+        capability.reject(wrapReason(data2.reason));
       } else {
         throw new Error("Unexpected callback case");
       }
       return;
     }
-    const action = this.#actions.get(data.action);
+    const action = this.#actions.get(data2.action);
     if (!action) {
-      throw new Error(`Unknown action from worker: ${data.action}`);
+      throw new Error(`Unknown action from worker: ${data2.action}`);
     }
-    if (data.callbackId) {
-      const sourceName = this.#sourceName, targetName = data.sourceName, comObj = this.#comObj;
-      Promise.try(action, data.data).then((result) => {
+    if (data2.callbackId) {
+      const sourceName = this.#sourceName, targetName = data2.sourceName, comObj = this.#comObj;
+      Promise.try(action, data2.data).then((result) => {
         comObj.postMessage({
           sourceName,
           targetName,
           callback: CallbackKind.DATA,
-          callbackId: data.callbackId,
+          callbackId: data2.callbackId,
           data: result
         });
       }).catch((reason) => {
@@ -139815,17 +140023,17 @@ var MessageHandler = class {
           sourceName,
           targetName,
           callback: CallbackKind.ERROR,
-          callbackId: data.callbackId,
+          callbackId: data2.callbackId,
           reason: wrapReason(reason)
         });
       });
       return;
     }
-    if (data.streamId) {
-      this.#createStreamSink(data);
+    if (data2.streamId) {
+      this.#createStreamSink(data2);
       return;
     }
-    action(data.data);
+    action(data2.data);
   }
   on(actionName, handler) {
     const ah2 = this.#actions;
@@ -139834,15 +140042,15 @@ var MessageHandler = class {
     }
     ah2.set(actionName, handler);
   }
-  send(actionName, data, transfers) {
+  send(actionName, data2, transfers) {
     this.#comObj.postMessage({
       sourceName: this.#sourceName,
       targetName: this.#targetName,
       action: actionName,
-      data
+      data: data2
     }, transfers);
   }
-  sendWithPromise(actionName, data, transfers) {
+  sendWithPromise(actionName, data2, transfers) {
     const callbackId = this.#callbackId++, capability = Promise.withResolvers();
     this.#callbackCapabilities.set(callbackId, capability);
     try {
@@ -139851,14 +140059,14 @@ var MessageHandler = class {
         targetName: this.#targetName,
         action: actionName,
         callbackId,
-        data
+        data: data2
       }, transfers);
     } catch (ex) {
       capability.reject(ex);
     }
     return capability.promise;
   }
-  sendWithStream(actionName, data, queueingStrategy, transfers) {
+  sendWithStream(actionName, data2, queueingStrategy, transfers) {
     const streamId = this.#streamId++, sourceName = this.#sourceName, targetName = this.#targetName, comObj = this.#comObj;
     return new ReadableStream({
       start: (controller) => {
@@ -139875,7 +140083,7 @@ var MessageHandler = class {
           targetName,
           action: actionName,
           streamId,
-          data,
+          data: data2,
           desiredSize: controller.desiredSize
         }, transfers);
         return startCapability.promise;
@@ -139908,9 +140116,9 @@ var MessageHandler = class {
       }
     }, queueingStrategy);
   }
-  #createStreamSink(data) {
-    const streamId = data.streamId, sourceName = this.#sourceName, targetName = data.sourceName, comObj = this.#comObj;
-    const streamSinks = this.#streamSinks, action = this.#actions.get(data.action);
+  #createStreamSink(data2) {
+    const streamId = data2.streamId, sourceName = this.#sourceName, targetName = data2.sourceName, comObj = this.#comObj;
+    const streamSinks = this.#streamSinks, action = this.#actions.get(data2.action);
     const streamSink = {
       enqueue(chunk, size = 1, transfers) {
         if (this.isCancelled) {
@@ -139960,13 +140168,13 @@ var MessageHandler = class {
       onPull: null,
       onCancel: null,
       isCancelled: false,
-      desiredSize: data.desiredSize,
+      desiredSize: data2.desiredSize,
       ready: null
     };
     streamSink.sinkCapability.resolve();
     streamSink.ready = streamSink.sinkCapability.promise;
     streamSinks.set(streamId, streamSink);
-    Promise.try(action, data.data, streamSink).then(() => {
+    Promise.try(action, data2.data, streamSink).then(() => {
       comObj.postMessage({
         sourceName,
         targetName,
@@ -139984,22 +140192,22 @@ var MessageHandler = class {
       });
     });
   }
-  #processStreamMessage(data) {
-    const streamId = data.streamId, sourceName = this.#sourceName, targetName = data.sourceName, comObj = this.#comObj;
+  #processStreamMessage(data2) {
+    const streamId = data2.streamId, sourceName = this.#sourceName, targetName = data2.sourceName, comObj = this.#comObj;
     const streamController = this.#streamControllers.get(streamId), streamSink = this.#streamSinks.get(streamId);
-    switch (data.stream) {
+    switch (data2.stream) {
       case StreamKind.START_COMPLETE:
-        if (data.success) {
+        if (data2.success) {
           streamController.startCall.resolve();
         } else {
-          streamController.startCall.reject(wrapReason(data.reason));
+          streamController.startCall.reject(wrapReason(data2.reason));
         }
         break;
       case StreamKind.PULL_COMPLETE:
-        if (data.success) {
+        if (data2.success) {
           streamController.pullCall.resolve();
         } else {
-          streamController.pullCall.reject(wrapReason(data.reason));
+          streamController.pullCall.reject(wrapReason(data2.reason));
         }
         break;
       case StreamKind.PULL:
@@ -140013,10 +140221,10 @@ var MessageHandler = class {
           });
           break;
         }
-        if (streamSink.desiredSize <= 0 && data.desiredSize > 0) {
+        if (streamSink.desiredSize <= 0 && data2.desiredSize > 0) {
           streamSink.sinkCapability.resolve();
         }
-        streamSink.desiredSize = data.desiredSize;
+        streamSink.desiredSize = data2.desiredSize;
         Promise.try(streamSink.onPull || onFn).then(() => {
           comObj.postMessage({
             sourceName,
@@ -140040,7 +140248,7 @@ var MessageHandler = class {
         if (streamController.isClosed) {
           break;
         }
-        streamController.controller.enqueue(data.chunk);
+        streamController.controller.enqueue(data2.chunk);
         break;
       case StreamKind.CLOSE:
         assert(streamController, "close should have stream controller");
@@ -140053,14 +140261,14 @@ var MessageHandler = class {
         break;
       case StreamKind.ERROR:
         assert(streamController, "error should have stream controller");
-        streamController.controller.error(wrapReason(data.reason));
+        streamController.controller.error(wrapReason(data2.reason));
         this.#deleteStreamController(streamController, streamId);
         break;
       case StreamKind.CANCEL_COMPLETE:
-        if (data.success) {
+        if (data2.success) {
           streamController.cancelCall.resolve();
         } else {
-          streamController.cancelCall.reject(wrapReason(data.reason));
+          streamController.cancelCall.reject(wrapReason(data2.reason));
         }
         this.#deleteStreamController(streamController, streamId);
         break;
@@ -140068,7 +140276,7 @@ var MessageHandler = class {
         if (!streamSink) {
           break;
         }
-        const dataReason = wrapReason(data.reason);
+        const dataReason = wrapReason(data2.reason);
         Promise.try(streamSink.onCancel || onFn, dataReason).then(() => {
           comObj.postMessage({
             sourceName,
@@ -140149,8 +140357,8 @@ var BaseBinaryDataFactory = class {
 var DOMBinaryDataFactory = class extends BaseBinaryDataFactory {
   async _fetch(url, kind) {
     const type = kind === "cMapUrl" && !url.endsWith(".bcmap") ? "text" : "bytes";
-    const data = await fetchData(url, type);
-    return data instanceof Uint8Array ? data : stringToBytes(data);
+    const data2 = await fetchData(url, type);
+    return data2 instanceof Uint8Array ? data2 : stringToBytes(data2);
   }
 };
 var BaseCanvasFactory = class {
@@ -140241,8 +140449,8 @@ if (isNodeJS) {
 }
 async function node_utils_fetchData(url) {
   const fs2 = process.getBuiltinModule("fs/promises");
-  const data = await fs2.readFile(url);
-  return new Uint8Array(data);
+  const data2 = await fs2.readFile(url);
+  return new Uint8Array(data2);
 }
 var NodeFilterFactory = class extends BaseFilterFactory {
 };
@@ -141275,9 +141483,9 @@ var RadialAxialShadingPattern = class extends BaseShadingPattern {
     return this._createGradient(ctx);
   }
 };
-function drawTriangle(data, context, p1, p22, p3, c1, c22, c3) {
+function drawTriangle(data2, context, p1, p22, p3, c1, c22, c3) {
   const coords = context.coords, colors = context.colors;
-  const bytes = data.data, rowSize = data.width * 4;
+  const bytes = data2.data, rowSize = data2.width * 4;
   let tmp;
   if (coords[p1 * 2 + 1] > coords[p22 * 2 + 1]) {
     tmp = p1;
@@ -141405,9 +141613,9 @@ var MeshShadingPattern = class extends BaseShadingPattern {
     if (isGPUReady() && this._vertexCount > 48) {
       tmpCanvas.context.drawImage(drawMeshWithGPU(this._posData, this._colData, this._vertexCount, context, backgroundColor, paddedWidth, paddedHeight, BORDER_SIZE), 0, 0);
     } else {
-      const data = tmpCanvas.context.createImageData(width, height);
+      const data2 = tmpCanvas.context.createImageData(width, height);
       if (backgroundColor) {
-        const bytes = data.data;
+        const bytes = data2.data;
         for (let i3 = 0, ii = bytes.length; i3 < ii; i3 += 4) {
           bytes[i3] = backgroundColor[0];
           bytes[i3 + 1] = backgroundColor[1];
@@ -141416,9 +141624,9 @@ var MeshShadingPattern = class extends BaseShadingPattern {
         }
       }
       for (let i3 = 0, ii = this._vertexCount; i3 < ii; i3 += 3) {
-        drawTriangle(data, context, i3, i3 + 1, i3 + 2, i3, i3 + 1, i3 + 2);
+        drawTriangle(data2, context, i3, i3 + 1, i3 + 2, i3, i3 + 1, i3 + 2);
       }
-      tmpCanvas.context.putImageData(data, BORDER_SIZE, BORDER_SIZE);
+      tmpCanvas.context.putImageData(data2, BORDER_SIZE, BORDER_SIZE);
     }
     transferMaps?.applyToCanvas(tmpCanvas.context);
     return {
@@ -141995,13 +142203,13 @@ var TransferMapsFallback = class {
     return Util.makeHexColor(mapR[r2], mapG[g3], mapB[b3]);
   }
   applyToImageData({
-    data
+    data: data2
   }) {
     const [mapR, mapG, mapB] = this.#maps;
-    for (let i3 = 0, ii = data.length; i3 < ii; i3 += 4) {
-      data[i3] = mapR[data[i3]];
-      data[i3 + 1] = mapG[data[i3 + 1]];
-      data[i3 + 2] = mapB[data[i3 + 2]];
+    for (let i3 = 0, ii = data2.length; i3 < ii; i3 += 4) {
+      data2[i3] = mapR[data2[i3]];
+      data2[i3 + 1] = mapG[data2[i3 + 1]];
+      data2[i3 + 2] = mapB[data2[i3 + 2]];
     }
   }
   applyToCanvas(ctx) {
@@ -142081,10 +142289,10 @@ var CanvasGraphics = class _CanvasGraphics {
     this.dependencyTracker = dependencyTracker ?? null;
     this.imagesTracker = imagesTracker ?? null;
   }
-  getObject(opIdx, data, fallback = null) {
-    if (typeof data === "string") {
-      this.dependencyTracker?.recordNamedDependency(opIdx, data);
-      return data.startsWith("g_") ? this.commonObjs.get(data) : this.objs.get(data);
+  getObject(opIdx, data2, fallback = null) {
+    if (typeof data2 === "string") {
+      this.dependencyTracker?.recordNamedDependency(opIdx, data2);
+      return data2.startsWith("g_") ? this.commonObjs.get(data2) : this.objs.get(data2);
     }
     return fallback;
   }
@@ -142608,20 +142816,20 @@ var CanvasGraphics = class _CanvasGraphics {
     if (!filterApplied) {
       const img = pCtx.getImageData(0, 0, w3, h3);
       const {
-        data
+        data: data2
       } = img;
       const {
         transferMap
       } = filterSpec;
       if (filterSpec.subtype === "Luminosity") {
-        for (let i3 = 0, ii = data.length; i3 < ii; i3 += 4) {
-          const a2 = 0.3 * data[i3] + 0.59 * data[i3 + 1] + 0.11 * data[i3 + 2] + 0.5 | 0;
-          data[i3] = data[i3 + 1] = data[i3 + 2] = 0;
-          data[i3 + 3] = transferMap?.[a2] ?? a2;
+        for (let i3 = 0, ii = data2.length; i3 < ii; i3 += 4) {
+          const a2 = 0.3 * data2[i3] + 0.59 * data2[i3 + 1] + 0.11 * data2[i3 + 2] + 0.5 | 0;
+          data2[i3] = data2[i3 + 1] = data2[i3 + 2] = 0;
+          data2[i3 + 3] = transferMap?.[a2] ?? a2;
         }
       } else {
-        for (let i3 = 3, ii = data.length; i3 < ii; i3 += 4) {
-          data[i3] = transferMap[data[i3]];
+        for (let i3 = 3, ii = data2.length; i3 < ii; i3 += 4) {
+          data2[i3] = transferMap[data2[i3]];
         }
       }
       pCtx.putImageData(img, 0, 0);
@@ -142998,7 +143206,7 @@ var CanvasGraphics = class _CanvasGraphics {
     this.ctx.transform(a2, b3, c3, d3, e2, f3);
     this._cachedScaleForStroking[0] = -1;
   }
-  constructPath(opIdx, op, data, minMax) {
+  constructPath(opIdx, op, data2, minMax) {
     let path = this._pathCache.get(opIdx);
     if (!minMax) {
       if (!path) {
@@ -143016,7 +143224,7 @@ var CanvasGraphics = class _CanvasGraphics {
       this.dependencyTracker.resetBBox(opIdx).recordBBox(opIdx, this.ctx, minMax[0] - outerExtraSize, minMax[2] + outerExtraSize, minMax[1] - outerExtraSize, minMax[3] + outerExtraSize).recordDependencies(opIdx, ["transform"]);
     }
     if (!path) {
-      path = makePathFromDrawOPS(data[0]);
+      path = makePathFromDrawOPS(data2[0]);
       this._pathCache.set(opIdx, path);
     }
     Util.axialAlignedBoundingBox(minMax, getCurrentTransform(this.ctx), this.current.minMax);
@@ -143365,11 +143573,11 @@ var CanvasGraphics = class _CanvasGraphics {
     const ctx = tmpCanvas.context;
     ctx.scale(1.5, 1);
     ctx.fillText("I", 0, 10);
-    const data = ctx.getImageData(0, 0, 10, 10).data;
+    const data2 = ctx.getImageData(0, 0, 10, 10).data;
     this.canvasFactory.destroy(tmpCanvas);
     let enabled = false;
-    for (let i3 = 3; i3 < data.length; i3 += 4) {
-      if (data[i3] > 0 && data[i3] < 255) {
+    for (let i3 = 3; i3 < data2.length; i3 += 4) {
+      if (data2[i3] > 0 && data2[i3] < 255) {
         enabled = true;
         break;
       }
@@ -143990,11 +144198,11 @@ var CanvasGraphics = class _CanvasGraphics {
     }
     const imageData = groupCtx.getImageData(0, 0, width, height);
     const {
-      data
+      data: data2
     } = imageData;
-    for (let i3 = 0, ii = data.length; i3 < ii; i3 += 4) {
-      const gray = data[i3] * 0.2126 + data[i3 + 1] * 0.7152 + data[i3 + 2] * 0.0722 + 0.5 | 0;
-      data[i3] = data[i3 + 1] = data[i3 + 2] = gray;
+    for (let i3 = 0, ii = data2.length; i3 < ii; i3 += 4) {
+      const gray = data2[i3] * 0.2126 + data2[i3 + 1] * 0.7152 + data2[i3 + 2] * 0.0722 + 0.5 | 0;
+      data2[i3] = data2[i3 + 1] = data2[i3 + 2] = gray;
     }
     groupCtx.putImageData(imageData, 0, 0);
   }
@@ -144141,7 +144349,7 @@ var CanvasGraphics = class _CanvasGraphics {
     this.dependencyTracker?.resetBBox(opIdx).recordDependencies(opIdx, Dependencies.transformAndFill);
     for (const image of images) {
       const {
-        data,
+        data: data2,
         width,
         height,
         transform
@@ -144149,7 +144357,7 @@ var CanvasGraphics = class _CanvasGraphics {
       const maskCanvas = this.canvasFactory.create(width, height);
       const maskCtx = maskCanvas.context;
       maskCtx.save();
-      const img = this.getObject(opIdx, data, image);
+      const img = this.getObject(opIdx, data2, image);
       putBinaryImageMask(maskCtx, img);
       maskCtx.globalCompositeOperation = "source-in";
       maskCtx.fillStyle = isPatternFill ? fillColor.getPattern(maskCtx, this, getCurrentTransformInverse(ctx), PathType.FILL, opIdx) : fillColor;
@@ -145053,8 +145261,8 @@ var FontLoader = class {
     };
     loadingRequests.push(request2);
     this._loadTestFont ??= atob("T1RUTwALAIAAAwAwQ0ZGIDHtZg4AAAOYAAAAgUZGVE1lkzZwAAAEHAAAABxHREVGABQAFQAABDgAAAAeT1MvMlYNYwkAAAEgAAAAYGNtYXABDQLUAAACNAAAAUJoZWFk/xVFDQAAALwAAAA2aGhlYQdkA+oAAAD0AAAAJGhtdHgD6AAAAAAEWAAAAAZtYXhwAAJQAAAAARgAAAAGbmFtZVjmdH4AAAGAAAAAsXBvc3T/hgAzAAADeAAAACAAAQAAAAEAALZRFsRfDzz1AAsD6AAAAADOBOTLAAAAAM4KHDwAAAAAA+gDIQAAAAgAAgAAAAAAAAABAAADIQAAAFoD6AAAAAAD6AABAAAAAAAAAAAAAAAAAAAAAQAAUAAAAgAAAAQD6AH0AAUAAAKKArwAAACMAooCvAAAAeAAMQECAAACAAYJAAAAAAAAAAAAAQAAAAAAAAAAAAAAAFBmRWQAwAAuAC4DIP84AFoDIQAAAAAAAQAAAAAAAAAAACAAIAABAAAADgCuAAEAAAAAAAAAAQAAAAEAAAAAAAEAAQAAAAEAAAAAAAIAAQAAAAEAAAAAAAMAAQAAAAEAAAAAAAQAAQAAAAEAAAAAAAUAAQAAAAEAAAAAAAYAAQAAAAMAAQQJAAAAAgABAAMAAQQJAAEAAgABAAMAAQQJAAIAAgABAAMAAQQJAAMAAgABAAMAAQQJAAQAAgABAAMAAQQJAAUAAgABAAMAAQQJAAYAAgABWABYAAAAAAAAAwAAAAMAAAAcAAEAAAAAADwAAwABAAAAHAAEACAAAAAEAAQAAQAAAC7//wAAAC7////TAAEAAAAAAAABBgAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAAAAAAAD/gwAyAAAAAQAAAAAAAAAAAAAAAAAAAAABAAQEAAEBAQJYAAEBASH4DwD4GwHEAvgcA/gXBIwMAYuL+nz5tQXkD5j3CBLnEQACAQEBIVhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYAAABAQAADwACAQEEE/t3Dov6fAH6fAT+fPp8+nwHDosMCvm1Cvm1DAz6fBQAAAAAAAABAAAAAMmJbzEAAAAAzgTjFQAAAADOBOQpAAEAAAAAAAAADAAUAAQAAAABAAAAAgABAAAAAAAAAAAD6AAAAAAAAA==");
-    function int32(data2, offset) {
-      return data2.charCodeAt(offset) << 24 | data2.charCodeAt(offset + 1) << 16 | data2.charCodeAt(offset + 2) << 8 | data2.charCodeAt(offset + 3) & 255;
+    function int32(data3, offset) {
+      return data3.charCodeAt(offset) << 24 | data3.charCodeAt(offset + 1) << 16 | data3.charCodeAt(offset + 2) << 8 | data3.charCodeAt(offset + 3) & 255;
     }
     function string32(value) {
       return String.fromCharCode(value >> 24 & 255, value >> 16 & 255, value >> 8 & 255, value & 255);
@@ -145086,20 +145294,20 @@ var FontLoader = class {
       setTimeout(isFontReady.bind(null, name, callback));
     }
     const loadTestFontId = `lt${Date.now()}${this.loadTestFontId++}`;
-    let data = this._loadTestFont;
+    let data2 = this._loadTestFont;
     const COMMENT_OFFSET = 976;
-    data = spliceString(data, COMMENT_OFFSET, loadTestFontId.length, loadTestFontId);
+    data2 = spliceString(data2, COMMENT_OFFSET, loadTestFontId.length, loadTestFontId);
     const CFF_CHECKSUM_OFFSET = 16;
     const XXXX_VALUE = 1482184792;
-    let checksum = int32(data, CFF_CHECKSUM_OFFSET);
+    let checksum = int32(data2, CFF_CHECKSUM_OFFSET);
     for (i3 = 0, ii = loadTestFontId.length - 3; i3 < ii; i3 += 4) {
       checksum = checksum - XXXX_VALUE + int32(loadTestFontId, i3) | 0;
     }
     if (i3 < loadTestFontId.length) {
       checksum = checksum - XXXX_VALUE + int32(loadTestFontId + "XXX", i3) | 0;
     }
-    data = spliceString(data, CFF_CHECKSUM_OFFSET, 4, string32(checksum));
-    const url = `url(data:font/opentype;base64,${btoa(data)});`;
+    data2 = spliceString(data2, CFF_CHECKSUM_OFFSET, 4, string32(checksum));
+    const url = `url(data:font/opentype;base64,${btoa(data2)});`;
     const rule = `@font-face {font-family:"${loadTestFontId}";src:${url}}`;
     this.insertRule(rule);
     const div = this._document.createElement("div");
@@ -145136,14 +145344,14 @@ var FontFaceObject = class {
   }
   createNativeFontFace() {
     const {
-      data
+      data: data2
     } = this;
-    if (!data || this.disableFontFace) {
+    if (!data2 || this.disableFontFace) {
       return null;
     }
     let nativeFontFace;
     if (!this.cssFontInfo) {
-      nativeFontFace = new FontFace(this.loadedName, data, {});
+      nativeFontFace = new FontFace(this.loadedName, data2, {});
     } else {
       const css = {
         weight: this.cssFontInfo.fontWeight
@@ -145151,19 +145359,19 @@ var FontFaceObject = class {
       if (this.cssFontInfo.italicAngle) {
         css.style = `oblique ${this.cssFontInfo.italicAngle}deg`;
       }
-      nativeFontFace = new FontFace(serializeFontFamily(this.cssFontInfo.fontFamily), data, css);
+      nativeFontFace = new FontFace(serializeFontFamily(this.cssFontInfo.fontFamily), data2, css);
     }
     this._inspectFont?.(this);
     return nativeFontFace;
   }
   createFontFaceRule() {
     const {
-      data
+      data: data2
     } = this;
-    if (!data || this.disableFontFace) {
+    if (!data2 || this.disableFontFace) {
       return null;
     }
-    const url = `url(data:${this.mimetype};base64,${data.toBase64()});`;
+    const url = `url(data:${this.mimetype};base64,${data2.toBase64()});`;
     let rule;
     if (!this.cssFontInfo) {
       rule = `@font-face {font-family:"${this.loadedName}";src:${url}}`;
@@ -146562,8 +146770,8 @@ var FontInfo = class {
     } = this.#getBufferOffset(1);
     let info2 = null;
     if (length) {
-      const data = new Uint8Array(this.#buffer, offset + 4, length).slice();
-      info2 = new CssFontInfo(data.buffer);
+      const data2 = new Uint8Array(this.#buffer, offset + 4, length).slice();
+      info2 = new CssFontInfo(data2.buffer);
     }
     return shadow(this, "cssFontInfo", info2);
   }
@@ -146574,8 +146782,8 @@ var FontInfo = class {
     } = this.#getBufferOffset(0);
     let info2 = null;
     if (length) {
-      const data = new Uint8Array(this.#buffer, offset + 4, length).slice();
-      info2 = new SystemFontInfo(data.buffer);
+      const data2 = new Uint8Array(this.#buffer, offset + 4, length).slice();
+      info2 = new SystemFontInfo(data2.buffer);
     }
     return shadow(this, "systemFontInfo", info2);
   }
@@ -146683,12 +146891,12 @@ var PDFObjects = class {
     this.#objs.delete(objId);
     return true;
   }
-  resolve(objId, data = null) {
+  resolve(objId, data2 = null) {
     const obj = this.#objs.getOrInsertComputed(objId, dataObj);
     if (obj.data !== INITIAL_DATA) {
       throw new Error(`Object already resolved ${objId}.`);
     }
-    obj.data = data;
+    obj.data = data2;
     obj.resolve();
   }
   reject(objId, reason) {
@@ -146702,18 +146910,18 @@ var PDFObjects = class {
   }
   clear() {
     for (const {
-      data
+      data: data2
     } of this.#objs.values()) {
-      data?.bitmap?.close();
+      data2?.bitmap?.close();
     }
     this.#objs.clear();
   }
   *[Symbol.iterator]() {
     for (const [objId, {
-      data
+      data: data2
     }] of this.#objs) {
-      if (data !== INITIAL_DATA) {
-        yield [objId, data];
+      if (data2 !== INITIAL_DATA) {
+        yield [objId, data2];
       }
     }
   }
@@ -146742,16 +146950,16 @@ var ObjectHandler = class {
       assert(imageRef, "The imageRef must be defined.");
       for (const pageOrObjs of this.pageCache.values()) {
         const objs = pageOrObjs.objs || pageOrObjs;
-        for (const [, data] of objs) {
-          if (data?.ref !== imageRef) {
+        for (const [, data2] of objs) {
+          if (data2?.ref !== imageRef) {
             continue;
           }
-          if (!data.dataLen) {
+          if (!data2.dataLen) {
             return null;
           }
-          const copy = structuredClone(data);
+          const copy = structuredClone(data2);
           this.commonObjs.resolve(id3, copy);
-          return data.dataLen;
+          return data2.dataLen;
         }
       }
       return null;
@@ -146879,16 +147087,16 @@ var OptionalContentConfig = class _OptionalContentConfig {
   #rawData;
   creator = null;
   name = null;
-  constructor(data, renderingIntent = RenderingIntentFlag.DISPLAY, groupState = null) {
-    this.#rawData = data;
+  constructor(data2, renderingIntent = RenderingIntentFlag.DISPLAY, groupState = null) {
+    this.#rawData = data2;
     this.renderingIntent = renderingIntent;
-    if (data === null) {
+    if (data2 === null) {
       return;
     }
-    this.name = data.name;
-    this.creator = data.creator;
-    this.#order = data.order;
-    for (const group of data.groups) {
+    this.name = data2.name;
+    this.creator = data2.creator;
+    this.#order = data2.order;
+    for (const group of data2.groups) {
       this.#groups.set(group.id, new OptionalContentGroup(renderingIntent, group));
     }
     if (groupState) {
@@ -146899,15 +147107,15 @@ var OptionalContentConfig = class _OptionalContentConfig {
         this.#groups.get(id3)._setVisible(INTERNAL, group.visible, group.userSet);
       }
     } else {
-      if (data.baseState === "OFF") {
+      if (data2.baseState === "OFF") {
         for (const group of this.#groups.values()) {
           group._setVisible(INTERNAL, false);
         }
       }
-      for (const on2 of data.on) {
+      for (const on2 of data2.on) {
         this.#groups.get(on2)._setVisible(INTERNAL, true);
       }
-      for (const off of data.off) {
+      for (const off of data2.off) {
         this.#groups.get(off)._setVisible(INTERNAL, false);
       }
     }
@@ -147104,11 +147312,11 @@ var OptionalContentConfig = class _OptionalContentConfig {
     };
   }
   static fromSerializable({
-    data,
+    data: data2,
     renderingIntent,
     groupState
   }) {
-    return new _OptionalContentConfig(data, renderingIntent, groupState);
+    return new _OptionalContentConfig(data2, renderingIntent, groupState);
   }
 };
 var PagesMapper = class {
@@ -147690,14 +147898,14 @@ var RendererWorker = class _RendererWorker {
     if (isPort) {
       timeoutId = setTimeout(() => terminateEarly("Connection timed out."), PORT_CONNECTION_TIMEOUT);
     }
-    messageHandler.on("ready", (data) => {
-      if (!(data?.testObj instanceof Uint8Array)) {
+    messageHandler.on("ready", (data2) => {
+      if (!(data2?.testObj instanceof Uint8Array)) {
         terminateEarly("TypedArray transfer test failed.");
         return;
       }
       const apiVersion = "6.5.438";
-      if (apiVersion !== data.workerVersion) {
-        terminateEarly(`The API version "${apiVersion}" does not match the Worker version "${data.workerVersion}".`);
+      if (apiVersion !== data2.workerVersion) {
+        terminateEarly(`The API version "${apiVersion}" does not match the Worker version "${data2.workerVersion}".`);
         return;
       }
       this.#terminateEarly = null;
@@ -147740,14 +147948,14 @@ var RendererWorker = class _RendererWorker {
     const ac2 = new AbortController();
     const timeoutId = setTimeout(() => ac2.abort(), PORT_CONNECTION_TIMEOUT);
     port.addEventListener("message", ({
-      data
+      data: data2
     }) => {
-      if (data?.targetName !== sourceName || data.sourceName !== targetName) {
+      if (data2?.targetName !== sourceName || data2.sourceName !== targetName) {
         return;
       }
-      if (data.action === "RenderFrame") {
-        closeFrame(data.data);
-      } else if (data.action === "Disconnected") {
+      if (data2.action === "RenderFrame") {
+        closeFrame(data2.data);
+      } else if (data2.action === "Disconnected") {
         clearTimeout(timeoutId);
         ac2.abort();
       }
@@ -147768,7 +147976,7 @@ var RendererWorker = class _RendererWorker {
       port
     });
   }
-  sendWithPromise(action, data) {
+  sendWithPromise(action, data2) {
     const handler = this.#messageHandler;
     if (!handler) {
       return Promise.reject(new Error("Renderer worker was destroyed."));
@@ -147779,26 +147987,26 @@ var RendererWorker = class _RendererWorker {
       reject
     } = Promise.withResolvers();
     this.#pendingRequests.add(reject);
-    handler.sendWithPromise(action, data).then(resolve, reject);
+    handler.sendWithPromise(action, data2).then(resolve, reject);
     return promise.finally(() => {
       this.#pendingRequests.delete(reject);
     });
   }
-  #send(action, data) {
+  #send(action, data2) {
     if (this.#pendingMessages) {
-      this.#pendingMessages.push(() => this.#send(action, data));
+      this.#pendingMessages.push(() => this.#send(action, data2));
       return;
     }
-    this.#messageHandler?.send(action, data);
+    this.#messageHandler?.send(action, data2);
   }
-  #sendObj(action, data, id3, pageProxyId, isFont = false) {
+  #sendObj(action, data2, id3, pageProxyId, isFont = false) {
     try {
       if (this.#pendingMessages) {
-        const queuedData = isFont ? structuredClone(data) : data;
+        const queuedData = isFont ? structuredClone(data2) : data2;
         this.#pendingMessages.push(() => this.#sendObj(action, queuedData, id3, pageProxyId));
         return;
       }
-      this.#messageHandler?.send(action, data);
+      this.#messageHandler?.send(action, data2);
     } catch (reason) {
       warn(`RendererWorker - failed to send "${action}": ${reason}`);
       this.#send("objFailed", {
@@ -147808,11 +148016,11 @@ var RendererWorker = class _RendererWorker {
       });
     }
   }
-  sendCommonObj(id3, type, data) {
-    this.#sendObj("commonobj", [id3, type, data], id3, null, type === "Font");
+  sendCommonObj(id3, type, data2) {
+    this.#sendObj("commonobj", [id3, type, data2], id3, null, type === "Font");
   }
-  sendObj(id3, pageProxyId, type, data) {
-    this.#sendObj("obj", [id3, pageProxyId, type, data], id3, pageProxyId);
+  sendObj(id3, pageProxyId, type, data2) {
+    this.#sendObj("obj", [id3, pageProxyId, type, data2], id3, pageProxyId);
   }
   cleanup(keepLoadedFonts) {
     this.#send("Cleanup", {
@@ -148229,7 +148437,7 @@ function getDocument(src = {}) {
     docId
   } = task;
   const url = src.url ? getUrlProp(src.url) : null;
-  const data = src.data ? getDataProp(src.data) : null;
+  const data2 = src.data ? getDataProp(src.data) : null;
   const httpHeaders = src.httpHeaders || null;
   const withCredentials = src.withCredentials === true;
   const password = src.password ?? null;
@@ -148311,7 +148519,7 @@ function getDocument(src = {}) {
   const docParams = {
     docId,
     apiVersion: "6.5.438",
-    data,
+    data: data2,
     password,
     disableAutoFetch,
     rangeChunkSize,
@@ -148350,9 +148558,9 @@ function getDocument(src = {}) {
     if (worker.destroyed) {
       throw new Error("Worker was destroyed");
     }
-    const workerIdPromise = worker.messageHandler.sendWithPromise("GetDocRequest", docParams, data ? [data.buffer] : null);
+    const workerIdPromise = worker.messageHandler.sendWithPromise("GetDocRequest", docParams, data2 ? [data2.buffer] : null);
     let networkStream;
-    if (data) {
+    if (data2) {
     } else if (rangeTransport) {
       networkStream = new PDFDataTransportStream({
         pdfDataRangeTransport: rangeTransport,
@@ -149146,9 +149354,9 @@ var PDFWorker = class _PDFWorker {
       }, {
         signal: ac2.signal
       });
-      messageHandler.on("ready", (data) => {
+      messageHandler.on("ready", (data2) => {
         ac2.abort();
-        if (this.destroyed || !(data instanceof Uint8Array)) {
+        if (this.destroyed || !(data2 instanceof Uint8Array)) {
           terminateEarly();
           return;
         }
@@ -149216,7 +149424,7 @@ var PDFWorker = class _PDFWorker {
     }
   }
   static get _setupFakeWorkerGlobal() {
-    const loader2 = async () => {
+    const loader3 = async () => {
       if (this.#mainThreadWorkerMessageHandler) {
         return this.#mainThreadWorkerMessageHandler;
       }
@@ -149227,7 +149435,7 @@ var PDFWorker = class _PDFWorker {
       );
       return worker.WorkerMessageHandler;
     };
-    return shadow(this, "_setupFakeWorkerGlobal", loader2());
+    return shadow(this, "_setupFakeWorkerGlobal", loader3());
   }
 };
 var WorkerTransport = class {
@@ -149265,8 +149473,8 @@ var WorkerTransport = class {
     this.#pageCache.set(page._id, page);
     this.#pagePromises.set(page._pageIndex, Promise.resolve(page));
   }
-  #cacheSimpleMethod(name, data = null) {
-    return this.#methodPromises.getOrInsertComputed(name, () => this.messageHandler.sendWithPromise(name, data));
+  #cacheSimpleMethod(name, data2 = null) {
+    return this.#methodPromises.getOrInsertComputed(name, () => this.messageHandler.sendWithPromise(name, data2));
   }
   #onProgress({
     loaded,
@@ -149369,7 +149577,7 @@ var WorkerTransport = class {
       messageHandler,
       loadingTask
     } = this;
-    messageHandler.on("GetReader", (data, sink) => {
+    messageHandler.on("GetReader", (data2, sink) => {
       assert(this.#networkStream, "GetReader - no `BasePDFStream` instance available.");
       this.#fullReader = this.#networkStream.getFullReader();
       this.#fullReader.onProgress = (evt) => this.#onProgress(evt);
@@ -149398,7 +149606,7 @@ var WorkerTransport = class {
         });
       };
     });
-    messageHandler.on("ReaderHeadersReady", async (data) => {
+    messageHandler.on("ReaderHeadersReady", async (data2) => {
       await this.#fullReader.headersReady;
       const {
         isStreamingSupported,
@@ -149414,9 +149622,9 @@ var WorkerTransport = class {
         contentLength
       };
     });
-    messageHandler.on("GetRangeReader", (data, sink) => {
+    messageHandler.on("GetRangeReader", (data2, sink) => {
       assert(this.#networkStream, "GetRangeReader - no `BasePDFStream` instance available.");
-      const rangeReader = this.#networkStream.getRangeReader(data.begin, data.end);
+      const rangeReader = this.#networkStream.getRangeReader(data2.begin, data2.end);
       if (!rangeReader) {
         sink.close();
         return;
@@ -149479,19 +149687,19 @@ var WorkerTransport = class {
       }
       return this.#passwordCapability.promise;
     });
-    messageHandler.on("DataLoaded", (data) => {
+    messageHandler.on("DataLoaded", (data2) => {
       this.#onProgress({
-        loaded: data.length,
-        total: data.length
+        loaded: data2.length,
+        total: data2.length
       });
-      this.downloadInfoCapability.resolve(data);
+      this.downloadInfoCapability.resolve(data2);
     });
-    messageHandler.on("StartRenderPage", (data) => {
+    messageHandler.on("StartRenderPage", (data2) => {
       if (this.destroyed) {
         return;
       }
-      const page = this.#pageCache.get(data.pageProxyId);
-      page._startRenderPage(data.transparency, data.cacheKey);
+      const page = this.#pageCache.get(data2.pageProxyId);
+      page._startRenderPage(data2.transparency, data2.cacheKey);
     });
     const objectHandler = new ObjectHandler({
       messageHandler,
@@ -149501,7 +149709,7 @@ var WorkerTransport = class {
       pdfBug: this._params.pdfBug
     });
     this.rendererWorker?.promise.then(() => {
-      this.rendererWorker?.messageHandler?.on("FontFallback", (data) => this.destroyed ? null : messageHandler.sendWithPromise("FontFallback", data));
+      this.rendererWorker?.messageHandler?.on("FontFallback", (data2) => this.destroyed ? null : messageHandler.sendWithPromise("FontFallback", data2));
     }, () => {
     });
     messageHandler.on("commonobj", ([id3, type, exportedData]) => {
@@ -149541,20 +149749,20 @@ var WorkerTransport = class {
         this.rendererWorker?.sendObj(id3, pageProxyId, type, imageData);
       }
     });
-    messageHandler.on("DocProgress", (data) => {
+    messageHandler.on("DocProgress", (data2) => {
       if (this.destroyed) {
         return;
       }
-      this.#onProgress(data);
+      this.#onProgress(data2);
     });
-    messageHandler.on("FetchBinaryData", async (data) => {
+    messageHandler.on("FetchBinaryData", async (data2) => {
       if (this.destroyed) {
         throw new Error("Worker was destroyed.");
       }
       if (!this.binaryDataFactory) {
         throw new Error("`BinaryDataFactory` not initialized, see the `useWorkerFetch` parameter.");
       }
-      return this.binaryDataFactory.fetch(data);
+      return this.binaryDataFactory.fetch(data2);
     });
   }
   getData() {
@@ -149751,7 +149959,7 @@ var WorkerTransport = class {
     return this.#methodPromises.getOrInsertComputed(name, () => this.messageHandler.sendWithPromise(name, null).catch((reason) => {
       warn(`${name}: "${reason}".`);
       return null;
-    })).then((data) => new OptionalContentConfig(data, renderingIntent));
+    })).then((data2) => new OptionalContentConfig(data2, renderingIntent));
   }
   getPermissions() {
     return this.messageHandler.sendWithPromise("GetPermissions", null);
@@ -150597,10 +150805,10 @@ var AnnotationElement = class _AnnotationElement {
   }
   get commentData() {
     const {
-      data
+      data: data2
     } = this;
-    const editor = this.annotationStorage?.getEditor(data.id);
-    return editor ? editor.getData() : data;
+    const editor = this.annotationStorage?.getEditor(data2.id);
+    return editor ? editor.getData() : data2;
   }
   get hasCommentButton() {
     return this.enableComment && this.hasPopupElement;
@@ -150666,27 +150874,27 @@ var AnnotationElement = class _AnnotationElement {
   }
   get commentText() {
     const {
-      data
+      data: data2
     } = this;
-    return this.annotationStorage.getRawValue(`${AnnotationEditorPrefix}${data.id}`)?.popup?.contents || data.contentsObj?.str || "";
+    return this.annotationStorage.getRawValue(`${AnnotationEditorPrefix}${data2.id}`)?.popup?.contents || data2.contentsObj?.str || "";
   }
   set commentText(text) {
     const {
-      data
+      data: data2
     } = this;
     const popup = {
       deleted: !text,
       contents: text || ""
     };
-    if (!this.annotationStorage.updateEditor(data.id, {
+    if (!this.annotationStorage.updateEditor(data2.id, {
       popup
     })) {
-      this.annotationStorage.setValue(`${AnnotationEditorPrefix}${data.id}`, {
-        id: data.id,
-        annotationType: data.annotationType,
+      this.annotationStorage.setValue(`${AnnotationEditorPrefix}${data2.id}`, {
+        id: data2.id,
+        annotationType: data2.annotationType,
         page: this.parent.page,
         popup,
-        popupRef: data.popupRef,
+        popupRef: data2.popupRef,
         modificationDate: /* @__PURE__ */ new Date()
       });
     }
@@ -150769,14 +150977,14 @@ var AnnotationElement = class _AnnotationElement {
   }
   _createContainer(ignoreBorder) {
     const {
-      data,
+      data: data2,
       parent: {
         page,
         viewport
       }
     } = this;
     const container = document.createElement("section");
-    container.setAttribute("data-annotation-id", data.id);
+    container.setAttribute("data-annotation-id", data2.id);
     if (!(this instanceof WidgetAnnotationElement) && !(this instanceof LinkAnnotationElement) && !(this instanceof MediaAnnotationElement)) {
       container.tabIndex = 0;
     }
@@ -150785,17 +150993,17 @@ var AnnotationElement = class _AnnotationElement {
     } = container;
     style.zIndex = this.parent.zIndex;
     this.parent.zIndex += 2;
-    if (data.alternativeText) {
-      container.title = data.alternativeText;
+    if (data2.alternativeText) {
+      container.title = data2.alternativeText;
     }
-    if (data.noRotate) {
+    if (data2.noRotate) {
       container.classList.add("norotate");
     }
-    if (!data.rect || this instanceof PopupAnnotationElement) {
+    if (!data2.rect || this instanceof PopupAnnotationElement) {
       const {
         rotation: rotation2
-      } = data;
-      if (!data.hasOwnCanvas && rotation2 !== 0) {
+      } = data2;
+      if (!data2.hasOwnCanvas && rotation2 !== 0) {
         this.setRotation(rotation2, container);
       }
       return container;
@@ -150804,15 +151012,15 @@ var AnnotationElement = class _AnnotationElement {
       width,
       height
     } = this;
-    if (!ignoreBorder && data.borderStyle.width > 0) {
-      style.borderWidth = `${data.borderStyle.width}px`;
-      const horizontalRadius = data.borderStyle.horizontalCornerRadius;
-      const verticalRadius = data.borderStyle.verticalCornerRadius;
+    if (!ignoreBorder && data2.borderStyle.width > 0) {
+      style.borderWidth = `${data2.borderStyle.width}px`;
+      const horizontalRadius = data2.borderStyle.horizontalCornerRadius;
+      const verticalRadius = data2.borderStyle.verticalCornerRadius;
       if (horizontalRadius > 0 || verticalRadius > 0) {
         const radius = `calc(${horizontalRadius}px * var(--total-scale-factor)) / calc(${verticalRadius}px * var(--total-scale-factor))`;
         style.borderRadius = radius;
       }
-      switch (data.borderStyle.style) {
+      switch (data2.borderStyle.style) {
         case AnnotationBorderStyleType.SOLID:
           style.borderStyle = "solid";
           break;
@@ -150831,7 +151039,7 @@ var AnnotationElement = class _AnnotationElement {
         default:
           break;
       }
-      const borderColor = data.borderColor || null;
+      const borderColor = data2.borderColor || null;
       if (borderColor) {
         this.#hasBorder = true;
         style.borderColor = Util.makeHexColor(...borderColor);
@@ -150839,7 +151047,7 @@ var AnnotationElement = class _AnnotationElement {
         style.borderWidth = 0;
       }
     }
-    const rect = Util.normalizeRect([data.rect[0], page.view[3] - data.rect[1] + page.view[1], data.rect[2], page.view[3] - data.rect[3] + page.view[1]]);
+    const rect = Util.normalizeRect([data2.rect[0], page.view[3] - data2.rect[1] + page.view[1], data2.rect[2], page.view[3] - data2.rect[3] + page.view[1]]);
     const {
       pageWidth,
       pageHeight,
@@ -150850,8 +151058,8 @@ var AnnotationElement = class _AnnotationElement {
     style.top = `${100 * (rect[1] - pageY) / pageHeight}%`;
     const {
       rotation
-    } = data;
-    if (data.hasOwnCanvas || rotation === 0) {
+    } = data2;
+    if (data2.hasOwnCanvas || rotation === 0) {
       style.width = `${100 * width / pageWidth}%`;
       style.height = `${100 * height / pageHeight}%`;
     } else {
@@ -151057,7 +151265,7 @@ var AnnotationElement = class _AnnotationElement {
   }
   _createPopup(popupData = null) {
     const {
-      data
+      data: data2
     } = this;
     let contentsObj, modificationDate;
     if (popupData) {
@@ -151066,20 +151274,20 @@ var AnnotationElement = class _AnnotationElement {
       };
       modificationDate = popupData.date;
     } else {
-      contentsObj = data.contentsObj;
-      modificationDate = data.modificationDate;
+      contentsObj = data2.contentsObj;
+      modificationDate = data2.modificationDate;
     }
     this.#popupElement = new PopupAnnotationElement({
       data: {
-        color: data.color,
-        titleObj: data.titleObj,
+        color: data2.color,
+        titleObj: data2.titleObj,
         modificationDate,
         contentsObj,
-        richText: data.richText,
-        parentRect: data.rect,
+        richText: data2.richText,
+        parentRect: data2.rect,
         borderStyle: 0,
-        id: `popup_${data.id}`,
-        rotation: data.rotation,
+        id: `popup_${data2.id}`,
+        rotation: data2.rotation,
         noRotate: true
       },
       linkService: this.linkService,
@@ -151261,34 +151469,34 @@ var LinkAnnotationElement = class extends AnnotationElement {
   }
   render() {
     const {
-      data,
+      data: data2,
       linkService
     } = this;
     const link = document.createElement("a");
-    link.setAttribute("data-element-id", data.id);
+    link.setAttribute("data-element-id", data2.id);
     let isBound = false;
-    if (data.url) {
-      linkService.addLinkAttributes(link, data.url, data.newWindow);
+    if (data2.url) {
+      linkService.addLinkAttributes(link, data2.url, data2.newWindow);
       isBound = true;
-    } else if (data.action) {
-      this._bindNamedAction(link, data.action, data.overlaidText);
+    } else if (data2.action) {
+      this._bindNamedAction(link, data2.action, data2.overlaidText);
       isBound = true;
-    } else if (data.attachment) {
-      this.#bindAttachment(link, data.attachmentId, data.attachment, data.overlaidText, data.attachmentDest);
+    } else if (data2.attachment) {
+      this.#bindAttachment(link, data2.attachmentId, data2.attachment, data2.overlaidText, data2.attachmentDest);
       isBound = true;
-    } else if (data.setOCGState) {
-      this.#bindSetOCGState(link, data.setOCGState, data.overlaidText);
+    } else if (data2.setOCGState) {
+      this.#bindSetOCGState(link, data2.setOCGState, data2.overlaidText);
       isBound = true;
-    } else if (data.dest) {
-      this._bindLink(link, data.dest, data.overlaidText);
+    } else if (data2.dest) {
+      this._bindLink(link, data2.dest, data2.overlaidText);
       isBound = true;
     } else {
-      if (data.actions && (data.actions.has("Action") || data.actions.has("Mouse Up") || data.actions.has("Mouse Down")) && this.enableScripting && this.hasJSActions) {
-        this._bindJSAction(link, data);
+      if (data2.actions && (data2.actions.has("Action") || data2.actions.has("Mouse Up") || data2.actions.has("Mouse Down")) && this.enableScripting && this.hasJSActions) {
+        this._bindJSAction(link, data2);
         isBound = true;
       }
-      if (data.resetForm) {
-        this._bindResetFormAction(link, data.resetForm);
+      if (data2.resetForm) {
+        this._bindResetFormAction(link, data2.resetForm);
         isBound = true;
       } else if (this.isTooltipOnly && !isBound) {
         this._bindLink(link, "");
@@ -151792,13 +152000,13 @@ var TextWidgetAnnotationElement = class extends WidgetAnnotationElement {
               if (formattedValue !== null && formattedValue !== void 0 && event.target !== document.activeElement) {
                 event.target.value = formattedValue;
               }
-              const data = {
+              const data2 = {
                 formattedValue
               };
               if (hasDateOrTime) {
-                data.value = formattedValue;
+                data2.value = formattedValue;
               }
-              storage.setValue(id3, data);
+              storage.setValue(id3, data2);
             },
             selRange(event) {
               event.target.setSelectionRange(...event.detail.selRange);
@@ -151923,7 +152131,7 @@ var TextWidgetAnnotationElement = class extends WidgetAnnotationElement {
           element.addEventListener("beforeinput", (event) => {
             elementData.lastCommittedValue = null;
             const {
-              data,
+              data: data2,
               target
             } = event;
             const {
@@ -151968,7 +152176,7 @@ var TextWidgetAnnotationElement = class extends WidgetAnnotationElement {
                 id: id3,
                 name: "Keystroke",
                 value,
-                change: data || "",
+                change: data2 || "",
                 willCommit: false,
                 selStart,
                 selEnd
@@ -152029,10 +152237,10 @@ var CheckboxWidgetAnnotationElement = class extends WidgetAnnotationElement {
   }
   render() {
     const storage = this.annotationStorage;
-    const data = this.data;
-    const id3 = data.id;
+    const data2 = this.data;
+    const id3 = data2.id;
     let value = storage.getValue(id3, {
-      value: data.exportValue === data.fieldValue
+      value: data2.exportValue === data2.fieldValue
     }).value;
     if (typeof value === "string") {
       value = value !== "Off";
@@ -152044,14 +152252,14 @@ var CheckboxWidgetAnnotationElement = class extends WidgetAnnotationElement {
     const element = document.createElement("input");
     GetElementsByNameSet.add(element);
     element.setAttribute("data-element-id", id3);
-    element.disabled = data.readOnly;
+    element.disabled = data2.readOnly;
     this._setRequired(element, this.data.required);
     element.type = "checkbox";
-    element.name = data.fieldName;
+    element.name = data2.fieldName;
     if (value) {
       element.setAttribute("checked", true);
     }
-    element.setAttribute("exportValue", data.exportValue);
+    element.setAttribute("exportValue", data2.exportValue);
     element.tabIndex = 0;
     element.addEventListener("change", (event) => {
       const {
@@ -152059,7 +152267,7 @@ var CheckboxWidgetAnnotationElement = class extends WidgetAnnotationElement {
         checked
       } = event.target;
       for (const checkbox of this._getElementsByName(name, id3)) {
-        const curChecked = checked && checkbox.exportValue === data.exportValue;
+        const curChecked = checked && checkbox.exportValue === data2.exportValue;
         if (checkbox.domElement) {
           checkbox.domElement.checked = curChecked;
         }
@@ -152072,8 +152280,8 @@ var CheckboxWidgetAnnotationElement = class extends WidgetAnnotationElement {
       });
     });
     element.addEventListener("resetform", (event) => {
-      const defaultValue = data.defaultFieldValue || "Off";
-      event.target.checked = defaultValue === data.exportValue;
+      const defaultValue = data2.defaultFieldValue || "Off";
+      event.target.checked = defaultValue === data2.exportValue;
     });
     if (this.enableScripting && this.hasJSActions) {
       element.addEventListener("updatefromsandbox", (jsEvent) => {
@@ -152103,19 +152311,19 @@ var RadioButtonWidgetAnnotationElement = class extends WidgetAnnotationElement {
   render() {
     this.container.classList.add("buttonWidgetAnnotation", "radioButton");
     const storage = this.annotationStorage;
-    const data = this.data;
-    const id3 = data.id;
+    const data2 = this.data;
+    const id3 = data2.id;
     let value = storage.getValue(id3, {
-      value: data.buttonValue !== null && data.fieldValue === data.buttonValue
+      value: data2.buttonValue !== null && data2.fieldValue === data2.buttonValue
     }).value;
     if (typeof value === "string") {
-      value = value !== data.buttonValue;
+      value = value !== data2.buttonValue;
       storage.setValue(id3, {
         value
       });
     }
     if (value) {
-      for (const radio of this._getElementsByName(data.fieldName, id3)) {
+      for (const radio of this._getElementsByName(data2.fieldName, id3)) {
         storage.setValue(radio.id, {
           value: false
         });
@@ -152124,10 +152332,10 @@ var RadioButtonWidgetAnnotationElement = class extends WidgetAnnotationElement {
     const element = document.createElement("input");
     GetElementsByNameSet.add(element);
     element.setAttribute("data-element-id", id3);
-    element.disabled = data.readOnly;
+    element.disabled = data2.readOnly;
     this._setRequired(element, this.data.required);
     element.type = "radio";
-    element.name = data.fieldName;
+    element.name = data2.fieldName;
     if (value) {
       element.setAttribute("checked", true);
     }
@@ -152147,11 +152355,11 @@ var RadioButtonWidgetAnnotationElement = class extends WidgetAnnotationElement {
       });
     });
     element.addEventListener("resetform", (event) => {
-      const defaultValue = data.defaultFieldValue;
-      event.target.checked = defaultValue !== null && defaultValue !== void 0 && defaultValue === data.buttonValue;
+      const defaultValue = data2.defaultFieldValue;
+      event.target.checked = defaultValue !== null && defaultValue !== void 0 && defaultValue === data2.buttonValue;
     });
     if (this.enableScripting && this.hasJSActions) {
-      const pdfButtonValue = data.buttonValue;
+      const pdfButtonValue = data2.buttonValue;
       element.addEventListener("updatefromsandbox", (jsEvent) => {
         const actions = {
           value: (event) => {
@@ -152428,16 +152636,16 @@ var ChoiceWidgetAnnotationElement = class extends WidgetAnnotationElement {
 var PopupAnnotationElement = class extends AnnotationElement {
   constructor(parameters) {
     const {
-      data,
+      data: data2,
       elements,
       parent
     } = parameters;
     const hasCommentManager = !!parent._commentManager;
     super(parameters, {
-      isRenderable: !hasCommentManager && AnnotationElement._hasPopupData(data)
+      isRenderable: !hasCommentManager && AnnotationElement._hasPopupData(data2)
     });
     this.elements = elements;
-    if (hasCommentManager && AnnotationElement._hasPopupData(data)) {
+    if (hasCommentManager && AnnotationElement._hasPopupData(data2)) {
       const popup = this.popup = this.#createPopup();
       for (const element of elements) {
         element.popup = popup;
@@ -153079,23 +153287,23 @@ var LineAnnotationElement = class extends AnnotationElement {
   render() {
     this.container.classList.add("lineAnnotation");
     const {
-      data,
+      data: data2,
       width,
       height
     } = this;
     const svgFactory = AnnotationElement._svgFactory;
     const svg = svgFactory.create(width, height, true);
     const line = this.#line = svgFactory.createElement("svg:line");
-    line.setAttribute("x1", data.rect[2] - data.lineCoordinates[0]);
-    line.setAttribute("y1", data.rect[3] - data.lineCoordinates[1]);
-    line.setAttribute("x2", data.rect[2] - data.lineCoordinates[2]);
-    line.setAttribute("y2", data.rect[3] - data.lineCoordinates[3]);
-    line.setAttribute("stroke-width", data.borderStyle.width || 1);
+    line.setAttribute("x1", data2.rect[2] - data2.lineCoordinates[0]);
+    line.setAttribute("y1", data2.rect[3] - data2.lineCoordinates[1]);
+    line.setAttribute("x2", data2.rect[2] - data2.lineCoordinates[2]);
+    line.setAttribute("y2", data2.rect[3] - data2.lineCoordinates[3]);
+    line.setAttribute("stroke-width", data2.borderStyle.width || 1);
     line.setAttribute("stroke", "transparent");
     line.setAttribute("fill", "transparent");
     svg.append(line);
     this.container.append(svg);
-    if (!data.popupRef && this.hasPopupData) {
+    if (!data2.popupRef && this.hasPopupData) {
       this.hasOwnCommentButton = true;
       this._createPopup();
     }
@@ -153119,13 +153327,13 @@ var SquareAnnotationElement = class extends AnnotationElement {
   render() {
     this.container.classList.add("squareAnnotation");
     const {
-      data,
+      data: data2,
       width,
       height
     } = this;
     const svgFactory = AnnotationElement._svgFactory;
     const svg = svgFactory.create(width, height, true);
-    const borderWidth = data.borderStyle.width;
+    const borderWidth = data2.borderStyle.width;
     const square = this.#square = svgFactory.createElement("svg:rect");
     square.setAttribute("x", borderWidth / 2);
     square.setAttribute("y", borderWidth / 2);
@@ -153136,7 +153344,7 @@ var SquareAnnotationElement = class extends AnnotationElement {
     square.setAttribute("fill", "transparent");
     svg.append(square);
     this.container.append(svg);
-    if (!data.popupRef && this.hasPopupData) {
+    if (!data2.popupRef && this.hasPopupData) {
       this.hasOwnCommentButton = true;
       this._createPopup();
     }
@@ -153160,13 +153368,13 @@ var CircleAnnotationElement = class extends AnnotationElement {
   render() {
     this.container.classList.add("circleAnnotation");
     const {
-      data,
+      data: data2,
       width,
       height
     } = this;
     const svgFactory = AnnotationElement._svgFactory;
     const svg = svgFactory.create(width, height, true);
-    const borderWidth = data.borderStyle.width;
+    const borderWidth = data2.borderStyle.width;
     const circle = this.#circle = svgFactory.createElement("svg:ellipse");
     circle.setAttribute("cx", width / 2);
     circle.setAttribute("cy", height / 2);
@@ -153177,7 +153385,7 @@ var CircleAnnotationElement = class extends AnnotationElement {
     circle.setAttribute("fill", "transparent");
     svg.append(circle);
     this.container.append(svg);
-    if (!data.popupRef && this.hasPopupData) {
+    if (!data2.popupRef && this.hasPopupData) {
       this.hasOwnCommentButton = true;
       this._createPopup();
     }
@@ -153542,16 +153750,16 @@ var FileAttachmentAnnotationElement = class extends AnnotationElement {
     this.container.classList.add("fileAttachmentAnnotation");
     const {
       container,
-      data
+      data: data2
     } = this;
     let trigger;
-    if (data.hasAppearance || data.fillAlpha === 0) {
+    if (data2.hasAppearance || data2.fillAlpha === 0) {
       trigger = document.createElement("div");
     } else {
       trigger = document.createElement("img");
-      trigger.src = `${this.imageResourcesPath}annotation-${/paperclip/i.test(data.name) ? "paperclip" : "pushpin"}.svg`;
-      if (data.fillAlpha && data.fillAlpha < 1) {
-        trigger.style = `filter: opacity(${Math.round(data.fillAlpha * 100)}%);`;
+      trigger.src = `${this.imageResourcesPath}annotation-${/paperclip/i.test(data2.name) ? "paperclip" : "pushpin"}.svg`;
+      if (data2.fillAlpha && data2.fillAlpha < 1) {
+        trigger.style = `filter: opacity(${Math.round(data2.fillAlpha * 100)}%);`;
       }
     }
     trigger.addEventListener("dblclick", this.#download.bind(this));
@@ -153564,7 +153772,7 @@ var FileAttachmentAnnotationElement = class extends AnnotationElement {
         this.#download();
       }
     });
-    if (!data.popupRef && this.hasPopupData) {
+    if (!data2.popupRef && this.hasPopupData) {
       this.hasOwnCommentButton = true;
       this._createPopup();
     } else {
@@ -153771,39 +153979,39 @@ var AnnotationLayer = class _AnnotationLayer {
       parent: this,
       elements: null
     };
-    for (const data of annotations) {
-      if (data.noHTML) {
+    for (const data2 of annotations) {
+      if (data2.noHTML) {
         continue;
       }
-      const isPopupAnnotation = data.annotationType === AnnotationType.POPUP;
+      const isPopupAnnotation = data2.annotationType === AnnotationType.POPUP;
       if (!isPopupAnnotation) {
-        if (data.rect[2] === data.rect[0] || data.rect[3] === data.rect[1]) {
+        if (data2.rect[2] === data2.rect[0] || data2.rect[3] === data2.rect[1]) {
           continue;
         }
       } else {
-        const elements = popupToElements.get(data.id);
+        const elements = popupToElements.get(data2.id);
         if (!elements) {
           continue;
         }
         if (!this._commentManager) {
-          popupAnnotations.push(data);
+          popupAnnotations.push(data2);
           continue;
         }
         elementParams.elements = elements;
       }
-      elementParams.data = data;
+      elementParams.data = data2;
       const element = AnnotationElementFactory.create(elementParams);
       if (!element.isRenderable) {
         continue;
       }
       if (!isPopupAnnotation) {
         this.#elements.push(element);
-        if (data.popupRef) {
-          popupToElements.getOrInsertComputed(data.popupRef, makeArr).push(element);
+        if (data2.popupRef) {
+          popupToElements.getOrInsertComputed(data2.popupRef, makeArr).push(element);
         }
       }
       const rendered = element.render();
-      if (data.hidden) {
+      if (data2.hidden) {
         rendered.style.visibility = "hidden";
       }
       element.updateOC(optionalContentConfig);
@@ -153813,16 +154021,16 @@ var AnnotationLayer = class _AnnotationLayer {
       }
     }
     await this.#addElementsToDOM();
-    for (const data of popupAnnotations) {
-      const elements = elementParams.elements = popupToElements.get(data.id);
-      elementParams.data = data;
+    for (const data2 of popupAnnotations) {
+      const elements = elementParams.elements = popupToElements.get(data2.id);
+      elementParams.data = data2;
       const element = AnnotationElementFactory.create(elementParams);
       if (!element.isRenderable) {
         continue;
       }
       const rendered = element.render();
-      element.contentElement.id = `${AnnotationPrefix}${data.id}`;
-      if (data.hidden) {
+      element.contentElement.id = `${AnnotationPrefix}${data2.id}`;
+      if (data2.hidden) {
         rendered.style.visibility = "hidden";
       }
       elements.at(-1).container.after(rendered);
@@ -153919,15 +154127,15 @@ var AnnotationLayer = class _AnnotationLayer {
       linkService: this.#linkService,
       parent: this
     };
-    for (const data of annotations) {
-      data.borderStyle ||= _AnnotationLayer._defaultBorderStyle;
-      elementParams.data = data;
+    for (const data2 of annotations) {
+      data2.borderStyle ||= _AnnotationLayer._defaultBorderStyle;
+      elementParams.data = data2;
       const element = AnnotationElementFactory.create(elementParams);
       if (!element.isRenderable) {
         continue;
       }
       element.render();
-      element.contentElement.id = `${AnnotationPrefix}${data.id}`;
+      element.contentElement.id = `${AnnotationPrefix}${data2.id}`;
       this.#elements.push(element);
     }
     await this.#addElementsToDOM();
@@ -154597,9 +154805,9 @@ var FreeTextEditor = class _FreeTextEditor extends AnnotationEditor {
     const padding = _FreeTextEditor._internalPadding * this.parentScale;
     return this.getRect(padding, padding);
   }
-  static async deserialize(data, parent, uiManager) {
+  static async deserialize(data2, parent, uiManager) {
     let initialData = null;
-    if (data instanceof FreeTextAnnotationElement) {
+    if (data2 instanceof FreeTextAnnotationElement) {
       const {
         data: {
           defaultAppearanceData: {
@@ -154622,11 +154830,11 @@ var FreeTextEditor = class _FreeTextEditor extends AnnotationEditor {
             pageNumber
           }
         }
-      } = data;
+      } = data2;
       if (!textContent?.length) {
         return null;
       }
-      initialData = data = {
+      initialData = data2 = {
         annotationType: AnnotationEditorType.FREETEXT,
         color: Array.from(fontColor),
         fontSize,
@@ -154645,13 +154853,13 @@ var FreeTextEditor = class _FreeTextEditor extends AnnotationEditor {
         modificationDate
       };
     }
-    const editor = await super.deserialize(data, parent, uiManager);
-    editor.#fontSize = data.fontSize;
-    editor.color = Util.makeHexColor(...data.color);
-    editor.#content = _FreeTextEditor.#deserializeContent(data.value);
+    const editor = await super.deserialize(data2, parent, uiManager);
+    editor.#fontSize = data2.fontSize;
+    editor.color = Util.makeHexColor(...data2.color);
+    editor.#content = _FreeTextEditor.#deserializeContent(data2.value);
     editor._initialData = initialData;
-    if (data.comment) {
-      editor.setCommentData(data);
+    if (data2.comment) {
+      editor.setCommentData(data2);
     }
     return editor;
   }
@@ -155527,7 +155735,7 @@ var DrawingEditor = class _DrawingEditor extends AnnotationEditor {
   static deserializeDraw(_pageX, _pageY, _pageWidth, _pageHeight, _innerMargin, _data, _uiManager) {
     unreachable("Not implemented");
   }
-  static async deserialize(data, parent, uiManager) {
+  static async deserialize(data2, parent, uiManager) {
     const {
       rawDims: {
         pageWidth,
@@ -155536,9 +155744,9 @@ var DrawingEditor = class _DrawingEditor extends AnnotationEditor {
         pageY
       }
     } = parent.viewport;
-    const drawOutlines = this.deserializeDraw(pageX, pageY, pageWidth, pageHeight, this._INNER_MARGIN, data, uiManager);
-    const editor = await super.deserialize(data, parent, uiManager);
-    editor.createDrawingOptions(data);
+    const drawOutlines = this.deserializeDraw(pageX, pageY, pageWidth, pageHeight, this._INNER_MARGIN, data2, uiManager);
+    const editor = await super.deserialize(data2, parent, uiManager);
+    editor.createDrawingOptions(data2);
     editor.#createDrawOutlines({
       drawOutlines
     });
@@ -156605,9 +156813,9 @@ var HighlightEditor = class _HighlightEditor extends DrawingEditor {
       color: this._uiManager.getNonHCMColorName(this.color)
     };
   }
-  static computeTelemetryFinalData(data) {
+  static computeTelemetryFinalData(data2) {
     return {
-      numberOfColors: data.get("color").size
+      numberOfColors: data2.get("color").size
     };
   }
   translateInPage(x2, y3) {
@@ -156778,10 +156986,10 @@ var HighlightEditor = class _HighlightEditor extends DrawingEditor {
       thickness: thickness || defaults.thickness
     });
   }
-  static deserializeDraw(pageX, pageY, pageWidth, pageHeight, _innerMargin, data, uiManager) {
+  static deserializeDraw(pageX, pageY, pageWidth, pageHeight, _innerMargin, data2, uiManager) {
     const {
       quadPoints
-    } = data;
+    } = data2;
     if (quadPoints) {
       const boxes = [];
       for (let i3 = 0, ii = quadPoints.length; i3 < ii; i3 += 8) {
@@ -156794,8 +157002,8 @@ var HighlightEditor = class _HighlightEditor extends DrawingEditor {
       }
       return HighlightOutline.build(boxes, uiManager.direction === "ltr");
     }
-    const thickness = data.thickness || this._defaultDrawingOptions.thickness;
-    const points = (data.inkLists || data.outlines.points)[0];
+    const thickness = data2.thickness || this._defaultDrawingOptions.thickness;
+    const points = (data2.inkLists || data2.outlines.points)[0];
     const outliner = new FreeHighlightOutliner(points[0] - pageX, pageHeight - (points[1] - pageY), [0, 0, pageWidth, pageHeight], 1, thickness / 2, true, 1e-3);
     for (let i3 = 0, ii = points.length; i3 < ii; i3 += 2) {
       outliner.add(points[i3] - pageX, pageHeight - (points[i3 + 1] - pageY));
@@ -156804,9 +157012,9 @@ var HighlightEditor = class _HighlightEditor extends DrawingEditor {
     outlines.buildFocusOutline(thickness);
     return outlines;
   }
-  static async deserialize(data, parent, uiManager) {
+  static async deserialize(data2, parent, uiManager) {
     let initialData = null;
-    if (data instanceof HighlightAnnotationElement) {
+    if (data2 instanceof HighlightAnnotationElement) {
       const {
         data: {
           quadPoints,
@@ -156826,8 +157034,8 @@ var HighlightEditor = class _HighlightEditor extends DrawingEditor {
             pageNumber
           }
         }
-      } = data;
-      initialData = data = {
+      } = data2;
+      initialData = data2 = {
         annotationType: AnnotationEditorType.HIGHLIGHT,
         color: Array.from(color),
         opacity,
@@ -156844,7 +157052,7 @@ var HighlightEditor = class _HighlightEditor extends DrawingEditor {
         creationDate,
         modificationDate
       };
-    } else if (data instanceof InkAnnotationElement) {
+    } else if (data2 instanceof InkAnnotationElement) {
       const {
         data: {
           inkLists,
@@ -156866,8 +157074,8 @@ var HighlightEditor = class _HighlightEditor extends DrawingEditor {
             pageNumber
           }
         }
-      } = data;
-      initialData = data = {
+      } = data2;
+      initialData = data2 = {
         annotationType: AnnotationEditorType.HIGHLIGHT,
         color: Array.from(color),
         thickness,
@@ -156885,10 +157093,10 @@ var HighlightEditor = class _HighlightEditor extends DrawingEditor {
         modificationDate
       };
     }
-    const editor = await super.deserialize(data, parent, uiManager);
+    const editor = await super.deserialize(data2, parent, uiManager);
     editor._initialData = initialData;
-    if (data.comment) {
-      editor.setCommentData(data);
+    if (data2.comment) {
+      editor.setCommentData(data2);
     }
     return editor;
   }
@@ -157028,8 +157236,8 @@ var InputSmoother = class _InputSmoother {
     }
   }
 };
-function svgPoint(data, i3) {
-  return `${Outline.svgRound(data[i3])} ${Outline.svgRound(data[i3 + 1])}`;
+function svgPoint(data2, i3) {
+  return `${Outline.svgRound(data2[i3])} ${Outline.svgRound(data2[i3 + 1])}`;
 }
 function pushCurves(buffer, line, start) {
   for (let i3 = start, ii = line.length; i3 < ii; i3 += 6) {
@@ -157780,12 +157988,12 @@ var InkEditor = class _InkEditor extends DrawingEditor {
   }) {
     return new InkDrawOutliner(x2, y3, width, height, rotation, this._defaultDrawingOptions["stroke-width"], timeStamp);
   }
-  static deserializeDraw(pageX, pageY, pageWidth, pageHeight, innerMargin, data) {
-    return InkDrawOutline.deserialize(pageX, pageY, pageWidth, pageHeight, innerMargin, data);
+  static deserializeDraw(pageX, pageY, pageWidth, pageHeight, innerMargin, data2) {
+    return InkDrawOutline.deserialize(pageX, pageY, pageWidth, pageHeight, innerMargin, data2);
   }
-  static async deserialize(data, parent, uiManager) {
+  static async deserialize(data2, parent, uiManager) {
     let initialData = null;
-    if (data instanceof InkAnnotationElement) {
+    if (data2 instanceof InkAnnotationElement) {
       const {
         data: {
           inkLists,
@@ -157808,8 +158016,8 @@ var InkEditor = class _InkEditor extends DrawingEditor {
             pageNumber
           }
         }
-      } = data;
-      initialData = data = {
+      } = data2;
+      initialData = data2 = {
         annotationType: AnnotationEditorType.INK,
         color: Array.from(color),
         thickness,
@@ -157831,10 +158039,10 @@ var InkEditor = class _InkEditor extends DrawingEditor {
         modificationDate
       };
     }
-    const editor = await super.deserialize(data, parent, uiManager);
+    const editor = await super.deserialize(data2, parent, uiManager);
     editor._initialData = initialData;
-    if (data.comment) {
-      editor.setCommentData(data);
+    if (data2.comment) {
+      editor.setCommentData(data2);
     }
     return editor;
   }
@@ -158531,14 +158739,14 @@ var SignatureExtractor = class {
         await writer.close();
       }).catch(() => {
       });
-      let data = null;
+      let data2 = null;
       let offset = 0;
       for await (const chunk of readable) {
-        data ||= new Uint8Array(new Uint32Array(chunk.buffer, 0, 4)[0]);
-        data.set(chunk, offset);
+        data2 ||= new Uint8Array(new Uint32Array(chunk.buffer, 0, 4)[0]);
+        data2.set(chunk, offset);
         offset += chunk.length;
       }
-      const header = new Uint32Array(data.buffer, 0, data.length >> 2);
+      const header = new Uint32Array(data2.buffer, 0, data2.length >> 2);
       const version3 = header[1];
       if (version3 !== 0) {
         throw new Error(`Invalid version: ${version3}`);
@@ -158554,13 +158762,13 @@ var SignatureExtractor = class {
       let diffs;
       switch (bufferType) {
         case Int8Array.BYTES_PER_ELEMENT:
-          diffs = new Int8Array(data.buffer, diffsOffset);
+          diffs = new Int8Array(data2.buffer, diffsOffset);
           break;
         case Int16Array.BYTES_PER_ELEMENT:
-          diffs = new Int16Array(data.buffer, diffsOffset);
+          diffs = new Int16Array(data2.buffer, diffsOffset);
           break;
         case Int32Array.BYTES_PER_ELEMENT:
-          diffs = new Int32Array(data.buffer, diffsOffset);
+          diffs = new Int32Array(data2.buffer, diffsOffset);
           break;
       }
       offset = 0;
@@ -158661,8 +158869,8 @@ var SignatureEditor = class _SignatureEditor extends DrawingEditor {
       hasDescription: !!this.#description
     };
   }
-  static computeTelemetryFinalData(data) {
-    const hasDescriptionStats = data.get("hasDescription");
+  static computeTelemetryFinalData(data2) {
+    const hasDescriptionStats = data2.get("hasDescription");
     return {
       hasAltText: hasDescriptionStats.get(true) ?? 0,
       hasNoAltText: hasDescriptionStats.get(false) ?? 0
@@ -158795,14 +159003,14 @@ var SignatureEditor = class _SignatureEditor extends DrawingEditor {
   get toolbarButtons() {
     return this._uiManager.signatureManager ? [["editSignature", this._uiManager.signatureManager]] : super.toolbarButtons;
   }
-  addSignature(data, heightInPage, description, uuid) {
+  addSignature(data2, heightInPage, description, uuid) {
     const {
       x: savedX,
       y: savedY
     } = this;
     const {
       outline
-    } = this.#signatureData = data;
+    } = this.#signatureData = data2;
     this.#isExtracted = outline instanceof ContourDrawOutline;
     this.description = description;
     let drawingOptions;
@@ -158938,17 +159146,17 @@ var SignatureEditor = class _SignatureEditor extends DrawingEditor {
     }
     return serialized;
   }
-  static deserializeDraw(pageX, pageY, pageWidth, pageHeight, innerMargin, data) {
-    if (data.areContours) {
-      return ContourDrawOutline.deserialize(pageX, pageY, pageWidth, pageHeight, innerMargin, data);
+  static deserializeDraw(pageX, pageY, pageWidth, pageHeight, innerMargin, data2) {
+    if (data2.areContours) {
+      return ContourDrawOutline.deserialize(pageX, pageY, pageWidth, pageHeight, innerMargin, data2);
     }
-    return InkDrawOutline.deserialize(pageX, pageY, pageWidth, pageHeight, innerMargin, data);
+    return InkDrawOutline.deserialize(pageX, pageY, pageWidth, pageHeight, innerMargin, data2);
   }
-  static async deserialize(data, parent, uiManager) {
-    const editor = await super.deserialize(data, parent, uiManager);
-    editor.#isExtracted = data.areContours;
-    editor.description = data.accessibilityData?.alt || "";
-    editor.#signatureUUID = data.uuid;
+  static async deserialize(data2, parent, uiManager) {
+    const editor = await super.deserialize(data2, parent, uiManager);
+    editor.#isExtracted = data2.areContours;
+    editor.description = data2.accessibilityData?.alt || "";
+    editor.#signatureUUID = data2.uuid;
     return editor;
   }
 };
@@ -159000,25 +159208,25 @@ var StampEditor = class extends AnnotationEditor {
       hasAltText: !!this.altTextData?.altText
     };
   }
-  static computeTelemetryFinalData(data) {
-    const hasAltTextStats = data.get("hasAltText");
+  static computeTelemetryFinalData(data2) {
+    const hasAltTextStats = data2.get("hasAltText");
     return {
       hasAltText: hasAltTextStats.get(true) ?? 0,
       hasNoAltText: hasAltTextStats.get(false) ?? 0
     };
   }
-  #getBitmapFetched(data, fromId = false) {
-    if (!data) {
+  #getBitmapFetched(data2, fromId = false) {
+    if (!data2) {
       this.remove();
       return;
     }
-    this.#bitmap = data.bitmap;
+    this.#bitmap = data2.bitmap;
     if (!fromId) {
-      this.#bitmapId = data.id;
-      this.#isSvg = data.isSvg;
+      this.#bitmapId = data2.id;
+      this.#isSvg = data2.isSvg;
     }
-    if (data.file) {
-      this.#bitmapFileName = data.file.name;
+    if (data2.file) {
+      this.#bitmapFileName = data2.file.name;
     }
     this.#createCanvas();
   }
@@ -159064,17 +159272,17 @@ var StampEditor = class extends AnnotationEditor {
       throw new Error("ML isn't enabled for alt text.");
     }
     const {
-      data,
+      data: data2,
       width,
       height
     } = imageData || this.copyCanvas(null, null, true).imageData;
     const response = await mlManager.guess({
       name: "altText",
       request: {
-        data,
+        data: data2,
         width,
         height,
-        channels: data.length / (width * height)
+        channels: data2.length / (width * height)
       }
     });
     if (!response) {
@@ -159102,21 +159310,21 @@ var StampEditor = class extends AnnotationEditor {
   #getBitmap() {
     if (this.#bitmapId) {
       this._uiManager.enableWaiting(true);
-      this._uiManager.imageManager.getFromId(this.#bitmapId).then((data) => this.#getBitmapFetched(data, true)).finally(() => this.#getBitmapDone());
+      this._uiManager.imageManager.getFromId(this.#bitmapId).then((data2) => this.#getBitmapFetched(data2, true)).finally(() => this.#getBitmapDone());
       return;
     }
     if (this.#bitmapUrl) {
       const url = this.#bitmapUrl;
       this.#bitmapUrl = null;
       this._uiManager.enableWaiting(true);
-      this.#bitmapPromise = this._uiManager.imageManager.getFromUrl(url).then((data) => this.#getBitmapFetched(data)).finally(() => this.#getBitmapDone());
+      this.#bitmapPromise = this._uiManager.imageManager.getFromUrl(url).then((data2) => this.#getBitmapFetched(data2)).finally(() => this.#getBitmapDone());
       return;
     }
     if (this.#bitmapFile) {
       const file = this.#bitmapFile;
       this.#bitmapFile = null;
       this._uiManager.enableWaiting(true);
-      this.#bitmapPromise = this._uiManager.imageManager.getFromFile(file).then((data) => this.#getBitmapFetched(data)).finally(() => this.#getBitmapDone());
+      this.#bitmapPromise = this._uiManager.imageManager.getFromFile(file).then((data2) => this.#getBitmapFetched(data2)).finally(() => this.#getBitmapDone());
       return;
     }
     const input = document.createElement("input");
@@ -159129,14 +159337,14 @@ var StampEditor = class extends AnnotationEditor {
           this.remove();
         } else {
           this._uiManager.enableWaiting(true);
-          const data = await this._uiManager.imageManager.getFromFile(input.files[0]);
+          const data2 = await this._uiManager.imageManager.getFromFile(input.files[0]);
           this._reportTelemetry({
             action: "pdfjs.image.image_selected",
             data: {
               alt_text_modal: this._uiManager.useNewAltTextFlow
             }
           });
-          this.#getBitmapFetched(data);
+          this.#getBitmapFetched(data2);
         }
         resolve();
       }, {
@@ -159454,10 +159662,10 @@ var StampEditor = class extends AnnotationEditor {
     }
     return structuredClone(this.#bitmap);
   }
-  static async deserialize(data, parent, uiManager) {
+  static async deserialize(data2, parent, uiManager) {
     let initialData = null;
     let missingCanvas = false;
-    if (data instanceof StampAnnotationElement) {
+    if (data2 instanceof StampAnnotationElement) {
       const {
         data: {
           rect: rect2,
@@ -159477,10 +159685,10 @@ var StampEditor = class extends AnnotationEditor {
           }
         },
         canvas
-      } = data;
+      } = data2;
       let bitmapId2, bitmap2;
       if (canvas) {
-        delete data.canvas;
+        delete data2.canvas;
         ({
           id: bitmapId2,
           bitmap: bitmap2
@@ -159488,10 +159696,10 @@ var StampEditor = class extends AnnotationEditor {
         canvas.remove();
       } else {
         missingCanvas = true;
-        data._hasNoCanvas = true;
+        data2._hasNoCanvas = true;
       }
       const altText = (await parent._structTree.getAriaAttributes(`${AnnotationPrefix}${id3}`))?.get("aria-label") || "";
-      initialData = data = {
+      initialData = data2 = {
         annotationType: AnnotationEditorType.STAMP,
         bitmapId: bitmapId2,
         bitmap: bitmap2,
@@ -159514,7 +159722,7 @@ var StampEditor = class extends AnnotationEditor {
         modificationDate
       };
     }
-    const editor = await super.deserialize(data, parent, uiManager);
+    const editor = await super.deserialize(data2, parent, uiManager);
     const {
       rect,
       bitmap,
@@ -159522,9 +159730,9 @@ var StampEditor = class extends AnnotationEditor {
       bitmapId,
       isSvg,
       accessibilityData
-    } = data;
+    } = data2;
     if (missingCanvas) {
-      uiManager.addMissingCanvas(data.id, editor);
+      uiManager.addMissingCanvas(data2.id, editor);
       editor.#missingCanvas = true;
     } else if (bitmapId && uiManager.imageManager.isValidId(bitmapId)) {
       editor.#bitmapId = bitmapId;
@@ -159542,8 +159750,8 @@ var StampEditor = class extends AnnotationEditor {
       editor.altTextData = accessibilityData;
     }
     editor._initialData = initialData;
-    if (data.comment) {
-      editor.setCommentData(data);
+    if (data2.comment) {
+      editor.setCommentData(data2);
     }
     editor.#hasBeenAddedInUndoStack = !!initialData;
     return editor;
@@ -160130,10 +160338,10 @@ var AnnotationEditorLayer = class _AnnotationEditorLayer {
       this.add(editor);
     }
   }
-  async deserialize(data) {
-    return await _AnnotationEditorLayer.#editorTypes.get(data.annotationType ?? data.annotationEditorType)?.deserialize(data, this, this.#uiManager) || null;
+  async deserialize(data2) {
+    return await _AnnotationEditorLayer.#editorTypes.get(data2.annotationType ?? data2.annotationEditorType)?.deserialize(data2, this, this.#uiManager) || null;
   }
-  createAndAddNewEditor(event, isCentered, data = {}) {
+  createAndAddNewEditor(event, isCentered, data2 = {}) {
     const id3 = this.#uiManager.getId();
     const editor = this.#createNewEditor({
       parent: this,
@@ -160142,7 +160350,7 @@ var AnnotationEditorLayer = class _AnnotationEditorLayer {
       y: event.offsetY,
       uiManager: this.#uiManager,
       isCentered,
-      ...data
+      ...data2
     });
     if (editor) {
       this.add(editor);
@@ -160171,8 +160379,8 @@ var AnnotationEditorLayer = class _AnnotationEditorLayer {
       offsetY
     };
   }
-  addNewEditor(data = {}) {
-    this.createAndAddNewEditor(this.#getCenterPoint(), true, data);
+  addNewEditor(data2 = {}) {
+    this.createAndAddNewEditor(this.#getCenterPoint(), true, data2);
   }
   setSelected(editor) {
     this.#uiManager.setSelected(editor);
@@ -160929,8 +161137,8 @@ var DrawLayer = class _DrawLayer {
     this.#textLayerObserver?.disconnect();
     this.#textLayerObserver = null;
     if (this.#textLayer) {
-      const data = _DrawLayer.#textLayers.get(this.#textLayer);
-      if (data?.drawLayer === this) {
+      const data2 = _DrawLayer.#textLayers.get(this.#textLayer);
+      if (data2?.drawLayer === this) {
         _DrawLayer.#cleanupTextLayerSelection(this.#textLayer);
         _DrawLayer.#textLayers.delete(this.#textLayer);
         _DrawLayer.#textLayerSet.delete(this.#textLayer);
@@ -162052,10 +162260,10 @@ async function ocrPage(page, vh2, onStep) {
   onStep?.("starting the text recogniser");
   const worker = await getOcr();
   onStep?.("recognising");
-  const { data } = await worker.recognize(canvas);
-  onStep?.(`${data.lines?.length || 0} lines found`);
+  const { data: data2 } = await worker.recognize(canvas);
+  onStep?.(`${data2.lines?.length || 0} lines found`);
   const lines = [];
-  for (const para of data.paragraphs || []) {
+  for (const para of data2.paragraphs || []) {
     for (const [i3, l2] of (para.lines || []).entries()) {
       const text = (l2.text || "").replace(/\s+/g, " ").trim();
       if (!text || (l2.confidence || 0) < 30) continue;
@@ -162087,9 +162295,9 @@ function forgetPdf() {
   pdfDoc = null;
   pdfSizes = [];
 }
-async function pdfToBlocks(data, onProgress) {
+async function pdfToBlocks(data2, onProgress) {
   closePdf(pdfDoc);
-  const pdf = await getDocument({ data, wasmUrl: BASE + "wasm/" }).promise;
+  const pdf = await getDocument({ data: data2, wasmUrl: BASE + "wasm/" }).promise;
   pdfDoc = pdf;
   pdfSizes = [];
   const pages = [];
