@@ -116,7 +116,7 @@
     return out;
   }
 
-  // src/lang.js
+  // src/lang-lite.js
   var LANGS = {
     en: { name: "English", espeak: "en-gb" },
     es: { name: "Spanish", espeak: ["es-419", "es"] },
@@ -181,18 +181,6 @@
     ku: { name: "Kurdish", espeak: "ku", own: true }
   };
   var SUPPORTED = Object.keys(LANGS);
-  function scriptLanguage(text) {
-    if (new RegExp("\\p{Script=Han}", "u").test(text)) return "zh";
-    if (/[\p{Script=Hiragana}\p{Script=Katakana}]/u.test(text)) return "ja";
-    if (new RegExp("\\p{Script=Hangul}", "u").test(text)) return "ko";
-    if (new RegExp("\\p{Script=Devanagari}", "u").test(text)) return "hi";
-    if (new RegExp("\\p{Script=Arabic}", "u").test(text)) return "ar";
-    if (new RegExp("\\p{Script=Hebrew}", "u").test(text)) return "he";
-    if (new RegExp("\\p{Script=Cyrillic}", "u").test(text)) return "ru";
-    if (new RegExp("\\p{Script=Greek}", "u").test(text)) return "el";
-    if (new RegExp("\\p{Script=Thai}", "u").test(text)) return "th";
-    return null;
-  }
   var HINTS = {
     en: ["the", "and", "is", "of", "to", "in", "that", "it", "with", "for", "was", "are", "this", "you"],
     es: ["el", "la", "de", "que", "y", "en", "los", "las", "es", "un", "una", "por", "con", "para", "del", "se", "no"],
@@ -200,65 +188,6 @@
     it: ["il", "la", "di", "che", "e", "un", "una", "per", "non", "con", "sono", "gli", "della", "del", "anche"],
     pt: ["o", "a", "de", "que", "e", "do", "da", "em", "um", "uma", "para", "com", "n\xE3o", "os", "as", "se", "voc\xEA"]
   };
-  function guessLanguage(text) {
-    const byScript = scriptLanguage(text);
-    if (byScript && SUPPORTED.includes(byScript)) return byScript;
-    const words = text.toLowerCase().match(/[\p{L}']+/gu) || [];
-    if (words.length < 3) return null;
-    const score = {};
-    for (const [lang, list] of Object.entries(HINTS)) {
-      const set = new Set(list);
-      score[lang] = words.filter((w) => set.has(w) && (lang === "en" || !ALSO_ENGLISH.has(w))).length / words.length;
-    }
-    const best = Object.entries(score).sort((a, b) => b[1] - a[1])[0];
-    if (!best || best[1] < 0.08) return null;
-    if (best[0] !== "en" && (score.en || 0) >= best[1]) return null;
-    return best[0];
-  }
-  function hasHintWord(text, lang) {
-    const list = HINTS[lang];
-    if (!list) {
-      const latinOnly = !/[^\p{Script=Latin}\P{L}]/u.test(text);
-      return !latinOnly || text.length >= 160;
-    }
-    const words = text.toLowerCase().match(/[\p{L}']+/gu) || [];
-    const set = new Set(list);
-    return words.some((w) => set.has(w) && !ALSO_ENGLISH.has(w));
-  }
-  async function detectLanguage(text) {
-    const t = (text || "").trim();
-    if (t.length < 12) return null;
-    try {
-      if (typeof chrome !== "undefined" && chrome.i18n?.detectLanguage) {
-        const r = await chrome.i18n.detectLanguage(t);
-        const top = r?.languages?.[0];
-        const need = t.length < 160 ? 80 : 55;
-        if (top && top.percentage >= need && (r.isReliable || t.length >= 160 || scriptLanguage(t))) {
-          const code = top.language.split("-")[0];
-          if (code === "en") return "en";
-          if (SUPPORTED.includes(code)) return hasHintWord(t, code) ? code : null;
-          return "en";
-        }
-      }
-    } catch {
-    }
-    return guessLanguage(t);
-  }
-  async function tagLanguages(blocks, { pageLang = null } = {}) {
-    let whole = "";
-    for (const b of blocks) {
-      if (whole.length >= 4e3) break;
-      whole += (whole ? "\n" : "") + b.text;
-    }
-    const main = await detectLanguage(whole.slice(0, 4e3)) || (SUPPORTED.includes(pageLang) ? pageLang : "en");
-    const langs = await Promise.all(
-      blocks.map(async (b) => {
-        if (b.lang && SUPPORTED.includes(b.lang) && b.lang !== pageLang) return b.lang;
-        return b.text.length >= 25 && await detectLanguage(b.text) || main;
-      })
-    );
-    return { main, langs };
-  }
   var EVERYDAY = {
     fr: [...HINTS.fr, "bonne", "bon", "tr\xE8s", "avec", "mais", "ce", "cette", "au", "aux", "du", "sur", "sont", "\xEAtre", "\xE0", "o\xF9", "merci", "oui", "il", "elle", "mon", "ma", "votre", "notre", "tout", "bien", "chez"],
     es: [...HINTS.es, "muy", "pero", "m\xE1s", "est\xE1", "como", "gracias", "buena", "buen", "s\xED", "su", "mi", "al", "lo", "hay", "todo", "bien"],
@@ -991,6 +920,11 @@
       beginReading(sentences, startIndex);
     }
     function beginReading(sentences, startIndex = 0) {
+      if (!alive()) {
+        showBar();
+        setState("error", "Murmur was updated. Refresh this page (F5), then try again.");
+        return;
+      }
       if (!sentences.length) {
         note("found no text to read");
         showBar();
@@ -1072,25 +1006,32 @@
     }
     async function languagesFor(sentences) {
       if (!S.settings.autoLanguage) return sentences.map(() => "en");
-      const blocks = [];
       const indexOf = /* @__PURE__ */ new Map();
-      for (const s of sentences) {
-        if (!indexOf.has(s.block)) {
-          indexOf.set(s.block, blocks.length);
-          const langAttr = (s.el.closest("[lang]")?.getAttribute("lang") || "").slice(0, 2).toLowerCase();
-          blocks.push({ text: s.block.text, lang: langAttr || null });
-        }
-      }
+      const items = sentences.map((s) => {
+        if (!indexOf.has(s.block)) indexOf.set(s.block, indexOf.size);
+        const attr = (s.el.closest("[lang]")?.getAttribute("lang") || "").slice(0, 2).toLowerCase();
+        return { text: s.text, block: indexOf.get(s.block), attr: attr || null };
+      });
       const pageLang = (document.documentElement.lang || "").slice(0, 2).toLowerCase() || null;
-      let langs;
-      try {
-        langs = (await tagLanguages(blocks, { pageLang })).langs;
-      } catch {
-        return sentences.map(() => "en");
+      const res = await new Promise((done) => {
+        const giveUp = setTimeout(() => done(null), 8e3);
+        toBg({ type: "content:langs", items, pageLang }, (r) => {
+          clearTimeout(giveUp);
+          done(r);
+        });
+      });
+      const langs = Array.isArray(res?.langs) && res.langs.length === sentences.length ? res.langs : null;
+      const fallback = SUPPORTED.includes(pageLang) ? pageLang : "en";
+      if (!langs) {
+        note(`could not work out the languages (${res?.error || "no answer"}); reading as ${fallback}`);
+        return sentences.map(() => fallback);
       }
+      const counts = {};
+      for (const l of langs) counts[l] = (counts[l] || 0) + 1;
+      note("languages: " + Object.entries(counts).map(([l, n]) => `${l} ${n}`).join(", "));
       return Promise.all(
-        sentences.map(async (s) => {
-          const main = langs[indexOf.get(s.block)] || "en";
+        sentences.map(async (s, i) => {
+          const main = langs[i] || fallback;
           const hints = main === "en" ? await italicLanguageHints(s).catch(() => null) : null;
           return hints ? { main, words: hints } : main;
         })
@@ -1128,14 +1069,16 @@
         if (!lang) {
           const phrase = words.slice(i, j).map((w) => w.text).join(" ");
           const foreignLetters = /[^\x00-\x7F\s]/.test(phrase.replace(/[’“”—–…]/g, ""));
-          try {
-            const r = await chrome.i18n.detectLanguage(phrase);
-            const top = r?.languages?.[0];
-            const code = top?.language?.split("-")[0];
-            const sure = top && code && code !== "en" && SUPPORTED.includes(code) && (r.isReliable || top.percentage >= 85);
-            const fewPlainWords = !foreignLetters && j - i < 5;
-            if (sure && !fewPlainWords && (foreignLetters || top.percentage >= 85)) lang = code;
-          } catch {
+          const fewPlainWords = !foreignLetters && j - i < 4;
+          if (!fewPlainWords) {
+            const r = await new Promise((done) => {
+              const giveUp = setTimeout(() => done(null), 3e3);
+              toBg({ type: "content:phrase", text: phrase }, (x) => {
+                clearTimeout(giveUp);
+                done(x);
+              });
+            });
+            if (r?.lang) lang = r.lang;
           }
           if (!lang) lang = phraseLanguage(phrase.replace(/[.,;:!?]+$/, ""));
         }
@@ -1148,7 +1091,9 @@
       return any ? hints : null;
     }
     function seek(i, word) {
-      toBg({ type: "content:seek", index: i, word: word || 0 });
+      toBg({ type: "content:seek", index: i, word: word || 0 }, (res) => {
+        if (res?.notReading && S.sentences[i]) beginReading(S.sentences, i);
+      });
     }
     const CLAUDE_MSG = '[data-testid="assistant-message"]';
     const claude = { streaming: /* @__PURE__ */ new Set(), done: /* @__PURE__ */ new Set(), scanTimer: 0, readTimer: 0 };

@@ -59,14 +59,18 @@ var state = {
 
 // src/background.js
 var session = { tabId: null, count: 0, index: -1, state: "idle", detail: "" };
-var sessionLoaded = false;
+var sessionP = null;
 var creatingOffscreen = null;
 var usageWrites = Promise.resolve();
-async function loadSession() {
-  if (sessionLoaded) return;
-  sessionLoaded = true;
-  const stored = await chrome.storage.session.get("session");
-  if (stored.session) session = stored.session;
+function loadSession() {
+  sessionP ||= chrome.storage.session.get("session").then(
+    (stored) => {
+      if (stored.session) session = stored.session;
+    },
+    () => {
+    }
+  );
+  return sessionP;
 }
 function saveSession() {
   return chrome.storage.session.set({ session });
@@ -165,8 +169,13 @@ async function activeTab() {
   return tab;
 }
 function isPdfUrl(url = "") {
-  return /\.pdf($|[?#])/i.test(url);
+  return !url.startsWith("chrome-extension:") && /\.pdf($|[?#])/i.test(url);
 }
+var isReaderTab = (tab) => !!tab?.url && tab.url.startsWith(chrome.runtime.getURL("reader.html"));
+var toReaderTab = (tab) => chrome.tabs.sendMessage(tab.id, { type: "reader:toggle" }).then(
+  () => ({ ok: true }),
+  () => ({ ok: true })
+);
 function googleDocId(url = "") {
   const m = /^https:\/\/docs\.google\.com\/document\/(?:u\/\d+\/)?d\/([\w-]{20,})/.exec(url);
   return m ? m[1] : null;
@@ -179,13 +188,25 @@ async function openReaderWithDoc(doc, extra = {}) {
   const key = "doc:" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
   const all = await chrome.storage.session.get(null);
   const old = Object.keys(all).filter((k) => k.startsWith("doc:")).sort();
-  if (old.length > 4) await chrome.storage.session.remove(old.slice(0, old.length - 4));
-  await chrome.storage.session.set({ [key]: doc });
+  if (old.length > 2) await chrome.storage.session.remove(old.slice(0, old.length - 2));
+  try {
+    await chrome.storage.session.set({ [key]: doc });
+  } catch (e) {
+    await chrome.storage.session.remove(old).catch(() => {
+    });
+    try {
+      await chrome.storage.session.set({ [key]: doc });
+    } catch (e2) {
+      return { error: "This document is too big to hand over this way. In the Doc, click File, then Download, then Microsoft Word, and open that file in Murmur." };
+    }
+  }
   await openReader({ doc: key, ...extra });
+  return { ok: true };
 }
 async function openGoogleDoc(url, tabTitle) {
   const id = googleDocId(url);
-  const exportUrl = `https://docs.google.com/document/d/${id}/export?format=html`;
+  const account = /\/document\/(u\/\d+\/)d\//.exec(url)?.[1] || "";
+  const exportUrl = `https://docs.google.com/document/${account}d/${id}/export?format=html`;
   let res;
   try {
     res = await fetch(exportUrl, { credentials: "include" });
@@ -200,15 +221,34 @@ async function openGoogleDoc(url, tabTitle) {
   }
   const html = await res.text();
   const title = (tabTitle || "Google Doc").replace(/\s*-\s*Google Docs\s*$/i, "");
-  await openReaderWithDoc({ title, html });
-  return { ok: true };
+  return openReaderWithDoc({ title, html });
 }
 async function readTab(tab, mode = "page") {
+  if (isReaderTab(tab)) return toReaderTab(tab);
   if (isPdfUrl(tab.url)) {
     await openReader({ src: tab.url });
     return { ok: true };
   }
-  if (googleDocId(tab.url)) return openGoogleDoc(tab.url, tab.title);
+  if (googleDocId(tab.url)) {
+    chrome.action.setBadgeBackgroundColor({ color: "#6b5cff", tabId: tab.id }).catch(() => {
+    });
+    chrome.action.setBadgeText({ text: "\u2026", tabId: tab.id }).catch(() => {
+    });
+    let res;
+    try {
+      res = await openGoogleDoc(tab.url, tab.title);
+    } catch (e) {
+      res = { error: "Couldn't open this Google Doc: " + (e?.message || e) };
+    }
+    chrome.action.setBadgeText({ text: "", tabId: tab.id }).catch(() => {
+    });
+    diag(res?.error ? "google doc failed: " + res.error.slice(0, 120) : "google doc opened in the reader");
+    if (res?.error) {
+      await openReader({ problem: res.error });
+      return { ok: true };
+    }
+    return res;
+  }
   try {
     const frameId = await pickFrame(tab.id);
     if (frameId) console.log("[murmur] reading inside a frame of this page");
@@ -243,6 +283,7 @@ async function stopAll() {
 }
 async function togglePlay(tab) {
   if (!tab) return;
+  if (isReaderTab(tab)) return toReaderTab(tab);
   const tabId = tab.id;
   diag(`play/pause key on ${hostOf(tab.url)}; reading is ${session.tabId === tabId ? session.state : "not in this tab"}`);
   if (session.tabId === tabId && session.state === "playing") return toOffscreen({ type: "pause" });
@@ -273,14 +314,18 @@ async function handle(msg, sender) {
     case "content:diag":
       diag(`page (frame #${sender.frameId || 0}): ${msg.text}`);
       return;
+    case "content:langs":
+      return toOffscreen({ type: "langs", items: msg.items, pageLang: msg.pageLang });
+    case "content:phrase":
+      return toOffscreen({ type: "phrase", text: msg.text });
     case "content:toggle":
       return togglePlay(sender.tab);
     case "content:next":
-      return toOffscreen({ type: "seek", delta: 1 });
     case "content:prev":
-      return toOffscreen({ type: "seek", delta: -1 });
     case "content:seek":
-      return toOffscreen({ type: "seek", index: msg.index, word: msg.word || 0 });
+      if (sender.tab && (sender.tab.id !== session.tabId || (sender.frameId || 0) !== (session.frameId || 0))) return { ok: false, notReading: true };
+      if (msg.type === "content:seek") return toOffscreen({ type: "seek", index: msg.index, word: msg.word || 0 });
+      return toOffscreen({ type: "seek", delta: msg.type === "content:next" ? 1 : -1 });
     case "content:stop":
       if (sender.tab && session.tabId != null && (sender.tab.id !== session.tabId || (sender.frameId || 0) !== (session.frameId || 0))) return { ok: true };
       return stopAll();
@@ -382,7 +427,8 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 async function onActionClick(tab) {
   await loadSession();
   if (!tab) return;
-  if (/^(chrome|edge|about|chrome-extension|devtools):/.test(tab.url || "") && !tab.url.includes("reader.html")) {
+  if (isReaderTab(tab)) return toReaderTab(tab);
+  if (/^(chrome|edge|about|chrome-extension|devtools):/.test(tab.url || "")) {
     await openReader({ library: "1" });
     return;
   }
@@ -410,9 +456,16 @@ chrome.commands.onCommand.addListener(async (command) => {
   await loadSession();
   const tab = await activeTab();
   if (!tab) return;
-  if (command === "toggle-play") togglePlay(tab);
-  else if (command === "next-sentence") toOffscreen({ type: "seek", delta: 1 });
-  else if (command === "prev-sentence") toOffscreen({ type: "seek", delta: -1 });
+  try {
+    if (command === "toggle-play") {
+      const res = await togglePlay(tab);
+      if (res?.error) diag("play/pause key failed: " + res.error);
+    } else if (session.tabId != null && session.state !== "idle") {
+      await toOffscreen({ type: "seek", delta: command === "next-sentence" ? 1 : -1 });
+    }
+  } catch (e) {
+    diag("shortcut failed: " + (e?.message || e));
+  }
 });
 async function warmVoice() {
   try {
@@ -422,8 +475,19 @@ async function warmVoice() {
   }
 }
 chrome.runtime.onStartup.addListener(warmVoice);
+async function refreshOpenTabs() {
+  const tabs = await chrome.tabs.query({ url: ["http://*/*", "https://*/*"] }).catch(() => []);
+  for (const t of tabs) {
+    if (t.discarded || t.status !== "complete") continue;
+    chrome.scripting.executeScript({ target: { tabId: t.id }, files: ["content.js"] }).catch(() => {
+    });
+    chrome.scripting.insertCSS({ target: { tabId: t.id }, files: ["content.css"] }).catch(() => {
+    });
+  }
+}
 chrome.runtime.onInstalled.addListener((details) => {
   if (details.reason === "install") chrome.tabs.create({ url: chrome.runtime.getURL("welcome.html") });
+  else refreshOpenTabs();
   warmVoice();
   chrome.contextMenus.removeAll(() => {
     chrome.contextMenus.create({ id: "murmur-settings", title: "Voice, speed and settings", contexts: ["action"] });

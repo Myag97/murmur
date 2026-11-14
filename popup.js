@@ -94,15 +94,15 @@
       { id: "zf_xiaoxiao", name: "Xiaoxiao", desc: "Mandarin woman" }
     ]
   };
-  function voiceInfo(id) {
-    return VOICES.find((v) => v.id === id) || { id, name: id, desc: "", group: "" };
+  function voiceInfo(id2) {
+    return VOICES.find((v) => v.id === id2) || { id: id2, name: id2, desc: "", group: "" };
   }
-  var safeId = (id) => String(id).replace(/\*/g, "-").replace(/\+/g, "_").replace(/\./g, "").replace(/:/g, "-");
-  function sampleFile(id) {
-    return "samples/" + safeId(id) + ".mp3";
+  var safeId = (id2) => String(id2).replace(/\*/g, "-").replace(/\+/g, "_").replace(/\./g, "").replace(/:/g, "-");
+  function sampleFile(id2) {
+    return "samples/" + safeId(id2) + ".mp3";
   }
-  function langSampleFile(lang, id) {
-    return `samples/lang-${lang}-${safeId(id)}.mp3`;
+  function langSampleFile(lang, id2) {
+    return `samples/lang-${lang}-${safeId(id2)}.mp3`;
   }
 
   // src/settings.js
@@ -140,7 +140,1077 @@
     langVoices: { es: "piper:es_MX-claude-high", fr: "ff_siwis", it: "im_nicola*0.7+bm_fable*0.3", pt: "piper:pt_BR-cadu-medium", hi: "piper:hi_IN-pratham-medium", zh: "zm_yunyang", la: "im_nicola" }
   };
 
-  // src/lang.js
+  // node_modules/fasttext.wasm.js/dist/constants.mjs
+  var IS_BROWSER = typeof window !== "undefined" && !!window.document && !!window.document.createElement;
+  var IS_WORKER = (
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    "importScripts" in globalThis && typeof globalThis.importScripts == "function"
+  );
+
+  // node_modules/fasttext.wasm.js/dist/models/language-identification/assets/languages.json.mjs
+  var af = {
+    alpha3: "afr",
+    alpha2: "af",
+    refName: "Afrikaans"
+  };
+  var als = {
+    alpha3: "gsw",
+    alpha2: null,
+    refName: "Swiss German"
+  };
+  var am = {
+    alpha3: "amh",
+    alpha2: "am",
+    refName: "Amharic"
+  };
+  var an = {
+    alpha3: "arg",
+    alpha2: "an",
+    refName: "Aragonese"
+  };
+  var ar = {
+    alpha3: "ara",
+    alpha2: "ar",
+    refName: "Arabic"
+  };
+  var arz = {
+    alpha3: "arz",
+    alpha2: null,
+    refName: "Egyptian Arabic"
+  };
+  var as = {
+    alpha3: "asm",
+    alpha2: "as",
+    refName: "Assamese"
+  };
+  var ast = {
+    alpha3: "ast",
+    alpha2: null,
+    refName: "Asturian"
+  };
+  var av = {
+    alpha3: "ava",
+    alpha2: "av",
+    refName: "Avaric"
+  };
+  var az = {
+    alpha3: "aze",
+    alpha2: "az",
+    refName: "Azerbaijani"
+  };
+  var azb = {
+    alpha3: "azb",
+    alpha2: null,
+    refName: "South Azerbaijani"
+  };
+  var ba = {
+    alpha3: "bak",
+    alpha2: "ba",
+    refName: "Bashkir"
+  };
+  var bar = {
+    alpha3: "bar",
+    alpha2: null,
+    refName: "Bavarian"
+  };
+  var bcl = {
+    alpha3: "bcl",
+    alpha2: null,
+    refName: "Central Bikol"
+  };
+  var be = {
+    alpha3: "bel",
+    alpha2: "be",
+    refName: "Belarusian"
+  };
+  var bg = {
+    alpha3: "bul",
+    alpha2: "bg",
+    refName: "Bulgarian"
+  };
+  var bh = {
+    alpha3: "bih",
+    alpha2: "bh",
+    refName: "Bihari languages"
+  };
+  var bn = {
+    alpha3: "ben",
+    alpha2: "bn",
+    refName: "Bengali"
+  };
+  var bo = {
+    alpha3: "bod",
+    alpha2: "bo",
+    refName: "Tibetan"
+  };
+  var bpy = {
+    alpha3: "bpy",
+    alpha2: null,
+    refName: "Bishnupriya"
+  };
+  var br = {
+    alpha3: "bre",
+    alpha2: "br",
+    refName: "Breton"
+  };
+  var bs = {
+    alpha3: "bos",
+    alpha2: "bs",
+    refName: "Bosnian"
+  };
+  var bxr = {
+    alpha3: "bxr",
+    alpha2: null,
+    refName: "Russia Buriat"
+  };
+  var ca = {
+    alpha3: "cat",
+    alpha2: "ca",
+    refName: "Catalan"
+  };
+  var cbk = {
+    alpha3: "cbk",
+    alpha2: null,
+    refName: "Chavacano"
+  };
+  var ce = {
+    alpha3: "che",
+    alpha2: "ce",
+    refName: "Chechen"
+  };
+  var ceb = {
+    alpha3: "ceb",
+    alpha2: null,
+    refName: "Cebuano"
+  };
+  var ckb = {
+    alpha3: "kur",
+    alpha2: "ku",
+    refName: "Kurdish"
+  };
+  var co = {
+    alpha3: "cos",
+    alpha2: "co",
+    refName: "Corsican"
+  };
+  var cs = {
+    alpha3: "ces",
+    alpha2: "cs",
+    refName: "Czech"
+  };
+  var cv = {
+    alpha3: "chv",
+    alpha2: "cv",
+    refName: "Chuvash"
+  };
+  var cy = {
+    alpha3: "cym",
+    alpha2: "cy",
+    refName: "Welsh"
+  };
+  var da = {
+    alpha3: "dan",
+    alpha2: "da",
+    refName: "Danish"
+  };
+  var de = {
+    alpha3: "deu",
+    alpha2: "de",
+    refName: "German"
+  };
+  var diq = {
+    alpha3: "zza",
+    alpha2: null,
+    refName: "Zaza"
+  };
+  var dsb = {
+    alpha3: "dsb",
+    alpha2: null,
+    refName: "Lower Sorbian"
+  };
+  var dty = {
+    alpha3: "dty",
+    alpha2: null,
+    refName: "Dotyali"
+  };
+  var dv = {
+    alpha3: "div",
+    alpha2: "dv",
+    refName: "Dhivehi"
+  };
+  var el = {
+    alpha3: "ell",
+    alpha2: "el",
+    refName: "Modern Greek (1453-)"
+  };
+  var eml = {
+    alpha3: "eml",
+    alpha2: null,
+    refName: "Emiliano-Romagnolo"
+  };
+  var en = {
+    alpha3: "eng",
+    alpha2: "en",
+    refName: "English"
+  };
+  var eo = {
+    alpha3: "epo",
+    alpha2: "eo",
+    refName: "Esperanto"
+  };
+  var es = {
+    alpha3: "spa",
+    alpha2: "es",
+    refName: "Spanish"
+  };
+  var et = {
+    alpha3: "est",
+    alpha2: "et",
+    refName: "Estonian"
+  };
+  var eu = {
+    alpha3: "eus",
+    alpha2: "eu",
+    refName: "Basque"
+  };
+  var fa = {
+    alpha3: "fas",
+    alpha2: "fa",
+    refName: "Persian"
+  };
+  var fi = {
+    alpha3: "fin",
+    alpha2: "fi",
+    refName: "Finnish"
+  };
+  var fr = {
+    alpha3: "fra",
+    alpha2: "fr",
+    refName: "French"
+  };
+  var frr = {
+    alpha3: "frr",
+    alpha2: null,
+    refName: "Northern Frisian"
+  };
+  var fy = {
+    alpha3: "fry",
+    alpha2: "fy",
+    refName: "Western Frisian"
+  };
+  var ga = {
+    alpha3: "gle",
+    alpha2: "ga",
+    refName: "Irish"
+  };
+  var gd = {
+    alpha3: "gla",
+    alpha2: "gd",
+    refName: "Scottish Gaelic"
+  };
+  var gl = {
+    alpha3: "glg",
+    alpha2: "gl",
+    refName: "Galician"
+  };
+  var gn = {
+    alpha3: "grn",
+    alpha2: "gn",
+    refName: "Guarani"
+  };
+  var gom = {
+    alpha3: "gom",
+    alpha2: null,
+    refName: "Goan Konkani"
+  };
+  var gu = {
+    alpha3: "guj",
+    alpha2: "gu",
+    refName: "Gujarati"
+  };
+  var gv = {
+    alpha3: "glv",
+    alpha2: "gv",
+    refName: "Manx"
+  };
+  var he = {
+    alpha3: "heb",
+    alpha2: "he",
+    refName: "Hebrew"
+  };
+  var hi = {
+    alpha3: "hin",
+    alpha2: "hi",
+    refName: "Hindi"
+  };
+  var hif = {
+    alpha3: "hif",
+    alpha2: null,
+    refName: "Fiji Hindi"
+  };
+  var hr = {
+    alpha3: "hrv",
+    alpha2: "hr",
+    refName: "Croatian"
+  };
+  var hsb = {
+    alpha3: "hsb",
+    alpha2: null,
+    refName: "Upper Sorbian"
+  };
+  var ht = {
+    alpha3: "hat",
+    alpha2: "ht",
+    refName: "Haitian"
+  };
+  var hu = {
+    alpha3: "hun",
+    alpha2: "hu",
+    refName: "Hungarian"
+  };
+  var hy = {
+    alpha3: "hye",
+    alpha2: "hy",
+    refName: "Armenian"
+  };
+  var ia = {
+    alpha3: "ina",
+    alpha2: "ia",
+    refName: "Interlingua (International Auxiliary Language Association)"
+  };
+  var id = {
+    alpha3: "ind",
+    alpha2: "id",
+    refName: "Indonesian"
+  };
+  var ie = {
+    alpha3: "ile",
+    alpha2: "ie",
+    refName: "Interlingue"
+  };
+  var ilo = {
+    alpha3: "ilo",
+    alpha2: null,
+    refName: "Iloko"
+  };
+  var io = {
+    alpha3: "ido",
+    alpha2: "io",
+    refName: "Ido"
+  };
+  var is = {
+    alpha3: "isl",
+    alpha2: "is",
+    refName: "Icelandic"
+  };
+  var it = {
+    alpha3: "ita",
+    alpha2: "it",
+    refName: "Italian"
+  };
+  var ja = {
+    alpha3: "jpn",
+    alpha2: "ja",
+    refName: "Japanese"
+  };
+  var jbo = {
+    alpha3: "jbo",
+    alpha2: null,
+    refName: "Lojban"
+  };
+  var jv = {
+    alpha3: "jav",
+    alpha2: "jv",
+    refName: "Javanese"
+  };
+  var ka = {
+    alpha3: "kat",
+    alpha2: "ka",
+    refName: "Georgian"
+  };
+  var kk = {
+    alpha3: "kaz",
+    alpha2: "kk",
+    refName: "Kazakh"
+  };
+  var km = {
+    alpha3: "khm",
+    alpha2: "km",
+    refName: "Khmer"
+  };
+  var kn = {
+    alpha3: "kan",
+    alpha2: "kn",
+    refName: "Kannada"
+  };
+  var ko = {
+    alpha3: "kor",
+    alpha2: "ko",
+    refName: "Korean"
+  };
+  var krc = {
+    alpha3: "krc",
+    alpha2: null,
+    refName: "Karachay-Balkar"
+  };
+  var ku = {
+    alpha3: "kmr",
+    alpha2: null,
+    refName: "Northern Kurdish"
+  };
+  var kv = {
+    alpha3: "kom",
+    alpha2: "kv",
+    refName: "Komi"
+  };
+  var kw = {
+    alpha3: "cor",
+    alpha2: "kw",
+    refName: "Cornish"
+  };
+  var ky = {
+    alpha3: "kir",
+    alpha2: "ky",
+    refName: "Kirghiz"
+  };
+  var la = {
+    alpha3: "lat",
+    alpha2: "la",
+    refName: "Latin"
+  };
+  var lb = {
+    alpha3: "ltz",
+    alpha2: "lb",
+    refName: "Luxembourgish"
+  };
+  var lez = {
+    alpha3: "lez",
+    alpha2: null,
+    refName: "Lezghian"
+  };
+  var li = {
+    alpha3: "lim",
+    alpha2: "li",
+    refName: "Limburgan"
+  };
+  var lmo = {
+    alpha3: "lmo",
+    alpha2: null,
+    refName: "Lombard"
+  };
+  var lo = {
+    alpha3: "lao",
+    alpha2: "lo",
+    refName: "Lao"
+  };
+  var lrc = {
+    alpha3: "lrc",
+    alpha2: null,
+    refName: "Northern Luri"
+  };
+  var lt = {
+    alpha3: "lit",
+    alpha2: "lt",
+    refName: "Lithuanian"
+  };
+  var lv = {
+    alpha3: "lav",
+    alpha2: "lv",
+    refName: "Latvian"
+  };
+  var mai = {
+    alpha3: "mai",
+    alpha2: null,
+    refName: "Maithili"
+  };
+  var mg = {
+    alpha3: "mlg",
+    alpha2: "mg",
+    refName: "Malagasy"
+  };
+  var mhr = {
+    alpha3: "mhr",
+    alpha2: null,
+    refName: "Eastern Mari"
+  };
+  var min = {
+    alpha3: "min",
+    alpha2: null,
+    refName: "Minangkabau"
+  };
+  var mk = {
+    alpha3: "mkd",
+    alpha2: "mk",
+    refName: "Macedonian"
+  };
+  var ml = {
+    alpha3: "mal",
+    alpha2: "ml",
+    refName: "Malayalam"
+  };
+  var mn = {
+    alpha3: "mon",
+    alpha2: "mn",
+    refName: "Mongolian"
+  };
+  var mr = {
+    alpha3: "mar",
+    alpha2: "mr",
+    refName: "Marathi"
+  };
+  var mrj = {
+    alpha3: "mrj",
+    alpha2: null,
+    refName: "Western Mari"
+  };
+  var ms = {
+    alpha3: "msa",
+    alpha2: "ms",
+    refName: "Malay (macrolanguage)"
+  };
+  var mt = {
+    alpha3: "mlt",
+    alpha2: "mt",
+    refName: "Maltese"
+  };
+  var mwl = {
+    alpha3: "mwl",
+    alpha2: null,
+    refName: "Mirandese"
+  };
+  var my = {
+    alpha3: "mya",
+    alpha2: "my",
+    refName: "Burmese"
+  };
+  var myv = {
+    alpha3: "myv",
+    alpha2: null,
+    refName: "Erzya"
+  };
+  var mzn = {
+    alpha3: "mzn",
+    alpha2: null,
+    refName: "Mazanderani"
+  };
+  var nah = {
+    alpha3: "nah",
+    alpha2: null,
+    refName: "Nahuatl languages"
+  };
+  var nap = {
+    alpha3: "nap",
+    alpha2: null,
+    refName: "Neapolitan"
+  };
+  var nds = {
+    alpha3: "nds",
+    alpha2: null,
+    refName: "Low German"
+  };
+  var ne = {
+    alpha3: "nep",
+    alpha2: "ne",
+    refName: "Nepali (macrolanguage)"
+  };
+  var nl = {
+    alpha3: "nld",
+    alpha2: "nl",
+    refName: "Dutch"
+  };
+  var nn = {
+    alpha3: "nor",
+    alpha2: "no",
+    refName: "Norwegian"
+  };
+  var no = {
+    alpha3: "nor",
+    alpha2: "no",
+    refName: "Norwegian"
+  };
+  var oc = {
+    alpha3: "oci",
+    alpha2: "oc",
+    refName: "Occitan (post 1500)"
+  };
+  var or = {
+    alpha3: "ory",
+    alpha2: null,
+    refName: "Odia"
+  };
+  var os = {
+    alpha3: "oss",
+    alpha2: "os",
+    refName: "Ossetian"
+  };
+  var pa = {
+    alpha3: "pan",
+    alpha2: "pa",
+    refName: "Panjabi"
+  };
+  var pam = {
+    alpha3: "pam",
+    alpha2: null,
+    refName: "Pampanga"
+  };
+  var pfl = {
+    alpha3: "pfl",
+    alpha2: null,
+    refName: "Pfaelzisch"
+  };
+  var pl = {
+    alpha3: "pol",
+    alpha2: "pl",
+    refName: "Polish"
+  };
+  var pms = {
+    alpha3: "pms",
+    alpha2: null,
+    refName: "Piemontese"
+  };
+  var pnb = {
+    alpha3: "pnb",
+    alpha2: null,
+    refName: "Western Panjabi"
+  };
+  var ps = {
+    alpha3: "pus",
+    alpha2: "ps",
+    refName: "Pushto"
+  };
+  var pt = {
+    alpha3: "por",
+    alpha2: "pt",
+    refName: "Portuguese"
+  };
+  var qu = {
+    alpha3: "que",
+    alpha2: "qu",
+    refName: "Quechua"
+  };
+  var rm = {
+    alpha3: "roh",
+    alpha2: "rm",
+    refName: "Romansh"
+  };
+  var ro = {
+    alpha3: "ron",
+    alpha2: "ro",
+    refName: "Romanian"
+  };
+  var ru = {
+    alpha3: "rus",
+    alpha2: "ru",
+    refName: "Russian"
+  };
+  var rue = {
+    alpha3: "rue",
+    alpha2: null,
+    refName: "Rusyn"
+  };
+  var sa = {
+    alpha3: "san",
+    alpha2: "sa",
+    refName: "Sanskrit"
+  };
+  var sah = {
+    alpha3: "sah",
+    alpha2: null,
+    refName: "Yakut"
+  };
+  var sc = {
+    alpha3: "srd",
+    alpha2: "sc",
+    refName: "Sardinian"
+  };
+  var scn = {
+    alpha3: "scn",
+    alpha2: null,
+    refName: "Sicilian"
+  };
+  var sco = {
+    alpha3: "sco",
+    alpha2: null,
+    refName: "Scots"
+  };
+  var sd = {
+    alpha3: "snd",
+    alpha2: "sd",
+    refName: "Sindhi"
+  };
+  var sh = {
+    alpha3: "hbs",
+    alpha2: "sh",
+    refName: "Serbo-Croatian"
+  };
+  var si = {
+    alpha3: "sin",
+    alpha2: "si",
+    refName: "Sinhala"
+  };
+  var sk = {
+    alpha3: "slk",
+    alpha2: "sk",
+    refName: "Slovak"
+  };
+  var sl = {
+    alpha3: "slv",
+    alpha2: "sl",
+    refName: "Slovenian"
+  };
+  var so = {
+    alpha3: "som",
+    alpha2: "so",
+    refName: "Somali"
+  };
+  var sq = {
+    alpha3: "sqi",
+    alpha2: "sq",
+    refName: "Albanian"
+  };
+  var sr = {
+    alpha3: "srp",
+    alpha2: "sr",
+    refName: "Serbian"
+  };
+  var su = {
+    alpha3: "sun",
+    alpha2: "su",
+    refName: "Sundanese"
+  };
+  var sv = {
+    alpha3: "swe",
+    alpha2: "sv",
+    refName: "Swedish"
+  };
+  var sw = {
+    alpha3: "swa",
+    alpha2: "sw",
+    refName: "Swahili (macrolanguage)"
+  };
+  var ta = {
+    alpha3: "tam",
+    alpha2: "ta",
+    refName: "Tamil"
+  };
+  var te = {
+    alpha3: "tel",
+    alpha2: "te",
+    refName: "Telugu"
+  };
+  var tg = {
+    alpha3: "tgk",
+    alpha2: "tg",
+    refName: "Tajik"
+  };
+  var th = {
+    alpha3: "tha",
+    alpha2: "th",
+    refName: "Thai"
+  };
+  var tk = {
+    alpha3: "tuk",
+    alpha2: "tk",
+    refName: "Turkmen"
+  };
+  var tl = {
+    alpha3: "tgl",
+    alpha2: "tl",
+    refName: "Tagalog"
+  };
+  var tr = {
+    alpha3: "tur",
+    alpha2: "tr",
+    refName: "Turkish"
+  };
+  var tt = {
+    alpha3: "tat",
+    alpha2: "tt",
+    refName: "Tatar"
+  };
+  var tyv = {
+    alpha3: "tyv",
+    alpha2: null,
+    refName: "Tuvinian"
+  };
+  var ug = {
+    alpha3: "uig",
+    alpha2: "ug",
+    refName: "Uighur"
+  };
+  var uk = {
+    alpha3: "ukr",
+    alpha2: "uk",
+    refName: "Ukrainian"
+  };
+  var ur = {
+    alpha3: "urd",
+    alpha2: "ur",
+    refName: "Urdu"
+  };
+  var uz = {
+    alpha3: "uzb",
+    alpha2: "uz",
+    refName: "Uzbek"
+  };
+  var vec = {
+    alpha3: "vec",
+    alpha2: null,
+    refName: "Venetian"
+  };
+  var vep = {
+    alpha3: "vep",
+    alpha2: null,
+    refName: "Veps"
+  };
+  var vi = {
+    alpha3: "vie",
+    alpha2: "vi",
+    refName: "Vietnamese"
+  };
+  var vls = {
+    alpha3: "vls",
+    alpha2: null,
+    refName: "Vlaams"
+  };
+  var vo = {
+    alpha3: "vol",
+    alpha2: "vo",
+    refName: "Volap\xFCk"
+  };
+  var wa = {
+    alpha3: "wln",
+    alpha2: "wa",
+    refName: "Walloon"
+  };
+  var war = {
+    alpha3: "war",
+    alpha2: null,
+    refName: "Waray (Philippines)"
+  };
+  var wuu = {
+    alpha3: "wuu",
+    alpha2: null,
+    refName: "Wu Chinese"
+  };
+  var xal = {
+    alpha3: "xal",
+    alpha2: null,
+    refName: "Kalmyk"
+  };
+  var xmf = {
+    alpha3: "xmf",
+    alpha2: null,
+    refName: "Mingrelian"
+  };
+  var yi = {
+    alpha3: "yid",
+    alpha2: "yi",
+    refName: "Yiddish"
+  };
+  var yo = {
+    alpha3: "yor",
+    alpha2: "yo",
+    refName: "Yoruba"
+  };
+  var yue = {
+    alpha3: "yue",
+    alpha2: null,
+    refName: "Yue Chinese"
+  };
+  var zh = {
+    alpha3: "zho",
+    alpha2: "zh",
+    refName: "Chinese"
+  };
+  var languages = {
+    af,
+    als,
+    am,
+    an,
+    ar,
+    arz,
+    as,
+    ast,
+    av,
+    az,
+    azb,
+    ba,
+    bar,
+    bcl,
+    be,
+    bg,
+    bh,
+    bn,
+    bo,
+    bpy,
+    br,
+    bs,
+    bxr,
+    ca,
+    cbk,
+    ce,
+    ceb,
+    ckb,
+    co,
+    cs,
+    cv,
+    cy,
+    da,
+    de,
+    diq,
+    dsb,
+    dty,
+    dv,
+    el,
+    eml,
+    en,
+    eo,
+    es,
+    et,
+    eu,
+    fa,
+    fi,
+    fr,
+    frr,
+    fy,
+    ga,
+    gd,
+    gl,
+    gn,
+    gom,
+    gu,
+    gv,
+    he,
+    hi,
+    hif,
+    hr,
+    hsb,
+    ht,
+    hu,
+    hy,
+    ia,
+    id,
+    ie,
+    ilo,
+    io,
+    is,
+    it,
+    ja,
+    jbo,
+    jv,
+    ka,
+    kk,
+    km,
+    kn,
+    ko,
+    krc,
+    ku,
+    kv,
+    kw,
+    ky,
+    la,
+    lb,
+    lez,
+    li,
+    lmo,
+    lo,
+    lrc,
+    lt,
+    lv,
+    mai,
+    mg,
+    mhr,
+    min,
+    mk,
+    ml,
+    mn,
+    mr,
+    mrj,
+    ms,
+    mt,
+    mwl,
+    my,
+    myv,
+    mzn,
+    nah,
+    nap,
+    nds,
+    ne,
+    "new": {
+      alpha3: "new",
+      alpha2: null,
+      refName: "Newari"
+    },
+    nl,
+    nn,
+    no,
+    oc,
+    or,
+    os,
+    pa,
+    pam,
+    pfl,
+    pl,
+    pms,
+    pnb,
+    ps,
+    pt,
+    qu,
+    rm,
+    ro,
+    ru,
+    rue,
+    sa,
+    sah,
+    sc,
+    scn,
+    sco,
+    sd,
+    sh,
+    si,
+    sk,
+    sl,
+    so,
+    sq,
+    sr,
+    su,
+    sv,
+    sw,
+    ta,
+    te,
+    tg,
+    th,
+    tk,
+    tl,
+    tr,
+    tt,
+    tyv,
+    ug,
+    uk,
+    ur,
+    uz,
+    vec,
+    vep,
+    vi,
+    vls,
+    vo,
+    wa,
+    war,
+    wuu,
+    xal,
+    xmf,
+    yi,
+    yo,
+    yue,
+    zh
+  };
+
+  // node_modules/fasttext.wasm.js/dist/models/language-identification/base.mjs
+  var LANGUAGES_LIMIT = Object.keys(languages).length;
+
+  // src/lang-lite.js
   var LANGS = {
     en: { name: "English", espeak: "en-gb" },
     es: { name: "Spanish", espeak: ["es-419", "es"] },
@@ -338,10 +1408,10 @@
     let off = 12;
     let rate = 24e3;
     while (off + 8 <= bytes.length) {
-      const id = String.fromCharCode(bytes[off], bytes[off + 1], bytes[off + 2], bytes[off + 3]);
+      const id2 = String.fromCharCode(bytes[off], bytes[off + 1], bytes[off + 2], bytes[off + 3]);
       const size = v.getUint32(off + 4, true);
-      if (id === "fmt ") rate = v.getUint32(off + 12, true);
-      if (id === "data") {
+      if (id2 === "fmt ") rate = v.getUint32(off + 12, true);
+      if (id2 === "data") {
         const n2 = Math.floor(Math.min(size, bytes.length - off - 8) / 2);
         const out2 = new Float32Array(n2);
         for (let i = 0; i < n2; i++) out2[i] = v.getInt16(off + 8 + i * 2, true) / 32768;
@@ -441,7 +1511,7 @@
   }
 
   // src/popup.js
-  var $ = (id) => document.getElementById(id);
+  var $ = (id2) => document.getElementById(id2);
   var send = (msg) => new Promise((res) => chrome.runtime.sendMessage(msg, res));
   var settings = { ...DEFAULTS };
   function fillVoices(select) {

@@ -10,6 +10,9 @@ var __require = /* @__PURE__ */ ((x2) => typeof require !== "undefined" ? requir
   if (typeof require !== "undefined") return require.apply(this, arguments);
   throw Error('Dynamic require of "' + x2 + '" is not supported');
 });
+var __esm = (fn, res) => function __init() {
+  return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
+};
 var __commonJS = (cb, mod) => function __require2() {
   return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
 };
@@ -33,6 +36,3380 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
   mod
 ));
+
+// node_modules/fasttext.wasm.js/dist/core/fastText.common.js
+var fastText_common_exports = {};
+__export(fastText_common_exports, {
+  default: () => fastText_common_default
+});
+var fastTextModule, fastText_common_default;
+var init_fastText_common = __esm({
+  "node_modules/fasttext.wasm.js/dist/core/fastText.common.js"() {
+    fastTextModule = (() => {
+      var _scriptDir = typeof document !== "undefined" && document.currentScript ? document.currentScript.src : void 0;
+      return function(moduleArg = {}) {
+        var Module = moduleArg;
+        var readyPromiseResolve, readyPromiseReject;
+        Module["ready"] = new Promise((resolve, reject) => {
+          readyPromiseResolve = resolve;
+          readyPromiseReject = reject;
+        });
+        ["_malloc", "_free", "_memory", "___indirect_function_table", "onRuntimeInitialized"].forEach((prop) => {
+          if (!Object.getOwnPropertyDescriptor(Module["ready"], prop)) {
+            Object.defineProperty(Module["ready"], prop, { get: () => abort("You are getting " + prop + " on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js"), set: () => abort("You are setting " + prop + " on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js") });
+          }
+        });
+        var moduleOverrides = Object.assign({}, Module);
+        var arguments_ = [];
+        var thisProgram = "./this.program";
+        var quit_ = (status2, toThrow) => {
+          throw toThrow;
+        };
+        var ENVIRONMENT_IS_WEB = typeof window == "object";
+        var ENVIRONMENT_IS_WORKER = typeof importScripts == "function";
+        var ENVIRONMENT_IS_NODE = typeof process == "object" && typeof process.versions == "object" && typeof process.versions.node == "string";
+        var ENVIRONMENT_IS_SHELL = !ENVIRONMENT_IS_WEB && !ENVIRONMENT_IS_NODE && !ENVIRONMENT_IS_WORKER;
+        if (Module["ENVIRONMENT"]) {
+          throw new Error("Module.ENVIRONMENT has been deprecated. To force the environment, use the ENVIRONMENT compile-time option (for example, -sENVIRONMENT=web or -sENVIRONMENT=node)");
+        }
+        var scriptDirectory = "";
+        function locateFile(path) {
+          if (Module["locateFile"]) {
+            return Module["locateFile"](path, scriptDirectory);
+          }
+          return scriptDirectory + path;
+        }
+        var read_, readAsync, readBinary;
+        if (ENVIRONMENT_IS_SHELL) {
+          if (typeof process == "object" && typeof __require === "function" || typeof window == "object" || typeof importScripts == "function") throw new Error("not compiled for this environment (did you build to HTML and try to run it not on the web, or set ENVIRONMENT to something - like node - and run it someplace else - like on the web?)");
+          if (typeof read != "undefined") {
+            read_ = read;
+          }
+          readBinary = (f3) => {
+            if (typeof readbuffer == "function") {
+              return new Uint8Array(readbuffer(f3));
+            }
+            let data = read(f3, "binary");
+            assert2(typeof data == "object");
+            return data;
+          };
+          readAsync = (f3, onload, onerror) => {
+            setTimeout(() => onload(readBinary(f3)));
+          };
+          if (typeof clearTimeout == "undefined") {
+            globalThis.clearTimeout = (id3) => {
+            };
+          }
+          if (typeof setTimeout == "undefined") {
+            globalThis.setTimeout = (f3) => typeof f3 == "function" ? f3() : abort();
+          }
+          if (typeof scriptArgs != "undefined") {
+            arguments_ = scriptArgs;
+          } else if (typeof arguments != "undefined") {
+            arguments_ = arguments;
+          }
+          if (typeof quit == "function") {
+            quit_ = (status2, toThrow) => {
+              setTimeout(() => {
+                if (!(toThrow instanceof ExitStatus)) {
+                  let toLog = toThrow;
+                  if (toThrow && typeof toThrow == "object" && toThrow.stack) {
+                    toLog = [toThrow, toThrow.stack];
+                  }
+                  err(`exiting due to exception: ${toLog}`);
+                }
+                quit(status2);
+              });
+              throw toThrow;
+            };
+          }
+          if (typeof print != "undefined") {
+            if (typeof console == "undefined") console = {};
+            console.log = print;
+            console.warn = console.error = typeof printErr != "undefined" ? printErr : print;
+          }
+        } else if (ENVIRONMENT_IS_WEB || ENVIRONMENT_IS_WORKER) {
+          if (ENVIRONMENT_IS_WORKER) {
+            scriptDirectory = self.location.href;
+          } else if (typeof document != "undefined" && document.currentScript) {
+            scriptDirectory = document.currentScript.src;
+          }
+          if (_scriptDir) {
+            scriptDirectory = _scriptDir;
+          }
+          if (scriptDirectory.startsWith("blob:")) {
+            scriptDirectory = "";
+          } else {
+            scriptDirectory = scriptDirectory.substr(0, scriptDirectory.replace(/[?#].*/, "").lastIndexOf("/") + 1);
+          }
+          if (!(typeof window == "object" || typeof importScripts == "function")) throw new Error("not compiled for this environment (did you build to HTML and try to run it not on the web, or set ENVIRONMENT to something - like node - and run it someplace else - like on the web?)");
+          {
+            read_ = (url) => {
+              var xhr = new XMLHttpRequest();
+              xhr.open("GET", url, false);
+              xhr.send(null);
+              return xhr.responseText;
+            };
+            if (ENVIRONMENT_IS_WORKER) {
+              readBinary = (url) => {
+                var xhr = new XMLHttpRequest();
+                xhr.open("GET", url, false);
+                xhr.responseType = "arraybuffer";
+                xhr.send(null);
+                return new Uint8Array(xhr.response);
+              };
+            }
+            readAsync = (url, onload, onerror) => {
+              var xhr = new XMLHttpRequest();
+              xhr.open("GET", url, true);
+              xhr.responseType = "arraybuffer";
+              xhr.onload = () => {
+                if (xhr.status == 200 || xhr.status == 0 && xhr.response) {
+                  onload(xhr.response);
+                  return;
+                }
+                onerror();
+              };
+              xhr.onerror = onerror;
+              xhr.send(null);
+            };
+          }
+        } else {
+          throw new Error("environment detection error");
+        }
+        var out = Module["print"] || console.log.bind(console);
+        var err = Module["printErr"] || console.error.bind(console);
+        Object.assign(Module, moduleOverrides);
+        moduleOverrides = null;
+        checkIncomingModuleAPI();
+        if (Module["arguments"]) arguments_ = Module["arguments"];
+        legacyModuleProp("arguments", "arguments_");
+        if (Module["thisProgram"]) thisProgram = Module["thisProgram"];
+        legacyModuleProp("thisProgram", "thisProgram");
+        if (Module["quit"]) quit_ = Module["quit"];
+        legacyModuleProp("quit", "quit_");
+        assert2(typeof Module["memoryInitializerPrefixURL"] == "undefined", "Module.memoryInitializerPrefixURL option was removed, use Module.locateFile instead");
+        assert2(typeof Module["pthreadMainPrefixURL"] == "undefined", "Module.pthreadMainPrefixURL option was removed, use Module.locateFile instead");
+        assert2(typeof Module["cdInitializerPrefixURL"] == "undefined", "Module.cdInitializerPrefixURL option was removed, use Module.locateFile instead");
+        assert2(typeof Module["filePackagePrefixURL"] == "undefined", "Module.filePackagePrefixURL option was removed, use Module.locateFile instead");
+        assert2(typeof Module["read"] == "undefined", "Module.read option was removed (modify read_ in JS)");
+        assert2(typeof Module["readAsync"] == "undefined", "Module.readAsync option was removed (modify readAsync in JS)");
+        assert2(typeof Module["readBinary"] == "undefined", "Module.readBinary option was removed (modify readBinary in JS)");
+        assert2(typeof Module["setWindowTitle"] == "undefined", "Module.setWindowTitle option was removed (modify emscripten_set_window_title in JS)");
+        assert2(typeof Module["TOTAL_MEMORY"] == "undefined", "Module.TOTAL_MEMORY has been renamed Module.INITIAL_MEMORY");
+        legacyModuleProp("asm", "wasmExports");
+        legacyModuleProp("read", "read_");
+        legacyModuleProp("readAsync", "readAsync");
+        legacyModuleProp("readBinary", "readBinary");
+        legacyModuleProp("setWindowTitle", "setWindowTitle");
+        assert2(!ENVIRONMENT_IS_NODE, "node environment detected but not enabled at build time.  Add `node` to `-sENVIRONMENT` to enable.");
+        assert2(!ENVIRONMENT_IS_SHELL, "shell environment detected but not enabled at build time.  Add `shell` to `-sENVIRONMENT` to enable.");
+        var wasmBinary;
+        if (Module["wasmBinary"]) wasmBinary = Module["wasmBinary"];
+        legacyModuleProp("wasmBinary", "wasmBinary");
+        if (typeof WebAssembly != "object") {
+          err("no native wasm support detected");
+        }
+        function intArrayFromBase64(s3) {
+          var decoded = atob(s3);
+          var bytes = new Uint8Array(decoded.length);
+          for (var i3 = 0; i3 < decoded.length; ++i3) {
+            bytes[i3] = decoded.charCodeAt(i3);
+          }
+          return bytes;
+        }
+        var wasmMemory;
+        var ABORT = false;
+        var EXITSTATUS;
+        function assert2(condition, text) {
+          if (!condition) {
+            abort("Assertion failed" + (text ? ": " + text : ""));
+          }
+        }
+        var HEAP8, HEAPU8, HEAP16, HEAPU16, HEAP32, HEAPU32, HEAPF32, HEAPF64;
+        function updateMemoryViews() {
+          var b3 = wasmMemory.buffer;
+          Module["HEAP8"] = HEAP8 = new Int8Array(b3);
+          Module["HEAP16"] = HEAP16 = new Int16Array(b3);
+          Module["HEAPU8"] = HEAPU8 = new Uint8Array(b3);
+          Module["HEAPU16"] = HEAPU16 = new Uint16Array(b3);
+          Module["HEAP32"] = HEAP32 = new Int32Array(b3);
+          Module["HEAPU32"] = HEAPU32 = new Uint32Array(b3);
+          Module["HEAPF32"] = HEAPF32 = new Float32Array(b3);
+          Module["HEAPF64"] = HEAPF64 = new Float64Array(b3);
+        }
+        assert2(!Module["STACK_SIZE"], "STACK_SIZE can no longer be set at runtime.  Use -sSTACK_SIZE at link time");
+        assert2(typeof Int32Array != "undefined" && typeof Float64Array !== "undefined" && Int32Array.prototype.subarray != void 0 && Int32Array.prototype.set != void 0, "JS engine does not provide full typed array support");
+        assert2(!Module["wasmMemory"], "Use of `wasmMemory` detected.  Use -sIMPORTED_MEMORY to define wasmMemory externally");
+        assert2(!Module["INITIAL_MEMORY"], "Detected runtime INITIAL_MEMORY setting.  Use -sIMPORTED_MEMORY to define wasmMemory dynamically");
+        function writeStackCookie() {
+          var max = _emscripten_stack_get_end();
+          assert2((max & 3) == 0);
+          if (max == 0) {
+            max += 4;
+          }
+          HEAPU32[max >> 2] = 34821223;
+          HEAPU32[max + 4 >> 2] = 2310721022;
+          HEAPU32[0 >> 2] = 1668509029;
+        }
+        function checkStackCookie() {
+          if (ABORT) return;
+          var max = _emscripten_stack_get_end();
+          if (max == 0) {
+            max += 4;
+          }
+          var cookie1 = HEAPU32[max >> 2];
+          var cookie2 = HEAPU32[max + 4 >> 2];
+          if (cookie1 != 34821223 || cookie2 != 2310721022) {
+            abort(`Stack overflow! Stack cookie has been overwritten at ${ptrToString(max)}, expected hex dwords 0x89BACDFE and 0x2135467, but received ${ptrToString(cookie2)} ${ptrToString(cookie1)}`);
+          }
+          if (HEAPU32[0 >> 2] != 1668509029) {
+            abort("Runtime error: The application has corrupted its heap memory area (address zero)!");
+          }
+        }
+        (function() {
+          var h16 = new Int16Array(1);
+          var h8 = new Int8Array(h16.buffer);
+          h16[0] = 25459;
+          if (h8[0] !== 115 || h8[1] !== 99) throw "Runtime error: expected the system to be little-endian! (Run with -sSUPPORT_BIG_ENDIAN to bypass)";
+        })();
+        var __ATPRERUN__ = [];
+        var __ATINIT__ = [];
+        var __ATPOSTRUN__ = [];
+        var runtimeInitialized = false;
+        function preRun() {
+          if (Module["preRun"]) {
+            if (typeof Module["preRun"] == "function") Module["preRun"] = [Module["preRun"]];
+            while (Module["preRun"].length) {
+              addOnPreRun(Module["preRun"].shift());
+            }
+          }
+          callRuntimeCallbacks(__ATPRERUN__);
+        }
+        function initRuntime() {
+          assert2(!runtimeInitialized);
+          runtimeInitialized = true;
+          checkStackCookie();
+          callRuntimeCallbacks(__ATINIT__);
+        }
+        function postRun() {
+          checkStackCookie();
+          if (Module["postRun"]) {
+            if (typeof Module["postRun"] == "function") Module["postRun"] = [Module["postRun"]];
+            while (Module["postRun"].length) {
+              addOnPostRun(Module["postRun"].shift());
+            }
+          }
+          callRuntimeCallbacks(__ATPOSTRUN__);
+        }
+        function addOnPreRun(cb) {
+          __ATPRERUN__.unshift(cb);
+        }
+        function addOnInit(cb) {
+          __ATINIT__.unshift(cb);
+        }
+        function addOnPostRun(cb) {
+          __ATPOSTRUN__.unshift(cb);
+        }
+        assert2(Math.imul, "This browser does not support Math.imul(), build with LEGACY_VM_SUPPORT or POLYFILL_OLD_MATH_FUNCTIONS to add in a polyfill");
+        assert2(Math.fround, "This browser does not support Math.fround(), build with LEGACY_VM_SUPPORT or POLYFILL_OLD_MATH_FUNCTIONS to add in a polyfill");
+        assert2(Math.clz32, "This browser does not support Math.clz32(), build with LEGACY_VM_SUPPORT or POLYFILL_OLD_MATH_FUNCTIONS to add in a polyfill");
+        assert2(Math.trunc, "This browser does not support Math.trunc(), build with LEGACY_VM_SUPPORT or POLYFILL_OLD_MATH_FUNCTIONS to add in a polyfill");
+        var runDependencies = 0;
+        var runDependencyWatcher = null;
+        var dependenciesFulfilled = null;
+        var runDependencyTracking = {};
+        function getUniqueRunDependency(id3) {
+          var orig = id3;
+          while (1) {
+            if (!runDependencyTracking[id3]) return id3;
+            id3 = orig + Math.random();
+          }
+        }
+        function addRunDependency(id3) {
+          runDependencies++;
+          Module["monitorRunDependencies"]?.(runDependencies);
+          if (id3) {
+            assert2(!runDependencyTracking[id3]);
+            runDependencyTracking[id3] = 1;
+            if (runDependencyWatcher === null && typeof setInterval != "undefined") {
+              runDependencyWatcher = setInterval(() => {
+                if (ABORT) {
+                  clearInterval(runDependencyWatcher);
+                  runDependencyWatcher = null;
+                  return;
+                }
+                var shown = false;
+                for (var dep in runDependencyTracking) {
+                  if (!shown) {
+                    shown = true;
+                    err("still waiting on run dependencies:");
+                  }
+                  err(`dependency: ${dep}`);
+                }
+                if (shown) {
+                  err("(end of list)");
+                }
+              }, 1e4);
+            }
+          } else {
+            err("warning: run dependency added without ID");
+          }
+        }
+        function removeRunDependency(id3) {
+          runDependencies--;
+          Module["monitorRunDependencies"]?.(runDependencies);
+          if (id3) {
+            assert2(runDependencyTracking[id3]);
+            delete runDependencyTracking[id3];
+          } else {
+            err("warning: run dependency removed without ID");
+          }
+          if (runDependencies == 0) {
+            if (runDependencyWatcher !== null) {
+              clearInterval(runDependencyWatcher);
+              runDependencyWatcher = null;
+            }
+            if (dependenciesFulfilled) {
+              var callback = dependenciesFulfilled;
+              dependenciesFulfilled = null;
+              callback();
+            }
+          }
+        }
+        function abort(what) {
+          Module["onAbort"]?.(what);
+          what = "Aborted(" + what + ")";
+          err(what);
+          ABORT = true;
+          EXITSTATUS = 1;
+          var e2 = new WebAssembly.RuntimeError(what);
+          readyPromiseReject(e2);
+          throw e2;
+        }
+        var dataURIPrefix = "data:application/octet-stream;base64,";
+        var isDataURI = (filename) => filename.startsWith(dataURIPrefix);
+        var isFileURI = (filename) => filename.startsWith("file://");
+        function createExportWrapper(name) {
+          return (...args) => {
+            assert2(runtimeInitialized, `native function \`${name}\` called before runtime initialization`);
+            var f3 = wasmExports[name];
+            assert2(f3, `exported native function \`${name}\` not found`);
+            return f3(...args);
+          };
+        }
+        var wasmBinaryFile;
+        wasmBinaryFile = "fastText.common.wasm";
+        if (!isDataURI(wasmBinaryFile)) {
+          wasmBinaryFile = locateFile(wasmBinaryFile);
+        }
+        function getBinarySync(file) {
+          if (file == wasmBinaryFile && wasmBinary) {
+            return new Uint8Array(wasmBinary);
+          }
+          if (readBinary) {
+            return readBinary(file);
+          }
+          throw "both async and sync fetching of the wasm failed";
+        }
+        function getBinaryPromise(binaryFile) {
+          if (!wasmBinary && (ENVIRONMENT_IS_WEB || ENVIRONMENT_IS_WORKER)) {
+            if (typeof fetch == "function" && !isFileURI(binaryFile)) {
+              return fetch(binaryFile, { credentials: "same-origin" }).then((response) => {
+                if (!response["ok"]) {
+                  throw `failed to load wasm binary file at '${binaryFile}'`;
+                }
+                return response["arrayBuffer"]();
+              }).catch(() => getBinarySync(binaryFile));
+            } else if (readAsync) {
+              return new Promise((resolve, reject) => {
+                readAsync(binaryFile, (response) => resolve(new Uint8Array(response)), reject);
+              });
+            }
+          }
+          return Promise.resolve().then(() => getBinarySync(binaryFile));
+        }
+        function instantiateArrayBuffer(binaryFile, imports, receiver) {
+          return getBinaryPromise(binaryFile).then((binary) => WebAssembly.instantiate(binary, imports)).then(receiver, (reason) => {
+            err(`failed to asynchronously prepare wasm: ${reason}`);
+            if (isFileURI(wasmBinaryFile)) {
+              err(`warning: Loading from a file URI (${wasmBinaryFile}) is not supported in most browsers. See https://emscripten.org/docs/getting_started/FAQ.html#how-do-i-run-a-local-webserver-for-testing-why-does-my-program-stall-in-downloading-or-preparing`);
+            }
+            abort(reason);
+          });
+        }
+        function instantiateAsync(binary, binaryFile, imports, callback) {
+          if (!binary && typeof WebAssembly.instantiateStreaming == "function" && !isDataURI(binaryFile) && !isFileURI(binaryFile) && typeof fetch == "function") {
+            return fetch(binaryFile, { credentials: "same-origin" }).then((response) => {
+              var result = WebAssembly.instantiateStreaming(response, imports);
+              return result.then(callback, function(reason) {
+                err(`wasm streaming compile failed: ${reason}`);
+                err("falling back to ArrayBuffer instantiation");
+                return instantiateArrayBuffer(binaryFile, imports, callback);
+              });
+            });
+          }
+          return instantiateArrayBuffer(binaryFile, imports, callback);
+        }
+        function createWasm() {
+          var info2 = { "env": wasmImports, "wasi_snapshot_preview1": wasmImports };
+          function receiveInstance(instance, module) {
+            wasmExports = instance.exports;
+            wasmMemory = wasmExports["memory"];
+            assert2(wasmMemory, "memory not found in wasm exports");
+            updateMemoryViews();
+            wasmTable = wasmExports["__indirect_function_table"];
+            assert2(wasmTable, "table not found in wasm exports");
+            addOnInit(wasmExports["__wasm_call_ctors"]);
+            removeRunDependency("wasm-instantiate");
+            return wasmExports;
+          }
+          addRunDependency("wasm-instantiate");
+          var trueModule = Module;
+          function receiveInstantiationResult(result) {
+            assert2(Module === trueModule, "the Module object should not be replaced during async compilation - perhaps the order of HTML elements is wrong?");
+            trueModule = null;
+            receiveInstance(result["instance"]);
+          }
+          if (Module["instantiateWasm"]) {
+            try {
+              return Module["instantiateWasm"](info2, receiveInstance);
+            } catch (e2) {
+              err(`Module.instantiateWasm callback failed with error: ${e2}`);
+              readyPromiseReject(e2);
+            }
+          }
+          instantiateAsync(wasmBinary, wasmBinaryFile, info2, receiveInstantiationResult).catch(readyPromiseReject);
+          return {};
+        }
+        var tempDouble;
+        function legacyModuleProp(prop, newName, incoming = true) {
+          if (!Object.getOwnPropertyDescriptor(Module, prop)) {
+            Object.defineProperty(Module, prop, { configurable: true, get() {
+              let extra = incoming ? " (the initial value can be provided on Module, but after startup the value is only looked for on a local variable of that name)" : "";
+              abort(`\`Module.${prop}\` has been replaced by \`${newName}\`` + extra);
+            } });
+          }
+        }
+        function ignoredModuleProp(prop) {
+          if (Object.getOwnPropertyDescriptor(Module, prop)) {
+            abort(`\`Module.${prop}\` was supplied but \`${prop}\` not included in INCOMING_MODULE_JS_API`);
+          }
+        }
+        function isExportedByForceFilesystem(name) {
+          return name === "FS_createPath" || name === "FS_createDataFile" || name === "FS_createPreloadedFile" || name === "FS_unlink" || name === "addRunDependency" || name === "removeRunDependency";
+        }
+        function missingGlobal(sym, msg) {
+          if (typeof globalThis !== "undefined") {
+            Object.defineProperty(globalThis, sym, { configurable: true, get() {
+              warnOnce(`\`${sym}\` is not longer defined by emscripten. ${msg}`);
+              return void 0;
+            } });
+          }
+        }
+        missingGlobal("buffer", "Please use HEAP8.buffer or wasmMemory.buffer");
+        missingGlobal("asm", "Please use wasmExports instead");
+        function missingLibrarySymbol(sym) {
+          if (typeof globalThis !== "undefined" && !Object.getOwnPropertyDescriptor(globalThis, sym)) {
+            Object.defineProperty(globalThis, sym, { configurable: true, get() {
+              var msg = `\`${sym}\` is a library symbol and not included by default; add it to your library.js __deps or to DEFAULT_LIBRARY_FUNCS_TO_INCLUDE on the command line`;
+              var librarySymbol = sym;
+              if (!librarySymbol.startsWith("_")) {
+                librarySymbol = "$" + sym;
+              }
+              msg += ` (e.g. -sDEFAULT_LIBRARY_FUNCS_TO_INCLUDE='${librarySymbol}')`;
+              if (isExportedByForceFilesystem(sym)) {
+                msg += ". Alternatively, forcing filesystem support (-sFORCE_FILESYSTEM) can export this for you";
+              }
+              warnOnce(msg);
+              return void 0;
+            } });
+          }
+          unexportedRuntimeSymbol(sym);
+        }
+        function unexportedRuntimeSymbol(sym) {
+          if (!Object.getOwnPropertyDescriptor(Module, sym)) {
+            Object.defineProperty(Module, sym, { configurable: true, get() {
+              var msg = `'${sym}' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the Emscripten FAQ)`;
+              if (isExportedByForceFilesystem(sym)) {
+                msg += ". Alternatively, forcing filesystem support (-sFORCE_FILESYSTEM) can export this for you";
+              }
+              abort(msg);
+            } });
+          }
+        }
+        function ExitStatus(status2) {
+          this.name = "ExitStatus";
+          this.message = `Program terminated with exit(${status2})`;
+          this.status = status2;
+        }
+        var callRuntimeCallbacks = (callbacks) => {
+          while (callbacks.length > 0) {
+            callbacks.shift()(Module);
+          }
+        };
+        var noExitRuntime = Module["noExitRuntime"] || true;
+        var ptrToString = (ptr) => {
+          assert2(typeof ptr === "number");
+          ptr >>>= 0;
+          return "0x" + ptr.toString(16).padStart(8, "0");
+        };
+        var warnOnce = (text) => {
+          warnOnce.shown ||= {};
+          if (!warnOnce.shown[text]) {
+            warnOnce.shown[text] = 1;
+            err(text);
+          }
+        };
+        var UTF8Decoder = typeof TextDecoder != "undefined" ? new TextDecoder("utf8") : void 0;
+        var UTF8ArrayToString = (heapOrArray, idx, maxBytesToRead) => {
+          var endIdx = idx + maxBytesToRead;
+          var endPtr = idx;
+          while (heapOrArray[endPtr] && !(endPtr >= endIdx)) ++endPtr;
+          if (endPtr - idx > 16 && heapOrArray.buffer && UTF8Decoder) {
+            return UTF8Decoder.decode(heapOrArray.subarray(idx, endPtr));
+          }
+          var str = "";
+          while (idx < endPtr) {
+            var u0 = heapOrArray[idx++];
+            if (!(u0 & 128)) {
+              str += String.fromCharCode(u0);
+              continue;
+            }
+            var u1 = heapOrArray[idx++] & 63;
+            if ((u0 & 224) == 192) {
+              str += String.fromCharCode((u0 & 31) << 6 | u1);
+              continue;
+            }
+            var u22 = heapOrArray[idx++] & 63;
+            if ((u0 & 240) == 224) {
+              u0 = (u0 & 15) << 12 | u1 << 6 | u22;
+            } else {
+              if ((u0 & 248) != 240) warnOnce("Invalid UTF-8 leading byte " + ptrToString(u0) + " encountered when deserializing a UTF-8 string in wasm memory to a JS string!");
+              u0 = (u0 & 7) << 18 | u1 << 12 | u22 << 6 | heapOrArray[idx++] & 63;
+            }
+            if (u0 < 65536) {
+              str += String.fromCharCode(u0);
+            } else {
+              var ch2 = u0 - 65536;
+              str += String.fromCharCode(55296 | ch2 >> 10, 56320 | ch2 & 1023);
+            }
+          }
+          return str;
+        };
+        var UTF8ToString = (ptr, maxBytesToRead) => {
+          assert2(typeof ptr == "number", `UTF8ToString expects a number (got ${typeof ptr})`);
+          return ptr ? UTF8ArrayToString(HEAPU8, ptr, maxBytesToRead) : "";
+        };
+        var ___assert_fail = (condition, filename, line, func) => {
+          abort(`Assertion failed: ${UTF8ToString(condition)}, at: ` + [filename ? UTF8ToString(filename) : "unknown filename", line, func ? UTF8ToString(func) : "unknown function"]);
+        };
+        class ExceptionInfo {
+          constructor(excPtr) {
+            this.excPtr = excPtr;
+            this.ptr = excPtr - 24;
+          }
+          set_type(type) {
+            HEAPU32[this.ptr + 4 >> 2] = type;
+          }
+          get_type() {
+            return HEAPU32[this.ptr + 4 >> 2];
+          }
+          set_destructor(destructor) {
+            HEAPU32[this.ptr + 8 >> 2] = destructor;
+          }
+          get_destructor() {
+            return HEAPU32[this.ptr + 8 >> 2];
+          }
+          set_caught(caught) {
+            caught = caught ? 1 : 0;
+            HEAP8[this.ptr + 12] = caught;
+          }
+          get_caught() {
+            return HEAP8[this.ptr + 12] != 0;
+          }
+          set_rethrown(rethrown) {
+            rethrown = rethrown ? 1 : 0;
+            HEAP8[this.ptr + 13] = rethrown;
+          }
+          get_rethrown() {
+            return HEAP8[this.ptr + 13] != 0;
+          }
+          init(type, destructor) {
+            this.set_adjusted_ptr(0);
+            this.set_type(type);
+            this.set_destructor(destructor);
+          }
+          set_adjusted_ptr(adjustedPtr) {
+            HEAPU32[this.ptr + 16 >> 2] = adjustedPtr;
+          }
+          get_adjusted_ptr() {
+            return HEAPU32[this.ptr + 16 >> 2];
+          }
+          get_exception_ptr() {
+            var isPointer = ___cxa_is_pointer_type(this.get_type());
+            if (isPointer) {
+              return HEAPU32[this.excPtr >> 2];
+            }
+            var adjusted = this.get_adjusted_ptr();
+            if (adjusted !== 0) return adjusted;
+            return this.excPtr;
+          }
+        }
+        var exceptionLast = 0;
+        var uncaughtExceptionCount = 0;
+        var ___cxa_throw = (ptr, type, destructor) => {
+          var info2 = new ExceptionInfo(ptr);
+          info2.init(type, destructor);
+          exceptionLast = ptr;
+          uncaughtExceptionCount++;
+          assert2(false, "Exception thrown, but exception catching is not enabled. Compile with -sNO_DISABLE_EXCEPTION_CATCHING or -sEXCEPTION_CATCHING_ALLOWED=[..] to catch.");
+        };
+        var tupleRegistrations = {};
+        var runDestructors = (destructors) => {
+          while (destructors.length) {
+            var ptr = destructors.pop();
+            var del = destructors.pop();
+            del(ptr);
+          }
+        };
+        function readPointer(pointer) {
+          return this["fromWireType"](HEAPU32[pointer >> 2]);
+        }
+        var awaitingDependencies = {};
+        var registeredTypes = {};
+        var typeDependencies = {};
+        var InternalError;
+        var throwInternalError = (message) => {
+          throw new InternalError(message);
+        };
+        var whenDependentTypesAreResolved = (myTypes, dependentTypes, getTypeConverters) => {
+          myTypes.forEach(function(type) {
+            typeDependencies[type] = dependentTypes;
+          });
+          function onComplete(typeConverters2) {
+            var myTypeConverters = getTypeConverters(typeConverters2);
+            if (myTypeConverters.length !== myTypes.length) {
+              throwInternalError("Mismatched type converter count");
+            }
+            for (var i3 = 0; i3 < myTypes.length; ++i3) {
+              registerType(myTypes[i3], myTypeConverters[i3]);
+            }
+          }
+          var typeConverters = new Array(dependentTypes.length);
+          var unregisteredTypes = [];
+          var registered = 0;
+          dependentTypes.forEach((dt, i3) => {
+            if (registeredTypes.hasOwnProperty(dt)) {
+              typeConverters[i3] = registeredTypes[dt];
+            } else {
+              unregisteredTypes.push(dt);
+              if (!awaitingDependencies.hasOwnProperty(dt)) {
+                awaitingDependencies[dt] = [];
+              }
+              awaitingDependencies[dt].push(() => {
+                typeConverters[i3] = registeredTypes[dt];
+                ++registered;
+                if (registered === unregisteredTypes.length) {
+                  onComplete(typeConverters);
+                }
+              });
+            }
+          });
+          if (0 === unregisteredTypes.length) {
+            onComplete(typeConverters);
+          }
+        };
+        var __embind_finalize_value_array = (rawTupleType) => {
+          var reg = tupleRegistrations[rawTupleType];
+          delete tupleRegistrations[rawTupleType];
+          var elements = reg.elements;
+          var elementsLength = elements.length;
+          var elementTypes = elements.map((elt) => elt.getterReturnType).concat(elements.map((elt) => elt.setterArgumentType));
+          var rawConstructor = reg.rawConstructor;
+          var rawDestructor = reg.rawDestructor;
+          whenDependentTypesAreResolved([rawTupleType], elementTypes, (elementTypes2) => {
+            elements.forEach((elt, i3) => {
+              var getterReturnType = elementTypes2[i3];
+              var getter = elt.getter;
+              var getterContext = elt.getterContext;
+              var setterArgumentType = elementTypes2[i3 + elementsLength];
+              var setter = elt.setter;
+              var setterContext = elt.setterContext;
+              elt.read = (ptr) => getterReturnType["fromWireType"](getter(getterContext, ptr));
+              elt.write = (ptr, o3) => {
+                var destructors = [];
+                setter(setterContext, ptr, setterArgumentType["toWireType"](destructors, o3));
+                runDestructors(destructors);
+              };
+            });
+            return [{ name: reg.name, "fromWireType": (ptr) => {
+              var rv = new Array(elementsLength);
+              for (var i3 = 0; i3 < elementsLength; ++i3) {
+                rv[i3] = elements[i3].read(ptr);
+              }
+              rawDestructor(ptr);
+              return rv;
+            }, "toWireType": (destructors, o3) => {
+              if (elementsLength !== o3.length) {
+                throw new TypeError(`Incorrect number of tuple elements for ${reg.name}: expected=${elementsLength}, actual=${o3.length}`);
+              }
+              var ptr = rawConstructor();
+              for (var i3 = 0; i3 < elementsLength; ++i3) {
+                elements[i3].write(ptr, o3[i3]);
+              }
+              if (destructors !== null) {
+                destructors.push(rawDestructor, ptr);
+              }
+              return ptr;
+            }, "argPackAdvance": GenericWireTypeSize, "readValueFromPointer": readPointer, destructorFunction: rawDestructor }];
+          });
+        };
+        var structRegistrations = {};
+        var __embind_finalize_value_object = (structType) => {
+          var reg = structRegistrations[structType];
+          delete structRegistrations[structType];
+          var rawConstructor = reg.rawConstructor;
+          var rawDestructor = reg.rawDestructor;
+          var fieldRecords = reg.fields;
+          var fieldTypes = fieldRecords.map((field) => field.getterReturnType).concat(fieldRecords.map((field) => field.setterArgumentType));
+          whenDependentTypesAreResolved([structType], fieldTypes, (fieldTypes2) => {
+            var fields = {};
+            fieldRecords.forEach((field, i3) => {
+              var fieldName = field.fieldName;
+              var getterReturnType = fieldTypes2[i3];
+              var getter = field.getter;
+              var getterContext = field.getterContext;
+              var setterArgumentType = fieldTypes2[i3 + fieldRecords.length];
+              var setter = field.setter;
+              var setterContext = field.setterContext;
+              fields[fieldName] = { read: (ptr) => getterReturnType["fromWireType"](getter(getterContext, ptr)), write: (ptr, o3) => {
+                var destructors = [];
+                setter(setterContext, ptr, setterArgumentType["toWireType"](destructors, o3));
+                runDestructors(destructors);
+              } };
+            });
+            return [{ name: reg.name, "fromWireType": (ptr) => {
+              var rv = {};
+              for (var i3 in fields) {
+                rv[i3] = fields[i3].read(ptr);
+              }
+              rawDestructor(ptr);
+              return rv;
+            }, "toWireType": (destructors, o3) => {
+              for (var fieldName in fields) {
+                if (!(fieldName in o3)) {
+                  throw new TypeError(`Missing field: "${fieldName}"`);
+                }
+              }
+              var ptr = rawConstructor();
+              for (fieldName in fields) {
+                fields[fieldName].write(ptr, o3[fieldName]);
+              }
+              if (destructors !== null) {
+                destructors.push(rawDestructor, ptr);
+              }
+              return ptr;
+            }, "argPackAdvance": GenericWireTypeSize, "readValueFromPointer": readPointer, destructorFunction: rawDestructor }];
+          });
+        };
+        var __embind_register_bigint = (primitiveType, name, size, minRange, maxRange) => {
+        };
+        var embind_init_charCodes = () => {
+          var codes = new Array(256);
+          for (var i3 = 0; i3 < 256; ++i3) {
+            codes[i3] = String.fromCharCode(i3);
+          }
+          embind_charCodes = codes;
+        };
+        var embind_charCodes;
+        var readLatin1String = (ptr) => {
+          var ret = "";
+          var c3 = ptr;
+          while (HEAPU8[c3]) {
+            ret += embind_charCodes[HEAPU8[c3++]];
+          }
+          return ret;
+        };
+        var BindingError;
+        var throwBindingError = (message) => {
+          throw new BindingError(message);
+        };
+        function sharedRegisterType(rawType, registeredInstance, options = {}) {
+          var name = registeredInstance.name;
+          if (!rawType) {
+            throwBindingError(`type "${name}" must have a positive integer typeid pointer`);
+          }
+          if (registeredTypes.hasOwnProperty(rawType)) {
+            if (options.ignoreDuplicateRegistrations) {
+              return;
+            } else {
+              throwBindingError(`Cannot register type '${name}' twice`);
+            }
+          }
+          registeredTypes[rawType] = registeredInstance;
+          delete typeDependencies[rawType];
+          if (awaitingDependencies.hasOwnProperty(rawType)) {
+            var callbacks = awaitingDependencies[rawType];
+            delete awaitingDependencies[rawType];
+            callbacks.forEach((cb) => cb());
+          }
+        }
+        function registerType(rawType, registeredInstance, options = {}) {
+          if (!("argPackAdvance" in registeredInstance)) {
+            throw new TypeError("registerType registeredInstance requires argPackAdvance");
+          }
+          return sharedRegisterType(rawType, registeredInstance, options);
+        }
+        var GenericWireTypeSize = 8;
+        var __embind_register_bool = (rawType, name, trueValue, falseValue) => {
+          name = readLatin1String(name);
+          registerType(rawType, { name, "fromWireType": function(wt) {
+            return !!wt;
+          }, "toWireType": function(destructors, o3) {
+            return o3 ? trueValue : falseValue;
+          }, "argPackAdvance": GenericWireTypeSize, "readValueFromPointer": function(pointer) {
+            return this["fromWireType"](HEAPU8[pointer]);
+          }, destructorFunction: null });
+        };
+        var shallowCopyInternalPointer = (o3) => ({ count: o3.count, deleteScheduled: o3.deleteScheduled, preservePointerOnDelete: o3.preservePointerOnDelete, ptr: o3.ptr, ptrType: o3.ptrType, smartPtr: o3.smartPtr, smartPtrType: o3.smartPtrType });
+        var throwInstanceAlreadyDeleted = (obj) => {
+          function getInstanceTypeName(handle) {
+            return handle.$$.ptrType.registeredClass.name;
+          }
+          throwBindingError(getInstanceTypeName(obj) + " instance already deleted");
+        };
+        var finalizationRegistry = false;
+        var detachFinalizer = (handle) => {
+        };
+        var runDestructor = ($$) => {
+          if ($$.smartPtr) {
+            $$.smartPtrType.rawDestructor($$.smartPtr);
+          } else {
+            $$.ptrType.registeredClass.rawDestructor($$.ptr);
+          }
+        };
+        var releaseClassHandle = ($$) => {
+          $$.count.value -= 1;
+          var toDelete = 0 === $$.count.value;
+          if (toDelete) {
+            runDestructor($$);
+          }
+        };
+        var downcastPointer = (ptr, ptrClass, desiredClass) => {
+          if (ptrClass === desiredClass) {
+            return ptr;
+          }
+          if (void 0 === desiredClass.baseClass) {
+            return null;
+          }
+          var rv = downcastPointer(ptr, ptrClass, desiredClass.baseClass);
+          if (rv === null) {
+            return null;
+          }
+          return desiredClass.downcast(rv);
+        };
+        var registeredPointers = {};
+        var getInheritedInstanceCount = () => Object.keys(registeredInstances).length;
+        var getLiveInheritedInstances = () => {
+          var rv = [];
+          for (var k4 in registeredInstances) {
+            if (registeredInstances.hasOwnProperty(k4)) {
+              rv.push(registeredInstances[k4]);
+            }
+          }
+          return rv;
+        };
+        var deletionQueue = [];
+        var flushPendingDeletes = () => {
+          while (deletionQueue.length) {
+            var obj = deletionQueue.pop();
+            obj.$$.deleteScheduled = false;
+            obj["delete"]();
+          }
+        };
+        var delayFunction;
+        var setDelayFunction = (fn) => {
+          delayFunction = fn;
+          if (deletionQueue.length && delayFunction) {
+            delayFunction(flushPendingDeletes);
+          }
+        };
+        var init_embind = () => {
+          Module["getInheritedInstanceCount"] = getInheritedInstanceCount;
+          Module["getLiveInheritedInstances"] = getLiveInheritedInstances;
+          Module["flushPendingDeletes"] = flushPendingDeletes;
+          Module["setDelayFunction"] = setDelayFunction;
+        };
+        var registeredInstances = {};
+        var getBasestPointer = (class_, ptr) => {
+          if (ptr === void 0) {
+            throwBindingError("ptr should not be undefined");
+          }
+          while (class_.baseClass) {
+            ptr = class_.upcast(ptr);
+            class_ = class_.baseClass;
+          }
+          return ptr;
+        };
+        var getInheritedInstance = (class_, ptr) => {
+          ptr = getBasestPointer(class_, ptr);
+          return registeredInstances[ptr];
+        };
+        var makeClassHandle = (prototype, record) => {
+          if (!record.ptrType || !record.ptr) {
+            throwInternalError("makeClassHandle requires ptr and ptrType");
+          }
+          var hasSmartPtrType = !!record.smartPtrType;
+          var hasSmartPtr = !!record.smartPtr;
+          if (hasSmartPtrType !== hasSmartPtr) {
+            throwInternalError("Both smartPtrType and smartPtr must be specified");
+          }
+          record.count = { value: 1 };
+          return attachFinalizer(Object.create(prototype, { $$: { value: record, writable: true } }));
+        };
+        function RegisteredPointer_fromWireType(ptr) {
+          var rawPointer = this.getPointee(ptr);
+          if (!rawPointer) {
+            this.destructor(ptr);
+            return null;
+          }
+          var registeredInstance = getInheritedInstance(this.registeredClass, rawPointer);
+          if (void 0 !== registeredInstance) {
+            if (0 === registeredInstance.$$.count.value) {
+              registeredInstance.$$.ptr = rawPointer;
+              registeredInstance.$$.smartPtr = ptr;
+              return registeredInstance["clone"]();
+            } else {
+              var rv = registeredInstance["clone"]();
+              this.destructor(ptr);
+              return rv;
+            }
+          }
+          function makeDefaultHandle() {
+            if (this.isSmartPointer) {
+              return makeClassHandle(this.registeredClass.instancePrototype, { ptrType: this.pointeeType, ptr: rawPointer, smartPtrType: this, smartPtr: ptr });
+            } else {
+              return makeClassHandle(this.registeredClass.instancePrototype, { ptrType: this, ptr });
+            }
+          }
+          var actualType = this.registeredClass.getActualType(rawPointer);
+          var registeredPointerRecord = registeredPointers[actualType];
+          if (!registeredPointerRecord) {
+            return makeDefaultHandle.call(this);
+          }
+          var toType;
+          if (this.isConst) {
+            toType = registeredPointerRecord.constPointerType;
+          } else {
+            toType = registeredPointerRecord.pointerType;
+          }
+          var dp = downcastPointer(rawPointer, this.registeredClass, toType.registeredClass);
+          if (dp === null) {
+            return makeDefaultHandle.call(this);
+          }
+          if (this.isSmartPointer) {
+            return makeClassHandle(toType.registeredClass.instancePrototype, { ptrType: toType, ptr: dp, smartPtrType: this, smartPtr: ptr });
+          } else {
+            return makeClassHandle(toType.registeredClass.instancePrototype, { ptrType: toType, ptr: dp });
+          }
+        }
+        var attachFinalizer = (handle) => {
+          if ("undefined" === typeof FinalizationRegistry) {
+            attachFinalizer = (handle2) => handle2;
+            return handle;
+          }
+          finalizationRegistry = new FinalizationRegistry((info2) => {
+            console.warn(info2.leakWarning.stack.replace(/^Error: /, ""));
+            releaseClassHandle(info2.$$);
+          });
+          attachFinalizer = (handle2) => {
+            var $$ = handle2.$$;
+            var hasSmartPtr = !!$$.smartPtr;
+            if (hasSmartPtr) {
+              var info2 = { $$ };
+              var cls = $$.ptrType.registeredClass;
+              info2.leakWarning = new Error(`Embind found a leaked C++ instance ${cls.name} <${ptrToString($$.ptr)}>.
+We'll free it automatically in this case, but this functionality is not reliable across various environments.
+Make sure to invoke .delete() manually once you're done with the instance instead.
+Originally allocated`);
+              if ("captureStackTrace" in Error) {
+                Error.captureStackTrace(info2.leakWarning, RegisteredPointer_fromWireType);
+              }
+              finalizationRegistry.register(handle2, info2, handle2);
+            }
+            return handle2;
+          };
+          detachFinalizer = (handle2) => finalizationRegistry.unregister(handle2);
+          return attachFinalizer(handle);
+        };
+        var init_ClassHandle = () => {
+          Object.assign(ClassHandle.prototype, { "isAliasOf"(other) {
+            if (!(this instanceof ClassHandle)) {
+              return false;
+            }
+            if (!(other instanceof ClassHandle)) {
+              return false;
+            }
+            var leftClass = this.$$.ptrType.registeredClass;
+            var left = this.$$.ptr;
+            other.$$ = other.$$;
+            var rightClass = other.$$.ptrType.registeredClass;
+            var right = other.$$.ptr;
+            while (leftClass.baseClass) {
+              left = leftClass.upcast(left);
+              leftClass = leftClass.baseClass;
+            }
+            while (rightClass.baseClass) {
+              right = rightClass.upcast(right);
+              rightClass = rightClass.baseClass;
+            }
+            return leftClass === rightClass && left === right;
+          }, "clone"() {
+            if (!this.$$.ptr) {
+              throwInstanceAlreadyDeleted(this);
+            }
+            if (this.$$.preservePointerOnDelete) {
+              this.$$.count.value += 1;
+              return this;
+            } else {
+              var clone = attachFinalizer(Object.create(Object.getPrototypeOf(this), { $$: { value: shallowCopyInternalPointer(this.$$) } }));
+              clone.$$.count.value += 1;
+              clone.$$.deleteScheduled = false;
+              return clone;
+            }
+          }, "delete"() {
+            if (!this.$$.ptr) {
+              throwInstanceAlreadyDeleted(this);
+            }
+            if (this.$$.deleteScheduled && !this.$$.preservePointerOnDelete) {
+              throwBindingError("Object already scheduled for deletion");
+            }
+            detachFinalizer(this);
+            releaseClassHandle(this.$$);
+            if (!this.$$.preservePointerOnDelete) {
+              this.$$.smartPtr = void 0;
+              this.$$.ptr = void 0;
+            }
+          }, "isDeleted"() {
+            return !this.$$.ptr;
+          }, "deleteLater"() {
+            if (!this.$$.ptr) {
+              throwInstanceAlreadyDeleted(this);
+            }
+            if (this.$$.deleteScheduled && !this.$$.preservePointerOnDelete) {
+              throwBindingError("Object already scheduled for deletion");
+            }
+            deletionQueue.push(this);
+            if (deletionQueue.length === 1 && delayFunction) {
+              delayFunction(flushPendingDeletes);
+            }
+            this.$$.deleteScheduled = true;
+            return this;
+          } });
+        };
+        function ClassHandle() {
+        }
+        var createNamedFunction = (name, body) => Object.defineProperty(body, "name", { value: name });
+        var ensureOverloadTable = (proto, methodName, humanName) => {
+          if (void 0 === proto[methodName].overloadTable) {
+            var prevFunc = proto[methodName];
+            proto[methodName] = function(...args) {
+              if (!proto[methodName].overloadTable.hasOwnProperty(args.length)) {
+                throwBindingError(`Function '${humanName}' called with an invalid number of arguments (${args.length}) - expects one of (${proto[methodName].overloadTable})!`);
+              }
+              return proto[methodName].overloadTable[args.length].apply(this, args);
+            };
+            proto[methodName].overloadTable = [];
+            proto[methodName].overloadTable[prevFunc.argCount] = prevFunc;
+          }
+        };
+        var exposePublicSymbol = (name, value, numArguments) => {
+          if (Module.hasOwnProperty(name)) {
+            if (void 0 === numArguments || void 0 !== Module[name].overloadTable && void 0 !== Module[name].overloadTable[numArguments]) {
+              throwBindingError(`Cannot register public name '${name}' twice`);
+            }
+            ensureOverloadTable(Module, name, name);
+            if (Module.hasOwnProperty(numArguments)) {
+              throwBindingError(`Cannot register multiple overloads of a function with the same number of arguments (${numArguments})!`);
+            }
+            Module[name].overloadTable[numArguments] = value;
+          } else {
+            Module[name] = value;
+            if (void 0 !== numArguments) {
+              Module[name].numArguments = numArguments;
+            }
+          }
+        };
+        var char_0 = 48;
+        var char_9 = 57;
+        var makeLegalFunctionName = (name) => {
+          if (void 0 === name) {
+            return "_unknown";
+          }
+          name = name.replace(/[^a-zA-Z0-9_]/g, "$");
+          var f3 = name.charCodeAt(0);
+          if (f3 >= char_0 && f3 <= char_9) {
+            return `_${name}`;
+          }
+          return name;
+        };
+        function RegisteredClass(name, constructor, instancePrototype, rawDestructor, baseClass, getActualType, upcast, downcast) {
+          this.name = name;
+          this.constructor = constructor;
+          this.instancePrototype = instancePrototype;
+          this.rawDestructor = rawDestructor;
+          this.baseClass = baseClass;
+          this.getActualType = getActualType;
+          this.upcast = upcast;
+          this.downcast = downcast;
+          this.pureVirtualFunctions = [];
+        }
+        var upcastPointer = (ptr, ptrClass, desiredClass) => {
+          while (ptrClass !== desiredClass) {
+            if (!ptrClass.upcast) {
+              throwBindingError(`Expected null or instance of ${desiredClass.name}, got an instance of ${ptrClass.name}`);
+            }
+            ptr = ptrClass.upcast(ptr);
+            ptrClass = ptrClass.baseClass;
+          }
+          return ptr;
+        };
+        function constNoSmartPtrRawPointerToWireType(destructors, handle) {
+          if (handle === null) {
+            if (this.isReference) {
+              throwBindingError(`null is not a valid ${this.name}`);
+            }
+            return 0;
+          }
+          if (!handle.$$) {
+            throwBindingError(`Cannot pass "${embindRepr(handle)}" as a ${this.name}`);
+          }
+          if (!handle.$$.ptr) {
+            throwBindingError(`Cannot pass deleted object as a pointer of type ${this.name}`);
+          }
+          var handleClass = handle.$$.ptrType.registeredClass;
+          var ptr = upcastPointer(handle.$$.ptr, handleClass, this.registeredClass);
+          return ptr;
+        }
+        function genericPointerToWireType(destructors, handle) {
+          var ptr;
+          if (handle === null) {
+            if (this.isReference) {
+              throwBindingError(`null is not a valid ${this.name}`);
+            }
+            if (this.isSmartPointer) {
+              ptr = this.rawConstructor();
+              if (destructors !== null) {
+                destructors.push(this.rawDestructor, ptr);
+              }
+              return ptr;
+            } else {
+              return 0;
+            }
+          }
+          if (!handle || !handle.$$) {
+            throwBindingError(`Cannot pass "${embindRepr(handle)}" as a ${this.name}`);
+          }
+          if (!handle.$$.ptr) {
+            throwBindingError(`Cannot pass deleted object as a pointer of type ${this.name}`);
+          }
+          if (!this.isConst && handle.$$.ptrType.isConst) {
+            throwBindingError(`Cannot convert argument of type ${handle.$$.smartPtrType ? handle.$$.smartPtrType.name : handle.$$.ptrType.name} to parameter type ${this.name}`);
+          }
+          var handleClass = handle.$$.ptrType.registeredClass;
+          ptr = upcastPointer(handle.$$.ptr, handleClass, this.registeredClass);
+          if (this.isSmartPointer) {
+            if (void 0 === handle.$$.smartPtr) {
+              throwBindingError("Passing raw pointer to smart pointer is illegal");
+            }
+            switch (this.sharingPolicy) {
+              case 0:
+                if (handle.$$.smartPtrType === this) {
+                  ptr = handle.$$.smartPtr;
+                } else {
+                  throwBindingError(`Cannot convert argument of type ${handle.$$.smartPtrType ? handle.$$.smartPtrType.name : handle.$$.ptrType.name} to parameter type ${this.name}`);
+                }
+                break;
+              case 1:
+                ptr = handle.$$.smartPtr;
+                break;
+              case 2:
+                if (handle.$$.smartPtrType === this) {
+                  ptr = handle.$$.smartPtr;
+                } else {
+                  var clonedHandle = handle["clone"]();
+                  ptr = this.rawShare(ptr, Emval.toHandle(() => clonedHandle["delete"]()));
+                  if (destructors !== null) {
+                    destructors.push(this.rawDestructor, ptr);
+                  }
+                }
+                break;
+              default:
+                throwBindingError("Unsupporting sharing policy");
+            }
+          }
+          return ptr;
+        }
+        function nonConstNoSmartPtrRawPointerToWireType(destructors, handle) {
+          if (handle === null) {
+            if (this.isReference) {
+              throwBindingError(`null is not a valid ${this.name}`);
+            }
+            return 0;
+          }
+          if (!handle.$$) {
+            throwBindingError(`Cannot pass "${embindRepr(handle)}" as a ${this.name}`);
+          }
+          if (!handle.$$.ptr) {
+            throwBindingError(`Cannot pass deleted object as a pointer of type ${this.name}`);
+          }
+          if (handle.$$.ptrType.isConst) {
+            throwBindingError(`Cannot convert argument of type ${handle.$$.ptrType.name} to parameter type ${this.name}`);
+          }
+          var handleClass = handle.$$.ptrType.registeredClass;
+          var ptr = upcastPointer(handle.$$.ptr, handleClass, this.registeredClass);
+          return ptr;
+        }
+        var init_RegisteredPointer = () => {
+          Object.assign(RegisteredPointer.prototype, { getPointee(ptr) {
+            if (this.rawGetPointee) {
+              ptr = this.rawGetPointee(ptr);
+            }
+            return ptr;
+          }, destructor(ptr) {
+            this.rawDestructor?.(ptr);
+          }, "argPackAdvance": GenericWireTypeSize, "readValueFromPointer": readPointer, "fromWireType": RegisteredPointer_fromWireType });
+        };
+        function RegisteredPointer(name, registeredClass, isReference, isConst, isSmartPointer, pointeeType, sharingPolicy, rawGetPointee, rawConstructor, rawShare, rawDestructor) {
+          this.name = name;
+          this.registeredClass = registeredClass;
+          this.isReference = isReference;
+          this.isConst = isConst;
+          this.isSmartPointer = isSmartPointer;
+          this.pointeeType = pointeeType;
+          this.sharingPolicy = sharingPolicy;
+          this.rawGetPointee = rawGetPointee;
+          this.rawConstructor = rawConstructor;
+          this.rawShare = rawShare;
+          this.rawDestructor = rawDestructor;
+          if (!isSmartPointer && registeredClass.baseClass === void 0) {
+            if (isConst) {
+              this["toWireType"] = constNoSmartPtrRawPointerToWireType;
+              this.destructorFunction = null;
+            } else {
+              this["toWireType"] = nonConstNoSmartPtrRawPointerToWireType;
+              this.destructorFunction = null;
+            }
+          } else {
+            this["toWireType"] = genericPointerToWireType;
+          }
+        }
+        var replacePublicSymbol = (name, value, numArguments) => {
+          if (!Module.hasOwnProperty(name)) {
+            throwInternalError("Replacing nonexistent public symbol");
+          }
+          if (void 0 !== Module[name].overloadTable && void 0 !== numArguments) {
+            Module[name].overloadTable[numArguments] = value;
+          } else {
+            Module[name] = value;
+            Module[name].argCount = numArguments;
+          }
+        };
+        var dynCallLegacy = (sig, ptr, args) => {
+          assert2("dynCall_" + sig in Module, `bad function pointer type - dynCall function not found for sig '${sig}'`);
+          if (args?.length) {
+            assert2(args.length === sig.substring(1).replace(/j/g, "--").length);
+          } else {
+            assert2(sig.length == 1);
+          }
+          var f3 = Module["dynCall_" + sig];
+          return f3(ptr, ...args);
+        };
+        var wasmTableMirror = [];
+        var wasmTable;
+        var getWasmTableEntry = (funcPtr) => {
+          var func = wasmTableMirror[funcPtr];
+          if (!func) {
+            if (funcPtr >= wasmTableMirror.length) wasmTableMirror.length = funcPtr + 1;
+            wasmTableMirror[funcPtr] = func = wasmTable.get(funcPtr);
+          }
+          assert2(wasmTable.get(funcPtr) == func, "JavaScript-side Wasm function table mirror is out of date!");
+          return func;
+        };
+        var dynCall = (sig, ptr, args = []) => {
+          if (sig.includes("j")) {
+            return dynCallLegacy(sig, ptr, args);
+          }
+          assert2(getWasmTableEntry(ptr), `missing table entry in dynCall: ${ptr}`);
+          var rtn = getWasmTableEntry(ptr)(...args);
+          return rtn;
+        };
+        var getDynCaller = (sig, ptr) => {
+          assert2(sig.includes("j") || sig.includes("p"), "getDynCaller should only be called with i64 sigs");
+          return (...args) => dynCall(sig, ptr, args);
+        };
+        var embind__requireFunction = (signature, rawFunction) => {
+          signature = readLatin1String(signature);
+          function makeDynCaller() {
+            if (signature.includes("j")) {
+              return getDynCaller(signature, rawFunction);
+            }
+            return getWasmTableEntry(rawFunction);
+          }
+          var fp = makeDynCaller();
+          if (typeof fp != "function") {
+            throwBindingError(`unknown function pointer with signature ${signature}: ${rawFunction}`);
+          }
+          return fp;
+        };
+        var extendError = (baseErrorType, errorName) => {
+          var errorClass = createNamedFunction(errorName, function(message) {
+            this.name = errorName;
+            this.message = message;
+            var stack = new Error(message).stack;
+            if (stack !== void 0) {
+              this.stack = this.toString() + "\n" + stack.replace(/^Error(:[^\n]*)?\n/, "");
+            }
+          });
+          errorClass.prototype = Object.create(baseErrorType.prototype);
+          errorClass.prototype.constructor = errorClass;
+          errorClass.prototype.toString = function() {
+            if (this.message === void 0) {
+              return this.name;
+            } else {
+              return `${this.name}: ${this.message}`;
+            }
+          };
+          return errorClass;
+        };
+        var UnboundTypeError;
+        var getTypeName = (type) => {
+          var ptr = ___getTypeName(type);
+          var rv = readLatin1String(ptr);
+          _free(ptr);
+          return rv;
+        };
+        var throwUnboundTypeError = (message, types) => {
+          var unboundTypes = [];
+          var seen = {};
+          function visit(type) {
+            if (seen[type]) {
+              return;
+            }
+            if (registeredTypes[type]) {
+              return;
+            }
+            if (typeDependencies[type]) {
+              typeDependencies[type].forEach(visit);
+              return;
+            }
+            unboundTypes.push(type);
+            seen[type] = true;
+          }
+          types.forEach(visit);
+          throw new UnboundTypeError(`${message}: ` + unboundTypes.map(getTypeName).join([", "]));
+        };
+        var __embind_register_class = (rawType, rawPointerType, rawConstPointerType, baseClassRawType, getActualTypeSignature, getActualType, upcastSignature, upcast, downcastSignature, downcast, name, destructorSignature, rawDestructor) => {
+          name = readLatin1String(name);
+          getActualType = embind__requireFunction(getActualTypeSignature, getActualType);
+          upcast &&= embind__requireFunction(upcastSignature, upcast);
+          downcast &&= embind__requireFunction(downcastSignature, downcast);
+          rawDestructor = embind__requireFunction(destructorSignature, rawDestructor);
+          var legalFunctionName = makeLegalFunctionName(name);
+          exposePublicSymbol(legalFunctionName, function() {
+            throwUnboundTypeError(`Cannot construct ${name} due to unbound types`, [baseClassRawType]);
+          });
+          whenDependentTypesAreResolved([rawType, rawPointerType, rawConstPointerType], baseClassRawType ? [baseClassRawType] : [], (base) => {
+            base = base[0];
+            var baseClass;
+            var basePrototype;
+            if (baseClassRawType) {
+              baseClass = base.registeredClass;
+              basePrototype = baseClass.instancePrototype;
+            } else {
+              basePrototype = ClassHandle.prototype;
+            }
+            var constructor = createNamedFunction(name, function(...args) {
+              if (Object.getPrototypeOf(this) !== instancePrototype) {
+                throw new BindingError("Use 'new' to construct " + name);
+              }
+              if (void 0 === registeredClass.constructor_body) {
+                throw new BindingError(name + " has no accessible constructor");
+              }
+              var body = registeredClass.constructor_body[args.length];
+              if (void 0 === body) {
+                throw new BindingError(`Tried to invoke ctor of ${name} with invalid number of parameters (${args.length}) - expected (${Object.keys(registeredClass.constructor_body).toString()}) parameters instead!`);
+              }
+              return body.apply(this, args);
+            });
+            var instancePrototype = Object.create(basePrototype, { constructor: { value: constructor } });
+            constructor.prototype = instancePrototype;
+            var registeredClass = new RegisteredClass(name, constructor, instancePrototype, rawDestructor, baseClass, getActualType, upcast, downcast);
+            if (registeredClass.baseClass) {
+              registeredClass.baseClass.__derivedClasses ??= [];
+              registeredClass.baseClass.__derivedClasses.push(registeredClass);
+            }
+            var referenceConverter = new RegisteredPointer(name, registeredClass, true, false, false);
+            var pointerConverter = new RegisteredPointer(name + "*", registeredClass, false, false, false);
+            var constPointerConverter = new RegisteredPointer(name + " const*", registeredClass, false, true, false);
+            registeredPointers[rawType] = { pointerType: pointerConverter, constPointerType: constPointerConverter };
+            replacePublicSymbol(legalFunctionName, constructor);
+            return [referenceConverter, pointerConverter, constPointerConverter];
+          });
+        };
+        var heap32VectorToArray = (count, firstElement) => {
+          var array = [];
+          for (var i3 = 0; i3 < count; i3++) {
+            array.push(HEAPU32[firstElement + i3 * 4 >> 2]);
+          }
+          return array;
+        };
+        function usesDestructorStack(argTypes) {
+          for (var i3 = 1; i3 < argTypes.length; ++i3) {
+            if (argTypes[i3] !== null && argTypes[i3].destructorFunction === void 0) {
+              return true;
+            }
+          }
+          return false;
+        }
+        var InvokerFunctions = { "ftf": function(humanName, throwBindingError2, invoker, fn, runDestructors2, retType, classParam) {
+          if (arguments.length !== 7) {
+            throw new Error(humanName + "Expected 7 closure arguments " + arguments.length + " given.");
+          }
+          return function() {
+            if (arguments.length !== 0) {
+              throwBindingError2("function " + humanName + " called with " + arguments.length + " arguments, expected 0");
+            }
+            var rv = invoker(fn);
+            var ret = retType["fromWireType"](rv);
+            return ret;
+          };
+        }, "ttfn": function(humanName, throwBindingError2, invoker, fn, runDestructors2, retType, classParam) {
+          if (arguments.length !== 7) {
+            throw new Error(humanName + "Expected 7 closure arguments " + arguments.length + " given.");
+          }
+          return function() {
+            if (arguments.length !== 0) {
+              throwBindingError2("function " + humanName + " called with " + arguments.length + " arguments, expected 0");
+            }
+            var thisWired = classParam["toWireType"](null, this);
+            var rv = invoker(fn, thisWired);
+            var ret = retType["fromWireType"](rv);
+            return ret;
+          };
+        }, "tffntn": function(humanName, throwBindingError2, invoker, fn, runDestructors2, retType, classParam, argType0, argType1, arg0Wired_dtor) {
+          if (arguments.length !== 10) {
+            throw new Error(humanName + "Expected 10 closure arguments " + arguments.length + " given.");
+          }
+          return function(arg0, arg1) {
+            if (arguments.length !== 2) {
+              throwBindingError2("function " + humanName + " called with " + arguments.length + " arguments, expected 2");
+            }
+            var thisWired = classParam["toWireType"](null, this);
+            var arg0Wired = argType0["toWireType"](null, arg0);
+            var arg1Wired = argType1["toWireType"](null, arg1);
+            invoker(fn, thisWired, arg0Wired, arg1Wired);
+            arg0Wired_dtor(arg0Wired);
+          };
+        }, "tffnt": function(humanName, throwBindingError2, invoker, fn, runDestructors2, retType, classParam, argType0, arg0Wired_dtor) {
+          if (arguments.length !== 9) {
+            throw new Error(humanName + "Expected 9 closure arguments " + arguments.length + " given.");
+          }
+          return function(arg0) {
+            if (arguments.length !== 1) {
+              throwBindingError2("function " + humanName + " called with " + arguments.length + " arguments, expected 1");
+            }
+            var thisWired = classParam["toWireType"](null, this);
+            var arg0Wired = argType0["toWireType"](null, arg0);
+            invoker(fn, thisWired, arg0Wired);
+            arg0Wired_dtor(arg0Wired);
+          };
+        }, "ttfntn": function(humanName, throwBindingError2, invoker, fn, runDestructors2, retType, classParam, argType0, argType1, arg0Wired_dtor) {
+          if (arguments.length !== 10) {
+            throw new Error(humanName + "Expected 10 closure arguments " + arguments.length + " given.");
+          }
+          return function(arg0, arg1) {
+            if (arguments.length !== 2) {
+              throwBindingError2("function " + humanName + " called with " + arguments.length + " arguments, expected 2");
+            }
+            var thisWired = classParam["toWireType"](null, this);
+            var arg0Wired = argType0["toWireType"](null, arg0);
+            var arg1Wired = argType1["toWireType"](null, arg1);
+            var rv = invoker(fn, thisWired, arg0Wired, arg1Wired);
+            arg0Wired_dtor(arg0Wired);
+            var ret = retType["fromWireType"](rv);
+            return ret;
+          };
+        }, "ttfnnttt": function(humanName, throwBindingError2, invoker, fn, runDestructors2, retType, classParam, argType0, argType1, argType2, argType3, arg1Wired_dtor, arg2Wired_dtor, arg3Wired_dtor) {
+          if (arguments.length !== 14) {
+            throw new Error(humanName + "Expected 14 closure arguments " + arguments.length + " given.");
+          }
+          return function(arg0, arg1, arg2, arg3) {
+            if (arguments.length !== 4) {
+              throwBindingError2("function " + humanName + " called with " + arguments.length + " arguments, expected 4");
+            }
+            var thisWired = classParam["toWireType"](null, this);
+            var arg0Wired = argType0["toWireType"](null, arg0);
+            var arg1Wired = argType1["toWireType"](null, arg1);
+            var arg2Wired = argType2["toWireType"](null, arg2);
+            var arg3Wired = argType3["toWireType"](null, arg3);
+            var rv = invoker(fn, thisWired, arg0Wired, arg1Wired, arg2Wired, arg3Wired);
+            arg1Wired_dtor(arg1Wired);
+            arg2Wired_dtor(arg2Wired);
+            arg3Wired_dtor(arg3Wired);
+            var ret = retType["fromWireType"](rv);
+            return ret;
+          };
+        }, "ttfnt": function(humanName, throwBindingError2, invoker, fn, runDestructors2, retType, classParam, argType0, arg0Wired_dtor) {
+          if (arguments.length !== 9) {
+            throw new Error(humanName + "Expected 9 closure arguments " + arguments.length + " given.");
+          }
+          return function(arg0) {
+            if (arguments.length !== 1) {
+              throwBindingError2("function " + humanName + " called with " + arguments.length + " arguments, expected 1");
+            }
+            var thisWired = classParam["toWireType"](null, this);
+            var arg0Wired = argType0["toWireType"](null, arg0);
+            var rv = invoker(fn, thisWired, arg0Wired);
+            arg0Wired_dtor(arg0Wired);
+            var ret = retType["fromWireType"](rv);
+            return ret;
+          };
+        }, "ttfntnn": function(humanName, throwBindingError2, invoker, fn, runDestructors2, retType, classParam, argType0, argType1, argType2, arg0Wired_dtor) {
+          if (arguments.length !== 11) {
+            throw new Error(humanName + "Expected 11 closure arguments " + arguments.length + " given.");
+          }
+          return function(arg0, arg1, arg2) {
+            if (arguments.length !== 3) {
+              throwBindingError2("function " + humanName + " called with " + arguments.length + " arguments, expected 3");
+            }
+            var thisWired = classParam["toWireType"](null, this);
+            var arg0Wired = argType0["toWireType"](null, arg0);
+            var arg1Wired = argType1["toWireType"](null, arg1);
+            var arg2Wired = argType2["toWireType"](null, arg2);
+            var rv = invoker(fn, thisWired, arg0Wired, arg1Wired, arg2Wired);
+            arg0Wired_dtor(arg0Wired);
+            var ret = retType["fromWireType"](rv);
+            return ret;
+          };
+        }, "tffntt": function(humanName, throwBindingError2, invoker, fn, runDestructors2, retType, classParam, argType0, argType1, arg0Wired_dtor, arg1Wired_dtor) {
+          if (arguments.length !== 11) {
+            throw new Error(humanName + "Expected 11 closure arguments " + arguments.length + " given.");
+          }
+          return function(arg0, arg1) {
+            if (arguments.length !== 2) {
+              throwBindingError2("function " + humanName + " called with " + arguments.length + " arguments, expected 2");
+            }
+            var thisWired = classParam["toWireType"](null, this);
+            var arg0Wired = argType0["toWireType"](null, arg0);
+            var arg1Wired = argType1["toWireType"](null, arg1);
+            invoker(fn, thisWired, arg0Wired, arg1Wired);
+            arg0Wired_dtor(arg0Wired);
+            arg1Wired_dtor(arg1Wired);
+          };
+        }, "tffnnn": function(humanName, throwBindingError2, invoker, fn, runDestructors2, retType, classParam, argType0, argType1) {
+          if (arguments.length !== 9) {
+            throw new Error(humanName + "Expected 9 closure arguments " + arguments.length + " given.");
+          }
+          return function(arg0, arg1) {
+            if (arguments.length !== 2) {
+              throwBindingError2("function " + humanName + " called with " + arguments.length + " arguments, expected 2");
+            }
+            var thisWired = classParam["toWireType"](null, this);
+            var arg0Wired = argType0["toWireType"](null, arg0);
+            var arg1Wired = argType1["toWireType"](null, arg1);
+            invoker(fn, thisWired, arg0Wired, arg1Wired);
+          };
+        }, "ttfnnn": function(humanName, throwBindingError2, invoker, fn, runDestructors2, retType, classParam, argType0, argType1) {
+          if (arguments.length !== 9) {
+            throw new Error(humanName + "Expected 9 closure arguments " + arguments.length + " given.");
+          }
+          return function(arg0, arg1) {
+            if (arguments.length !== 2) {
+              throwBindingError2("function " + humanName + " called with " + arguments.length + " arguments, expected 2");
+            }
+            var thisWired = classParam["toWireType"](null, this);
+            var arg0Wired = argType0["toWireType"](null, arg0);
+            var arg1Wired = argType1["toWireType"](null, arg1);
+            var rv = invoker(fn, thisWired, arg0Wired, arg1Wired);
+            var ret = retType["fromWireType"](rv);
+            return ret;
+          };
+        }, "ftfn": function(humanName, throwBindingError2, invoker, fn, runDestructors2, retType, classParam, argType0) {
+          if (arguments.length !== 8) {
+            throw new Error(humanName + "Expected 8 closure arguments " + arguments.length + " given.");
+          }
+          return function(arg0) {
+            if (arguments.length !== 1) {
+              throwBindingError2("function " + humanName + " called with " + arguments.length + " arguments, expected 1");
+            }
+            var arg0Wired = argType0["toWireType"](null, arg0);
+            var rv = invoker(fn, arg0Wired);
+            var ret = retType["fromWireType"](rv);
+            return ret;
+          };
+        }, "tffnnt": function(humanName, throwBindingError2, invoker, fn, runDestructors2, retType, classParam, argType0, argType1, arg1Wired_dtor) {
+          if (arguments.length !== 10) {
+            throw new Error(humanName + "Expected 10 closure arguments " + arguments.length + " given.");
+          }
+          return function(arg0, arg1) {
+            if (arguments.length !== 2) {
+              throwBindingError2("function " + humanName + " called with " + arguments.length + " arguments, expected 2");
+            }
+            var thisWired = classParam["toWireType"](null, this);
+            var arg0Wired = argType0["toWireType"](null, arg0);
+            var arg1Wired = argType1["toWireType"](null, arg1);
+            invoker(fn, thisWired, arg0Wired, arg1Wired);
+            arg1Wired_dtor(arg1Wired);
+          };
+        }, "ttfnnt": function(humanName, throwBindingError2, invoker, fn, runDestructors2, retType, classParam, argType0, argType1, arg1Wired_dtor) {
+          if (arguments.length !== 10) {
+            throw new Error(humanName + "Expected 10 closure arguments " + arguments.length + " given.");
+          }
+          return function(arg0, arg1) {
+            if (arguments.length !== 2) {
+              throwBindingError2("function " + humanName + " called with " + arguments.length + " arguments, expected 2");
+            }
+            var thisWired = classParam["toWireType"](null, this);
+            var arg0Wired = argType0["toWireType"](null, arg0);
+            var arg1Wired = argType1["toWireType"](null, arg1);
+            var rv = invoker(fn, thisWired, arg0Wired, arg1Wired);
+            arg1Wired_dtor(arg1Wired);
+            var ret = retType["fromWireType"](rv);
+            return ret;
+          };
+        }, "ttfnn": function(humanName, throwBindingError2, invoker, fn, runDestructors2, retType, classParam, argType0) {
+          if (arguments.length !== 8) {
+            throw new Error(humanName + "Expected 8 closure arguments " + arguments.length + " given.");
+          }
+          return function(arg0) {
+            if (arguments.length !== 1) {
+              throwBindingError2("function " + humanName + " called with " + arguments.length + " arguments, expected 1");
+            }
+            var thisWired = classParam["toWireType"](null, this);
+            var arg0Wired = argType0["toWireType"](null, arg0);
+            var rv = invoker(fn, thisWired, arg0Wired);
+            var ret = retType["fromWireType"](rv);
+            return ret;
+          };
+        }, "tffnn": function(humanName, throwBindingError2, invoker, fn, runDestructors2, retType, classParam, argType0) {
+          if (arguments.length !== 8) {
+            throw new Error(humanName + "Expected 8 closure arguments " + arguments.length + " given.");
+          }
+          return function(arg0) {
+            if (arguments.length !== 1) {
+              throwBindingError2("function " + humanName + " called with " + arguments.length + " arguments, expected 1");
+            }
+            var thisWired = classParam["toWireType"](null, this);
+            var arg0Wired = argType0["toWireType"](null, arg0);
+            invoker(fn, thisWired, arg0Wired);
+          };
+        } };
+        function createJsInvokerSignature(argTypes, isClassMethodFunc, returns, isAsync) {
+          const signature = [isClassMethodFunc ? "t" : "f", returns ? "t" : "f", isAsync ? "t" : "f"];
+          for (let i3 = isClassMethodFunc ? 1 : 2; i3 < argTypes.length; ++i3) {
+            const arg = argTypes[i3];
+            let destructorSig = "";
+            if (arg.destructorFunction === void 0) {
+              destructorSig = "u";
+            } else if (arg.destructorFunction === null) {
+              destructorSig = "n";
+            } else {
+              destructorSig = "t";
+            }
+            signature.push(destructorSig);
+          }
+          return signature.join("");
+        }
+        function craftInvokerFunction(humanName, argTypes, classType, cppInvokerFunc, cppTargetFunc, isAsync) {
+          var argCount = argTypes.length;
+          if (argCount < 2) {
+            throwBindingError("argTypes array size mismatch! Must at least get return value and 'this' types!");
+          }
+          assert2(!isAsync, "Async bindings are only supported with JSPI.");
+          var isClassMethodFunc = argTypes[1] !== null && classType !== null;
+          var needsDestructorStack = usesDestructorStack(argTypes);
+          var returns = argTypes[0].name !== "void";
+          var closureArgs = [humanName, throwBindingError, cppInvokerFunc, cppTargetFunc, runDestructors, argTypes[0], argTypes[1]];
+          for (var i3 = 0; i3 < argCount - 2; ++i3) {
+            closureArgs.push(argTypes[i3 + 2]);
+          }
+          if (!needsDestructorStack) {
+            for (var i3 = isClassMethodFunc ? 1 : 2; i3 < argTypes.length; ++i3) {
+              if (argTypes[i3].destructorFunction !== null) {
+                closureArgs.push(argTypes[i3].destructorFunction);
+              }
+            }
+          }
+          var signature = createJsInvokerSignature(argTypes, isClassMethodFunc, returns, isAsync);
+          var invokerFn = InvokerFunctions[signature](...closureArgs);
+          return createNamedFunction(humanName, invokerFn);
+        }
+        var __embind_register_class_constructor = (rawClassType, argCount, rawArgTypesAddr, invokerSignature, invoker, rawConstructor) => {
+          assert2(argCount > 0);
+          var rawArgTypes = heap32VectorToArray(argCount, rawArgTypesAddr);
+          invoker = embind__requireFunction(invokerSignature, invoker);
+          whenDependentTypesAreResolved([], [rawClassType], (classType) => {
+            classType = classType[0];
+            var humanName = `constructor ${classType.name}`;
+            if (void 0 === classType.registeredClass.constructor_body) {
+              classType.registeredClass.constructor_body = [];
+            }
+            if (void 0 !== classType.registeredClass.constructor_body[argCount - 1]) {
+              throw new BindingError(`Cannot register multiple constructors with identical number of parameters (${argCount - 1}) for class '${classType.name}'! Overload resolution is currently only performed using the parameter count, not actual type info!`);
+            }
+            classType.registeredClass.constructor_body[argCount - 1] = () => {
+              throwUnboundTypeError(`Cannot construct ${classType.name} due to unbound types`, rawArgTypes);
+            };
+            whenDependentTypesAreResolved([], rawArgTypes, (argTypes) => {
+              argTypes.splice(1, 0, null);
+              classType.registeredClass.constructor_body[argCount - 1] = craftInvokerFunction(humanName, argTypes, null, invoker, rawConstructor);
+              return [];
+            });
+            return [];
+          });
+        };
+        var getFunctionName = (signature) => {
+          signature = signature.trim();
+          const argsIndex = signature.indexOf("(");
+          if (argsIndex !== -1) {
+            assert2(signature[signature.length - 1] == ")", "Parentheses for argument names should match.");
+            return signature.substr(0, argsIndex);
+          } else {
+            return signature;
+          }
+        };
+        var __embind_register_class_function = (rawClassType, methodName, argCount, rawArgTypesAddr, invokerSignature, rawInvoker, context, isPureVirtual, isAsync) => {
+          var rawArgTypes = heap32VectorToArray(argCount, rawArgTypesAddr);
+          methodName = readLatin1String(methodName);
+          methodName = getFunctionName(methodName);
+          rawInvoker = embind__requireFunction(invokerSignature, rawInvoker);
+          whenDependentTypesAreResolved([], [rawClassType], (classType) => {
+            classType = classType[0];
+            var humanName = `${classType.name}.${methodName}`;
+            if (methodName.startsWith("@@")) {
+              methodName = Symbol[methodName.substring(2)];
+            }
+            if (isPureVirtual) {
+              classType.registeredClass.pureVirtualFunctions.push(methodName);
+            }
+            function unboundTypesHandler() {
+              throwUnboundTypeError(`Cannot call ${humanName} due to unbound types`, rawArgTypes);
+            }
+            var proto = classType.registeredClass.instancePrototype;
+            var method = proto[methodName];
+            if (void 0 === method || void 0 === method.overloadTable && method.className !== classType.name && method.argCount === argCount - 2) {
+              unboundTypesHandler.argCount = argCount - 2;
+              unboundTypesHandler.className = classType.name;
+              proto[methodName] = unboundTypesHandler;
+            } else {
+              ensureOverloadTable(proto, methodName, humanName);
+              proto[methodName].overloadTable[argCount - 2] = unboundTypesHandler;
+            }
+            whenDependentTypesAreResolved([], rawArgTypes, (argTypes) => {
+              var memberFunction = craftInvokerFunction(humanName, argTypes, classType, rawInvoker, context, isAsync);
+              if (void 0 === proto[methodName].overloadTable) {
+                memberFunction.argCount = argCount - 2;
+                proto[methodName] = memberFunction;
+              } else {
+                proto[methodName].overloadTable[argCount - 2] = memberFunction;
+              }
+              return [];
+            });
+            return [];
+          });
+        };
+        var validateThis = (this_, classType, humanName) => {
+          if (!(this_ instanceof Object)) {
+            throwBindingError(`${humanName} with invalid "this": ${this_}`);
+          }
+          if (!(this_ instanceof classType.registeredClass.constructor)) {
+            throwBindingError(`${humanName} incompatible with "this" of type ${this_.constructor.name}`);
+          }
+          if (!this_.$$.ptr) {
+            throwBindingError(`cannot call emscripten binding method ${humanName} on deleted object`);
+          }
+          return upcastPointer(this_.$$.ptr, this_.$$.ptrType.registeredClass, classType.registeredClass);
+        };
+        var __embind_register_class_property = (classType, fieldName, getterReturnType, getterSignature, getter, getterContext, setterArgumentType, setterSignature, setter, setterContext) => {
+          fieldName = readLatin1String(fieldName);
+          getter = embind__requireFunction(getterSignature, getter);
+          whenDependentTypesAreResolved([], [classType], (classType2) => {
+            classType2 = classType2[0];
+            var humanName = `${classType2.name}.${fieldName}`;
+            var desc = { get() {
+              throwUnboundTypeError(`Cannot access ${humanName} due to unbound types`, [getterReturnType, setterArgumentType]);
+            }, enumerable: true, configurable: true };
+            if (setter) {
+              desc.set = () => throwUnboundTypeError(`Cannot access ${humanName} due to unbound types`, [getterReturnType, setterArgumentType]);
+            } else {
+              desc.set = (v3) => throwBindingError(humanName + " is a read-only property");
+            }
+            Object.defineProperty(classType2.registeredClass.instancePrototype, fieldName, desc);
+            whenDependentTypesAreResolved([], setter ? [getterReturnType, setterArgumentType] : [getterReturnType], (types) => {
+              var getterReturnType2 = types[0];
+              var desc2 = { get() {
+                var ptr = validateThis(this, classType2, humanName + " getter");
+                return getterReturnType2["fromWireType"](getter(getterContext, ptr));
+              }, enumerable: true };
+              if (setter) {
+                setter = embind__requireFunction(setterSignature, setter);
+                var setterArgumentType2 = types[1];
+                desc2.set = function(v3) {
+                  var ptr = validateThis(this, classType2, humanName + " setter");
+                  var destructors = [];
+                  setter(setterContext, ptr, setterArgumentType2["toWireType"](destructors, v3));
+                  runDestructors(destructors);
+                };
+              }
+              Object.defineProperty(classType2.registeredClass.instancePrototype, fieldName, desc2);
+              return [];
+            });
+            return [];
+          });
+        };
+        var emval_freelist = [];
+        var emval_handles = [];
+        var __emval_decref = (handle) => {
+          if (handle > 9 && 0 === --emval_handles[handle + 1]) {
+            assert2(emval_handles[handle] !== void 0, `Decref for unallocated handle.`);
+            emval_handles[handle] = void 0;
+            emval_freelist.push(handle);
+          }
+        };
+        var count_emval_handles = () => emval_handles.length / 2 - 5 - emval_freelist.length;
+        var init_emval = () => {
+          emval_handles.push(0, 1, void 0, 1, null, 1, true, 1, false, 1);
+          assert2(emval_handles.length === 5 * 2);
+          Module["count_emval_handles"] = count_emval_handles;
+        };
+        var Emval = { toValue: (handle) => {
+          if (!handle) {
+            throwBindingError("Cannot use deleted val. handle = " + handle);
+          }
+          assert2(handle === 2 || emval_handles[handle] !== void 0 && handle % 2 === 0, `invalid handle: ${handle}`);
+          return emval_handles[handle];
+        }, toHandle: (value) => {
+          switch (value) {
+            case void 0:
+              return 2;
+            case null:
+              return 4;
+            case true:
+              return 6;
+            case false:
+              return 8;
+            default: {
+              const handle = emval_freelist.pop() || emval_handles.length;
+              emval_handles[handle] = value;
+              emval_handles[handle + 1] = 1;
+              return handle;
+            }
+          }
+        } };
+        var EmValType = { name: "emscripten::val", "fromWireType": (handle) => {
+          var rv = Emval.toValue(handle);
+          __emval_decref(handle);
+          return rv;
+        }, "toWireType": (destructors, value) => Emval.toHandle(value), "argPackAdvance": GenericWireTypeSize, "readValueFromPointer": readPointer, destructorFunction: null };
+        var __embind_register_emval = (rawType) => registerType(rawType, EmValType);
+        var enumReadValueFromPointer = (name, width, signed) => {
+          switch (width) {
+            case 1:
+              return signed ? function(pointer) {
+                return this["fromWireType"](HEAP8[pointer]);
+              } : function(pointer) {
+                return this["fromWireType"](HEAPU8[pointer]);
+              };
+            case 2:
+              return signed ? function(pointer) {
+                return this["fromWireType"](HEAP16[pointer >> 1]);
+              } : function(pointer) {
+                return this["fromWireType"](HEAPU16[pointer >> 1]);
+              };
+            case 4:
+              return signed ? function(pointer) {
+                return this["fromWireType"](HEAP32[pointer >> 2]);
+              } : function(pointer) {
+                return this["fromWireType"](HEAPU32[pointer >> 2]);
+              };
+            default:
+              throw new TypeError(`invalid integer width (${width}): ${name}`);
+          }
+        };
+        var __embind_register_enum = (rawType, name, size, isSigned) => {
+          name = readLatin1String(name);
+          function ctor() {
+          }
+          ctor.values = {};
+          registerType(rawType, { name, constructor: ctor, "fromWireType": function(c3) {
+            return this.constructor.values[c3];
+          }, "toWireType": (destructors, c3) => c3.value, "argPackAdvance": GenericWireTypeSize, "readValueFromPointer": enumReadValueFromPointer(name, size, isSigned), destructorFunction: null });
+          exposePublicSymbol(name, ctor);
+        };
+        var requireRegisteredType = (rawType, humanName) => {
+          var impl = registeredTypes[rawType];
+          if (void 0 === impl) {
+            throwBindingError(`${humanName} has unknown type ${getTypeName(rawType)}`);
+          }
+          return impl;
+        };
+        var __embind_register_enum_value = (rawEnumType, name, enumValue) => {
+          var enumType = requireRegisteredType(rawEnumType, "enum");
+          name = readLatin1String(name);
+          var Enum = enumType.constructor;
+          var Value = Object.create(enumType.constructor.prototype, { value: { value: enumValue }, constructor: { value: createNamedFunction(`${enumType.name}_${name}`, function() {
+          }) } });
+          Enum.values[enumValue] = Value;
+          Enum[name] = Value;
+        };
+        var embindRepr = (v3) => {
+          if (v3 === null) {
+            return "null";
+          }
+          var t2 = typeof v3;
+          if (t2 === "object" || t2 === "array" || t2 === "function") {
+            return v3.toString();
+          } else {
+            return "" + v3;
+          }
+        };
+        var floatReadValueFromPointer = (name, width) => {
+          switch (width) {
+            case 4:
+              return function(pointer) {
+                return this["fromWireType"](HEAPF32[pointer >> 2]);
+              };
+            case 8:
+              return function(pointer) {
+                return this["fromWireType"](HEAPF64[pointer >> 3]);
+              };
+            default:
+              throw new TypeError(`invalid float width (${width}): ${name}`);
+          }
+        };
+        var __embind_register_float = (rawType, name, size) => {
+          name = readLatin1String(name);
+          registerType(rawType, { name, "fromWireType": (value) => value, "toWireType": (destructors, value) => {
+            if (typeof value != "number" && typeof value != "boolean") {
+              throw new TypeError(`Cannot convert ${embindRepr(value)} to ${this.name}`);
+            }
+            return value;
+          }, "argPackAdvance": GenericWireTypeSize, "readValueFromPointer": floatReadValueFromPointer(name, size), destructorFunction: null });
+        };
+        var integerReadValueFromPointer = (name, width, signed) => {
+          switch (width) {
+            case 1:
+              return signed ? (pointer) => HEAP8[pointer] : (pointer) => HEAPU8[pointer];
+            case 2:
+              return signed ? (pointer) => HEAP16[pointer >> 1] : (pointer) => HEAPU16[pointer >> 1];
+            case 4:
+              return signed ? (pointer) => HEAP32[pointer >> 2] : (pointer) => HEAPU32[pointer >> 2];
+            default:
+              throw new TypeError(`invalid integer width (${width}): ${name}`);
+          }
+        };
+        var __embind_register_integer = (primitiveType, name, size, minRange, maxRange) => {
+          name = readLatin1String(name);
+          if (maxRange === -1) {
+            maxRange = 4294967295;
+          }
+          var fromWireType = (value) => value;
+          if (minRange === 0) {
+            var bitshift = 32 - 8 * size;
+            fromWireType = (value) => value << bitshift >>> bitshift;
+          }
+          var isUnsignedType = name.includes("unsigned");
+          var checkAssertions = (value, toTypeName) => {
+            if (typeof value != "number" && typeof value != "boolean") {
+              throw new TypeError(`Cannot convert "${embindRepr(value)}" to ${toTypeName}`);
+            }
+            if (value < minRange || value > maxRange) {
+              throw new TypeError(`Passing a number "${embindRepr(value)}" from JS side to C/C++ side to an argument of type "${name}", which is outside the valid range [${minRange}, ${maxRange}]!`);
+            }
+          };
+          var toWireType;
+          if (isUnsignedType) {
+            toWireType = function(destructors, value) {
+              checkAssertions(value, this.name);
+              return value >>> 0;
+            };
+          } else {
+            toWireType = function(destructors, value) {
+              checkAssertions(value, this.name);
+              return value;
+            };
+          }
+          registerType(primitiveType, { name, "fromWireType": fromWireType, "toWireType": toWireType, "argPackAdvance": GenericWireTypeSize, "readValueFromPointer": integerReadValueFromPointer(name, size, minRange !== 0), destructorFunction: null });
+        };
+        var __embind_register_memory_view = (rawType, dataTypeIndex, name) => {
+          var typeMapping = [Int8Array, Uint8Array, Int16Array, Uint16Array, Int32Array, Uint32Array, Float32Array, Float64Array];
+          var TA2 = typeMapping[dataTypeIndex];
+          function decodeMemoryView(handle) {
+            var size = HEAPU32[handle >> 2];
+            var data = HEAPU32[handle + 4 >> 2];
+            return new TA2(HEAP8.buffer, data, size);
+          }
+          name = readLatin1String(name);
+          registerType(rawType, { name, "fromWireType": decodeMemoryView, "argPackAdvance": GenericWireTypeSize, "readValueFromPointer": decodeMemoryView }, { ignoreDuplicateRegistrations: true });
+        };
+        var stringToUTF8Array = (str, heap, outIdx, maxBytesToWrite) => {
+          assert2(typeof str === "string", `stringToUTF8Array expects a string (got ${typeof str})`);
+          if (!(maxBytesToWrite > 0)) return 0;
+          var startIdx = outIdx;
+          var endIdx = outIdx + maxBytesToWrite - 1;
+          for (var i3 = 0; i3 < str.length; ++i3) {
+            var u3 = str.charCodeAt(i3);
+            if (u3 >= 55296 && u3 <= 57343) {
+              var u1 = str.charCodeAt(++i3);
+              u3 = 65536 + ((u3 & 1023) << 10) | u1 & 1023;
+            }
+            if (u3 <= 127) {
+              if (outIdx >= endIdx) break;
+              heap[outIdx++] = u3;
+            } else if (u3 <= 2047) {
+              if (outIdx + 1 >= endIdx) break;
+              heap[outIdx++] = 192 | u3 >> 6;
+              heap[outIdx++] = 128 | u3 & 63;
+            } else if (u3 <= 65535) {
+              if (outIdx + 2 >= endIdx) break;
+              heap[outIdx++] = 224 | u3 >> 12;
+              heap[outIdx++] = 128 | u3 >> 6 & 63;
+              heap[outIdx++] = 128 | u3 & 63;
+            } else {
+              if (outIdx + 3 >= endIdx) break;
+              if (u3 > 1114111) warnOnce("Invalid Unicode code point " + ptrToString(u3) + " encountered when serializing a JS string to a UTF-8 string in wasm memory! (Valid unicode code points should be in range 0-0x10FFFF).");
+              heap[outIdx++] = 240 | u3 >> 18;
+              heap[outIdx++] = 128 | u3 >> 12 & 63;
+              heap[outIdx++] = 128 | u3 >> 6 & 63;
+              heap[outIdx++] = 128 | u3 & 63;
+            }
+          }
+          heap[outIdx] = 0;
+          return outIdx - startIdx;
+        };
+        var stringToUTF8 = (str, outPtr, maxBytesToWrite) => {
+          assert2(typeof maxBytesToWrite == "number", "stringToUTF8(str, outPtr, maxBytesToWrite) is missing the third parameter that specifies the length of the output buffer!");
+          return stringToUTF8Array(str, HEAPU8, outPtr, maxBytesToWrite);
+        };
+        var lengthBytesUTF8 = (str) => {
+          var len = 0;
+          for (var i3 = 0; i3 < str.length; ++i3) {
+            var c3 = str.charCodeAt(i3);
+            if (c3 <= 127) {
+              len++;
+            } else if (c3 <= 2047) {
+              len += 2;
+            } else if (c3 >= 55296 && c3 <= 57343) {
+              len += 4;
+              ++i3;
+            } else {
+              len += 3;
+            }
+          }
+          return len;
+        };
+        var __embind_register_std_string = (rawType, name) => {
+          name = readLatin1String(name);
+          var stdStringIsUTF8 = name === "std::string";
+          registerType(rawType, { name, "fromWireType"(value) {
+            var length = HEAPU32[value >> 2];
+            var payload = value + 4;
+            var str;
+            if (stdStringIsUTF8) {
+              var decodeStartPtr = payload;
+              for (var i3 = 0; i3 <= length; ++i3) {
+                var currentBytePtr = payload + i3;
+                if (i3 == length || HEAPU8[currentBytePtr] == 0) {
+                  var maxRead = currentBytePtr - decodeStartPtr;
+                  var stringSegment = UTF8ToString(decodeStartPtr, maxRead);
+                  if (str === void 0) {
+                    str = stringSegment;
+                  } else {
+                    str += String.fromCharCode(0);
+                    str += stringSegment;
+                  }
+                  decodeStartPtr = currentBytePtr + 1;
+                }
+              }
+            } else {
+              var a2 = new Array(length);
+              for (var i3 = 0; i3 < length; ++i3) {
+                a2[i3] = String.fromCharCode(HEAPU8[payload + i3]);
+              }
+              str = a2.join("");
+            }
+            _free(value);
+            return str;
+          }, "toWireType"(destructors, value) {
+            if (value instanceof ArrayBuffer) {
+              value = new Uint8Array(value);
+            }
+            var length;
+            var valueIsOfTypeString = typeof value == "string";
+            if (!(valueIsOfTypeString || value instanceof Uint8Array || value instanceof Uint8ClampedArray || value instanceof Int8Array)) {
+              throwBindingError("Cannot pass non-string to std::string");
+            }
+            if (stdStringIsUTF8 && valueIsOfTypeString) {
+              length = lengthBytesUTF8(value);
+            } else {
+              length = value.length;
+            }
+            var base = _malloc(4 + length + 1);
+            var ptr = base + 4;
+            HEAPU32[base >> 2] = length;
+            if (stdStringIsUTF8 && valueIsOfTypeString) {
+              stringToUTF8(value, ptr, length + 1);
+            } else {
+              if (valueIsOfTypeString) {
+                for (var i3 = 0; i3 < length; ++i3) {
+                  var charCode = value.charCodeAt(i3);
+                  if (charCode > 255) {
+                    _free(ptr);
+                    throwBindingError("String has UTF-16 code units that do not fit in 8 bits");
+                  }
+                  HEAPU8[ptr + i3] = charCode;
+                }
+              } else {
+                for (var i3 = 0; i3 < length; ++i3) {
+                  HEAPU8[ptr + i3] = value[i3];
+                }
+              }
+            }
+            if (destructors !== null) {
+              destructors.push(_free, base);
+            }
+            return base;
+          }, "argPackAdvance": GenericWireTypeSize, "readValueFromPointer": readPointer, destructorFunction(ptr) {
+            _free(ptr);
+          } });
+        };
+        var UTF16Decoder = typeof TextDecoder != "undefined" ? new TextDecoder("utf-16le") : void 0;
+        var UTF16ToString = (ptr, maxBytesToRead) => {
+          assert2(ptr % 2 == 0, "Pointer passed to UTF16ToString must be aligned to two bytes!");
+          var endPtr = ptr;
+          var idx = endPtr >> 1;
+          var maxIdx = idx + maxBytesToRead / 2;
+          while (!(idx >= maxIdx) && HEAPU16[idx]) ++idx;
+          endPtr = idx << 1;
+          if (endPtr - ptr > 32 && UTF16Decoder) return UTF16Decoder.decode(HEAPU8.subarray(ptr, endPtr));
+          var str = "";
+          for (var i3 = 0; !(i3 >= maxBytesToRead / 2); ++i3) {
+            var codeUnit = HEAP16[ptr + i3 * 2 >> 1];
+            if (codeUnit == 0) break;
+            str += String.fromCharCode(codeUnit);
+          }
+          return str;
+        };
+        var stringToUTF16 = (str, outPtr, maxBytesToWrite) => {
+          assert2(outPtr % 2 == 0, "Pointer passed to stringToUTF16 must be aligned to two bytes!");
+          assert2(typeof maxBytesToWrite == "number", "stringToUTF16(str, outPtr, maxBytesToWrite) is missing the third parameter that specifies the length of the output buffer!");
+          maxBytesToWrite ??= 2147483647;
+          if (maxBytesToWrite < 2) return 0;
+          maxBytesToWrite -= 2;
+          var startPtr = outPtr;
+          var numCharsToWrite = maxBytesToWrite < str.length * 2 ? maxBytesToWrite / 2 : str.length;
+          for (var i3 = 0; i3 < numCharsToWrite; ++i3) {
+            var codeUnit = str.charCodeAt(i3);
+            HEAP16[outPtr >> 1] = codeUnit;
+            outPtr += 2;
+          }
+          HEAP16[outPtr >> 1] = 0;
+          return outPtr - startPtr;
+        };
+        var lengthBytesUTF16 = (str) => str.length * 2;
+        var UTF32ToString = (ptr, maxBytesToRead) => {
+          assert2(ptr % 4 == 0, "Pointer passed to UTF32ToString must be aligned to four bytes!");
+          var i3 = 0;
+          var str = "";
+          while (!(i3 >= maxBytesToRead / 4)) {
+            var utf32 = HEAP32[ptr + i3 * 4 >> 2];
+            if (utf32 == 0) break;
+            ++i3;
+            if (utf32 >= 65536) {
+              var ch2 = utf32 - 65536;
+              str += String.fromCharCode(55296 | ch2 >> 10, 56320 | ch2 & 1023);
+            } else {
+              str += String.fromCharCode(utf32);
+            }
+          }
+          return str;
+        };
+        var stringToUTF32 = (str, outPtr, maxBytesToWrite) => {
+          assert2(outPtr % 4 == 0, "Pointer passed to stringToUTF32 must be aligned to four bytes!");
+          assert2(typeof maxBytesToWrite == "number", "stringToUTF32(str, outPtr, maxBytesToWrite) is missing the third parameter that specifies the length of the output buffer!");
+          maxBytesToWrite ??= 2147483647;
+          if (maxBytesToWrite < 4) return 0;
+          var startPtr = outPtr;
+          var endPtr = startPtr + maxBytesToWrite - 4;
+          for (var i3 = 0; i3 < str.length; ++i3) {
+            var codeUnit = str.charCodeAt(i3);
+            if (codeUnit >= 55296 && codeUnit <= 57343) {
+              var trailSurrogate = str.charCodeAt(++i3);
+              codeUnit = 65536 + ((codeUnit & 1023) << 10) | trailSurrogate & 1023;
+            }
+            HEAP32[outPtr >> 2] = codeUnit;
+            outPtr += 4;
+            if (outPtr + 4 > endPtr) break;
+          }
+          HEAP32[outPtr >> 2] = 0;
+          return outPtr - startPtr;
+        };
+        var lengthBytesUTF32 = (str) => {
+          var len = 0;
+          for (var i3 = 0; i3 < str.length; ++i3) {
+            var codeUnit = str.charCodeAt(i3);
+            if (codeUnit >= 55296 && codeUnit <= 57343) ++i3;
+            len += 4;
+          }
+          return len;
+        };
+        var __embind_register_std_wstring = (rawType, charSize, name) => {
+          name = readLatin1String(name);
+          var decodeString, encodeString, readCharAt, lengthBytesUTF;
+          if (charSize === 2) {
+            decodeString = UTF16ToString;
+            encodeString = stringToUTF16;
+            lengthBytesUTF = lengthBytesUTF16;
+            readCharAt = (pointer) => HEAPU16[pointer >> 1];
+          } else if (charSize === 4) {
+            decodeString = UTF32ToString;
+            encodeString = stringToUTF32;
+            lengthBytesUTF = lengthBytesUTF32;
+            readCharAt = (pointer) => HEAPU32[pointer >> 2];
+          }
+          registerType(rawType, { name, "fromWireType": (value) => {
+            var length = HEAPU32[value >> 2];
+            var str;
+            var decodeStartPtr = value + 4;
+            for (var i3 = 0; i3 <= length; ++i3) {
+              var currentBytePtr = value + 4 + i3 * charSize;
+              if (i3 == length || readCharAt(currentBytePtr) == 0) {
+                var maxReadBytes = currentBytePtr - decodeStartPtr;
+                var stringSegment = decodeString(decodeStartPtr, maxReadBytes);
+                if (str === void 0) {
+                  str = stringSegment;
+                } else {
+                  str += String.fromCharCode(0);
+                  str += stringSegment;
+                }
+                decodeStartPtr = currentBytePtr + charSize;
+              }
+            }
+            _free(value);
+            return str;
+          }, "toWireType": (destructors, value) => {
+            if (!(typeof value == "string")) {
+              throwBindingError(`Cannot pass non-string to C++ string type ${name}`);
+            }
+            var length = lengthBytesUTF(value);
+            var ptr = _malloc(4 + length + charSize);
+            HEAPU32[ptr >> 2] = length / charSize;
+            encodeString(value, ptr + 4, length + charSize);
+            if (destructors !== null) {
+              destructors.push(_free, ptr);
+            }
+            return ptr;
+          }, "argPackAdvance": GenericWireTypeSize, "readValueFromPointer": readPointer, destructorFunction(ptr) {
+            _free(ptr);
+          } });
+        };
+        var __embind_register_value_array = (rawType, name, constructorSignature, rawConstructor, destructorSignature, rawDestructor) => {
+          tupleRegistrations[rawType] = { name: readLatin1String(name), rawConstructor: embind__requireFunction(constructorSignature, rawConstructor), rawDestructor: embind__requireFunction(destructorSignature, rawDestructor), elements: [] };
+        };
+        var __embind_register_value_array_element = (rawTupleType, getterReturnType, getterSignature, getter, getterContext, setterArgumentType, setterSignature, setter, setterContext) => {
+          tupleRegistrations[rawTupleType].elements.push({ getterReturnType, getter: embind__requireFunction(getterSignature, getter), getterContext, setterArgumentType, setter: embind__requireFunction(setterSignature, setter), setterContext });
+        };
+        var __embind_register_value_object = (rawType, name, constructorSignature, rawConstructor, destructorSignature, rawDestructor) => {
+          structRegistrations[rawType] = { name: readLatin1String(name), rawConstructor: embind__requireFunction(constructorSignature, rawConstructor), rawDestructor: embind__requireFunction(destructorSignature, rawDestructor), fields: [] };
+        };
+        var __embind_register_value_object_field = (structType, fieldName, getterReturnType, getterSignature, getter, getterContext, setterArgumentType, setterSignature, setter, setterContext) => {
+          structRegistrations[structType].fields.push({ fieldName: readLatin1String(fieldName), getterReturnType, getter: embind__requireFunction(getterSignature, getter), getterContext, setterArgumentType, setter: embind__requireFunction(setterSignature, setter), setterContext });
+        };
+        var __embind_register_void = (rawType, name) => {
+          name = readLatin1String(name);
+          registerType(rawType, { isVoid: true, name, "argPackAdvance": 0, "fromWireType": () => void 0, "toWireType": (destructors, o3) => void 0 });
+        };
+        var nowIsMonotonic = 1;
+        var __emscripten_get_now_is_monotonic = () => nowIsMonotonic;
+        var emval_methodCallers = [];
+        var __emval_call = (caller, handle, destructorsRef, args) => {
+          caller = emval_methodCallers[caller];
+          handle = Emval.toValue(handle);
+          return caller(null, handle, destructorsRef, args);
+        };
+        var emval_addMethodCaller = (caller) => {
+          var id3 = emval_methodCallers.length;
+          emval_methodCallers.push(caller);
+          return id3;
+        };
+        var emval_lookupTypes = (argCount, argTypes) => {
+          var a2 = new Array(argCount);
+          for (var i3 = 0; i3 < argCount; ++i3) {
+            a2[i3] = requireRegisteredType(HEAPU32[argTypes + i3 * 4 >> 2], "parameter " + i3);
+          }
+          return a2;
+        };
+        var reflectConstruct = Reflect.construct;
+        var emval_returnValue = (returnType, destructorsRef, handle) => {
+          var destructors = [];
+          var result = returnType["toWireType"](destructors, handle);
+          if (destructors.length) {
+            HEAPU32[destructorsRef >> 2] = Emval.toHandle(destructors);
+          }
+          return result;
+        };
+        var __emval_get_method_caller = (argCount, argTypes, kind) => {
+          var types = emval_lookupTypes(argCount, argTypes);
+          var retType = types.shift();
+          argCount--;
+          var argN = new Array(argCount);
+          var invokerFunction = (obj, func, destructorsRef, args) => {
+            var offset = 0;
+            for (var i3 = 0; i3 < argCount; ++i3) {
+              argN[i3] = types[i3]["readValueFromPointer"](args + offset);
+              offset += types[i3]["argPackAdvance"];
+            }
+            var rv = kind === 1 ? reflectConstruct(func, argN) : func.apply(obj, argN);
+            return emval_returnValue(retType, destructorsRef, rv);
+          };
+          var functionName = `methodCaller<(${types.map((t2) => t2.name).join(", ")}) => ${retType.name}>`;
+          return emval_addMethodCaller(createNamedFunction(functionName, invokerFunction));
+        };
+        var __emval_incref = (handle) => {
+          if (handle > 9) {
+            emval_handles[handle + 1] += 1;
+          }
+        };
+        var __emval_run_destructors = (handle) => {
+          var destructors = Emval.toValue(handle);
+          runDestructors(destructors);
+          __emval_decref(handle);
+        };
+        var __emval_take_value = (type, arg) => {
+          type = requireRegisteredType(type, "_emval_take_value");
+          var v3 = type["readValueFromPointer"](arg);
+          return Emval.toHandle(v3);
+        };
+        var __wasmfs_copy_preloaded_file_data = (index, buffer) => HEAPU8.set(wasmFSPreloadedFiles[index].fileData, buffer);
+        var wasmFSPreloadedDirs = [];
+        var __wasmfs_get_num_preloaded_dirs = () => wasmFSPreloadedDirs.length;
+        var wasmFSPreloadedFiles = [];
+        var wasmFSPreloadingFlushed = false;
+        var __wasmfs_get_num_preloaded_files = () => {
+          wasmFSPreloadingFlushed = true;
+          return wasmFSPreloadedFiles.length;
+        };
+        var __wasmfs_get_preloaded_child_path = (index, childNameBuffer) => {
+          var s3 = wasmFSPreloadedDirs[index].childName;
+          var len = lengthBytesUTF8(s3) + 1;
+          stringToUTF8(s3, childNameBuffer, len);
+        };
+        var __wasmfs_get_preloaded_file_mode = (index) => wasmFSPreloadedFiles[index].mode;
+        var __wasmfs_get_preloaded_file_size = (index) => wasmFSPreloadedFiles[index].fileData.length;
+        var __wasmfs_get_preloaded_parent_path = (index, parentPathBuffer) => {
+          var s3 = wasmFSPreloadedDirs[index].parentPath;
+          var len = lengthBytesUTF8(s3) + 1;
+          stringToUTF8(s3, parentPathBuffer, len);
+        };
+        var __wasmfs_get_preloaded_path_name = (index, fileNameBuffer) => {
+          var s3 = wasmFSPreloadedFiles[index].pathName;
+          var len = lengthBytesUTF8(s3) + 1;
+          stringToUTF8(s3, fileNameBuffer, len);
+        };
+        var __wasmfs_jsimpl_alloc_file = (backend, file) => {
+          assert2(wasmFS$backends[backend]);
+          return wasmFS$backends[backend].allocFile(file);
+        };
+        var __wasmfs_jsimpl_free_file = (backend, file) => {
+          assert2(wasmFS$backends[backend]);
+          return wasmFS$backends[backend].freeFile(file);
+        };
+        var __wasmfs_jsimpl_get_size = (backend, file) => {
+          assert2(wasmFS$backends[backend]);
+          return wasmFS$backends[backend].getSize(file);
+        };
+        var convertI32PairToI53Checked = (lo3, hi2) => {
+          assert2(lo3 == lo3 >>> 0 || lo3 == (lo3 | 0));
+          assert2(hi2 === (hi2 | 0));
+          return hi2 + 2097152 >>> 0 < 4194305 - !!lo3 ? (lo3 >>> 0) + hi2 * 4294967296 : NaN;
+        };
+        function __wasmfs_jsimpl_read(backend, file, buffer, length, offset_low, offset_high) {
+          var offset = convertI32PairToI53Checked(offset_low, offset_high);
+          assert2(wasmFS$backends[backend]);
+          if (!wasmFS$backends[backend].read) {
+            return -28;
+          }
+          return wasmFS$backends[backend].read(file, buffer, length, offset);
+        }
+        function __wasmfs_jsimpl_write(backend, file, buffer, length, offset_low, offset_high) {
+          var offset = convertI32PairToI53Checked(offset_low, offset_high);
+          assert2(wasmFS$backends[backend]);
+          if (!wasmFS$backends[backend].write) {
+            return -28;
+          }
+          return wasmFS$backends[backend].write(file, buffer, length, offset);
+        }
+        var FS_stdin_getChar_buffer = [];
+        function intArrayFromString(stringy, dontAddNull, length) {
+          var len = length > 0 ? length : lengthBytesUTF8(stringy) + 1;
+          var u8array = new Array(len);
+          var numBytesWritten = stringToUTF8Array(stringy, u8array, 0, u8array.length);
+          if (dontAddNull) u8array.length = numBytesWritten;
+          return u8array;
+        }
+        var FS_stdin_getChar = () => {
+          if (!FS_stdin_getChar_buffer.length) {
+            var result = null;
+            if (typeof window != "undefined" && typeof window.prompt == "function") {
+              result = window.prompt("Input: ");
+              if (result !== null) {
+                result += "\n";
+              }
+            } else if (typeof readline == "function") {
+              result = readline();
+              if (result !== null) {
+                result += "\n";
+              }
+            }
+            if (!result) {
+              return null;
+            }
+            FS_stdin_getChar_buffer = intArrayFromString(result, true);
+          }
+          return FS_stdin_getChar_buffer.shift();
+        };
+        var __wasmfs_stdin_get_char = () => {
+          var c3 = FS_stdin_getChar();
+          if (typeof c3 === "number") {
+            return c3;
+          }
+          return -1;
+        };
+        var _abort = () => {
+          abort("native code called abort()");
+        };
+        var _emscripten_date_now = () => Date.now();
+        var _emscripten_err = (str) => err(UTF8ToString(str));
+        var _emscripten_get_now;
+        _emscripten_get_now = () => performance.now();
+        var _emscripten_memcpy_js = (dest, src, num) => HEAPU8.copyWithin(dest, src, src + num);
+        var _emscripten_out = (str) => out(UTF8ToString(str));
+        var getHeapMax = () => 2147483648;
+        var growMemory = (size) => {
+          var b3 = wasmMemory.buffer;
+          var pages = (size - b3.byteLength + 65535) / 65536;
+          try {
+            wasmMemory.grow(pages);
+            updateMemoryViews();
+            return 1;
+          } catch (e2) {
+            err(`growMemory: Attempted to grow heap from ${b3.byteLength} bytes to ${size} bytes, but got error: ${e2}`);
+          }
+        };
+        var _emscripten_resize_heap = (requestedSize) => {
+          var oldSize = HEAPU8.length;
+          requestedSize >>>= 0;
+          assert2(requestedSize > oldSize);
+          var maxHeapSize = getHeapMax();
+          if (requestedSize > maxHeapSize) {
+            err(`Cannot enlarge memory, requested ${requestedSize} bytes, but the limit is ${maxHeapSize} bytes!`);
+            return false;
+          }
+          var alignUp = (x2, multiple) => x2 + (multiple - x2 % multiple) % multiple;
+          for (var cutDown = 1; cutDown <= 4; cutDown *= 2) {
+            var overGrownHeapSize = oldSize * (1 + 0.2 / cutDown);
+            overGrownHeapSize = Math.min(overGrownHeapSize, requestedSize + 100663296);
+            var newSize = Math.min(maxHeapSize, alignUp(Math.max(requestedSize, overGrownHeapSize), 65536));
+            var replacement = growMemory(newSize);
+            if (replacement) {
+              return true;
+            }
+          }
+          err(`Failed to grow the heap from ${oldSize} bytes to ${newSize} bytes, not enough memory!`);
+          return false;
+        };
+        var ENV = {};
+        var getExecutableName = () => thisProgram || "./this.program";
+        var getEnvStrings = () => {
+          if (!getEnvStrings.strings) {
+            var lang = (typeof navigator == "object" && navigator.languages && navigator.languages[0] || "C").replace("-", "_") + ".UTF-8";
+            var env3 = { "USER": "web_user", "LOGNAME": "web_user", "PATH": "/", "PWD": "/", "HOME": "/home/web_user", "LANG": lang, "_": getExecutableName() };
+            for (var x2 in ENV) {
+              if (ENV[x2] === void 0) delete env3[x2];
+              else env3[x2] = ENV[x2];
+            }
+            var strings = [];
+            for (var x2 in env3) {
+              strings.push(`${x2}=${env3[x2]}`);
+            }
+            getEnvStrings.strings = strings;
+          }
+          return getEnvStrings.strings;
+        };
+        var stringToAscii = (str, buffer) => {
+          for (var i3 = 0; i3 < str.length; ++i3) {
+            assert2(str.charCodeAt(i3) === (str.charCodeAt(i3) & 255));
+            HEAP8[buffer++] = str.charCodeAt(i3);
+          }
+          HEAP8[buffer] = 0;
+        };
+        var _environ_get = (__environ, environ_buf) => {
+          var bufSize = 0;
+          getEnvStrings().forEach((string, i3) => {
+            var ptr = environ_buf + bufSize;
+            HEAPU32[__environ + i3 * 4 >> 2] = ptr;
+            stringToAscii(string, ptr);
+            bufSize += string.length + 1;
+          });
+          return 0;
+        };
+        var _environ_sizes_get = (penviron_count, penviron_buf_size) => {
+          var strings = getEnvStrings();
+          HEAPU32[penviron_count >> 2] = strings.length;
+          var bufSize = 0;
+          strings.forEach((string) => bufSize += string.length + 1);
+          HEAPU32[penviron_buf_size >> 2] = bufSize;
+          return 0;
+        };
+        var runtimeKeepaliveCounter = 0;
+        var keepRuntimeAlive = () => noExitRuntime || runtimeKeepaliveCounter > 0;
+        var _proc_exit = (code) => {
+          EXITSTATUS = code;
+          if (!keepRuntimeAlive()) {
+            Module["onExit"]?.(code);
+            ABORT = true;
+          }
+          quit_(code, new ExitStatus(code));
+        };
+        var exitJS = (status2, implicit) => {
+          EXITSTATUS = status2;
+          checkUnflushedContent();
+          if (keepRuntimeAlive() && !implicit) {
+            var msg = `program exited (with status: ${status2}), but keepRuntimeAlive() is set (counter=${runtimeKeepaliveCounter}) due to an async operation, so halting execution but not exiting the runtime or preventing further async execution (you can use emscripten_force_exit, if you want to force a true shutdown)`;
+            readyPromiseReject(msg);
+            err(msg);
+          }
+          _proc_exit(status2);
+        };
+        var _exit = exitJS;
+        var initRandomFill = () => {
+          if (typeof crypto == "object" && typeof crypto["getRandomValues"] == "function") {
+            return (view) => crypto.getRandomValues(view);
+          } else abort("no cryptographic support found for randomDevice. consider polyfilling it if you want to use something insecure like Math.random(), e.g. put this in a --pre-js: var crypto = { getRandomValues: (array) => { for (var i = 0; i < array.length; i++) array[i] = (Math.random()*256)|0 } };");
+        };
+        var randomFill = (view) => (randomFill = initRandomFill())(view);
+        var _getentropy = (buffer, size) => {
+          randomFill(HEAPU8.subarray(buffer, buffer + size));
+          return 0;
+        };
+        var isLeapYear = (year) => year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+        var arraySum = (array, index) => {
+          var sum = 0;
+          for (var i3 = 0; i3 <= index; sum += array[i3++]) {
+          }
+          return sum;
+        };
+        var MONTH_DAYS_LEAP = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+        var MONTH_DAYS_REGULAR = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+        var addDays = (date, days) => {
+          var newDate = new Date(date.getTime());
+          while (days > 0) {
+            var leap = isLeapYear(newDate.getFullYear());
+            var currentMonth = newDate.getMonth();
+            var daysInCurrentMonth = (leap ? MONTH_DAYS_LEAP : MONTH_DAYS_REGULAR)[currentMonth];
+            if (days > daysInCurrentMonth - newDate.getDate()) {
+              days -= daysInCurrentMonth - newDate.getDate() + 1;
+              newDate.setDate(1);
+              if (currentMonth < 11) {
+                newDate.setMonth(currentMonth + 1);
+              } else {
+                newDate.setMonth(0);
+                newDate.setFullYear(newDate.getFullYear() + 1);
+              }
+            } else {
+              newDate.setDate(newDate.getDate() + days);
+              return newDate;
+            }
+          }
+          return newDate;
+        };
+        var writeArrayToMemory = (array, buffer) => {
+          assert2(array.length >= 0, "writeArrayToMemory array must have a length (should be an array or typed array)");
+          HEAP8.set(array, buffer);
+        };
+        var _strftime = (s3, maxsize, format, tm2) => {
+          var tm_zone = HEAPU32[tm2 + 40 >> 2];
+          var date = { tm_sec: HEAP32[tm2 >> 2], tm_min: HEAP32[tm2 + 4 >> 2], tm_hour: HEAP32[tm2 + 8 >> 2], tm_mday: HEAP32[tm2 + 12 >> 2], tm_mon: HEAP32[tm2 + 16 >> 2], tm_year: HEAP32[tm2 + 20 >> 2], tm_wday: HEAP32[tm2 + 24 >> 2], tm_yday: HEAP32[tm2 + 28 >> 2], tm_isdst: HEAP32[tm2 + 32 >> 2], tm_gmtoff: HEAP32[tm2 + 36 >> 2], tm_zone: tm_zone ? UTF8ToString(tm_zone) : "" };
+          var pattern = UTF8ToString(format);
+          var EXPANSION_RULES_1 = { "%c": "%a %b %d %H:%M:%S %Y", "%D": "%m/%d/%y", "%F": "%Y-%m-%d", "%h": "%b", "%r": "%I:%M:%S %p", "%R": "%H:%M", "%T": "%H:%M:%S", "%x": "%m/%d/%y", "%X": "%H:%M:%S", "%Ec": "%c", "%EC": "%C", "%Ex": "%m/%d/%y", "%EX": "%H:%M:%S", "%Ey": "%y", "%EY": "%Y", "%Od": "%d", "%Oe": "%e", "%OH": "%H", "%OI": "%I", "%Om": "%m", "%OM": "%M", "%OS": "%S", "%Ou": "%u", "%OU": "%U", "%OV": "%V", "%Ow": "%w", "%OW": "%W", "%Oy": "%y" };
+          for (var rule in EXPANSION_RULES_1) {
+            pattern = pattern.replace(new RegExp(rule, "g"), EXPANSION_RULES_1[rule]);
+          }
+          var WEEKDAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+          var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+          function leadingSomething(value, digits, character) {
+            var str = typeof value == "number" ? value.toString() : value || "";
+            while (str.length < digits) {
+              str = character[0] + str;
+            }
+            return str;
+          }
+          function leadingNulls(value, digits) {
+            return leadingSomething(value, digits, "0");
+          }
+          function compareByDay(date1, date2) {
+            function sgn(value) {
+              return value < 0 ? -1 : value > 0 ? 1 : 0;
+            }
+            var compare;
+            if ((compare = sgn(date1.getFullYear() - date2.getFullYear())) === 0) {
+              if ((compare = sgn(date1.getMonth() - date2.getMonth())) === 0) {
+                compare = sgn(date1.getDate() - date2.getDate());
+              }
+            }
+            return compare;
+          }
+          function getFirstWeekStartDate(janFourth) {
+            switch (janFourth.getDay()) {
+              case 0:
+                return new Date(janFourth.getFullYear() - 1, 11, 29);
+              case 1:
+                return janFourth;
+              case 2:
+                return new Date(janFourth.getFullYear(), 0, 3);
+              case 3:
+                return new Date(janFourth.getFullYear(), 0, 2);
+              case 4:
+                return new Date(janFourth.getFullYear(), 0, 1);
+              case 5:
+                return new Date(janFourth.getFullYear() - 1, 11, 31);
+              case 6:
+                return new Date(janFourth.getFullYear() - 1, 11, 30);
+            }
+          }
+          function getWeekBasedYear(date2) {
+            var thisDate = addDays(new Date(date2.tm_year + 1900, 0, 1), date2.tm_yday);
+            var janFourthThisYear = new Date(thisDate.getFullYear(), 0, 4);
+            var janFourthNextYear = new Date(thisDate.getFullYear() + 1, 0, 4);
+            var firstWeekStartThisYear = getFirstWeekStartDate(janFourthThisYear);
+            var firstWeekStartNextYear = getFirstWeekStartDate(janFourthNextYear);
+            if (compareByDay(firstWeekStartThisYear, thisDate) <= 0) {
+              if (compareByDay(firstWeekStartNextYear, thisDate) <= 0) {
+                return thisDate.getFullYear() + 1;
+              }
+              return thisDate.getFullYear();
+            }
+            return thisDate.getFullYear() - 1;
+          }
+          var EXPANSION_RULES_2 = { "%a": (date2) => WEEKDAYS[date2.tm_wday].substring(0, 3), "%A": (date2) => WEEKDAYS[date2.tm_wday], "%b": (date2) => MONTHS[date2.tm_mon].substring(0, 3), "%B": (date2) => MONTHS[date2.tm_mon], "%C": (date2) => {
+            var year = date2.tm_year + 1900;
+            return leadingNulls(year / 100 | 0, 2);
+          }, "%d": (date2) => leadingNulls(date2.tm_mday, 2), "%e": (date2) => leadingSomething(date2.tm_mday, 2, " "), "%g": (date2) => getWeekBasedYear(date2).toString().substring(2), "%G": getWeekBasedYear, "%H": (date2) => leadingNulls(date2.tm_hour, 2), "%I": (date2) => {
+            var twelveHour = date2.tm_hour;
+            if (twelveHour == 0) twelveHour = 12;
+            else if (twelveHour > 12) twelveHour -= 12;
+            return leadingNulls(twelveHour, 2);
+          }, "%j": (date2) => leadingNulls(date2.tm_mday + arraySum(isLeapYear(date2.tm_year + 1900) ? MONTH_DAYS_LEAP : MONTH_DAYS_REGULAR, date2.tm_mon - 1), 3), "%m": (date2) => leadingNulls(date2.tm_mon + 1, 2), "%M": (date2) => leadingNulls(date2.tm_min, 2), "%n": () => "\n", "%p": (date2) => {
+            if (date2.tm_hour >= 0 && date2.tm_hour < 12) {
+              return "AM";
+            }
+            return "PM";
+          }, "%S": (date2) => leadingNulls(date2.tm_sec, 2), "%t": () => "	", "%u": (date2) => date2.tm_wday || 7, "%U": (date2) => {
+            var days = date2.tm_yday + 7 - date2.tm_wday;
+            return leadingNulls(Math.floor(days / 7), 2);
+          }, "%V": (date2) => {
+            var val = Math.floor((date2.tm_yday + 7 - (date2.tm_wday + 6) % 7) / 7);
+            if ((date2.tm_wday + 371 - date2.tm_yday - 2) % 7 <= 2) {
+              val++;
+            }
+            if (!val) {
+              val = 52;
+              var dec31 = (date2.tm_wday + 7 - date2.tm_yday - 1) % 7;
+              if (dec31 == 4 || dec31 == 5 && isLeapYear(date2.tm_year % 400 - 1)) {
+                val++;
+              }
+            } else if (val == 53) {
+              var jan1 = (date2.tm_wday + 371 - date2.tm_yday) % 7;
+              if (jan1 != 4 && (jan1 != 3 || !isLeapYear(date2.tm_year))) val = 1;
+            }
+            return leadingNulls(val, 2);
+          }, "%w": (date2) => date2.tm_wday, "%W": (date2) => {
+            var days = date2.tm_yday + 7 - (date2.tm_wday + 6) % 7;
+            return leadingNulls(Math.floor(days / 7), 2);
+          }, "%y": (date2) => (date2.tm_year + 1900).toString().substring(2), "%Y": (date2) => date2.tm_year + 1900, "%z": (date2) => {
+            var off = date2.tm_gmtoff;
+            var ahead = off >= 0;
+            off = Math.abs(off) / 60;
+            off = off / 60 * 100 + off % 60;
+            return (ahead ? "+" : "-") + String("0000" + off).slice(-4);
+          }, "%Z": (date2) => date2.tm_zone, "%%": () => "%" };
+          pattern = pattern.replace(/%%/g, "\0\0");
+          for (var rule in EXPANSION_RULES_2) {
+            if (pattern.includes(rule)) {
+              pattern = pattern.replace(new RegExp(rule, "g"), EXPANSION_RULES_2[rule](date));
+            }
+          }
+          pattern = pattern.replace(/\0\0/g, "%");
+          var bytes = intArrayFromString(pattern, false);
+          if (bytes.length > maxsize) {
+            return 0;
+          }
+          writeArrayToMemory(bytes, s3);
+          return bytes.length - 1;
+        };
+        var _strftime_l = (s3, maxsize, format, tm2, loc) => _strftime(s3, maxsize, format, tm2);
+        var stringToUTF8OnStack = (str) => {
+          var size = lengthBytesUTF8(str) + 1;
+          var ret = stackAlloc(size);
+          stringToUTF8(str, ret, size);
+          return ret;
+        };
+        var PATH = { isAbs: (path) => path.charAt(0) === "/", splitPath: (filename) => {
+          var splitPathRe = /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
+          return splitPathRe.exec(filename).slice(1);
+        }, normalizeArray: (parts, allowAboveRoot) => {
+          var up = 0;
+          for (var i3 = parts.length - 1; i3 >= 0; i3--) {
+            var last = parts[i3];
+            if (last === ".") {
+              parts.splice(i3, 1);
+            } else if (last === "..") {
+              parts.splice(i3, 1);
+              up++;
+            } else if (up) {
+              parts.splice(i3, 1);
+              up--;
+            }
+          }
+          if (allowAboveRoot) {
+            for (; up; up--) {
+              parts.unshift("..");
+            }
+          }
+          return parts;
+        }, normalize: (path) => {
+          var isAbsolute = PATH.isAbs(path), trailingSlash = path.substr(-1) === "/";
+          path = PATH.normalizeArray(path.split("/").filter((p3) => !!p3), !isAbsolute).join("/");
+          if (!path && !isAbsolute) {
+            path = ".";
+          }
+          if (path && trailingSlash) {
+            path += "/";
+          }
+          return (isAbsolute ? "/" : "") + path;
+        }, dirname: (path) => {
+          var result = PATH.splitPath(path), root = result[0], dir = result[1];
+          if (!root && !dir) {
+            return ".";
+          }
+          if (dir) {
+            dir = dir.substr(0, dir.length - 1);
+          }
+          return root + dir;
+        }, basename: (path) => {
+          if (path === "/") return "/";
+          path = PATH.normalize(path);
+          path = path.replace(/\/$/, "");
+          var lastSlash = path.lastIndexOf("/");
+          if (lastSlash === -1) return path;
+          return path.substr(lastSlash + 1);
+        }, join: (...paths2) => PATH.normalize(paths2.join("/")), join2: (l2, r2) => PATH.normalize(l2 + "/" + r2) };
+        var withStackSave = (f3) => {
+          var stack = stackSave();
+          var ret = f3();
+          stackRestore(stack);
+          return ret;
+        };
+        var readI53FromI64 = (ptr) => HEAPU32[ptr >> 2] + HEAP32[ptr + 4 >> 2] * 4294967296;
+        var readI53FromU64 = (ptr) => HEAPU32[ptr >> 2] + HEAPU32[ptr + 4 >> 2] * 4294967296;
+        var FS_mknod = (path, mode, dev) => FS.handleError(withStackSave(() => {
+          var pathBuffer = stringToUTF8OnStack(path);
+          return __wasmfs_mknod(pathBuffer, mode, dev);
+        }));
+        var FS_create = (path, mode = 438) => {
+          mode &= 4095;
+          mode |= 32768;
+          return FS_mknod(path, mode, 0);
+        };
+        var FS_writeFile = (path, data) => withStackSave(() => {
+          var pathBuffer = stringToUTF8OnStack(path);
+          if (typeof data == "string") {
+            var buf = new Uint8Array(lengthBytesUTF8(data) + 1);
+            var actualNumBytes = stringToUTF8Array(data, buf, 0, buf.length);
+            data = buf.slice(0, actualNumBytes);
+          }
+          var dataBuffer = _malloc(data.length);
+          assert2(dataBuffer);
+          for (var i3 = 0; i3 < data.length; i3++) {
+            HEAP8[dataBuffer + i3] = data[i3];
+          }
+          var ret = __wasmfs_write_file(pathBuffer, dataBuffer, data.length);
+          _free(dataBuffer);
+          return ret;
+        });
+        var FS_createDataFile = (parent, name, fileData, canRead, canWrite, canOwn) => {
+          var pathName = name ? parent + "/" + name : parent;
+          var mode = FS_getMode(canRead, canWrite);
+          if (!wasmFSPreloadingFlushed) {
+            wasmFSPreloadedFiles.push({ pathName, fileData, mode });
+          } else {
+            FS_create(pathName, mode);
+            FS_writeFile(pathName, fileData);
+          }
+        };
+        var asyncLoad = (url, onload, onerror, noRunDep) => {
+          var dep = !noRunDep ? getUniqueRunDependency(`al ${url}`) : "";
+          readAsync(url, (arrayBuffer) => {
+            assert2(arrayBuffer, `Loading data file "${url}" failed (no arrayBuffer).`);
+            onload(new Uint8Array(arrayBuffer));
+            if (dep) removeRunDependency(dep);
+          }, (event) => {
+            if (onerror) {
+              onerror();
+            } else {
+              throw `Loading data file "${url}" failed.`;
+            }
+          });
+          if (dep) addRunDependency(dep);
+        };
+        var PATH_FS = { resolve: (...args) => {
+          var resolvedPath = "", resolvedAbsolute = false;
+          for (var i3 = args.length - 1; i3 >= -1 && !resolvedAbsolute; i3--) {
+            var path = i3 >= 0 ? args[i3] : FS.cwd();
+            if (typeof path != "string") {
+              throw new TypeError("Arguments to path.resolve must be strings");
+            } else if (!path) {
+              return "";
+            }
+            resolvedPath = path + "/" + resolvedPath;
+            resolvedAbsolute = PATH.isAbs(path);
+          }
+          resolvedPath = PATH.normalizeArray(resolvedPath.split("/").filter((p3) => !!p3), !resolvedAbsolute).join("/");
+          return (resolvedAbsolute ? "/" : "") + resolvedPath || ".";
+        }, relative: (from, to2) => {
+          from = PATH_FS.resolve(from).substr(1);
+          to2 = PATH_FS.resolve(to2).substr(1);
+          function trim(arr) {
+            var start = 0;
+            for (; start < arr.length; start++) {
+              if (arr[start] !== "") break;
+            }
+            var end = arr.length - 1;
+            for (; end >= 0; end--) {
+              if (arr[end] !== "") break;
+            }
+            if (start > end) return [];
+            return arr.slice(start, end - start + 1);
+          }
+          var fromParts = trim(from.split("/"));
+          var toParts = trim(to2.split("/"));
+          var length = Math.min(fromParts.length, toParts.length);
+          var samePartsLength = length;
+          for (var i3 = 0; i3 < length; i3++) {
+            if (fromParts[i3] !== toParts[i3]) {
+              samePartsLength = i3;
+              break;
+            }
+          }
+          var outputParts = [];
+          for (var i3 = samePartsLength; i3 < fromParts.length; i3++) {
+            outputParts.push("..");
+          }
+          outputParts = outputParts.concat(toParts.slice(samePartsLength));
+          return outputParts.join("/");
+        } };
+        var preloadPlugins = Module["preloadPlugins"] || [];
+        var FS_handledByPreloadPlugin = (byteArray, fullname, finish, onerror) => {
+          if (typeof Browser != "undefined") Browser.init();
+          var handled = false;
+          preloadPlugins.forEach((plugin) => {
+            if (handled) return;
+            if (plugin["canHandle"](fullname)) {
+              plugin["handle"](byteArray, fullname, finish, onerror);
+              handled = true;
+            }
+          });
+          return handled;
+        };
+        var FS_createPreloadedFile = (parent, name, url, canRead, canWrite, onload, onerror, dontCreateFile, canOwn, preFinish) => {
+          var fullname = name ? PATH_FS.resolve(PATH.join2(parent, name)) : parent;
+          var dep = getUniqueRunDependency(`cp ${fullname}`);
+          function processData(byteArray) {
+            function finish(byteArray2) {
+              preFinish?.();
+              if (!dontCreateFile) {
+                FS_createDataFile(parent, name, byteArray2, canRead, canWrite, canOwn);
+              }
+              onload?.();
+              removeRunDependency(dep);
+            }
+            if (FS_handledByPreloadPlugin(byteArray, fullname, finish, () => {
+              onerror?.();
+              removeRunDependency(dep);
+            })) {
+              return;
+            }
+            finish(byteArray);
+          }
+          addRunDependency(dep);
+          if (typeof url == "string") {
+            asyncLoad(url, processData, onerror);
+          } else {
+            processData(url);
+          }
+        };
+        var FS_getMode = (canRead, canWrite) => {
+          var mode = 0;
+          if (canRead) mode |= 292 | 73;
+          if (canWrite) mode |= 146;
+          return mode;
+        };
+        var FS_modeStringToFlags = (str) => {
+          var flagModes = { "r": 0, "r+": 2, "w": 512 | 64 | 1, "w+": 512 | 64 | 2, "a": 1024 | 64 | 1, "a+": 1024 | 64 | 2 };
+          var flags = flagModes[str];
+          if (typeof flags == "undefined") {
+            throw new Error(`Unknown file open mode: ${str}`);
+          }
+          return flags;
+        };
+        var FS_mkdir = (path, mode = 511) => FS.handleError(withStackSave(() => {
+          var buffer = stringToUTF8OnStack(path);
+          return __wasmfs_mkdir(buffer, mode);
+        }));
+        var FS_mkdirTree = (path, mode) => {
+          var dirs = path.split("/");
+          var d3 = "";
+          for (var i3 = 0; i3 < dirs.length; ++i3) {
+            if (!dirs[i3]) continue;
+            d3 += "/" + dirs[i3];
+            try {
+              FS_mkdir(d3, mode);
+            } catch (e2) {
+              if (e2.errno != 20) throw e2;
+            }
+          }
+        };
+        var FS_unlink = (path) => withStackSave(() => {
+          var buffer = stringToUTF8OnStack(path);
+          return __wasmfs_unlink(buffer);
+        });
+        var wasmFS$backends = {};
+        var wasmFSDevices = {};
+        var wasmFSDeviceStreams = {};
+        var FS = { init() {
+          FS.ensureErrnoError();
+        }, ErrnoError: null, handleError(returnValue) {
+          if (returnValue < 0) {
+            throw new FS.ErrnoError(-returnValue);
+          }
+          return returnValue;
+        }, ensureErrnoError() {
+          if (FS.ErrnoError) return;
+          FS.ErrnoError = function ErrnoError(code) {
+            this.errno = code;
+            this.message = "FS error";
+            this.name = "ErrnoError";
+          };
+          FS.ErrnoError.prototype = new Error();
+          FS.ErrnoError.prototype.constructor = FS.ErrnoError;
+        }, createDataFile(parent, name, fileData, canRead, canWrite, canOwn) {
+          FS_createDataFile(parent, name, fileData, canRead, canWrite, canOwn);
+        }, createPath(parent, path, canRead, canWrite) {
+          var parts = path.split("/").reverse();
+          while (parts.length) {
+            var part = parts.pop();
+            if (!part) continue;
+            var current2 = PATH.join2(parent, part);
+            if (!wasmFSPreloadingFlushed) {
+              wasmFSPreloadedDirs.push({ parentPath: parent, childName: part });
+            } else {
+              FS.mkdir(current2);
+            }
+            parent = current2;
+          }
+          return current2;
+        }, createPreloadedFile(parent, name, url, canRead, canWrite, onload, onerror, dontCreateFile, canOwn, preFinish) {
+          return FS_createPreloadedFile(parent, name, url, canRead, canWrite, onload, onerror, dontCreateFile, canOwn, preFinish);
+        }, readFile(path, opts = {}) {
+          opts.encoding = opts.encoding || "binary";
+          if (opts.encoding !== "utf8" && opts.encoding !== "binary") {
+            throw new Error('Invalid encoding type "' + opts.encoding + '"');
+          }
+          var buf = withStackSave(() => __wasmfs_read_file(stringToUTF8OnStack(path)));
+          var length = readI53FromI64(buf);
+          var ret = new Uint8Array(HEAPU8.subarray(buf + 8, buf + 8 + length));
+          if (opts.encoding === "utf8") {
+            ret = UTF8ArrayToString(ret, 0);
+          }
+          return ret;
+        }, cwd: () => UTF8ToString(__wasmfs_get_cwd()), analyzePath(path) {
+          var exists = !!FS.findObject(path);
+          return { exists, object: { contents: exists ? FS.readFile(path) : null } };
+        }, mkdir: (path, mode) => FS_mkdir(path, mode), mkdirTree: (path, mode) => FS_mkdirTree(path, mode), rmdir: (path) => FS.handleError(withStackSave(() => __wasmfs_rmdir(stringToUTF8OnStack(path)))), open: (path, flags, mode) => withStackSave(() => {
+          flags = typeof flags == "string" ? FS_modeStringToFlags(flags) : flags;
+          mode = typeof mode == "undefined" ? 438 : mode;
+          var buffer = stringToUTF8OnStack(path);
+          var fd2 = FS.handleError(__wasmfs_open(buffer, flags, mode));
+          return { fd: fd2 };
+        }), create: (path, mode) => FS_create(path, mode), close: (stream) => FS.handleError(-__wasmfs_close(stream.fd)), unlink: (path) => FS_unlink(path), chdir: (path) => withStackSave(() => {
+          var buffer = stringToUTF8OnStack(path);
+          return __wasmfs_chdir(buffer);
+        }), read(stream, buffer, offset, length, position) {
+          var seeking = typeof position != "undefined";
+          var dataBuffer = _malloc(length);
+          var bytesRead;
+          if (seeking) {
+            bytesRead = __wasmfs_pread(stream.fd, dataBuffer, length, position);
+          } else {
+            bytesRead = __wasmfs_read(stream.fd, dataBuffer, length);
+          }
+          bytesRead = FS.handleError(bytesRead);
+          for (var i3 = 0; i3 < length; i3++) {
+            buffer[offset + i3] = HEAP8[dataBuffer + i3];
+          }
+          _free(dataBuffer);
+          return bytesRead;
+        }, write(stream, buffer, offset, length, position, canOwn) {
+          var seeking = typeof position != "undefined";
+          var dataBuffer = _malloc(length);
+          for (var i3 = 0; i3 < length; i3++) {
+            HEAP8[dataBuffer + i3] = buffer[offset + i3];
+          }
+          var bytesRead;
+          if (seeking) {
+            bytesRead = __wasmfs_pwrite(stream.fd, dataBuffer, length, position);
+          } else {
+            bytesRead = __wasmfs_write(stream.fd, dataBuffer, length);
+          }
+          bytesRead = FS.handleError(bytesRead);
+          _free(dataBuffer);
+          return bytesRead;
+        }, allocate(stream, offset, length) {
+          return FS.handleError(__wasmfs_allocate(stream.fd, offset >>> 0, (tempDouble = offset, +Math.abs(tempDouble) >= 1 ? tempDouble > 0 ? +Math.floor(tempDouble / 4294967296) >>> 0 : ~~+Math.ceil((tempDouble - +(~~tempDouble >>> 0)) / 4294967296) >>> 0 : 0), length >>> 0, (tempDouble = length, +Math.abs(tempDouble) >= 1 ? tempDouble > 0 ? +Math.floor(tempDouble / 4294967296) >>> 0 : ~~+Math.ceil((tempDouble - +(~~tempDouble >>> 0)) / 4294967296) >>> 0 : 0)));
+        }, writeFile: (path, data) => FS_writeFile(path, data), mmap: (stream, length, offset, prot, flags) => {
+          var buf = FS.handleError(__wasmfs_mmap(length, prot, flags, stream.fd, offset >>> 0, (tempDouble = offset, +Math.abs(tempDouble) >= 1 ? tempDouble > 0 ? +Math.floor(tempDouble / 4294967296) >>> 0 : ~~+Math.ceil((tempDouble - +(~~tempDouble >>> 0)) / 4294967296) >>> 0 : 0)));
+          return { ptr: buf, allocated: true };
+        }, msync: (stream, bufferPtr, offset, length, mmapFlags) => {
+          assert2(offset === 0);
+          return FS.handleError(__wasmfs_msync(bufferPtr, length, mmapFlags));
+        }, munmap: (addr, length) => FS.handleError(__wasmfs_munmap(addr, length)), symlink: (target, linkpath) => withStackSave(() => __wasmfs_symlink(stringToUTF8OnStack(target), stringToUTF8OnStack(linkpath))), readlink(path) {
+          var readBuffer = FS.handleError(withStackSave(() => __wasmfs_readlink(stringToUTF8OnStack(path))));
+          return UTF8ToString(readBuffer);
+        }, statBufToObject(statBuf) {
+          return { dev: HEAPU32[statBuf >> 2], mode: HEAPU32[statBuf + 4 >> 2], nlink: HEAPU32[statBuf + 8 >> 2], uid: HEAPU32[statBuf + 12 >> 2], gid: HEAPU32[statBuf + 16 >> 2], rdev: HEAPU32[statBuf + 20 >> 2], size: readI53FromI64(statBuf + 24), blksize: HEAPU32[statBuf + 32 >> 2], blocks: HEAPU32[statBuf + 36 >> 2], atime: readI53FromI64(statBuf + 40), mtime: readI53FromI64(statBuf + 56), ctime: readI53FromI64(statBuf + 72), ino: readI53FromU64(statBuf + 88) };
+        }, stat(path) {
+          var statBuf = _malloc(96);
+          FS.handleError(withStackSave(() => __wasmfs_stat(stringToUTF8OnStack(path), statBuf)));
+          var stats = FS.statBufToObject(statBuf);
+          _free(statBuf);
+          return stats;
+        }, lstat(path) {
+          var statBuf = _malloc(96);
+          FS.handleError(withStackSave(() => __wasmfs_lstat(stringToUTF8OnStack(path), statBuf)));
+          var stats = FS.statBufToObject(statBuf);
+          _free(statBuf);
+          return stats;
+        }, chmod(path, mode) {
+          return FS.handleError(withStackSave(() => {
+            var buffer = stringToUTF8OnStack(path);
+            return __wasmfs_chmod(buffer, mode);
+          }));
+        }, lchmod(path, mode) {
+          return FS.handleError(withStackSave(() => {
+            var buffer = stringToUTF8OnStack(path);
+            return __wasmfs_lchmod(buffer, mode);
+          }));
+        }, fchmod(fd2, mode) {
+          return FS.handleError(__wasmfs_fchmod(fd2, mode));
+        }, utime: (path, atime, mtime) => FS.handleError(withStackSave(() => __wasmfs_utime(stringToUTF8OnStack(path), atime, mtime))), truncate(path, len) {
+          return FS.handleError(withStackSave(() => __wasmfs_truncate(stringToUTF8OnStack(path), len >>> 0, (tempDouble = len, +Math.abs(tempDouble) >= 1 ? tempDouble > 0 ? +Math.floor(tempDouble / 4294967296) >>> 0 : ~~+Math.ceil((tempDouble - +(~~tempDouble >>> 0)) / 4294967296) >>> 0 : 0))));
+        }, ftruncate(fd2, len) {
+          return FS.handleError(__wasmfs_ftruncate(fd2, len >>> 0, (tempDouble = len, +Math.abs(tempDouble) >= 1 ? tempDouble > 0 ? +Math.floor(tempDouble / 4294967296) >>> 0 : ~~+Math.ceil((tempDouble - +(~~tempDouble >>> 0)) / 4294967296) >>> 0 : 0)));
+        }, findObject(path) {
+          var result = withStackSave(() => __wasmfs_identify(stringToUTF8OnStack(path)));
+          if (result == 44) {
+            return null;
+          }
+          return { isFolder: result == 31, isDevice: false };
+        }, readdir: (path) => withStackSave(() => {
+          var pathBuffer = stringToUTF8OnStack(path);
+          var entries = [];
+          var state2 = __wasmfs_readdir_start(pathBuffer);
+          if (!state2) {
+            throw new Error("No such directory");
+          }
+          var entry;
+          while (entry = __wasmfs_readdir_get(state2)) {
+            entries.push(UTF8ToString(entry));
+          }
+          __wasmfs_readdir_finish(state2);
+          return entries;
+        }), mount: (type, opts, mountpoint) => {
+          if (typeof type == "string") {
+            throw type;
+          }
+          var backendPointer = type.createBackend(opts);
+          return FS.handleError(withStackSave(() => __wasmfs_mount(stringToUTF8OnStack(mountpoint), backendPointer)));
+        }, unmount: (mountpoint) => FS.handleError(withStackSave(() => __wasmfs_unmount(stringToUTF8OnStack(mountpoint)))), mknod: (path, mode, dev) => FS_mknod(path, mode, dev), makedev: (ma2, mi) => ma2 << 8 | mi, registerDevice(dev, ops) {
+          var backendPointer = _wasmfs_create_jsimpl_backend();
+          var definedOps = { userRead: ops.read, userWrite: ops.write, allocFile: (file) => {
+            wasmFSDeviceStreams[file] = {};
+          }, freeFile: (file) => {
+            wasmFSDeviceStreams[file] = void 0;
+          }, getSize: (file) => {
+          }, read: (file, buffer, length, offset) => {
+            var bufferArray = Module.HEAP8.subarray(buffer, buffer + length);
+            try {
+              var bytesRead = definedOps.userRead(wasmFSDeviceStreams[file], bufferArray, 0, length, offset);
+            } catch (e2) {
+              return -e2.errno;
+            }
+            Module.HEAP8.set(bufferArray, buffer);
+            return bytesRead;
+          }, write: (file, buffer, length, offset) => {
+            var bufferArray = Module.HEAP8.subarray(buffer, buffer + length);
+            try {
+              var bytesWritten = definedOps.userWrite(wasmFSDeviceStreams[file], bufferArray, 0, length, offset);
+            } catch (e2) {
+              return -e2.errno;
+            }
+            Module.HEAP8.set(bufferArray, buffer);
+            return bytesWritten;
+          } };
+          wasmFS$backends[backendPointer] = definedOps;
+          wasmFSDevices[dev] = backendPointer;
+        }, createDevice(parent, name, input, output) {
+          if (typeof parent != "string") {
+            throw new Error("Only string paths are accepted");
+          }
+          var path = PATH.join2(parent, name);
+          var mode = FS_getMode(!!input, !!output);
+          if (!FS.createDevice.major) FS.createDevice.major = 64;
+          var dev = FS.makedev(FS.createDevice.major++, 0);
+          FS.registerDevice(dev, { read(stream, buffer, offset, length, pos) {
+            var bytesRead = 0;
+            for (var i3 = 0; i3 < length; i3++) {
+              var result;
+              try {
+                result = input();
+              } catch (e2) {
+                throw new FS.ErrnoError(29);
+              }
+              if (result === void 0 && bytesRead === 0) {
+                throw new FS.ErrnoError(6);
+              }
+              if (result === null || result === void 0) break;
+              bytesRead++;
+              buffer[offset + i3] = result;
+            }
+            return bytesRead;
+          }, write(stream, buffer, offset, length, pos) {
+            for (var i3 = 0; i3 < length; i3++) {
+              try {
+                output(buffer[offset + i3]);
+              } catch (e2) {
+                throw new FS.ErrnoError(29);
+              }
+            }
+            return i3;
+          } });
+          return FS.mkdev(path, mode, dev);
+        }, mkdev(path, mode, dev) {
+          if (typeof dev === "undefined") {
+            dev = mode;
+            mode = 438;
+          }
+          var deviceBackend = wasmFSDevices[dev];
+          if (!deviceBackend) {
+            throw new Error("Invalid device ID.");
+          }
+          return FS.handleError(withStackSave(() => _wasmfs_create_file(stringToUTF8OnStack(path), mode, deviceBackend)));
+        }, rename(oldPath, newPath) {
+          return FS.handleError(withStackSave(() => {
+            var oldPathBuffer = stringToUTF8OnStack(oldPath);
+            var newPathBuffer = stringToUTF8OnStack(newPath);
+            return __wasmfs_rename(oldPathBuffer, newPathBuffer);
+          }));
+        }, llseek(stream, offset, whence) {
+          return FS.handleError(__wasmfs_llseek(stream.fd, offset >>> 0, (tempDouble = offset, +Math.abs(tempDouble) >= 1 ? tempDouble > 0 ? +Math.floor(tempDouble / 4294967296) >>> 0 : ~~+Math.ceil((tempDouble - +(~~tempDouble >>> 0)) / 4294967296) >>> 0 : 0), whence));
+        } };
+        InternalError = Module["InternalError"] = class InternalError extends Error {
+          constructor(message) {
+            super(message);
+            this.name = "InternalError";
+          }
+        };
+        embind_init_charCodes();
+        BindingError = Module["BindingError"] = class BindingError extends Error {
+          constructor(message) {
+            super(message);
+            this.name = "BindingError";
+          }
+        };
+        init_ClassHandle();
+        init_embind();
+        init_RegisteredPointer();
+        UnboundTypeError = Module["UnboundTypeError"] = extendError(Error, "UnboundTypeError");
+        init_emval();
+        FS.init();
+        function checkIncomingModuleAPI() {
+          ignoredModuleProp("fetchSettings");
+        }
+        var wasmImports = { __assert_fail: ___assert_fail, __cxa_throw: ___cxa_throw, _embind_finalize_value_array: __embind_finalize_value_array, _embind_finalize_value_object: __embind_finalize_value_object, _embind_register_bigint: __embind_register_bigint, _embind_register_bool: __embind_register_bool, _embind_register_class: __embind_register_class, _embind_register_class_constructor: __embind_register_class_constructor, _embind_register_class_function: __embind_register_class_function, _embind_register_class_property: __embind_register_class_property, _embind_register_emval: __embind_register_emval, _embind_register_enum: __embind_register_enum, _embind_register_enum_value: __embind_register_enum_value, _embind_register_float: __embind_register_float, _embind_register_integer: __embind_register_integer, _embind_register_memory_view: __embind_register_memory_view, _embind_register_std_string: __embind_register_std_string, _embind_register_std_wstring: __embind_register_std_wstring, _embind_register_value_array: __embind_register_value_array, _embind_register_value_array_element: __embind_register_value_array_element, _embind_register_value_object: __embind_register_value_object, _embind_register_value_object_field: __embind_register_value_object_field, _embind_register_void: __embind_register_void, _emscripten_get_now_is_monotonic: __emscripten_get_now_is_monotonic, _emval_call: __emval_call, _emval_decref: __emval_decref, _emval_get_method_caller: __emval_get_method_caller, _emval_incref: __emval_incref, _emval_run_destructors: __emval_run_destructors, _emval_take_value: __emval_take_value, _wasmfs_copy_preloaded_file_data: __wasmfs_copy_preloaded_file_data, _wasmfs_get_num_preloaded_dirs: __wasmfs_get_num_preloaded_dirs, _wasmfs_get_num_preloaded_files: __wasmfs_get_num_preloaded_files, _wasmfs_get_preloaded_child_path: __wasmfs_get_preloaded_child_path, _wasmfs_get_preloaded_file_mode: __wasmfs_get_preloaded_file_mode, _wasmfs_get_preloaded_file_size: __wasmfs_get_preloaded_file_size, _wasmfs_get_preloaded_parent_path: __wasmfs_get_preloaded_parent_path, _wasmfs_get_preloaded_path_name: __wasmfs_get_preloaded_path_name, _wasmfs_jsimpl_alloc_file: __wasmfs_jsimpl_alloc_file, _wasmfs_jsimpl_free_file: __wasmfs_jsimpl_free_file, _wasmfs_jsimpl_get_size: __wasmfs_jsimpl_get_size, _wasmfs_jsimpl_read: __wasmfs_jsimpl_read, _wasmfs_jsimpl_write: __wasmfs_jsimpl_write, _wasmfs_stdin_get_char: __wasmfs_stdin_get_char, abort: _abort, emscripten_date_now: _emscripten_date_now, emscripten_err: _emscripten_err, emscripten_get_now: _emscripten_get_now, emscripten_memcpy_js: _emscripten_memcpy_js, emscripten_out: _emscripten_out, emscripten_resize_heap: _emscripten_resize_heap, environ_get: _environ_get, environ_sizes_get: _environ_sizes_get, exit: _exit, getentropy: _getentropy, strftime_l: _strftime_l };
+        var wasmExports = createWasm();
+        var ___wasm_call_ctors = createExportWrapper("__wasm_call_ctors");
+        var _free = Module["_free"] = createExportWrapper("free");
+        var _main = createExportWrapper("__main_argc_argv");
+        var _malloc = Module["_malloc"] = createExportWrapper("malloc");
+        var ___getTypeName = createExportWrapper("__getTypeName");
+        var _fflush = createExportWrapper("fflush");
+        var _emscripten_builtin_memalign = createExportWrapper("emscripten_builtin_memalign");
+        var _emscripten_stack_init = () => (_emscripten_stack_init = wasmExports["emscripten_stack_init"])();
+        var _emscripten_stack_get_free = () => (_emscripten_stack_get_free = wasmExports["emscripten_stack_get_free"])();
+        var _emscripten_stack_get_base = () => (_emscripten_stack_get_base = wasmExports["emscripten_stack_get_base"])();
+        var _emscripten_stack_get_end = () => (_emscripten_stack_get_end = wasmExports["emscripten_stack_get_end"])();
+        var stackSave = createExportWrapper("stackSave");
+        var stackRestore = createExportWrapper("stackRestore");
+        var stackAlloc = createExportWrapper("stackAlloc");
+        var _emscripten_stack_get_current = () => (_emscripten_stack_get_current = wasmExports["emscripten_stack_get_current"])();
+        var ___cxa_is_pointer_type = createExportWrapper("__cxa_is_pointer_type");
+        var __wasmfs_read_file = createExportWrapper("_wasmfs_read_file");
+        var __wasmfs_write_file = createExportWrapper("_wasmfs_write_file");
+        var __wasmfs_mkdir = createExportWrapper("_wasmfs_mkdir");
+        var __wasmfs_rmdir = createExportWrapper("_wasmfs_rmdir");
+        var __wasmfs_open = createExportWrapper("_wasmfs_open");
+        var __wasmfs_allocate = createExportWrapper("_wasmfs_allocate");
+        var __wasmfs_mknod = createExportWrapper("_wasmfs_mknod");
+        var __wasmfs_unlink = createExportWrapper("_wasmfs_unlink");
+        var __wasmfs_chdir = createExportWrapper("_wasmfs_chdir");
+        var __wasmfs_symlink = createExportWrapper("_wasmfs_symlink");
+        var __wasmfs_readlink = createExportWrapper("_wasmfs_readlink");
+        var __wasmfs_write = createExportWrapper("_wasmfs_write");
+        var __wasmfs_pwrite = createExportWrapper("_wasmfs_pwrite");
+        var __wasmfs_chmod = createExportWrapper("_wasmfs_chmod");
+        var __wasmfs_fchmod = createExportWrapper("_wasmfs_fchmod");
+        var __wasmfs_lchmod = createExportWrapper("_wasmfs_lchmod");
+        var __wasmfs_llseek = createExportWrapper("_wasmfs_llseek");
+        var __wasmfs_rename = createExportWrapper("_wasmfs_rename");
+        var __wasmfs_read = createExportWrapper("_wasmfs_read");
+        var __wasmfs_pread = createExportWrapper("_wasmfs_pread");
+        var __wasmfs_truncate = createExportWrapper("_wasmfs_truncate");
+        var __wasmfs_ftruncate = createExportWrapper("_wasmfs_ftruncate");
+        var __wasmfs_close = createExportWrapper("_wasmfs_close");
+        var __wasmfs_mmap = createExportWrapper("_wasmfs_mmap");
+        var __wasmfs_msync = createExportWrapper("_wasmfs_msync");
+        var __wasmfs_munmap = createExportWrapper("_wasmfs_munmap");
+        var __wasmfs_utime = createExportWrapper("_wasmfs_utime");
+        var __wasmfs_stat = createExportWrapper("_wasmfs_stat");
+        var __wasmfs_lstat = createExportWrapper("_wasmfs_lstat");
+        var __wasmfs_mount = createExportWrapper("_wasmfs_mount");
+        var __wasmfs_unmount = createExportWrapper("_wasmfs_unmount");
+        var __wasmfs_identify = createExportWrapper("_wasmfs_identify");
+        var __wasmfs_readdir_start = createExportWrapper("_wasmfs_readdir_start");
+        var __wasmfs_readdir_get = createExportWrapper("_wasmfs_readdir_get");
+        var __wasmfs_readdir_finish = createExportWrapper("_wasmfs_readdir_finish");
+        var __wasmfs_get_cwd = createExportWrapper("_wasmfs_get_cwd");
+        var _wasmfs_create_jsimpl_backend = createExportWrapper("wasmfs_create_jsimpl_backend");
+        var _wasmfs_create_memory_backend = createExportWrapper("wasmfs_create_memory_backend");
+        var _wasmfs_create_file = createExportWrapper("wasmfs_create_file");
+        var _wasmfs_flush = createExportWrapper("wasmfs_flush");
+        var dynCall_fiij = Module["dynCall_fiij"] = createExportWrapper("dynCall_fiij");
+        var dynCall_viijf = Module["dynCall_viijf"] = createExportWrapper("dynCall_viijf");
+        var dynCall_jiji = Module["dynCall_jiji"] = createExportWrapper("dynCall_jiji");
+        var dynCall_viijii = Module["dynCall_viijii"] = createExportWrapper("dynCall_viijii");
+        var dynCall_iiiiij = Module["dynCall_iiiiij"] = createExportWrapper("dynCall_iiiiij");
+        var dynCall_iiiiijj = Module["dynCall_iiiiijj"] = createExportWrapper("dynCall_iiiiijj");
+        var dynCall_iiiiiijj = Module["dynCall_iiiiiijj"] = createExportWrapper("dynCall_iiiiiijj");
+        var dynCall_ji = Module["dynCall_ji"] = createExportWrapper("dynCall_ji");
+        var dynCall_iiiij = Module["dynCall_iiiij"] = createExportWrapper("dynCall_iiiij");
+        var dynCall_iij = Module["dynCall_iij"] = createExportWrapper("dynCall_iij");
+        Module["addOnPostRun"] = addOnPostRun;
+        Module["addRunDependency"] = addRunDependency;
+        Module["removeRunDependency"] = removeRunDependency;
+        Module["FS_createPath"] = FS.createPath;
+        Module["FS_createPreloadedFile"] = FS.createPreloadedFile;
+        Module["FS"] = FS;
+        Module["FS_createDataFile"] = FS.createDataFile;
+        Module["FS_unlink"] = FS.unlink;
+        var missingLibrarySymbols = ["writeI53ToI64", "writeI53ToI64Clamped", "writeI53ToI64Signaling", "writeI53ToU64Clamped", "writeI53ToU64Signaling", "convertI32PairToI53", "convertU32PairToI53", "zeroMemory", "ydayFromDate", "inetPton4", "inetNtop4", "inetPton6", "inetNtop6", "readSockaddr", "writeSockaddr", "getCallstack", "emscriptenLog", "convertPCtoSourceLocation", "readEmAsmArgs", "jstoi_q", "listenOnce", "autoResumeAudioContext", "handleException", "runtimeKeepalivePush", "runtimeKeepalivePop", "callUserCallback", "maybeExit", "asmjsMangle", "alignMemory", "mmapAlloc", "HandleAllocator", "getNativeTypeSize", "STACK_SIZE", "STACK_ALIGN", "POINTER_SIZE", "ASSERTIONS", "getCFunc", "ccall", "cwrap", "uleb128Encode", "sigToWasmTypes", "generateFuncType", "convertJsFunctionToWasm", "getEmptyTableSlot", "updateTableMap", "getFunctionAddress", "addFunction", "removeFunction", "reallyNegative", "unSign", "strLen", "reSign", "formatString", "intArrayToString", "AsciiToString", "stringToNewUTF8", "registerKeyEventCallback", "maybeCStringToJsString", "findEventTarget", "getBoundingClientRect", "fillMouseEventData", "registerMouseEventCallback", "registerWheelEventCallback", "registerUiEventCallback", "registerFocusEventCallback", "fillDeviceOrientationEventData", "registerDeviceOrientationEventCallback", "fillDeviceMotionEventData", "registerDeviceMotionEventCallback", "screenOrientation", "fillOrientationChangeEventData", "registerOrientationChangeEventCallback", "fillFullscreenChangeEventData", "registerFullscreenChangeEventCallback", "JSEvents_requestFullscreen", "JSEvents_resizeCanvasForFullscreen", "registerRestoreOldStyle", "hideEverythingExceptGivenElement", "restoreHiddenElements", "setLetterbox", "softFullscreenResizeWebGLRenderTarget", "doRequestFullscreen", "fillPointerlockChangeEventData", "registerPointerlockChangeEventCallback", "registerPointerlockErrorEventCallback", "requestPointerLock", "fillVisibilityChangeEventData", "registerVisibilityChangeEventCallback", "registerTouchEventCallback", "fillGamepadEventData", "registerGamepadEventCallback", "registerBeforeUnloadEventCallback", "fillBatteryEventData", "battery", "registerBatteryEventCallback", "setCanvasElementSize", "getCanvasElementSize", "jsStackTrace", "stackTrace", "checkWasiClock", "flush_NO_FILESYSTEM", "wasiRightsToMuslOFlags", "wasiOFlagsToMuslOFlags", "createDyncallWrapper", "safeSetTimeout", "setImmediateWrapped", "clearImmediateWrapped", "polyfillSetImmediate", "getPromise", "makePromise", "idsToPromises", "makePromiseCallback", "findMatchingCatch", "Browser_asyncPrepareDataCounter", "setMainLoop", "wasmfsNodeConvertNodeCode", "wasmfsNodeFixStat", "wasmfsNodeLstat", "wasmfsNodeFstat", "FileSystemAsyncAccessHandle", "wasmfsOPFSCreateAsyncAccessHandle", "wasmfsOPFSProxyFinish", "wasmfsOPFSGetOrCreateFile", "wasmfsOPFSGetOrCreateDir", "heapObjectForWebGLType", "toTypedArrayIndex", "webgl_enable_ANGLE_instanced_arrays", "webgl_enable_OES_vertex_array_object", "webgl_enable_WEBGL_draw_buffers", "webgl_enable_WEBGL_multi_draw", "emscriptenWebGLGet", "computeUnpackAlignedImageSize", "colorChannelsInGlTextureFormat", "emscriptenWebGLGetTexPixelData", "emscriptenWebGLGetUniform", "webglGetUniformLocation", "webglPrepareUniformLocationsBeforeFirstUse", "webglGetLeftBracePos", "emscriptenWebGLGetVertexAttrib", "__glGetActiveAttribOrUniform", "writeGLArray", "registerWebGlEventCallback", "runAndAbortIfError", "ALLOC_NORMAL", "ALLOC_STACK", "allocate", "writeStringToMemory", "writeAsciiToMemory", "setErrNo", "demangle", "getFunctionArgsName", "createJsInvoker", "registerInheritedInstance", "unregisterInheritedInstance", "getStringOrSymbol", "emval_get_global"];
+        missingLibrarySymbols.forEach(missingLibrarySymbol);
+        var unexportedSymbols = ["run", "addOnPreRun", "addOnInit", "addOnPreMain", "addOnExit", "FS_createFolder", "FS_createLazyFile", "FS_createLink", "FS_createDevice", "FS_readFile", "out", "err", "callMain", "abort", "wasmMemory", "wasmExports", "stackAlloc", "stackSave", "stackRestore", "getTempRet0", "setTempRet0", "writeStackCookie", "checkStackCookie", "readI53FromI64", "readI53FromU64", "convertI32PairToI53Checked", "ptrToString", "exitJS", "getHeapMax", "growMemory", "ENV", "MONTH_DAYS_REGULAR", "MONTH_DAYS_LEAP", "MONTH_DAYS_REGULAR_CUMULATIVE", "MONTH_DAYS_LEAP_CUMULATIVE", "isLeapYear", "arraySum", "addDays", "ERRNO_CODES", "ERRNO_MESSAGES", "DNS", "Protocols", "Sockets", "initRandomFill", "randomFill", "timers", "warnOnce", "UNWIND_CACHE", "readEmAsmArgsArray", "jstoi_s", "getExecutableName", "dynCallLegacy", "getDynCaller", "dynCall", "keepRuntimeAlive", "asyncLoad", "wasmTable", "noExitRuntime", "freeTableIndexes", "functionsInTableMap", "setValue", "getValue", "PATH", "PATH_FS", "UTF8Decoder", "UTF8ArrayToString", "UTF8ToString", "stringToUTF8Array", "stringToUTF8", "lengthBytesUTF8", "intArrayFromString", "stringToAscii", "UTF16Decoder", "UTF16ToString", "stringToUTF16", "lengthBytesUTF16", "UTF32ToString", "stringToUTF32", "lengthBytesUTF32", "stringToUTF8OnStack", "writeArrayToMemory", "JSEvents", "specialHTMLTargets", "findCanvasEventTarget", "currentFullscreenStrategy", "restoreOldWindowedStyle", "ExitStatus", "getEnvStrings", "promiseMap", "uncaughtExceptionCount", "exceptionLast", "exceptionCaught", "ExceptionInfo", "Browser", "getPreloadedImageData__data", "wget", "preloadPlugins", "FS_modeStringToFlags", "FS_getMode", "FS_stdin_getChar_buffer", "FS_stdin_getChar", "MEMFS", "wasmFSPreloadedFiles", "wasmFSPreloadedDirs", "wasmFSPreloadingFlushed", "wasmFSDevices", "wasmFSDeviceStreams", "FS_mknod", "FS_create", "FS_writeFile", "FS_mkdir", "FS_mkdirTree", "wasmFS$JSMemoryFiles", "wasmFS$backends", "wasmfsNodeIsWindows", "wasmfsOPFSDirectoryHandles", "wasmfsOPFSFileHandles", "wasmfsOPFSAccessHandles", "wasmfsOPFSBlobs", "tempFixedLengthArray", "miniTempWebGLFloatBuffers", "miniTempWebGLIntBuffers", "GL", "AL", "GLUT", "EGL", "GLEW", "IDBStore", "SDL", "SDL_gfx", "allocateUTF8", "allocateUTF8OnStack", "InternalError", "BindingError", "throwInternalError", "throwBindingError", "registeredTypes", "awaitingDependencies", "typeDependencies", "tupleRegistrations", "structRegistrations", "sharedRegisterType", "whenDependentTypesAreResolved", "embind_charCodes", "embind_init_charCodes", "readLatin1String", "getTypeName", "getFunctionName", "heap32VectorToArray", "requireRegisteredType", "usesDestructorStack", "createJsInvokerSignature", "UnboundTypeError", "PureVirtualError", "GenericWireTypeSize", "InvokerFunctions", "EmValType", "init_embind", "throwUnboundTypeError", "ensureOverloadTable", "exposePublicSymbol", "replacePublicSymbol", "extendError", "createNamedFunction", "embindRepr", "registeredInstances", "getBasestPointer", "getInheritedInstance", "getInheritedInstanceCount", "getLiveInheritedInstances", "registeredPointers", "registerType", "integerReadValueFromPointer", "enumReadValueFromPointer", "floatReadValueFromPointer", "readPointer", "runDestructors", "craftInvokerFunction", "embind__requireFunction", "genericPointerToWireType", "constNoSmartPtrRawPointerToWireType", "nonConstNoSmartPtrRawPointerToWireType", "init_RegisteredPointer", "RegisteredPointer", "RegisteredPointer_fromWireType", "runDestructor", "releaseClassHandle", "finalizationRegistry", "detachFinalizer_deps", "detachFinalizer", "attachFinalizer", "makeClassHandle", "init_ClassHandle", "ClassHandle", "throwInstanceAlreadyDeleted", "deletionQueue", "flushPendingDeletes", "delayFunction", "setDelayFunction", "RegisteredClass", "shallowCopyInternalPointer", "downcastPointer", "upcastPointer", "validateThis", "char_0", "char_9", "makeLegalFunctionName", "emval_freelist", "emval_handles", "emval_symbols", "init_emval", "count_emval_handles", "Emval", "emval_returnValue", "emval_lookupTypes", "emval_methodCallers", "emval_addMethodCaller", "reflectConstruct"];
+        unexportedSymbols.forEach(unexportedRuntimeSymbol);
+        var calledRun;
+        dependenciesFulfilled = function runCaller() {
+          if (!calledRun) run2();
+          if (!calledRun) dependenciesFulfilled = runCaller;
+        };
+        function stackCheckInit() {
+          _emscripten_stack_init();
+          writeStackCookie();
+        }
+        function run2(args = arguments_) {
+          if (runDependencies > 0) {
+            return;
+          }
+          stackCheckInit();
+          preRun();
+          if (runDependencies > 0) {
+            return;
+          }
+          function doRun() {
+            if (calledRun) return;
+            calledRun = true;
+            Module["calledRun"] = true;
+            if (ABORT) return;
+            initRuntime();
+            readyPromiseResolve(Module);
+            if (Module["onRuntimeInitialized"]) Module["onRuntimeInitialized"]();
+            assert2(!Module["_main"], 'compiled without a main, but one is present. if you added it from JS, use Module["onRuntimeInitialized"]');
+            postRun();
+          }
+          if (Module["setStatus"]) {
+            Module["setStatus"]("Running...");
+            setTimeout(function() {
+              setTimeout(function() {
+                Module["setStatus"]("");
+              }, 1);
+              doRun();
+            }, 1);
+          } else {
+            doRun();
+          }
+          checkStackCookie();
+        }
+        function checkUnflushedContent() {
+          var oldOut = out;
+          var oldErr = err;
+          var has = false;
+          out = err = (x2) => {
+            has = true;
+          };
+          try {
+            _wasmfs_flush();
+          } catch (e2) {
+          }
+          out = oldOut;
+          err = oldErr;
+          if (has) {
+            warnOnce("stdio streams had content in them that was not flushed. you should set EXIT_RUNTIME to 1 (see the Emscripten FAQ), or make sure to emit a newline when you printf etc.");
+            warnOnce("(this may also be due to not including full filesystem support - try building with -sFORCE_FILESYSTEM)");
+          }
+        }
+        if (Module["preInit"]) {
+          if (typeof Module["preInit"] == "function") Module["preInit"] = [Module["preInit"]];
+          while (Module["preInit"].length > 0) {
+            Module["preInit"].pop()();
+          }
+        }
+        run2();
+        return moduleArg.ready;
+      };
+    })();
+    fastText_common_default = fastTextModule;
+  }
+});
 
 // node_modules/regenerator-runtime/runtime.js
 var require_runtime = __commonJS({
@@ -568,13 +3945,13 @@ var require_createJob = __commonJS({
       action,
       payload = {}
     }) => {
-      let id2 = _id;
-      if (typeof id2 === "undefined") {
-        id2 = getId("Job", jobCounter);
+      let id3 = _id;
+      if (typeof id3 === "undefined") {
+        id3 = getId("Job", jobCounter);
         jobCounter += 1;
       }
       return {
-        id: id2,
+        id: id3,
         action,
         payload
       };
@@ -602,7 +3979,7 @@ var require_createScheduler = __commonJS({
     var getId = require_getId();
     var schedulerCounter = 0;
     module.exports = () => {
-      const id2 = getId("Scheduler", schedulerCounter);
+      const id3 = getId("Scheduler", schedulerCounter);
       const workers = {};
       const runningWorkers = {};
       let jobQueue = [];
@@ -634,20 +4011,20 @@ var require_createScheduler = __commonJS({
             dequeue();
           }
         });
-        log(`[${id2}]: Add ${job.id} to JobQueue`);
-        log(`[${id2}]: JobQueue length=${jobQueue.length}`);
+        log(`[${id3}]: Add ${job.id} to JobQueue`);
+        log(`[${id3}]: JobQueue length=${jobQueue.length}`);
         dequeue();
       });
       const addWorker = (w3) => {
         workers[w3.id] = w3;
-        log(`[${id2}]: Add ${w3.id}`);
-        log(`[${id2}]: Number of workers=${getNumWorkers()}`);
+        log(`[${id3}]: Add ${w3.id}`);
+        log(`[${id3}]: Number of workers=${getNumWorkers()}`);
         dequeue();
         return w3.id;
       };
       const addJob = async (action, ...payload) => {
         if (getNumWorkers() === 0) {
-          throw Error(`[${id2}]: You need to have at least one worker before adding jobs`);
+          throw Error(`[${id3}]: You need to have at least one worker before adding jobs`);
         }
         return queue(action, payload);
       };
@@ -1065,7 +4442,7 @@ var require_createWorker = __commonJS({
     } = require_browser();
     var workerCounter = 0;
     module.exports = async (langs = "eng", oem = OEM.LSTM_ONLY, _options = {}, config = {}) => {
-      const id2 = getId("Worker", workerCounter);
+      const id3 = getId("Worker", workerCounter);
       const {
         logger,
         errorHandler,
@@ -1099,12 +4476,12 @@ var require_createWorker = __commonJS({
         rejects[promiseId] = rej;
       };
       const startJob = ({ id: jobId, action, payload }) => new Promise((resolve, reject) => {
-        log(`[${id2}]: Start ${jobId}, action=${action}`);
+        log(`[${id3}]: Start ${jobId}, action=${action}`);
         const promiseId = `${action}-${jobId}`;
         setResolve(promiseId, resolve);
         setReject(promiseId, reject);
         send(worker, {
-          workerId: id2,
+          workerId: id3,
           jobId,
           action,
           payload
@@ -1240,7 +4617,7 @@ var require_createWorker = __commonJS({
         }
       });
       const resolveObj = {
-        id: id2,
+        id: id3,
         worker,
         setResolve,
         setReject,
@@ -1427,12 +4804,12 @@ var require_src = __commonJS({
     var createScheduler = require_createScheduler();
     var createWorker = require_createWorker();
     var Tesseract = require_Tesseract();
-    var languages = require_languages();
+    var languages2 = require_languages();
     var OEM = require_OEM();
     var PSM = require_PSM();
     var { setLogging } = require_log();
     module.exports = {
-      languages,
+      languages: languages2,
       OEM,
       PSM,
       createScheduler,
@@ -1957,12 +5334,12 @@ var require_underscore_umd = __commonJS({
         for (var i3 = 0; i3 < n2; i3++) accum[i3] = iteratee2(i3);
         return accum;
       }
-      function random(min2, max2) {
+      function random(min3, max2) {
         if (max2 == null) {
-          max2 = min2;
-          min2 = 0;
+          max2 = min3;
+          min3 = 0;
         }
-        return min2 + Math.floor(Math.random() * (max2 - min2 + 1));
+        return min3 + Math.floor(Math.random() * (max2 - min3 + 1));
       }
       var now = Date.now || function() {
         return (/* @__PURE__ */ new Date()).getTime();
@@ -2073,8 +5450,8 @@ var require_underscore_umd = __commonJS({
       }
       var idCounter = 0;
       function uniqueId(prefix) {
-        var id2 = ++idCounter + "";
-        return prefix ? prefix + id2 : id2;
+        var id3 = ++idCounter + "";
+        return prefix ? prefix + id3 : id3;
       }
       function chain(obj) {
         var instance = _$1(obj);
@@ -2454,7 +5831,7 @@ var require_underscore_umd = __commonJS({
         }
         return result2;
       }
-      function min(obj, iteratee2, context) {
+      function min2(obj, iteratee2, context) {
         var result2 = Infinity, lastComputed = Infinity, value, computed;
         if (iteratee2 == null || typeof iteratee2 == "number" && typeof obj[0] != "object" && obj != null) {
           obj = isArrayLike(obj) ? obj : values(obj);
@@ -2852,7 +6229,7 @@ var require_underscore_umd = __commonJS({
         pluck,
         where,
         max,
-        min,
+        min: min2,
         shuffle,
         sample,
         sortBy,
@@ -3136,8 +6513,8 @@ var require_documents = __commonJS({
         authorInitials: options.authorInitials
       };
     }
-    function noteKey(noteType, id2) {
-      return noteType + "-" + id2;
+    function noteKey(noteType, id3) {
+      return noteType + "-" + id3;
     }
     function Image2(options) {
       return {
@@ -5776,7 +9153,7 @@ var require_zipfile = __commonJS({
         function exists(name) {
           return zipFile.file(name) !== null;
         }
-        function read(name, encoding) {
+        function read2(name, encoding) {
           return zipFile.file(name).async("uint8array").then(function(array) {
             if (encoding === "base64") {
               return base64js.fromByteArray(array);
@@ -5796,7 +9173,7 @@ var require_zipfile = __commonJS({
         }
         return {
           exists,
-          read,
+          read: read2,
           write,
           toArrayBuffer
         };
@@ -5915,11 +9292,11 @@ var require_conventions = __commonJS({
         }
       }
     }
-    function freeze(object, oc2) {
-      if (oc2 === void 0) {
-        oc2 = Object;
+    function freeze(object, oc3) {
+      if (oc3 === void 0) {
+        oc3 = Object;
       }
-      return oc2 && typeof oc2.freeze === "function" ? oc2.freeze(object) : object;
+      return oc3 && typeof oc3.freeze === "function" ? oc3.freeze(object) : object;
     }
     function assign(target, source) {
       if (target === null || typeof target !== "object") {
@@ -6077,22 +9454,22 @@ var require_dom = __commonJS({
       }
     }
     function _extends(Class, Super) {
-      var pt = Class.prototype;
-      if (!(pt instanceof Super)) {
+      var pt2 = Class.prototype;
+      if (!(pt2 instanceof Super)) {
         let t3 = function() {
         };
         var t2 = t3;
         ;
         t3.prototype = Super.prototype;
         t3 = new t3();
-        copy(pt, t3);
-        Class.prototype = pt = t3;
+        copy(pt2, t3);
+        Class.prototype = pt2 = t3;
       }
-      if (pt.constructor != Class) {
+      if (pt2.constructor != Class) {
         if (typeof Class != "function") {
           console.error("unknown Class:" + Class);
         }
-        pt.constructor = Class;
+        pt2.constructor = Class;
       }
     }
     var NodeType = {};
@@ -6228,7 +9605,7 @@ var require_dom = __commonJS({
         delete list._nameIndex[attr.nodeName];
       }
     }
-    function _addNamedNode(el2, list, newAttr, oldAttr) {
+    function _addNamedNode(el3, list, newAttr, oldAttr) {
       if (oldAttr) {
         list[_findNodeIndex(list, oldAttr)] = newAttr;
         _nnmIndexRemove(list, oldAttr);
@@ -6236,16 +9613,16 @@ var require_dom = __commonJS({
         list[list.length++] = newAttr;
       }
       _nnmIndexAdd(list, newAttr);
-      if (el2) {
-        newAttr.ownerElement = el2;
-        var doc = el2.ownerDocument;
+      if (el3) {
+        newAttr.ownerElement = el3;
+        var doc = el3.ownerDocument;
         if (doc) {
-          oldAttr && _onRemoveAttribute(doc, el2, oldAttr);
-          _onAddAttribute(doc, el2, newAttr);
+          oldAttr && _onRemoveAttribute(doc, el3, oldAttr);
+          _onAddAttribute(doc, el3, newAttr);
         }
       }
     }
-    function _removeNamedNode(el2, list, attr) {
+    function _removeNamedNode(el3, list, attr) {
       var i3 = _findNodeIndex(list, attr);
       if (i3 >= 0) {
         var lastIndex = list.length - 1;
@@ -6254,15 +9631,15 @@ var require_dom = __commonJS({
         }
         list.length = lastIndex;
         _nnmIndexRemove(list, attr);
-        if (el2) {
-          var doc = el2.ownerDocument;
+        if (el3) {
+          var doc = el3.ownerDocument;
           if (doc) {
-            _onRemoveAttribute(doc, el2, attr);
+            _onRemoveAttribute(doc, el3, attr);
             attr.ownerElement = null;
           }
         }
       } else {
-        throw new DOMException(NOT_FOUND_ERR, new Error(el2.tagName + "@" + attr));
+        throw new DOMException(NOT_FOUND_ERR, new Error(el3.tagName + "@" + attr));
       }
     }
     NamedNodeMap.prototype = {
@@ -6278,8 +9655,8 @@ var require_dom = __commonJS({
         }
       },
       setNamedItem: function(attr) {
-        var el2 = attr.ownerElement;
-        if (el2 && el2 != this._ownerElement) {
+        var el3 = attr.ownerElement;
+        if (el3 && el3 != this._ownerElement) {
           throw new DOMException(INUSE_ATTRIBUTE_ERR);
         }
         var oldAttr = this._nameIndex[attr.nodeName];
@@ -6288,8 +9665,8 @@ var require_dom = __commonJS({
       },
       /* returns Node */
       setNamedItemNS: function(attr) {
-        var el2 = attr.ownerElement, oldAttr;
-        if (el2 && el2 != this._ownerElement) {
+        var el3 = attr.ownerElement, oldAttr;
+        if (el3 && el3 != this._ownerElement) {
           throw new DOMException(INUSE_ATTRIBUTE_ERR);
         }
         oldAttr = this.getNamedItemNS(attr.namespaceURI, attr.localName);
@@ -6539,9 +9916,9 @@ var require_dom = __commonJS({
        * @see https://github.com/xmldom/xmldom/issues/322
        */
       lookupPrefix: function(namespaceURI) {
-        var el2 = this;
-        while (el2) {
-          var map2 = el2._nsMap;
+        var el3 = this;
+        while (el3) {
+          var map2 = el3._nsMap;
           if (map2) {
             for (var n2 in map2) {
               if (Object.prototype.hasOwnProperty.call(map2, n2) && map2[n2] === namespaceURI) {
@@ -6549,21 +9926,21 @@ var require_dom = __commonJS({
               }
             }
           }
-          el2 = el2.nodeType == ATTRIBUTE_NODE ? el2.ownerDocument : el2.parentNode;
+          el3 = el3.nodeType == ATTRIBUTE_NODE ? el3.ownerDocument : el3.parentNode;
         }
         return null;
       },
       // Introduced in DOM Level 3:
       lookupNamespaceURI: function(prefix) {
-        var el2 = this;
-        while (el2) {
-          var map2 = el2._nsMap;
+        var el3 = this;
+        while (el3) {
+          var map2 = el3._nsMap;
           if (map2) {
             if (Object.prototype.hasOwnProperty.call(map2, prefix)) {
               return map2[prefix];
             }
           }
-          el2 = el2.nodeType == ATTRIBUTE_NODE ? el2.ownerDocument : el2.parentNode;
+          el3 = el3.nodeType == ATTRIBUTE_NODE ? el3.ownerDocument : el3.parentNode;
         }
         return null;
       },
@@ -6614,35 +9991,35 @@ var require_dom = __commonJS({
     function Document() {
       this.ownerDocument = this;
     }
-    function _onAddAttribute(doc, el2, newAttr) {
+    function _onAddAttribute(doc, el3, newAttr) {
       doc && doc._inc++;
       var ns2 = newAttr.namespaceURI;
       if (ns2 === NAMESPACE.XMLNS) {
-        el2._nsMap[newAttr.prefix ? newAttr.localName : ""] = newAttr.value;
+        el3._nsMap[newAttr.prefix ? newAttr.localName : ""] = newAttr.value;
       }
     }
-    function _onRemoveAttribute(doc, el2, newAttr, remove) {
+    function _onRemoveAttribute(doc, el3, newAttr, remove) {
       doc && doc._inc++;
       var ns2 = newAttr.namespaceURI;
       if (ns2 === NAMESPACE.XMLNS) {
-        delete el2._nsMap[newAttr.prefix ? newAttr.localName : ""];
+        delete el3._nsMap[newAttr.prefix ? newAttr.localName : ""];
       }
     }
-    function _onUpdateChild(doc, el2, newChild) {
+    function _onUpdateChild(doc, el3, newChild) {
       if (doc && doc._inc) {
         doc._inc++;
-        var cs2 = el2.childNodes;
+        var cs3 = el3.childNodes;
         if (newChild) {
-          cs2[cs2.length++] = newChild;
+          cs3[cs3.length++] = newChild;
         } else {
-          var child = el2.firstChild;
+          var child = el3.firstChild;
           var i3 = 0;
           while (child) {
-            cs2[i3++] = child;
+            cs3[i3++] = child;
             child = child.nextSibling;
           }
-          cs2.length = i3;
-          delete cs2[cs2.length];
+          cs3.length = i3;
+          delete cs3[cs3.length];
         }
       }
     }
@@ -6911,11 +10288,11 @@ var require_dom = __commonJS({
         return importNode(this, importedNode, deep);
       },
       // Introduced in DOM Level 2:
-      getElementById: function(id2) {
+      getElementById: function(id3) {
         var rtv = null;
         _visitNode(this.documentElement, function(node) {
           if (node.nodeType == ELEMENT_NODE) {
-            if (node.getAttribute("id") == id2) {
+            if (node.getAttribute("id") == id3) {
               rtv = node;
               return true;
             }
@@ -7079,16 +10456,16 @@ var require_dom = __commonJS({
       // Introduced in DOM Level 2:
       createElementNS: function(namespaceURI, qualifiedName) {
         var node = new Element();
-        var pl2 = qualifiedName.split(":");
+        var pl3 = qualifiedName.split(":");
         var attrs = node.attributes = new NamedNodeMap();
         node.childNodes = new NodeList();
         node.ownerDocument = this;
         node.nodeName = qualifiedName;
         node.tagName = qualifiedName;
         node.namespaceURI = namespaceURI;
-        if (pl2.length == 2) {
-          node.prefix = pl2[0];
-          node.localName = pl2[1];
+        if (pl3.length == 2) {
+          node.prefix = pl3[0];
+          node.localName = pl3[1];
         } else {
           node.localName = qualifiedName;
         }
@@ -7098,15 +10475,15 @@ var require_dom = __commonJS({
       // Introduced in DOM Level 2:
       createAttributeNS: function(namespaceURI, qualifiedName) {
         var node = new Attr();
-        var pl2 = qualifiedName.split(":");
+        var pl3 = qualifiedName.split(":");
         node.ownerDocument = this;
         node.nodeName = qualifiedName;
         node.name = qualifiedName;
         node.namespaceURI = namespaceURI;
         node.specified = true;
-        if (pl2.length == 2) {
-          node.prefix = pl2[0];
-          node.localName = pl2[1];
+        if (pl3.length == 2) {
+          node.prefix = pl3[0];
+          node.localName = pl3[1];
         } else {
           node.localName = qualifiedName;
         }
@@ -9956,12 +13333,12 @@ var require_sax = __commonJS({
               break;
             default:
               locator && position(tagStart);
-              var el2 = new ElementAttributes();
+              var el3 = new ElementAttributes();
               var currentNSMap = parseStack[parseStack.length - 1].currentNSMap;
-              var end = parseElementStartPart(source, tagStart, el2, currentNSMap, entityReplacer, errorHandler);
-              var len = el2.length;
-              if (!el2.closed && fixSelfClosed(source, end, el2.tagName, closeMap)) {
-                el2.closed = true;
+              var end = parseElementStartPart(source, tagStart, el3, currentNSMap, entityReplacer, errorHandler);
+              var len = el3.length;
+              if (!el3.closed && fixSelfClosed(source, end, el3.tagName, closeMap)) {
+                el3.closed = true;
                 if (!entityMap.nbsp) {
                   errorHandler.warning("unclosed xml attribute");
                 }
@@ -9969,22 +13346,22 @@ var require_sax = __commonJS({
               if (locator && len) {
                 var locator2 = copyLocator(locator, {});
                 for (var i3 = 0; i3 < len; i3++) {
-                  var a2 = el2[i3];
+                  var a2 = el3[i3];
                   position(a2.offset);
                   a2.locator = copyLocator(locator, {});
                 }
                 domBuilder.locator = locator2;
-                if (appendElement(el2, domBuilder, currentNSMap)) {
-                  parseStack.push(el2);
+                if (appendElement(el3, domBuilder, currentNSMap)) {
+                  parseStack.push(el3);
                 }
                 domBuilder.locator = locator;
               } else {
-                if (appendElement(el2, domBuilder, currentNSMap)) {
-                  parseStack.push(el2);
+                if (appendElement(el3, domBuilder, currentNSMap)) {
+                  parseStack.push(el3);
                 }
               }
-              if (NAMESPACE.isHTML(el2.uri) && !el2.closed) {
-                end = parseHtmlSpecialContent(source, end, el2.tagName, entityReplacer, domBuilder);
+              if (NAMESPACE.isHTML(el3.uri) && !el3.closed) {
+                end = parseHtmlSpecialContent(source, end, el3.tagName, entityReplacer, domBuilder);
               } else {
                 end++;
               }
@@ -10008,12 +13385,12 @@ var require_sax = __commonJS({
       t2.columnNumber = f3.columnNumber;
       return t2;
     }
-    function parseElementStartPart(source, start, el2, currentNSMap, entityReplacer, errorHandler) {
+    function parseElementStartPart(source, start, el3, currentNSMap, entityReplacer, errorHandler) {
       function addAttribute(qname, value2, startIndex) {
-        if (el2.attributeNames.hasOwnProperty(qname)) {
+        if (el3.attributeNames.hasOwnProperty(qname)) {
           errorHandler.fatalError("Attribute " + qname + " redefined");
         }
-        el2.addValue(
+        el3.addValue(
           qname,
           // @see https://www.w3.org/TR/xml/#AVNormalize
           // since the xmldom sax parser does not "interpret" DTD the following is not implemented:
@@ -10072,17 +13449,17 @@ var require_sax = __commonJS({
           case "/":
             switch (s3) {
               case S_TAG:
-                el2.setTagName(source.slice(start, p3));
+                el3.setTagName(source.slice(start, p3));
               case S_ATTR_END:
               case S_TAG_SPACE:
               case S_TAG_CLOSE:
                 s3 = S_TAG_CLOSE;
-                el2.closed = true;
+                el3.closed = true;
               case S_ATTR_NOQUOT_VALUE:
               case S_ATTR:
                 break;
               case S_ATTR_SPACE:
-                el2.closed = true;
+                el3.closed = true;
                 break;
               //case S_EQ:
               default:
@@ -10092,13 +13469,13 @@ var require_sax = __commonJS({
           case "":
             errorHandler.error("unexpected end of input");
             if (s3 == S_TAG) {
-              el2.setTagName(source.slice(start, p3));
+              el3.setTagName(source.slice(start, p3));
             }
             return p3;
           case ">":
             switch (s3) {
               case S_TAG:
-                el2.setTagName(source.slice(start, p3));
+                el3.setTagName(source.slice(start, p3));
               case S_ATTR_END:
               case S_TAG_SPACE:
               case S_TAG_CLOSE:
@@ -10109,7 +13486,7 @@ var require_sax = __commonJS({
               case S_ATTR:
                 value = source.slice(start, p3);
                 if (value.slice(-1) === "/") {
-                  el2.closed = true;
+                  el3.closed = true;
                   value = value.slice(0, -1);
                 }
               case S_ATTR_SPACE:
@@ -10137,7 +13514,7 @@ var require_sax = __commonJS({
             if (c3 <= " ") {
               switch (s3) {
                 case S_TAG:
-                  el2.setTagName(source.slice(start, p3));
+                  el3.setTagName(source.slice(start, p3));
                   s3 = S_TAG_SPACE;
                   break;
                 case S_ATTR:
@@ -10158,7 +13535,7 @@ var require_sax = __commonJS({
                 //case S_ATTR:void();break;
                 //case S_ATTR_NOQUOT_VALUE:void();break;
                 case S_ATTR_SPACE:
-                  var tagName = el2.tagName;
+                  var tagName = el3.tagName;
                   if (!NAMESPACE.isHTML(currentNSMap[""]) || !attrName.match(/^(?:disabled|checked|selected)$/i)) {
                     errorHandler.warning('attribute "' + attrName + '" missed value!! "' + attrName + '" instead2!!');
                   }
@@ -10184,12 +13561,12 @@ var require_sax = __commonJS({
         p3++;
       }
     }
-    function appendElement(el2, domBuilder, currentNSMap) {
-      var tagName = el2.tagName;
+    function appendElement(el3, domBuilder, currentNSMap) {
+      var tagName = el3.tagName;
       var localNSMap = null;
-      var i3 = el2.length;
+      var i3 = el3.length;
       while (i3--) {
-        var a2 = el2[i3];
+        var a2 = el3[i3];
         var qName = a2.qName;
         var value = a2.value;
         var nsp = qName.indexOf(":");
@@ -10213,9 +13590,9 @@ var require_sax = __commonJS({
           domBuilder.startPrefixMapping(nsPrefix, value);
         }
       }
-      var i3 = el2.length;
+      var i3 = el3.length;
       while (i3--) {
-        a2 = el2[i3];
+        a2 = el3[i3];
         var prefix = a2.prefix;
         if (prefix) {
           if (prefix === "xml") {
@@ -10228,15 +13605,15 @@ var require_sax = __commonJS({
       }
       var nsp = tagName.indexOf(":");
       if (nsp > 0) {
-        prefix = el2.prefix = tagName.slice(0, nsp);
-        localName = el2.localName = tagName.slice(nsp + 1);
+        prefix = el3.prefix = tagName.slice(0, nsp);
+        localName = el3.localName = tagName.slice(nsp + 1);
       } else {
         prefix = null;
-        localName = el2.localName = tagName;
+        localName = el3.localName = tagName;
       }
-      var ns2 = el2.uri = currentNSMap[prefix || ""];
-      domBuilder.startElement(ns2, localName, tagName, el2);
-      if (el2.closed) {
+      var ns2 = el3.uri = currentNSMap[prefix || ""];
+      domBuilder.startElement(ns2, localName, tagName, el3);
+      if (el3.closed) {
         domBuilder.endElement(ns2, localName, tagName);
         if (localNSMap) {
           for (prefix in localNSMap) {
@@ -10246,8 +13623,8 @@ var require_sax = __commonJS({
           }
         }
       } else {
-        el2.currentNSMap = currentNSMap;
-        el2.localNSMap = localNSMap;
+        el3.currentNSMap = currentNSMap;
+        el3.localNSMap = localNSMap;
         return true;
       }
     }
@@ -10495,11 +13872,11 @@ var require_dom_parser = __commonJS({
       },
       startElement: function(namespaceURI, localName, qName, attrs) {
         var doc = this.doc;
-        var el2 = doc.createElementNS(namespaceURI, qName || localName);
+        var el3 = doc.createElementNS(namespaceURI, qName || localName);
         var len = attrs.length;
-        appendElement(this, el2);
-        this.currentElement = el2;
-        this.locator && position(this.locator, el2);
+        appendElement(this, el3);
+        this.currentElement = el3;
+        this.locator && position(this.locator, el3);
         for (var i3 = 0; i3 < len; i3++) {
           var namespaceURI = attrs.getURI(i3);
           var value = attrs.getValue(i3);
@@ -10507,7 +13884,7 @@ var require_dom_parser = __commonJS({
           var attr = doc.createAttributeNS(namespaceURI, qName);
           this.locator && position(attrs.getLocator(i3), attr);
           attr.value = attr.nodeValue = value;
-          el2.setAttributeNode(attr);
+          el3.setAttributeNode(attr);
         }
       },
       endElement: function(namespaceURI, localName, qName) {
@@ -13272,7 +16649,7 @@ var require_office_xml_reader = __commonJS({
     var _3 = require_underscore_umd();
     var promises = require_promises();
     var xml = require_xml();
-    exports.read = read;
+    exports.read = read2;
     exports.readXmlFromZipFile = readXmlFromZipFile;
     var xmlNamespaceMap = {
       // Transitional format
@@ -13297,14 +16674,14 @@ var require_office_xml_reader = __commonJS({
       // https://learn.microsoft.com/en-us/openspecs/office_standards/ms-docx/b839fe1f-e1ca-4fa6-8c26-5954d0abbccd
       "http://schemas.microsoft.com/office/word/2010/wordml": "wordml"
     };
-    function read(xmlString) {
+    function read2(xmlString) {
       return xml.readString(xmlString, xmlNamespaceMap).then(function(document2) {
         return collapseAlternateContent(document2)[0];
       });
     }
     function readXmlFromZipFile(docxFile, path) {
       if (docxFile.exists(path)) {
-        return docxFile.read(path, "utf-8").then(stripUtf8Bom).then(read);
+        return docxFile.read(path, "utf-8").then(stripUtf8Bom).then(read2);
       } else {
         return promises.resolve(null);
       }
@@ -15413,8 +18790,8 @@ var require_numbering_xml = __commonJS({
     function readAbstractNums(root) {
       var abstractNums = /* @__PURE__ */ Object.create(null);
       root.getElementsByTagName("w:abstractNum").forEach(function(element) {
-        var id2 = element.attributes["w:abstractNumId"];
-        abstractNums[id2] = readAbstractNum(element);
+        var id3 = element.attributes["w:abstractNumId"];
+        abstractNums[id3] = readAbstractNum(element);
       });
       return abstractNums;
     }
@@ -15550,9 +18927,9 @@ var require_notes_reader = __commonJS({
         return type !== "continuationSeparator" && type !== "separator";
       }
       function readFootnoteElement(footnoteElement) {
-        var id2 = footnoteElement.attributes["w:id"];
+        var id3 = footnoteElement.attributes["w:id"];
         return bodyReader.readXmlElements(footnoteElement.children).map(function(body) {
-          return documents.Note({ noteType, noteId: id2, body });
+          return documents.Note({ noteType, noteId: id3, body });
         });
       }
       return readNotesXml;
@@ -15570,13 +18947,13 @@ var require_comments_reader = __commonJS({
         return Result.combine(element.getElementsByTagName("w:comment").map(readCommentElement));
       }
       function readCommentElement(element) {
-        var id2 = element.attributes["w:id"];
+        var id3 = element.attributes["w:id"];
         function readOptionalAttribute(name) {
           return (element.attributes[name] || "").trim() || null;
         }
         return bodyReader.readXmlElements(element.children).map(function(body) {
           return documents.comment({
-            commentId: id2,
+            commentId: id3,
             body,
             authorName: readOptionalAttribute("w:author"),
             authorInitials: readOptionalAttribute("w:initials")
@@ -15595,11 +18972,11 @@ var require_files = __commonJS({
     var promises = require_promises();
     exports.Files = Files;
     function Files() {
-      function read(uri) {
+      function read2(uri) {
         return promises.reject(new Error("could not open external image: '" + uri + "'\ncannot open linked files from a web browser"));
       }
       return {
-        read
+        read: read2
       };
     }
   }
@@ -15608,7 +18985,7 @@ var require_files = __commonJS({
 // node_modules/mammoth/lib/docx/docx-reader.js
 var require_docx_reader = __commonJS({
   "node_modules/mammoth/lib/docx/docx-reader.js"(exports) {
-    exports.read = read;
+    exports.read = read2;
     exports._findPartPaths = findPartPaths;
     var promises = require_promises();
     var documents = require_documents();
@@ -15624,7 +19001,7 @@ var require_docx_reader = __commonJS({
     var notesReader = require_notes_reader();
     var commentsReader = require_comments_reader();
     var Files = require_files().Files;
-    function read(docxFile, input, options) {
+    function read2(docxFile, input, options) {
       input = input || {};
       options = options || {};
       var files = new Files({
@@ -15932,7 +19309,7 @@ var require_ast = __commonJS({
 var require_simplify = __commonJS({
   "node_modules/mammoth/lib/html/simplify.js"(exports, module) {
     var _3 = require_underscore_umd();
-    var ast = require_ast();
+    var ast2 = require_ast();
     function simplify(nodes) {
       return collapse(removeEmpty(nodes));
     }
@@ -15952,7 +19329,7 @@ var require_simplify = __commonJS({
       forceWrite: identity
     };
     function collapseElement(node) {
-      return ast.elementWithTag(node.tag, collapse(node.children));
+      return ast2.elementWithTag(node.tag, collapse(node.children));
     }
     function identity(value) {
       return value;
@@ -15961,7 +19338,7 @@ var require_simplify = __commonJS({
       var lastChild = children[children.length - 1];
       if (child.type === "element" && !child.tag.fresh && lastChild && lastChild.type === "element" && child.tag.matchesElement(lastChild.tag)) {
         if (child.tag.separator) {
-          appendChild(lastChild.children, ast.text(child.tag.separator));
+          appendChild(lastChild.children, ast2.text(child.tag.separator));
         }
         child.children.forEach(function(grandChild) {
           appendChild(lastChild.children, grandChild);
@@ -15988,10 +19365,10 @@ var require_simplify = __commonJS({
     }
     function elementEmptier(element) {
       var children = removeEmpty(element.children);
-      if (children.length === 0 && !ast.isVoidElement(element)) {
+      if (children.length === 0 && !ast2.isVoidElement(element)) {
         return [];
       } else {
-        return [ast.elementWithTag(element.tag, children)];
+        return [ast2.elementWithTag(element.tag, children)];
       }
     }
     function textEmptier(node) {
@@ -16008,12 +19385,12 @@ var require_simplify = __commonJS({
 // node_modules/mammoth/lib/html/index.js
 var require_html = __commonJS({
   "node_modules/mammoth/lib/html/index.js"(exports) {
-    var ast = require_ast();
-    exports.freshElement = ast.freshElement;
-    exports.nonFreshElement = ast.nonFreshElement;
-    exports.elementWithTag = ast.elementWithTag;
-    exports.text = ast.text;
-    exports.forceWrite = ast.forceWrite;
+    var ast2 = require_ast();
+    exports.freshElement = ast2.freshElement;
+    exports.nonFreshElement = ast2.nonFreshElement;
+    exports.elementWithTag = ast2.elementWithTag;
+    exports.text = ast2.text;
+    exports.forceWrite = ast2.forceWrite;
     exports.simplify = require_simplify();
     function write(writer, nodes) {
       nodes.forEach(function(node) {
@@ -16030,7 +19407,7 @@ var require_html = __commonJS({
       }
     };
     function generateElementString(writer, node) {
-      if (ast.isVoidElement(node)) {
+      if (ast2.isVoidElement(node)) {
         writer.selfClosing(node.tag.tagName, node.tag.attributes);
       } else {
         writer.open(node.tag.tagName, node.tag.attributes);
@@ -16551,36 +19928,36 @@ var require_document_to_html = __commonJS({
         var nodes = function() {
           return convertElements(run2.children, messages, context);
         };
-        var paths = [];
+        var paths2 = [];
         if (run2.highlight !== null) {
           var path = findHtmlPath({ type: "highlight", color: run2.highlight });
           if (path) {
-            paths.push(path);
+            paths2.push(path);
           }
         }
         if (run2.isSmallCaps) {
-          paths.push(findHtmlPathForRunProperty("smallCaps"));
+          paths2.push(findHtmlPathForRunProperty("smallCaps"));
         }
         if (run2.isAllCaps) {
-          paths.push(findHtmlPathForRunProperty("allCaps"));
+          paths2.push(findHtmlPathForRunProperty("allCaps"));
         }
         if (run2.isStrikethrough) {
-          paths.push(findHtmlPathForRunProperty("strikethrough", "s"));
+          paths2.push(findHtmlPathForRunProperty("strikethrough", "s"));
         }
         if (run2.isUnderline) {
-          paths.push(findHtmlPathForRunProperty("underline"));
+          paths2.push(findHtmlPathForRunProperty("underline"));
         }
         if (run2.verticalAlignment === documents.verticalAlignment.subscript) {
-          paths.push(htmlPaths.element("sub", {}, { fresh: false }));
+          paths2.push(htmlPaths.element("sub", {}, { fresh: false }));
         }
         if (run2.verticalAlignment === documents.verticalAlignment.superscript) {
-          paths.push(htmlPaths.element("sup", {}, { fresh: false }));
+          paths2.push(htmlPaths.element("sup", {}, { fresh: false }));
         }
         if (run2.isItalic) {
-          paths.push(findHtmlPathForRunProperty("italic", "em"));
+          paths2.push(findHtmlPathForRunProperty("italic", "em"));
         }
         if (run2.isBold) {
-          paths.push(findHtmlPathForRunProperty("bold", "strong"));
+          paths2.push(findHtmlPathForRunProperty("bold", "strong"));
         }
         var stylePath = htmlPaths.empty;
         var style = findStyle(run2);
@@ -16589,8 +19966,8 @@ var require_document_to_html = __commonJS({
         } else if (run2.styleId) {
           messages.push(unrecognisedStyleWarning("run", run2));
         }
-        paths.push(stylePath);
-        paths.forEach(function(path2) {
+        paths2.push(stylePath);
+        paths2.forEach(function(path2) {
           nodes = path2.wrap.bind(path2, nodes);
         });
         return nodes();
@@ -19051,8 +22428,8 @@ var require_NewMDCT = __commonJS({
       ];
       var tantab_l = win[Encoder.SHORT_TYPE];
       var cx = win[Encoder.SHORT_TYPE];
-      var ca2 = win[Encoder.SHORT_TYPE];
-      var cs2 = win[Encoder.SHORT_TYPE];
+      var ca3 = win[Encoder.SHORT_TYPE];
+      var cs3 = win[Encoder.SHORT_TYPE];
       var order = [
         0,
         1,
@@ -19585,8 +22962,8 @@ var require_NewMDCT = __commonJS({
               if (type != Encoder.SHORT_TYPE && band != 0) {
                 for (var k4 = 7; k4 >= 0; --k4) {
                   var bu, bd2;
-                  bu = mdct_enc[mdct_encPos + k4] * ca2[20 + k4] + mdct_enc[mdct_encPos + -1 - k4] * cs2[28 + k4];
-                  bd2 = mdct_enc[mdct_encPos + k4] * cs2[28 + k4] - mdct_enc[mdct_encPos + -1 - k4] * ca2[20 + k4];
+                  bu = mdct_enc[mdct_encPos + k4] * ca3[20 + k4] + mdct_enc[mdct_encPos + -1 - k4] * cs3[28 + k4];
+                  bd2 = mdct_enc[mdct_encPos + k4] * cs3[28 + k4] - mdct_enc[mdct_encPos + -1 - k4] * ca3[20 + k4];
                   mdct_enc[mdct_encPos + -1 - k4] = bu;
                   mdct_enc[mdct_encPos + k4] = bd2;
                 }
@@ -19720,13 +23097,13 @@ var require_Encoder = __commonJS({
       var III_psy_ratio = require_III_psy_ratio();
       var FFTOFFSET = Encoder.FFTOFFSET;
       var MPG_MD_MS_LR = Encoder.MPG_MD_MS_LR;
-      var bs2 = null;
+      var bs3 = null;
       this.psy = null;
       var psy = null;
       var vbr = null;
       var qupvt = null;
       this.setModules = function(_bs, _psy, _qupvt, _vbr) {
-        bs2 = _bs;
+        bs3 = _bs;
         this.psy = _psy;
         psy = _psy;
         vbr = _vbr;
@@ -20000,8 +23377,8 @@ var require_Encoder = __commonJS({
           }
         }
         gfc.iteration_loop.iteration_loop(gfp, pe_use, ms_ener_ratio, masking);
-        bs2.format_bitstream(gfp);
-        mp3count = bs2.copy_buffer(gfc, mp3buf, mp3bufPos, mp3buf_size, 1);
+        bs3.format_bitstream(gfp);
+        mp3count = bs3.copy_buffer(gfc, mp3buf, mp3bufPos, mp3buf_size, 1);
         if (gfp.bWriteVbrTag)
           vbr.addVbrFrame(gfp);
         if (gfp.analysis && gfc.pinfo != null) {
@@ -20058,7 +23435,7 @@ var require_FFT = __commonJS({
       function fht(fz, fzPos, n2) {
         var tri = 0;
         var k4;
-        var fi;
+        var fi2;
         var gi;
         n2 <<= 1;
         var fn = fzPos + n2;
@@ -20071,18 +23448,18 @@ var require_FFT = __commonJS({
           k22 = k4 << 1;
           k32 = k22 + k1;
           k4 = k22 << 1;
-          fi = fzPos;
-          gi = fi + kx;
+          fi2 = fzPos;
+          gi = fi2 + kx;
           do {
             var f0, f1, f22, f3;
-            f1 = fz[fi + 0] - fz[fi + k1];
-            f0 = fz[fi + 0] + fz[fi + k1];
-            f3 = fz[fi + k22] - fz[fi + k32];
-            f22 = fz[fi + k22] + fz[fi + k32];
-            fz[fi + k22] = f0 - f22;
-            fz[fi + 0] = f0 + f22;
-            fz[fi + k32] = f1 - f3;
-            fz[fi + k1] = f1 + f3;
+            f1 = fz[fi2 + 0] - fz[fi2 + k1];
+            f0 = fz[fi2 + 0] + fz[fi2 + k1];
+            f3 = fz[fi2 + k22] - fz[fi2 + k32];
+            f22 = fz[fi2 + k22] + fz[fi2 + k32];
+            fz[fi2 + k22] = f0 - f22;
+            fz[fi2 + 0] = f0 + f22;
+            fz[fi2 + k32] = f1 - f3;
+            fz[fi2 + k1] = f1 + f3;
             f1 = fz[gi + 0] - fz[gi + k1];
             f0 = fz[gi + 0] + fz[gi + k1];
             f3 = Util2.SQRT2 * fz[gi + k32];
@@ -20092,45 +23469,45 @@ var require_FFT = __commonJS({
             fz[gi + k32] = f1 - f3;
             fz[gi + k1] = f1 + f3;
             gi += k4;
-            fi += k4;
-          } while (fi < fn);
+            fi2 += k4;
+          } while (fi2 < fn);
           c1 = costab[tri + 0];
           s1 = costab[tri + 1];
           for (i3 = 1; i3 < kx; i3++) {
             var c22, s22;
             c22 = 1 - 2 * s1 * s1;
             s22 = 2 * s1 * c1;
-            fi = fzPos + i3;
+            fi2 = fzPos + i3;
             gi = fzPos + k1 - i3;
             do {
               var a2, b3, g0, f0, f1, g1, f22, g22, f3, g3;
-              b3 = s22 * fz[fi + k1] - c22 * fz[gi + k1];
-              a2 = c22 * fz[fi + k1] + s22 * fz[gi + k1];
-              f1 = fz[fi + 0] - a2;
-              f0 = fz[fi + 0] + a2;
+              b3 = s22 * fz[fi2 + k1] - c22 * fz[gi + k1];
+              a2 = c22 * fz[fi2 + k1] + s22 * fz[gi + k1];
+              f1 = fz[fi2 + 0] - a2;
+              f0 = fz[fi2 + 0] + a2;
               g1 = fz[gi + 0] - b3;
               g0 = fz[gi + 0] + b3;
-              b3 = s22 * fz[fi + k32] - c22 * fz[gi + k32];
-              a2 = c22 * fz[fi + k32] + s22 * fz[gi + k32];
-              f3 = fz[fi + k22] - a2;
-              f22 = fz[fi + k22] + a2;
+              b3 = s22 * fz[fi2 + k32] - c22 * fz[gi + k32];
+              a2 = c22 * fz[fi2 + k32] + s22 * fz[gi + k32];
+              f3 = fz[fi2 + k22] - a2;
+              f22 = fz[fi2 + k22] + a2;
               g3 = fz[gi + k22] - b3;
               g22 = fz[gi + k22] + b3;
               b3 = s1 * f22 - c1 * g3;
               a2 = c1 * f22 + s1 * g3;
-              fz[fi + k22] = f0 - a2;
-              fz[fi + 0] = f0 + a2;
+              fz[fi2 + k22] = f0 - a2;
+              fz[fi2 + 0] = f0 + a2;
               fz[gi + k32] = g1 - b3;
               fz[gi + k1] = g1 + b3;
               b3 = c1 * g22 - s1 * f3;
               a2 = s1 * g22 + c1 * f3;
               fz[gi + k22] = g0 - a2;
               fz[gi + 0] = g0 + a2;
-              fz[fi + k32] = f1 - b3;
-              fz[fi + k1] = f1 + b3;
+              fz[fi2 + k32] = f1 - b3;
+              fz[fi2 + k1] = f1 + b3;
               gi += k4;
-              fi += k4;
-            } while (fi < fn);
+              fi2 += k4;
+            } while (fi2 < fn);
             c22 = c1;
             c1 = c22 * costab[tri + 0] - s1 * costab[tri + 1];
             s1 = c22 * costab[tri + 1] + s1 * costab[tri + 0];
@@ -20530,7 +23907,7 @@ var require_PsyModel = __commonJS({
         1.11084 * 1.11084,
         1.03826 * 1.03826
       ];
-      function mask_add(m1, m22, kk, b3, gfc, shortblock) {
+      function mask_add(m1, m22, kk2, b3, gfc, shortblock) {
         var ratio;
         if (m22 > m1) {
           if (m22 < m1 * ma_max_i2)
@@ -20554,9 +23931,9 @@ var require_PsyModel = __commonJS({
         }
         var i3 = 0 | Util2.FAST_LOG10_X(ratio, 16);
         if (shortblock != 0) {
-          m22 = gfc.ATH.cb_s[kk] * gfc.ATH.adjust;
+          m22 = gfc.ATH.cb_s[kk2] * gfc.ATH.adjust;
         } else {
-          m22 = gfc.ATH.cb_l[kk] * gfc.ATH.adjust;
+          m22 = gfc.ATH.cb_l[kk2] * gfc.ATH.adjust;
         }
         assert2(m22 >= 0);
         if (m1 < ma_max_m * m22) {
@@ -20812,23 +24189,23 @@ var require_PsyModel = __commonJS({
           var ebb = 0, m3 = 0;
           var n2 = gfc.numlines_s[b3];
           for (var i3 = 0; i3 < n2; ++i3, ++j2) {
-            var el2 = fftenergy_s[sblock][j2];
-            ebb += el2;
-            if (m3 < el2)
-              m3 = el2;
+            var el3 = fftenergy_s[sblock][j2];
+            ebb += el3;
+            if (m3 < el3)
+              m3 = el3;
           }
           eb[b3] = ebb;
         }
         assert2(b3 == gfc.npart_s);
         assert2(j2 == 129);
         for (j2 = b3 = 0; b3 < gfc.npart_s; b3++) {
-          var kk = gfc.s3ind_s[b3][0];
-          var ecb = gfc.s3_ss[j2++] * eb[kk];
-          ++kk;
-          while (kk <= gfc.s3ind_s[b3][1]) {
-            ecb += gfc.s3_ss[j2] * eb[kk];
+          var kk2 = gfc.s3ind_s[b3][0];
+          var ecb = gfc.s3_ss[j2++] * eb[kk2];
+          ++kk2;
+          while (kk2 <= gfc.s3ind_s[b3][1]) {
+            ecb += gfc.s3_ss[j2] * eb[kk2];
             ++j2;
-            ++kk;
+            ++kk2;
           }
           {
             var x2 = rpelev_s * gfc.nb_s1[chn][b3];
@@ -20900,21 +24277,21 @@ var require_PsyModel = __commonJS({
         130
         /* 255.8 */
       ];
-      function pecalc_s(mr, masking_lower) {
+      function pecalc_s(mr2, masking_lower) {
         var pe_s = 1236.28 / 4;
         for (var sb = 0; sb < Encoder.SBMAX_s - 1; sb++) {
           for (var sblock = 0; sblock < 3; sblock++) {
-            var thm = mr.thm.s[sb][sblock];
+            var thm = mr2.thm.s[sb][sblock];
             assert2(sb < regcoef_s.length);
             if (thm > 0) {
               var x2 = thm * masking_lower;
-              var en2 = mr.en.s[sb][sblock];
-              if (en2 > x2) {
-                if (en2 > x2 * 1e10) {
+              var en3 = mr2.en.s[sb][sblock];
+              if (en3 > x2) {
+                if (en3 > x2 * 1e10) {
                   pe_s += regcoef_s[sb] * (10 * LOG10);
                 } else {
                   assert2(x2 > 0);
-                  pe_s += regcoef_s[sb] * Util2.FAST_LOG10(en2 / x2);
+                  pe_s += regcoef_s[sb] * Util2.FAST_LOG10(en3 / x2);
                 }
               }
             }
@@ -20946,20 +24323,20 @@ var require_PsyModel = __commonJS({
         126.1
         /* 241.3 */
       ];
-      function pecalc_l(mr, masking_lower) {
+      function pecalc_l(mr2, masking_lower) {
         var pe_l = 1124.23 / 4;
         for (var sb = 0; sb < Encoder.SBMAX_l - 1; sb++) {
-          var thm = mr.thm.l[sb];
+          var thm = mr2.thm.l[sb];
           assert2(sb < regcoef_l.length);
           if (thm > 0) {
             var x2 = thm * masking_lower;
-            var en2 = mr.en.l[sb];
-            if (en2 > x2) {
-              if (en2 > x2 * 1e10) {
+            var en3 = mr2.en.l[sb];
+            if (en3 > x2) {
+              if (en3 > x2 * 1e10) {
                 pe_l += regcoef_l[sb] * (10 * LOG10);
               } else {
                 assert2(x2 > 0);
-                pe_l += regcoef_l[sb] * Util2.FAST_LOG10(en2 / x2);
+                pe_l += regcoef_l[sb] * Util2.FAST_LOG10(en3 / x2);
               }
             }
           }
@@ -20972,11 +24349,11 @@ var require_PsyModel = __commonJS({
           var ebb = 0, m3 = 0;
           var i3;
           for (i3 = 0; i3 < gfc.numlines_l[b3]; ++i3, ++j2) {
-            var el2 = fftenergy[j2];
-            assert2(el2 >= 0);
-            ebb += el2;
-            if (m3 < el2)
-              m3 = el2;
+            var el3 = fftenergy[j2];
+            assert2(el3 >= 0);
+            ebb += el3;
+            if (m3 < el3)
+              m3 = el3;
           }
           eb[b3] = ebb;
           max[b3] = m3;
@@ -21261,16 +24638,16 @@ var require_PsyModel = __commonJS({
           k4 = 0;
           {
             for (b3 = 0; b3 < gfc.npart_l; b3++) {
-              var kk = gfc.s3ind[b3][0];
-              var eb2 = eb_l[kk] * tab[mask_idx_l[kk]];
+              var kk2 = gfc.s3ind[b3][0];
+              var eb2 = eb_l[kk2] * tab[mask_idx_l[kk2]];
               var ecb = gfc.s3_ll[k4++] * eb2;
-              while (++kk <= gfc.s3ind[b3][1]) {
-                eb2 = eb_l[kk] * tab[mask_idx_l[kk]];
+              while (++kk2 <= gfc.s3ind[b3][1]) {
+                eb2 = eb_l[kk2] * tab[mask_idx_l[kk2]];
                 ecb = mask_add(
                   ecb,
                   gfc.s3_ll[k4++] * eb2,
-                  kk,
-                  kk - b3,
+                  kk2,
+                  kk2 - b3,
                   gfc,
                   0
                 );
@@ -21311,24 +24688,24 @@ var require_PsyModel = __commonJS({
           var ppe;
           var ppePos = 0;
           var type;
-          var mr;
+          var mr2;
           if (chn > 1) {
             ppe = percep_MS_entropy;
             ppePos = -2;
             type = Encoder.NORM_TYPE;
             if (blocktype_d[0] == Encoder.SHORT_TYPE || blocktype_d[1] == Encoder.SHORT_TYPE)
               type = Encoder.SHORT_TYPE;
-            mr = masking_MS_ratio[gr_out][chn - 2];
+            mr2 = masking_MS_ratio[gr_out][chn - 2];
           } else {
             ppe = percep_entropy;
             ppePos = 0;
             type = blocktype_d[chn];
-            mr = masking_ratio[gr_out][chn];
+            mr2 = masking_ratio[gr_out][chn];
           }
           if (type == Encoder.SHORT_TYPE)
-            ppe[ppePos + chn] = pecalc_s(mr, gfc.masking_lower);
+            ppe[ppePos + chn] = pecalc_s(mr2, gfc.masking_lower);
           else
-            ppe[ppePos + chn] = pecalc_l(mr, gfc.masking_lower);
+            ppe[ppePos + chn] = pecalc_l(mr2, gfc.masking_lower);
           if (gfp.analysis)
             gfc.pinfo.pe[gr_out][chn] = ppe[ppePos + chn];
         }
@@ -21618,10 +24995,10 @@ var require_PsyModel = __commonJS({
           var ebb = 0, m3 = 0;
           var n2 = gfc.numlines_s[b3];
           for (i3 = 0; i3 < n2; ++i3, ++j2) {
-            var el2 = fftenergy_s[sblock][j2];
-            ebb += el2;
-            if (m3 < el2)
-              m3 = el2;
+            var el3 = fftenergy_s[sblock][j2];
+            ebb += el3;
+            if (m3 < el3)
+              m3 = el3;
           }
           eb[b3] = ebb;
           assert2(ebb >= 0);
@@ -21638,22 +25015,22 @@ var require_PsyModel = __commonJS({
         }
         psyvbr_calc_mask_index_s(gfc, max, avg, mask_idx_s);
         for (j2 = b3 = 0; b3 < gfc.npart_s; b3++) {
-          var kk = gfc.s3ind_s[b3][0];
+          var kk2 = gfc.s3ind_s[b3][0];
           var last = gfc.s3ind_s[b3][1];
           var dd2, dd_n;
           var x2, ecb, avg_mask;
-          dd2 = mask_idx_s[kk];
+          dd2 = mask_idx_s[kk2];
           dd_n = 1;
-          ecb = gfc.s3_ss[j2] * eb[kk] * tab[mask_idx_s[kk]];
+          ecb = gfc.s3_ss[j2] * eb[kk2] * tab[mask_idx_s[kk2]];
           ++j2;
-          ++kk;
-          while (kk <= last) {
-            dd2 += mask_idx_s[kk];
+          ++kk2;
+          while (kk2 <= last) {
+            dd2 += mask_idx_s[kk2];
             dd_n += 1;
-            x2 = gfc.s3_ss[j2] * eb[kk] * tab[mask_idx_s[kk]];
-            ecb = vbrpsy_mask_add(ecb, x2, kk - b3);
+            x2 = gfc.s3_ss[j2] * eb[kk2] * tab[mask_idx_s[kk2]];
+            ecb = vbrpsy_mask_add(ecb, x2, kk2 - b3);
             ++j2;
-            ++kk;
+            ++kk2;
           }
           dd2 = (1 + 2 * dd2) / (2 * dd_n);
           avg_mask = tab[dd2] * 0.5;
@@ -21694,22 +25071,22 @@ var require_PsyModel = __commonJS({
         var k4 = 0;
         for (b3 = 0; b3 < gfc.npart_l; b3++) {
           var x2, ecb, avg_mask, t2;
-          var kk = gfc.s3ind[b3][0];
+          var kk2 = gfc.s3ind[b3][0];
           var last = gfc.s3ind[b3][1];
           var dd2 = 0, dd_n = 0;
-          dd2 = mask_idx_l[kk];
+          dd2 = mask_idx_l[kk2];
           dd_n += 1;
-          ecb = gfc.s3_ll[k4] * eb_l[kk] * tab[mask_idx_l[kk]];
+          ecb = gfc.s3_ll[k4] * eb_l[kk2] * tab[mask_idx_l[kk2]];
           ++k4;
-          ++kk;
-          while (kk <= last) {
-            dd2 += mask_idx_l[kk];
+          ++kk2;
+          while (kk2 <= last) {
+            dd2 += mask_idx_l[kk2];
             dd_n += 1;
-            x2 = gfc.s3_ll[k4] * eb_l[kk] * tab[mask_idx_l[kk]];
-            t2 = vbrpsy_mask_add(ecb, x2, kk - b3);
+            x2 = gfc.s3_ll[k4] * eb_l[kk2] * tab[mask_idx_l[kk2]];
+            t2 = vbrpsy_mask_add(ecb, x2, kk2 - b3);
             ecb = t2;
             ++k4;
-            ++kk;
+            ++kk2;
           }
           dd2 = (1 + 2 * dd2) / (2 * dd_n);
           avg_mask = tab[dd2] * 0.5;
@@ -22033,24 +25410,24 @@ var require_PsyModel = __commonJS({
           var ppe;
           var ppePos;
           var type;
-          var mr;
+          var mr2;
           if (chn > 1) {
             ppe = percep_MS_entropy;
             ppePos = -2;
             type = Encoder.NORM_TYPE;
             if (blocktype_d[0] == Encoder.SHORT_TYPE || blocktype_d[1] == Encoder.SHORT_TYPE)
               type = Encoder.SHORT_TYPE;
-            mr = masking_MS_ratio[gr_out][chn - 2];
+            mr2 = masking_MS_ratio[gr_out][chn - 2];
           } else {
             ppe = percep_entropy;
             ppePos = 0;
             type = blocktype_d[chn];
-            mr = masking_ratio[gr_out][chn];
+            mr2 = masking_ratio[gr_out][chn];
           }
           if (type == Encoder.SHORT_TYPE) {
-            ppe[ppePos + chn] = pecalc_s(mr, gfc.masking_lower);
+            ppe[ppePos + chn] = pecalc_s(mr2, gfc.masking_lower);
           } else {
-            ppe[ppePos + chn] = pecalc_l(mr, gfc.masking_lower);
+            ppe[ppePos + chn] = pecalc_l(mr2, gfc.masking_lower);
           }
           if (gfp.analysis) {
             gfc.pinfo.pe[gr_out][chn] = ppe[ppePos + chn];
@@ -22145,7 +25522,7 @@ var require_PsyModel = __commonJS({
         freq = freq * 1e-3;
         return 13 * Math.atan(0.76 * freq) + 3.5 * Math.atan(freq * freq / (7.5 * 7.5));
       }
-      function init_numline(numlines, bo2, bm2, bval, bval_width, mld, bo_w, sfreq, blksize, scalepos, deltafreq, sbmax) {
+      function init_numline(numlines, bo3, bm2, bval, bval_width, mld, bo_w, sfreq, blksize, scalepos, deltafreq, sbmax) {
         var b_frq = new_float(Encoder.CBANDS + 1);
         var sample_freq_frac = sfreq / (sbmax > 15 ? 2 * 576 : 2 * 192);
         var partition = new_int(Encoder.HBLKSIZE);
@@ -22186,9 +25563,9 @@ var require_PsyModel = __commonJS({
           if (i22 > blksize / 2)
             i22 = blksize / 2;
           bm2[sfb] = (partition[i1] + partition[i22]) / 2;
-          bo2[sfb] = partition[i22];
+          bo3[sfb] = partition[i22];
           var f_tmp = sample_freq_frac * end;
-          bo_w[sfb] = (f_tmp - b_frq[bo2[sfb]]) / (b_frq[bo2[sfb] + 1] - b_frq[bo2[sfb]]);
+          bo_w[sfb] = (f_tmp - b_frq[bo3[sfb]]) / (b_frq[bo3[sfb] + 1] - b_frq[bo3[sfb]]);
           if (bo_w[sfb] < 0) {
             bo_w[sfb] = 0;
           } else {
@@ -28186,9 +31563,9 @@ var require_QuantizePVT = __commonJS({
               else
                 l2 = 0;
             }
-            var sl2 = new StartLine(j2);
-            noise = this.calc_noise_core(cod_info, sl2, l2, step);
-            j2 = sl2.s;
+            var sl3 = new StartLine(j2);
+            noise = this.calc_noise_core(cod_info, sl3, l2, step);
+            j2 = sl3.s;
             if (prev_noise != null) {
               prev_noise.step[sfb] = s3;
               prev_noise.noise[sfb] = noise;
@@ -29396,12 +32773,12 @@ var require_BitStream = __commonJS({
       var self2 = this;
       var CRC16_POLYNOMIAL = 32773;
       var MAX_LENGTH = 32;
-      var ga2 = null;
+      var ga3 = null;
       var mpg = null;
       var ver = null;
       var vbr = null;
       this.setModules = function(_ga, _mpg, _ver, _vbr) {
-        ga2 = _ga;
+        ga3 = _ga;
         mpg = _mpg;
         ver = _ver;
         vbr = _vbr;
@@ -29955,7 +33332,7 @@ var require_BitStream = __commonJS({
         gfc.ResvSize = 0;
         l3_side.main_data_begin = 0;
         if (gfc.findReplayGain) {
-          var RadioGain = ga2.GetTitleGain(gfc.rgdata);
+          var RadioGain = ga3.GetTitleGain(gfc.rgdata);
           assert2(NEQ(RadioGain, GainAnalysis.GAIN_NOT_ENOUGH_SAMPLES));
           gfc.RadioGain = Math.floor(RadioGain * 10 + 0.5) | 0;
         }
@@ -30077,7 +33454,7 @@ var require_BitStream = __commonJS({
                     }
                 }
                 if (gfc.findReplayGain) {
-                  if (ga2.AnalyzeSamples(
+                  if (ga3.AnalyzeSamples(
                     gfc.rgdata,
                     pcm_buf[0],
                     0,
@@ -30158,11 +33535,11 @@ var require_Lame = __commonJS({
       Lame3.MEDIUM_FAST = 1007;
       var LAME_MAXMP3BUFFER = 16384 + LAME_MAXALBUMART;
       Lame3.LAME_MAXMP3BUFFER = LAME_MAXMP3BUFFER;
-      var ga2;
-      var bs2;
+      var ga3;
+      var bs3;
       var p3;
       var qupvt;
-      var qu2;
+      var qu3;
       var psy = new PsyModel();
       var vbr;
       var ver;
@@ -30170,16 +33547,16 @@ var require_Lame = __commonJS({
       var mpglib;
       this.enc = new Encoder();
       this.setModules = function(_ga, _bs, _p, _qupvt, _qu, _vbr, _ver, _id3, _mpglib) {
-        ga2 = _ga;
-        bs2 = _bs;
+        ga3 = _ga;
+        bs3 = _bs;
         p3 = _p;
         qupvt = _qupvt;
-        qu2 = _qu;
+        qu3 = _qu;
         vbr = _vbr;
         ver = _ver;
         id3 = _id3;
         mpglib = _mpglib;
-        this.enc.setModules(bs2, psy, qupvt, vbr);
+        this.enc.setModules(bs3, psy, qupvt, vbr);
       };
       function PSY() {
         this.mask_adjust = 0;
@@ -30798,7 +34175,7 @@ var require_Lame = __commonJS({
         if (gfc.decode_on_the_fly)
           gfc.findPeakSample = true;
         if (gfc.findReplayGain) {
-          if (ga2.InitGainAnalysis(gfc.rgdata, gfp.out_samplerate) == GainAnalysis.INIT_GAIN_ANALYSIS_ERROR) {
+          if (ga3.InitGainAnalysis(gfc.rgdata, gfp.out_samplerate) == GainAnalysis.INIT_GAIN_ANALYSIS_ERROR) {
             gfp.internal_flags = null;
             return -6;
           }
@@ -30902,7 +34279,7 @@ var require_Lame = __commonJS({
           gfp.bWriteVbrTag = false;
         if (gfc.pinfo != null)
           gfp.bWriteVbrTag = false;
-        bs2.init_bit_stream_w(gfc);
+        bs3.init_bit_stream_w(gfc);
         var j2 = gfc.samplerate_index + 3 * gfp.version + 6 * (gfp.out_samplerate < 16e3 ? 1 : 0);
         for (var i3 = 0; i3 < Encoder.SBMAX_l + 1; i3++)
           gfc.scalefac_band.l[i3] = qupvt.sfBandIndex[j2].l[i3];
@@ -30958,7 +34335,7 @@ var require_Lame = __commonJS({
               gfc.sfb21_extra = false;
             else
               gfc.sfb21_extra = gfp.out_samplerate > 44e3;
-            gfc.iteration_loop = new VBRNewIterationLoop(qu2);
+            gfc.iteration_loop = new VBRNewIterationLoop(qu3);
             break;
           }
           case VbrMode.vbr_rh: {
@@ -30973,7 +34350,7 @@ var require_Lame = __commonJS({
               gfp.quality = 6;
             if (gfp.quality < 0)
               gfp.quality = LAME_DEFAULT_QUALITY;
-            gfc.iteration_loop = new VBROldIterationLoop(qu2);
+            gfc.iteration_loop = new VBROldIterationLoop(qu3);
             break;
           }
           default: {
@@ -30989,9 +34366,9 @@ var require_Lame = __commonJS({
             gfc.PSY.mask_adjust = gfp.maskingadjust;
             gfc.PSY.mask_adjust_short = gfp.maskingadjust_short;
             if (vbrmode == VbrMode.vbr_off) {
-              gfc.iteration_loop = new CBRNewIterationLoop(qu2);
+              gfc.iteration_loop = new CBRNewIterationLoop(qu3);
             } else {
-              gfc.iteration_loop = new ABRIterationLoop(qu2);
+              gfc.iteration_loop = new ABRIterationLoop(qu3);
             }
             break;
           }
@@ -31149,8 +34526,8 @@ var require_Lame = __commonJS({
         mp3buffer_size_remaining = mp3buffer_size - mp3count;
         if (mp3buffer_size == 0)
           mp3buffer_size_remaining = 0;
-        bs2.flush_bitstream(gfp);
-        imp3 = bs2.copy_buffer(
+        bs3.flush_bitstream(gfp);
+        imp3 = bs3.copy_buffer(
           gfc,
           mp3buffer,
           mp3bufferPos,
@@ -31167,7 +34544,7 @@ var require_Lame = __commonJS({
           mp3buffer_size_remaining = 0;
         if (gfp.write_id3tag_automatic) {
           id3.id3tag_write_v1(gfp);
-          imp3 = bs2.copy_buffer(
+          imp3 = bs3.copy_buffer(
             gfc,
             mp3buffer,
             mp3bufferPos,
@@ -31222,7 +34599,7 @@ var require_Lame = __commonJS({
           return -3;
         if (nsamples == 0)
           return 0;
-        mp3out = bs2.copy_buffer(gfc, mp3buf, mp3bufPos, mp3buf_size, 0);
+        mp3out = bs3.copy_buffer(gfc, mp3buf, mp3bufPos, mp3buf_size, 0);
         if (mp3out < 0)
           return mp3out;
         mp3bufPos += mp3out;
@@ -31274,7 +34651,7 @@ var require_Lame = __commonJS({
           n_in = inOut.n_in;
           n_out = inOut.n_out;
           if (gfc.findReplayGain && !gfc.decode_on_the_fly) {
-            if (ga2.AnalyzeSamples(
+            if (ga3.AnalyzeSamples(
               gfc.rgdata,
               mfbuf[0],
               gfc.mf_size,
@@ -31430,12 +34807,12 @@ var require_Lame = __commonJS({
         }
         return k4;
       }
-      function fill_buffer(gfp, mfbuf, in_buffer, in_bufferPos, nsamples, io2) {
+      function fill_buffer(gfp, mfbuf, in_buffer, in_bufferPos, nsamples, io3) {
         var gfc = gfp.internal_flags;
         if (gfc.resample_ratio < 0.9999 || gfc.resample_ratio > 1.0001) {
           for (var ch2 = 0; ch2 < gfc.channels_out; ch2++) {
             var numUsed = new NumUsed();
-            io2.n_out = fill_buffer_resample(
+            io3.n_out = fill_buffer_resample(
               gfp,
               mfbuf[ch2],
               gfc.mf_size,
@@ -31446,12 +34823,12 @@ var require_Lame = __commonJS({
               numUsed,
               ch2
             );
-            io2.n_in = numUsed.num_used;
+            io3.n_in = numUsed.num_used;
           }
         } else {
-          io2.n_out = Math.min(gfp.framesize, nsamples);
-          io2.n_in = io2.n_out;
-          for (var i3 = 0; i3 < io2.n_out; ++i3) {
+          io3.n_out = Math.min(gfp.framesize, nsamples);
+          io3.n_in = io3.n_out;
+          for (var i3 = 0; i3 < io3.n_out; ++i3) {
             mfbuf[0][gfc.mf_size + i3] = in_buffer[0][in_bufferPos + i3];
             if (gfc.channels_out == 2)
               mfbuf[1][gfc.mf_size + i3] = in_buffer[1][in_bufferPos + i3];
@@ -31499,7 +34876,7 @@ var require_Presets = __commonJS({
         this.sfb21mod = mod;
         this.msfix = fix;
       }
-      function ABRPresets(kbps, comp, compS, joint, fix, shThreshold, shThresholdS, bass, sc2, mask, lower, curve, interCh, sfScale) {
+      function ABRPresets(kbps, comp, compS, joint, fix, shThreshold, shThresholdS, bass, sc3, mask, lower, curve, interCh, sfScale) {
         this.quant_comp = comp;
         this.quant_comp_s = compS;
         this.safejoint = joint;
@@ -31507,7 +34884,7 @@ var require_Presets = __commonJS({
         this.st_lrm = shThreshold;
         this.st_s = shThresholdS;
         this.nsbass = bass;
-        this.scale = sc2;
+        this.scale = sc3;
         this.masking_adj = mask;
         this.ath_lower = lower;
         this.ath_curve = curve;
@@ -31911,21 +35288,21 @@ var require_Quantize = __commonJS({
     var GrInfo = require_GrInfo();
     var L3Side2 = require_L3Side();
     function Quantize() {
-      var bs2;
+      var bs3;
       this.rv = null;
       var rv;
       this.qupvt = null;
       var qupvt;
       var vbr = new VBRQuantize();
-      var tk;
+      var tk2;
       this.setModules = function(_bs, _rv, _qupvt, _tk) {
-        bs2 = _bs;
+        bs3 = _bs;
         rv = _rv;
         this.rv = _rv;
         qupvt = _qupvt;
         this.qupvt = _qupvt;
-        tk = _tk;
-        vbr.setModules(qupvt, tk);
+        tk2 = _tk;
+        vbr.setModules(qupvt, tk2);
       };
       this.ms_convert = function(l3_side, gr2) {
         for (var i3 = 0; i3 < 576; ++i3) {
@@ -32102,7 +35479,7 @@ var require_Quantize = __commonJS({
         assert2(CurrentStep != 0);
         for (; ; ) {
           var step;
-          nBits = tk.count_bits(gfc, xrpow, cod_info, null);
+          nBits = tk2.count_bits(gfc, xrpow, cod_info, null);
           if (CurrentStep == 1 || nBits == desired_rate)
             break;
           if (nBits > desired_rate) {
@@ -32134,7 +35511,7 @@ var require_Quantize = __commonJS({
         assert2(cod_info.global_gain < 256);
         while (nBits > desired_rate && cod_info.global_gain < 255) {
           cod_info.global_gain++;
-          nBits = tk.count_bits(gfc, xrpow, cod_info, null);
+          nBits = tk2.count_bits(gfc, xrpow, cod_info, null);
         }
         gfc.CurrentStep[ch2] = start - cod_info.global_gain >= 4 ? 4 : 2;
         gfc.OldValue[ch2] = cod_info.global_gain;
@@ -32190,7 +35567,7 @@ var require_Quantize = __commonJS({
               gi.l3_enc[j2 - width] = 0;
           } while (--width > 0);
         } while (++sfb < gi.psymax);
-        gi.part2_3_length = tk.noquant_count_bits(gfc, gi, null);
+        gi.part2_3_length = tk2.noquant_count_bits(gfc, gi, null);
       };
       function loop_break(cod_info) {
         for (var sfb = 0; sfb < cod_info.sfbmax; sfb++)
@@ -32402,9 +35779,9 @@ var require_Quantize = __commonJS({
         if (status2)
           return false;
         if (gfc.mode_gr == 2)
-          status2 = tk.scale_bitcount(cod_info);
+          status2 = tk2.scale_bitcount(cod_info);
         else
-          status2 = tk.scale_bitcount_lsf(gfc, cod_info);
+          status2 = tk2.scale_bitcount_lsf(gfc, cod_info);
         if (!status2)
           return true;
         if (gfc.noise_shaping > 1) {
@@ -32420,9 +35797,9 @@ var require_Quantize = __commonJS({
         }
         if (!status2) {
           if (gfc.mode_gr == 2)
-            status2 = tk.scale_bitcount(cod_info);
+            status2 = tk2.scale_bitcount(cod_info);
           else
-            status2 = tk.scale_bitcount_lsf(gfc, cod_info);
+            status2 = tk2.scale_bitcount_lsf(gfc, cod_info);
         }
         return !status2;
       }
@@ -32475,7 +35852,7 @@ var require_Quantize = __commonJS({
             var huff_bits = targ_bits - cod_info_w.part2_length;
             if (huff_bits <= 0)
               break;
-            while ((cod_info_w.part2_3_length = tk.count_bits(
+            while ((cod_info_w.part2_3_length = tk2.count_bits(
               gfc,
               xrpow,
               cod_info_w,
@@ -32485,7 +35862,7 @@ var require_Quantize = __commonJS({
             if (cod_info_w.global_gain > maxggain)
               break;
             if (best_noise_info.over_count == 0) {
-              while ((cod_info_w.part2_3_length = tk.count_bits(
+              while ((cod_info_w.part2_3_length = tk2.count_bits(
                 gfc,
                 xrpow,
                 cod_info_w,
@@ -32555,9 +35932,9 @@ var require_Quantize = __commonJS({
       this.iteration_finish_one = function(gfc, gr2, ch2) {
         var l3_side = gfc.l3_side;
         var cod_info = l3_side.tt[gr2][ch2];
-        tk.best_scalefac_store(gfc, gr2, ch2, l3_side);
+        tk2.best_scalefac_store(gfc, gr2, ch2, l3_side);
         if (gfc.use_best_huffman == 1)
-          tk.best_huffman_divide(gfc, cod_info);
+          tk2.best_huffman_divide(gfc, cod_info);
         rv.ResvAdjust(gfc, cod_info);
       };
       this.VBR_encode_granule = function(gfp, cod_info, l3_xmin, xrpow, ch2, min_bits, max_bits) {
@@ -32608,9 +35985,9 @@ var require_Quantize = __commonJS({
       this.get_framebits = function(gfp, frameBits) {
         var gfc = gfp.internal_flags;
         gfc.bitrate_index = gfc.VBR_min_bitrate;
-        var bitsPerFrame = bs2.getframebits(gfp);
+        var bitsPerFrame = bs3.getframebits(gfp);
         gfc.bitrate_index = 1;
-        bitsPerFrame = bs2.getframebits(gfp);
+        bitsPerFrame = bs3.getframebits(gfp);
         for (var i3 = 1; i3 <= gfc.VBR_max_bitrate; i3++) {
           gfc.bitrate_index = i3;
           var mb = new MeanBits(bitsPerFrame);
@@ -32753,7 +36130,7 @@ var require_Quantize = __commonJS({
         max_frame_bits[0] = rv.ResvFrameBegin(gfp, mb);
         mean_bits = mb.bits;
         gfc.bitrate_index = 1;
-        mean_bits = bs2.getframebits(gfp) - gfc.sideinfo_len * 8;
+        mean_bits = bs3.getframebits(gfp) - gfc.sideinfo_len * 8;
         analog_silence_bits[0] = mean_bits / (gfc.mode_gr * gfc.channels_out);
         mean_bits = gfp.VBR_mean_bitrate_kbps * gfp.framesize * 1e3;
         if ((gfc.substep_shaping & 1) != 0)
@@ -32833,15 +36210,15 @@ var require_Reservoir = __commonJS({
     var common = require_common();
     var assert2 = common.assert;
     function Reservoir() {
-      var bs2;
+      var bs3;
       this.setModules = function(_bs) {
-        bs2 = _bs;
+        bs3 = _bs;
       };
       this.ResvFrameBegin = function(gfp, mean_bits) {
         var gfc = gfp.internal_flags;
         var maxmp3buf;
         var l3_side = gfc.l3_side;
-        var frameLength = bs2.getframebits(gfp);
+        var frameLength = bs3.getframebits(gfp);
         mean_bits.bits = (frameLength - gfc.sideinfo_len * 8) / gfc.mode_gr;
         var resvLimit = 8 * 256 * gfc.mode_gr - 8;
         if (gfp.brate > 320) {
@@ -32982,11 +36359,11 @@ var require_VBRTag = __commonJS({
     VBRTag.MAXFRAMESIZE = 2880;
     function VBRTag() {
       var lame;
-      var bs2;
+      var bs3;
       var v3;
       this.setModules = function(_lame, _bs, _v) {
         lame = _lame;
-        bs2 = _bs;
+        bs3 = _bs;
         v3 = _v;
       };
       var FRAMES_FLAG = 1;
@@ -33480,7 +36857,7 @@ var require_VBRTag = __commonJS({
         setLameTagFrameHeader(gfp, buffer);
         var n2 = gfc.VBR_seek_table.TotalFrameSize;
         for (var i3 = 0; i3 < n2; ++i3) {
-          bs2.add_dummy_byte(gfp, buffer[i3] & 255, 1);
+          bs3.add_dummy_byte(gfp, buffer[i3] & 255, 1);
         }
       };
       function crcUpdateLookup(value, crc) {
@@ -33711,7 +37088,7 @@ var require_VBRTag = __commonJS({
         System.arraycopy(toc, 0, buffer, streamIndex, toc.length);
         streamIndex += toc.length;
         if (gfp.error_protection) {
-          bs2.CRC_writeheader(gfc, buffer);
+          bs3.CRC_writeheader(gfc, buffer);
         }
         var crc = 0;
         for (var i3 = 0; i3 < streamIndex; i3++)
@@ -33811,11 +37188,11 @@ var require_js = __commonJS({
       }
       var lame = new Lame3();
       var gaud = new GetAudio();
-      var ga2 = new GainAnalysis2();
-      var bs2 = new BitStream3();
+      var ga3 = new GainAnalysis2();
+      var bs3 = new BitStream3();
       var p3 = new Presets();
       var qupvt = new QuantizePVT();
-      var qu2 = new Quantize();
+      var qu3 = new Quantize();
       var vbr = new VBRTag();
       var ver = new Version();
       var id3 = new ID3Tag();
@@ -33823,15 +37200,15 @@ var require_js = __commonJS({
       var tak = new Takehiro();
       var parse = new Parse();
       var mpg = new MPGLib();
-      lame.setModules(ga2, bs2, p3, qupvt, qu2, vbr, ver, id3, mpg);
-      bs2.setModules(ga2, mpg, ver, vbr);
-      id3.setModules(bs2, ver);
+      lame.setModules(ga3, bs3, p3, qupvt, qu3, vbr, ver, id3, mpg);
+      bs3.setModules(ga3, mpg, ver, vbr);
+      id3.setModules(bs3, ver);
       p3.setModules(lame);
-      qu2.setModules(bs2, rv, qupvt, tak);
+      qu3.setModules(bs3, rv, qupvt, tak);
       qupvt.setModules(tak, rv, lame.enc.psy);
-      rv.setModules(bs2);
+      rv.setModules(bs3);
       tak.setModules(qupvt);
-      vbr.setModules(lame, bs2, ver);
+      vbr.setModules(lame, bs3, ver);
       gaud.setModules(parse, mpg);
       parse.setModules(ver, id3, p3);
       var gfp = lame.lame_init();
@@ -35766,11 +39143,11 @@ var Ia = U(() => {
     });
     var S2 = console.log.bind(console), $4 = console.error.bind(console), v3 = S2, x2 = $4;
     Object.assign(n2, b3), b3 = null;
-    var T2, E2, I2, z2, O2, D2, L2, q3, Q2, W2, Z2, we, H2, j2 = n2.wasmBinary, te2 = false, X2 = (s3) => s3.startsWith("file://");
+    var T2, E2, I2, z2, O2, D2, L2, q3, Q2, W2, Z2, we, H2, j2 = n2.wasmBinary, te3 = false, X2 = (s3) => s3.startsWith("file://");
     function ue() {
       return T2.buffer != z2.buffer && Ce2(), z2;
     }
-    function he() {
+    function he2() {
       return T2.buffer != z2.buffer && Ce2(), O2;
     }
     function ye() {
@@ -35785,7 +39162,7 @@ var Ia = U(() => {
     function V2() {
       return T2.buffer != z2.buffer && Ce2(), Q2;
     }
-    function de() {
+    function de2() {
       return T2.buffer != z2.buffer && Ce2(), W2;
     }
     function ze() {
@@ -35843,10 +39220,10 @@ var Ia = U(() => {
       }
     }
     function dt(s3) {
-      throw x2(s3 = "Aborted(" + s3 + ")"), te2 = true, s3 = new WebAssembly.RuntimeError(s3 + ". Build with -sASSERTIONS for more info."), r2(s3), s3;
+      throw x2(s3 = "Aborted(" + s3 + ")"), te3 = true, s3 = new WebAssembly.RuntimeError(s3 + ". Build with -sASSERTIONS for more info."), r2(s3), s3;
     }
     function Oo() {
-      return { a: { L: yc, Aa: bc, b: $c, $: Go, A: qo, pa: jo, X: Zo, Z: Qo, qa: Yo, na: Xo, ga: Jo, ma: ei, J: ti, Y: ri, V: ni, oa: oi, W: ii, va: xc, E: Tc, Q: Ic, O: Ac, D: kc, u: Pc, r: zc, P: Oc, z: Vc, R: Wc, ja: Lc, T: Gc, aa: Hc, M: Fc, F: qc, ia: $n, sa: jc, t: Kc, Ba: Zc, w: Xc, o: Jc, l: tp, c: _n, n: rp, j: ip, v: ap, p: sp, f: up, s: dp, m: lp, e: cp, k: pp, i: mp, g: fp, d: hp, da: gp, ea: bp, fa: yp, ba: _i, ca: wi, N: vi, xa: wp, ua: xp, h: Sp, C: Tp, G: Ip, ta: vp, x: Cp, ra: Ap, U: Ep, q: _p, y: kp, K: Pp, S: zp, za: Op, ya: Bp, ka: Ti, la: Ii, _: hn, B: Ci, I: Ai, ha: Ei, H: ki, a: T2, wa: fn } };
+      return { a: { L: yc, Aa: bc, b: $c, $: Go, A: qo, pa: jo, X: Zo, Z: Qo, qa: Yo, na: Xo, ga: Jo, ma: ei, J: ti, Y: ri, V: ni, oa: oi, W: ii, va: xc, E: Tc, Q: Ic, O: Ac, D: kc, u: Pc, r: zc, P: Oc, z: Vc, R: Wc, ja: Lc, T: Gc, aa: Hc, M: Fc, F: qc, ia: $n, sa: jc, t: Kc, Ba: Zc, w: Xc, o: Jc, l: tp, c: _n, n: rp, j: ip, v: ap, p: sp, f: up, s: dp, m: lp, e: cp, k: pp, i: mp, g: fp, d: hp, da: gp, ea: bp, fa: yp, ba: _i, ca: wi, N: vi2, xa: wp, ua: xp, h: Sp, C: Tp, G: Ip, ta: vp, x: Cp, ra: Ap, U: Ep, q: _p, y: kp, K: Pp, S: zp, za: Op, ya: Bp, ka: Ti, la: Ii, _: hn, B: Ci, I: Ai, ha: Ei, H: ki, a: T2, wa: fn } };
     }
     var cn = { 829644: (s3, l2, h3, y3, w3) => {
       if (n2 === void 0 || !n2.Eb) return 1;
@@ -35856,7 +39233,7 @@ var Ia = U(() => {
         let A3 = s3.subarray(l2, l2 + h3);
         switch (w3) {
           case 0:
-            he().set(A3, y3 >>> 0);
+            he2().set(A3, y3 >>> 0);
             break;
           case 1:
             n2.mc ? n2.mc(y3, A3) : n2.bc(y3, A3);
@@ -35869,7 +39246,7 @@ var Ia = U(() => {
         return 4;
       }
     }, 830468: (s3, l2, h3) => {
-      n2.Ob(s3, he().subarray(l2 >>> 0, l2 + h3 >>> 0));
+      n2.Ob(s3, he2().subarray(l2 >>> 0, l2 + h3 >>> 0));
     }, 830532: () => n2.nc(), 830574: (s3) => {
       n2.Nb(s3);
     }, 830611: () => {
@@ -36079,7 +39456,7 @@ var Ia = U(() => {
     }, 843335: (s3) => {
       n2.jb("FastGelu", s3, void 0);
     }, 843391: (s3, l2, h3, y3, w3, A3, B2, R2, G3, K2, ae2, le, _e, ke2, Bt, Rp) => {
-      n2.jb("Conv", s3, { format: le ? "NHWC" : "NCHW", auto_pad: l2, dilations: h3 ? Array.from(C2().subarray(Number(h3) >>> 0, Number(y3) >>> 0)) : [], group: w3, kernel_shape: A3 ? Array.from(C2().subarray(Number(A3) >>> 0, Number(B2) >>> 0)) : [], pads: R2 ? Array.from(C2().subarray(Number(R2) >>> 0, Number(G3) >>> 0)) : [], strides: K2 ? Array.from(C2().subarray(Number(K2) >>> 0, Number(ae2) >>> 0)) : [], w_is_const: () => !!ue()[Number(_e) >>> 0], activation: Te(ke2), activation_params: Bt ? Array.from(de().subarray(Number(Bt) >>> 0, Number(Rp) >>> 0)) : [] });
+      n2.jb("Conv", s3, { format: le ? "NHWC" : "NCHW", auto_pad: l2, dilations: h3 ? Array.from(C2().subarray(Number(h3) >>> 0, Number(y3) >>> 0)) : [], group: w3, kernel_shape: A3 ? Array.from(C2().subarray(Number(A3) >>> 0, Number(B2) >>> 0)) : [], pads: R2 ? Array.from(C2().subarray(Number(R2) >>> 0, Number(G3) >>> 0)) : [], strides: K2 ? Array.from(C2().subarray(Number(K2) >>> 0, Number(ae2) >>> 0)) : [], w_is_const: () => !!ue()[Number(_e) >>> 0], activation: Te(ke2), activation_params: Bt ? Array.from(de2().subarray(Number(Bt) >>> 0, Number(Rp) >>> 0)) : [] });
     }, 843975: (s3) => {
       n2.jb("Gelu", s3, void 0);
     }, 844027: (s3, l2, h3, y3, w3, A3, B2, R2, G3) => {
@@ -36122,26 +39499,26 @@ var Ia = U(() => {
     var Bo = (s3) => {
       s3.terminate(), s3.onmessage = () => {
       };
-    }, mn = [], Do = (s3) => {
+    }, mn2 = [], Do = (s3) => {
       ct.length == 0 && (Wo(), Vo(ct[0]));
       var l2 = ct.pop();
       if (!l2) return 6;
       Gt.push(l2), wt[s3.Ab] = l2, l2.Ab = s3.Ab;
       var h3 = { Bb: "run", fc: s3.ec, Hb: s3.Hb, Ab: s3.Ab };
       return l2.postMessage(h3, s3.Mb), 0;
-    }, lt = 0, xe = (s3, l2, ...h3) => {
-      for (var y3 = 2 * h3.length, w3 = Pn(), A3 = kn(8 * y3), B2 = A3 >>> 3, R2 = 0; R2 < h3.length; R2++) {
+    }, lt2 = 0, xe = (s3, l2, ...h3) => {
+      for (var y3 = 2 * h3.length, w3 = Pn(), A3 = kn2(8 * y3), B2 = A3 >>> 3, R2 = 0; R2 < h3.length; R2++) {
         var G3 = h3[R2];
         typeof G3 == "bigint" ? (Z2[B2 + 2 * R2] = 1n, Z2[B2 + 2 * R2 + 1] = G3) : (Z2[B2 + 2 * R2] = 0n, ze()[B2 + 2 * R2 + 1 >>> 0] = G3);
       }
-      return s3 = Di(s3, 0, y3, A3, l2), mr(w3), s3;
+      return s3 = Di(s3, 0, y3, A3, l2), mr2(w3), s3;
     };
     function fn(s3) {
       if (u3) return xe(0, 1, s3);
-      if (I2 = s3, !(0 < lt)) {
+      if (I2 = s3, !(0 < lt2)) {
         for (var l2 of Gt) Bo(l2);
         for (l2 of ct) Bo(l2);
-        ct = [], Gt = [], wt = {}, te2 = true;
+        ct = [], Gt = [], wt = {}, te3 = true;
       }
       g3(0, new pn(s3));
     }
@@ -36183,9 +39560,9 @@ var Ia = U(() => {
     var _c = (s3) => {
       Ce2();
       var l2 = V2()[s3 + 52 >>> 2 >>> 0];
-      s3 = V2()[s3 + 56 >>> 2 >>> 0], Ni(l2, l2 - s3), mr(l2);
+      s3 = V2()[s3 + 56 >>> 2 >>> 0], Ni(l2, l2 - s3), mr2(l2);
     }, wc = (s3, l2) => {
-      lt = 0, s3 = Vi(s3, l2), 0 < lt ? I2 = s3 : En(s3);
+      lt2 = 0, s3 = Vi(s3, l2), 0 < lt2 ? I2 = s3 : En(s3);
     };
     class vc {
       constructor(l2) {
@@ -36220,7 +39597,7 @@ var Ia = U(() => {
         } else y3 += String.fromCharCode(w3);
       }
       return y3;
-    }, Te = (s3, l2) => (s3 >>>= 0) ? Fo(he(), s3, l2) : "";
+    }, Te = (s3, l2) => (s3 >>>= 0) ? Fo(he2(), s3, l2) : "";
     function qo(s3, l2, h3) {
       return u3 ? xe(3, 1, s3, l2, h3) : 0;
     }
@@ -36234,7 +39611,7 @@ var Ia = U(() => {
       }
       return l2;
     }, zt = (s3, l2, h3) => {
-      var y3 = he();
+      var y3 = he2();
       if (l2 >>>= 0, 0 < h3) {
         var w3 = l2;
         h3 = l2 + h3 - 1;
@@ -36297,25 +39674,25 @@ var Ia = U(() => {
     function ii(s3, l2, h3) {
       if (u3) return xe(15, 1, s3, l2, h3);
     }
-    var ai, pt, xc = () => dt(""), Ke = (s3) => {
-      for (var l2 = ""; he()[s3 >>> 0]; ) l2 += ai[he()[s3++ >>> 0]];
+    var ai, pt2, xc = () => dt(""), Ke = (s3) => {
+      for (var l2 = ""; he2()[s3 >>> 0]; ) l2 += ai[he2()[s3++ >>> 0]];
       return l2;
-    }, gn = {}, bn = {}, Sc = {};
-    function it(s3, l2, h3 = {}) {
+    }, gn2 = {}, bn2 = {}, Sc = {};
+    function it2(s3, l2, h3 = {}) {
       return function(y3, w3, A3 = {}) {
         var B2 = w3.name;
-        if (!y3) throw new pt(`type "${B2}" must have a positive integer typeid pointer`);
-        if (bn.hasOwnProperty(y3)) {
+        if (!y3) throw new pt2(`type "${B2}" must have a positive integer typeid pointer`);
+        if (bn2.hasOwnProperty(y3)) {
           if (A3.Sb) return;
-          throw new pt(`Cannot register type '${B2}' twice`);
+          throw new pt2(`Cannot register type '${B2}' twice`);
         }
-        bn[y3] = w3, delete Sc[y3], gn.hasOwnProperty(y3) && (w3 = gn[y3], delete gn[y3], w3.forEach((R2) => R2()));
+        bn2[y3] = w3, delete Sc[y3], gn2.hasOwnProperty(y3) && (w3 = gn2[y3], delete gn2[y3], w3.forEach((R2) => R2()));
       }(s3, l2, h3);
     }
-    var si = (s3, l2, h3) => {
+    var si2 = (s3, l2, h3) => {
       switch (l2) {
         case 1:
-          return h3 ? (y3) => ue()[y3 >>> 0] : (y3) => he()[y3 >>> 0];
+          return h3 ? (y3) => ue()[y3 >>> 0] : (y3) => he2()[y3 >>> 0];
         case 2:
           return h3 ? (y3) => ye()[y3 >>> 1 >>> 0] : (y3) => re2()[y3 >>> 1 >>> 0];
         case 4:
@@ -36327,19 +39704,19 @@ var Ia = U(() => {
       }
     };
     function Tc(s3, l2, h3) {
-      h3 >>>= 0, it(s3 >>>= 0, { name: l2 = Ke(l2 >>> 0), fromWireType: (y3) => y3, toWireType: function(y3, w3) {
+      h3 >>>= 0, it2(s3 >>>= 0, { name: l2 = Ke(l2 >>> 0), fromWireType: (y3) => y3, toWireType: function(y3, w3) {
         if (typeof w3 != "bigint" && typeof w3 != "number") throw w3 = w3 === null ? "null" : (y3 = typeof w3) == "object" || y3 === "array" || y3 === "function" ? w3.toString() : "" + w3, new TypeError(`Cannot convert "${w3}" to ${this.name}`);
         return typeof w3 == "number" && (w3 = BigInt(w3)), w3;
-      }, Cb: mt, readValueFromPointer: si(l2, h3, l2.indexOf("u") == -1), Db: null });
+      }, Cb: mt2, readValueFromPointer: si2(l2, h3, l2.indexOf("u") == -1), Db: null });
     }
-    var mt = 8;
+    var mt2 = 8;
     function Ic(s3, l2, h3, y3) {
-      it(s3 >>>= 0, { name: l2 = Ke(l2 >>> 0), fromWireType: function(w3) {
+      it2(s3 >>>= 0, { name: l2 = Ke(l2 >>> 0), fromWireType: function(w3) {
         return !!w3;
       }, toWireType: function(w3, A3) {
         return A3 ? h3 : y3;
-      }, Cb: mt, readValueFromPointer: function(w3) {
-        return this.fromWireType(he()[w3 >>> 0]);
+      }, Cb: mt2, readValueFromPointer: function(w3) {
+        return this.fromWireType(he2()[w3 >>> 0]);
       }, Db: null });
     }
     var yn = [], at = [];
@@ -36347,7 +39724,7 @@ var Ia = U(() => {
       9 < (s3 >>>= 0) && --at[s3 + 1] == 0 && (at[s3] = void 0, yn.push(s3));
     }
     var De = (s3) => {
-      if (!s3) throw new pt("Cannot use deleted val. handle = " + s3);
+      if (!s3) throw new pt2("Cannot use deleted val. handle = " + s3);
       return at[s3];
     }, Ve = (s3) => {
       switch (s3) {
@@ -36370,15 +39747,15 @@ var Ia = U(() => {
     var Cc = { name: "emscripten::val", fromWireType: (s3) => {
       var l2 = De(s3);
       return _n(s3), l2;
-    }, toWireType: (s3, l2) => Ve(l2), Cb: mt, readValueFromPointer: wn, Db: null };
+    }, toWireType: (s3, l2) => Ve(l2), Cb: mt2, readValueFromPointer: wn, Db: null };
     function Ac(s3) {
-      return it(s3 >>> 0, Cc);
+      return it2(s3 >>> 0, Cc);
     }
     var Ec = (s3, l2) => {
       switch (l2) {
         case 4:
           return function(h3) {
-            return this.fromWireType(de()[h3 >>> 2 >>> 0]);
+            return this.fromWireType(de2()[h3 >>> 2 >>> 0]);
           };
         case 8:
           return function(h3) {
@@ -36389,7 +39766,7 @@ var Ia = U(() => {
       }
     };
     function kc(s3, l2, h3) {
-      h3 >>>= 0, it(s3 >>>= 0, { name: l2 = Ke(l2 >>> 0), fromWireType: (y3) => y3, toWireType: (y3, w3) => w3, Cb: mt, readValueFromPointer: Ec(l2, h3), Db: null });
+      h3 >>>= 0, it2(s3 >>>= 0, { name: l2 = Ke(l2 >>> 0), fromWireType: (y3) => y3, toWireType: (y3, w3) => w3, Cb: mt2, readValueFromPointer: Ec(l2, h3), Db: null });
     }
     function Pc(s3, l2, h3, y3, w3) {
       if (s3 >>>= 0, h3 >>>= 0, l2 = Ke(l2 >>> 0), w3 === -1 && (w3 = 4294967295), w3 = (R2) => R2, y3 === 0) {
@@ -36401,7 +39778,7 @@ var Ia = U(() => {
       } : function(R2, G3) {
         return G3;
       };
-      it(s3, { name: l2, fromWireType: w3, toWireType: B2, Cb: mt, readValueFromPointer: si(l2, h3, y3 !== 0), Db: null });
+      it2(s3, { name: l2, fromWireType: w3, toWireType: B2, Cb: mt2, readValueFromPointer: si2(l2, h3, y3 !== 0), Db: null });
     }
     function zc(s3, l2, h3) {
       function y3(A3) {
@@ -36409,35 +39786,35 @@ var Ia = U(() => {
         return A3 = V2()[A3 + 4 >>> 2 >>> 0], new w3(ue().buffer, A3, B2);
       }
       var w3 = [Int8Array, Uint8Array, Int16Array, Uint16Array, Int32Array, Uint32Array, Float32Array, Float64Array, BigInt64Array, BigUint64Array][l2];
-      it(s3 >>>= 0, { name: h3 = Ke(h3 >>> 0), fromWireType: y3, Cb: mt, readValueFromPointer: y3 }, { Sb: true });
+      it2(s3 >>>= 0, { name: h3 = Ke(h3 >>> 0), fromWireType: y3, Cb: mt2, readValueFromPointer: y3 }, { Sb: true });
     }
     function Oc(s3, l2) {
-      it(s3 >>>= 0, { name: l2 = Ke(l2 >>> 0), fromWireType: function(h3) {
+      it2(s3 >>>= 0, { name: l2 = Ke(l2 >>> 0), fromWireType: function(h3) {
         for (var y3, w3 = V2()[h3 >>> 2 >>> 0], A3 = h3 + 4, B2 = A3, R2 = 0; R2 <= w3; ++R2) {
           var G3 = A3 + R2;
-          R2 != w3 && he()[G3 >>> 0] != 0 || (B2 = Te(B2, G3 - B2), y3 === void 0 ? y3 = B2 : (y3 += "\0", y3 += B2), B2 = G3 + 1);
+          R2 != w3 && he2()[G3 >>> 0] != 0 || (B2 = Te(B2, G3 - B2), y3 === void 0 ? y3 = B2 : (y3 += "\0", y3 += B2), B2 = G3 + 1);
         }
         return Qe(h3), y3;
       }, toWireType: function(h3, y3) {
         y3 instanceof ArrayBuffer && (y3 = new Uint8Array(y3));
         var w3 = typeof y3 == "string";
-        if (!(w3 || y3 instanceof Uint8Array || y3 instanceof Uint8ClampedArray || y3 instanceof Int8Array)) throw new pt("Cannot pass non-string to std::string");
+        if (!(w3 || y3 instanceof Uint8Array || y3 instanceof Uint8ClampedArray || y3 instanceof Int8Array)) throw new pt2("Cannot pass non-string to std::string");
         var A3 = w3 ? Ko(y3) : y3.length, B2 = pr(4 + A3 + 1), R2 = B2 + 4;
         if (V2()[B2 >>> 2 >>> 0] = A3, w3) zt(y3, R2, A3 + 1);
         else if (w3) for (w3 = 0; w3 < A3; ++w3) {
           var G3 = y3.charCodeAt(w3);
-          if (255 < G3) throw Qe(B2), new pt("String has UTF-16 code units that do not fit in 8 bits");
-          he()[R2 + w3 >>> 0] = G3;
+          if (255 < G3) throw Qe(B2), new pt2("String has UTF-16 code units that do not fit in 8 bits");
+          he2()[R2 + w3 >>> 0] = G3;
         }
-        else for (w3 = 0; w3 < A3; ++w3) he()[R2 + w3 >>> 0] = y3[w3];
+        else for (w3 = 0; w3 < A3; ++w3) he2()[R2 + w3 >>> 0] = y3[w3];
         return h3 !== null && h3.push(Qe, B2), B2;
-      }, Cb: mt, readValueFromPointer: wn, Db(h3) {
+      }, Cb: mt2, readValueFromPointer: wn, Db(h3) {
         Qe(h3);
       } });
     }
     var ui = typeof TextDecoder < "u" ? new TextDecoder("utf-16le") : void 0, Bc = (s3, l2) => {
       for (var h3 = s3 >> 1, y3 = h3 + l2 / 2; !(h3 >= y3) && re2()[h3 >>> 0]; ) ++h3;
-      if (32 < (h3 <<= 1) - s3 && ui) return ui.decode(he().slice(s3, h3));
+      if (32 < (h3 <<= 1) - s3 && ui) return ui.decode(he2().slice(s3, h3));
       for (h3 = "", y3 = 0; !(y3 >= l2 / 2); ++y3) {
         var w3 = ye()[s3 + 2 * y3 >>> 1 >>> 0];
         if (w3 == 0) break;
@@ -36479,22 +39856,22 @@ var Ia = U(() => {
     function Vc(s3, l2, h3) {
       if (s3 >>>= 0, l2 >>>= 0, h3 = Ke(h3 >>>= 0), l2 === 2) var y3 = Bc, w3 = Dc, A3 = Mc, B2 = (R2) => re2()[R2 >>> 1 >>> 0];
       else l2 === 4 && (y3 = Rc, w3 = Uc, A3 = Nc, B2 = (R2) => V2()[R2 >>> 2 >>> 0]);
-      it(s3, { name: h3, fromWireType: (R2) => {
+      it2(s3, { name: h3, fromWireType: (R2) => {
         for (var G3, K2 = V2()[R2 >>> 2 >>> 0], ae2 = R2 + 4, le = 0; le <= K2; ++le) {
           var _e = R2 + 4 + le * l2;
           le != K2 && B2(_e) != 0 || (ae2 = y3(ae2, _e - ae2), G3 === void 0 ? G3 = ae2 : (G3 += "\0", G3 += ae2), ae2 = _e + l2);
         }
         return Qe(R2), G3;
       }, toWireType: (R2, G3) => {
-        if (typeof G3 != "string") throw new pt(`Cannot pass non-string to C++ string type ${h3}`);
+        if (typeof G3 != "string") throw new pt2(`Cannot pass non-string to C++ string type ${h3}`);
         var K2 = A3(G3), ae2 = pr(4 + K2 + l2);
         return V2()[ae2 >>> 2 >>> 0] = K2 / l2, w3(G3, ae2 + 4, K2 + l2), R2 !== null && R2.push(Qe, ae2), ae2;
-      }, Cb: mt, readValueFromPointer: wn, Db(R2) {
+      }, Cb: mt2, readValueFromPointer: wn, Db(R2) {
         Qe(R2);
       } });
     }
     function Wc(s3, l2) {
-      it(s3 >>>= 0, { Tb: true, name: l2 = Ke(l2 >>> 0), Cb: 0, fromWireType: () => {
+      it2(s3 >>>= 0, { Tb: true, name: l2 = Ke(l2 >>> 0), Cb: 0, fromWireType: () => {
       }, toWireType: () => {
       } });
     }
@@ -36502,8 +39879,8 @@ var Ia = U(() => {
       An(s3 >>> 0, !a2, 1, !i3, 131072, false), No();
     }
     var vn = (s3) => {
-      if (!te2) try {
-        if (s3(), !(0 < lt)) try {
+      if (!te3) try {
+        if (s3(), !(0 < lt2)) try {
           u3 ? En(I2) : hn(I2);
         } catch (l2) {
           l2 instanceof pn || l2 == "unwind" || g3(0, l2);
@@ -36528,26 +39905,26 @@ var Ia = U(() => {
       return (l2 ? cn[l2] : Mp[s3])(...xn);
     }
     var Fc = () => {
-      lt = 0;
+      lt2 = 0;
     };
     function qc(s3) {
       s3 >>>= 0, u3 ? postMessage({ Bb: "cleanupThread", hc: s3 }) : Uo(wt[s3]);
     }
     function jc(s3) {
     }
-    var or = (s3, l2) => {
-      var h3 = bn[s3];
-      if (h3 === void 0) throw s3 = zi(s3), h3 = Ke(s3), Qe(s3), new pt(`${l2} has unknown type ${h3}`);
+    var or2 = (s3, l2) => {
+      var h3 = bn2[s3];
+      if (h3 === void 0) throw s3 = zi(s3), h3 = Ke(s3), Qe(s3), new pt2(`${l2} has unknown type ${h3}`);
       return h3;
     }, di = (s3, l2, h3) => {
       var y3 = [];
       return s3 = s3.toWireType(y3, h3), y3.length && (V2()[l2 >>> 2 >>> 0] = Ve(y3)), s3;
     };
     function Kc(s3, l2, h3) {
-      return l2 >>>= 0, h3 >>>= 0, s3 = De(s3 >>> 0), l2 = or(l2, "emval::as"), di(l2, h3, s3);
+      return l2 >>>= 0, h3 >>>= 0, s3 = De(s3 >>> 0), l2 = or2(l2, "emval::as"), di(l2, h3, s3);
     }
     function Zc(s3, l2) {
-      return l2 >>>= 0, s3 = De(s3 >>> 0), (l2 = or(l2, "emval::as")).toWireType(null, s3);
+      return l2 >>>= 0, s3 = De(s3 >>> 0), (l2 = or2(l2, "emval::as")).toWireType(null, s3);
     }
     var ir = (s3) => {
       try {
@@ -36555,19 +39932,19 @@ var Ia = U(() => {
       } catch (l2) {
         dt(l2);
       }
-    }, ft = 0, Ze = null, li = 0, ar = [], ci = {}, pi = {}, Qc = 0, Sn = null, Yc = [];
+    }, ft = 0, Ze = null, li2 = 0, ar2 = [], ci = {}, pi = {}, Qc = 0, Sn = null, Yc = [];
     function mi(s3) {
       return function(l2) {
-        if (!te2) {
+        if (!te3) {
           if (ft === 0) {
             var h3 = false, y3 = false;
             l2((w3 = 0) => {
-              if (!te2 && (li = w3, h3 = true, y3)) {
+              if (!te3 && (li2 = w3, h3 = true, y3)) {
                 ft = 2, ir(() => Gi(Ze)), typeof MainLoop < "u" && MainLoop.Pb && MainLoop.resume(), w3 = false;
                 try {
                   var A3 = function() {
                     var G3 = C2()[Ze + 8 >>> 2 >>> 0];
-                    return G3 = Y2[pi[G3]], --lt, G3();
+                    return G3 = Y2[pi[G3]], --lt2, G3();
                   }();
                 } catch (G3) {
                   A3 = G3, w3 = true;
@@ -36581,12 +39958,12 @@ var Ia = U(() => {
               }
             }), y3 = true, h3 || (ft = 1, Ze = function() {
               var w3 = pr(65548), A3 = w3 + 12;
-              V2()[w3 >>> 2 >>> 0] = A3, V2()[w3 + 4 >>> 2 >>> 0] = A3 + 65536, A3 = ar[0];
+              V2()[w3 >>> 2 >>> 0] = A3, V2()[w3 + 4 >>> 2 >>> 0] = A3 + 65536, A3 = ar2[0];
               var B2 = ci[A3];
               return B2 === void 0 && (B2 = Qc++, ci[A3] = B2, pi[B2] = A3), A3 = B2, C2()[w3 + 8 >>> 2 >>> 0] = A3, w3;
             }(), typeof MainLoop < "u" && MainLoop.Pb && MainLoop.pause(), ir(() => Wi(Ze)));
           } else ft === 2 ? (ft = 0, ir(Hi), Qe(Ze), Ze = null, Yc.forEach(vn)) : dt(`invalid state: ${ft}`);
-          return li;
+          return li2;
         }
       }((l2) => {
         s3().then(l2);
@@ -36598,28 +39975,28 @@ var Ia = U(() => {
         return Ve(l2);
       });
     }
-    var sr = [];
+    var sr2 = [];
     function Jc(s3, l2, h3, y3) {
-      return h3 >>>= 0, y3 >>>= 0, (s3 = sr[s3 >>> 0])(null, l2 = De(l2 >>> 0), h3, y3);
+      return h3 >>>= 0, y3 >>>= 0, (s3 = sr2[s3 >>> 0])(null, l2 = De(l2 >>> 0), h3, y3);
     }
-    var ep = {}, ur = (s3) => {
+    var ep = {}, ur2 = (s3) => {
       var l2 = ep[s3];
       return l2 === void 0 ? Ke(s3) : l2;
     };
     function tp(s3, l2, h3, y3, w3) {
-      return h3 >>>= 0, y3 >>>= 0, w3 >>>= 0, (s3 = sr[s3 >>> 0])(l2 = De(l2 >>> 0), l2[h3 = ur(h3)], y3, w3);
+      return h3 >>>= 0, y3 >>>= 0, w3 >>>= 0, (s3 = sr2[s3 >>> 0])(l2 = De(l2 >>> 0), l2[h3 = ur2(h3)], y3, w3);
     }
-    var fi = () => typeof globalThis == "object" ? globalThis : Function("return this")();
+    var fi2 = () => typeof globalThis == "object" ? globalThis : Function("return this")();
     function rp(s3) {
-      return (s3 >>>= 0) == 0 ? Ve(fi()) : (s3 = ur(s3), Ve(fi()[s3]));
+      return (s3 >>>= 0) == 0 ? Ve(fi2()) : (s3 = ur2(s3), Ve(fi2()[s3]));
     }
     var np = (s3) => {
-      var l2 = sr.length;
-      return sr.push(s3), l2;
+      var l2 = sr2.length;
+      return sr2.push(s3), l2;
     }, op = (s3, l2) => {
-      for (var h3 = Array(s3), y3 = 0; y3 < s3; ++y3) h3[y3] = or(V2()[l2 + 4 * y3 >>> 2 >>> 0], "parameter " + y3);
+      for (var h3 = Array(s3), y3 = 0; y3 < s3; ++y3) h3[y3] = or2(V2()[l2 + 4 * y3 >>> 2 >>> 0], "parameter " + y3);
       return h3;
-    }, hi = (s3, l2) => Object.defineProperty(l2, "name", { value: s3 });
+    }, hi2 = (s3, l2) => Object.defineProperty(l2, "name", { value: s3 });
     function ip(s3, l2, h3) {
       var y3 = (l2 = op(s3, l2 >>> 0)).shift();
       s3--;
@@ -36634,13 +40011,13 @@ var Ia = U(() => {
 `), s3 = function(ae2) {
         var le = Function;
         if (!(le instanceof Function)) throw new TypeError(`new_ called with constructor type ${typeof le} which is not a function`);
-        var _e = hi(le.name || "unknownFunctionName", function() {
+        var _e = hi2(le.name || "unknownFunctionName", function() {
         });
         return _e.prototype = le.prototype, _e = new _e(), (ae2 = le.apply(_e, ae2)) instanceof Object ? ae2 : _e;
-      }(R2)(...G3), h3 = `methodCaller<(${l2.map((ae2) => ae2.name).join(", ")}) => ${y3.name}>`, np(hi(h3, s3));
+      }(R2)(...G3), h3 = `methodCaller<(${l2.map((ae2) => ae2.name).join(", ")}) => ${y3.name}>`, np(hi2(h3, s3));
     }
     function ap(s3) {
-      return s3 = ur(s3 >>> 0), Ve(n2[s3]);
+      return s3 = ur2(s3 >>> 0), Ve(n2[s3]);
     }
     function sp(s3, l2) {
       return l2 >>>= 0, s3 = De(s3 >>> 0), l2 = De(l2), Ve(s3[l2]);
@@ -36657,7 +40034,7 @@ var Ia = U(() => {
       return Ve(l2);
     }
     function cp(s3) {
-      return Ve(ur(s3 >>> 0));
+      return Ve(ur2(s3 >>> 0));
     }
     function pp() {
       return Ve({});
@@ -36673,15 +40050,15 @@ var Ia = U(() => {
       l2 >>>= 0, h3 >>>= 0, s3 = De(s3 >>> 0), l2 = De(l2), h3 = De(h3), s3[l2] = h3;
     }
     function hp(s3, l2) {
-      return l2 >>>= 0, s3 = (s3 = or(s3 >>> 0, "_emval_take_value")).readValueFromPointer(l2), Ve(s3);
+      return l2 >>>= 0, s3 = (s3 = or2(s3 >>> 0, "_emval_take_value")).readValueFromPointer(l2), Ve(s3);
     }
     function gp(s3, l2) {
       s3 = -9007199254740992 > s3 || 9007199254740992 < s3 ? NaN : Number(s3), l2 >>>= 0, s3 = new Date(1e3 * s3), C2()[l2 >>> 2 >>> 0] = s3.getUTCSeconds(), C2()[l2 + 4 >>> 2 >>> 0] = s3.getUTCMinutes(), C2()[l2 + 8 >>> 2 >>> 0] = s3.getUTCHours(), C2()[l2 + 12 >>> 2 >>> 0] = s3.getUTCDate(), C2()[l2 + 16 >>> 2 >>> 0] = s3.getUTCMonth(), C2()[l2 + 20 >>> 2 >>> 0] = s3.getUTCFullYear() - 1900, C2()[l2 + 24 >>> 2 >>> 0] = s3.getUTCDay(), s3 = (s3.getTime() - Date.UTC(s3.getUTCFullYear(), 0, 1, 0, 0, 0, 0)) / 864e5 | 0, C2()[l2 + 28 >>> 2 >>> 0] = s3;
     }
-    var gi = (s3) => s3 % 4 == 0 && (s3 % 100 != 0 || s3 % 400 == 0), bi = [0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335], yi = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
+    var gi = (s3) => s3 % 4 == 0 && (s3 % 100 != 0 || s3 % 400 == 0), bi = [0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335], yi2 = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
     function bp(s3, l2) {
       s3 = -9007199254740992 > s3 || 9007199254740992 < s3 ? NaN : Number(s3), l2 >>>= 0, s3 = new Date(1e3 * s3), C2()[l2 >>> 2 >>> 0] = s3.getSeconds(), C2()[l2 + 4 >>> 2 >>> 0] = s3.getMinutes(), C2()[l2 + 8 >>> 2 >>> 0] = s3.getHours(), C2()[l2 + 12 >>> 2 >>> 0] = s3.getDate(), C2()[l2 + 16 >>> 2 >>> 0] = s3.getMonth(), C2()[l2 + 20 >>> 2 >>> 0] = s3.getFullYear() - 1900, C2()[l2 + 24 >>> 2 >>> 0] = s3.getDay();
-      var h3 = (gi(s3.getFullYear()) ? bi : yi)[s3.getMonth()] + s3.getDate() - 1 | 0;
+      var h3 = (gi(s3.getFullYear()) ? bi : yi2)[s3.getMonth()] + s3.getDate() - 1 | 0;
       C2()[l2 + 28 >>> 2 >>> 0] = h3, C2()[l2 + 36 >>> 2 >>> 0] = -60 * s3.getTimezoneOffset(), h3 = new Date(s3.getFullYear(), 6, 1).getTimezoneOffset();
       var y3 = new Date(s3.getFullYear(), 0, 1).getTimezoneOffset();
       s3 = 0 | (h3 != y3 && s3.getTimezoneOffset() == Math.min(y3, h3)), C2()[l2 + 32 >>> 2 >>> 0] = s3;
@@ -36689,7 +40066,7 @@ var Ia = U(() => {
     function yp(s3) {
       s3 >>>= 0;
       var l2 = new Date(C2()[s3 + 20 >>> 2 >>> 0] + 1900, C2()[s3 + 16 >>> 2 >>> 0], C2()[s3 + 12 >>> 2 >>> 0], C2()[s3 + 8 >>> 2 >>> 0], C2()[s3 + 4 >>> 2 >>> 0], C2()[s3 >>> 2 >>> 0], 0), h3 = C2()[s3 + 32 >>> 2 >>> 0], y3 = l2.getTimezoneOffset(), w3 = new Date(l2.getFullYear(), 6, 1).getTimezoneOffset(), A3 = new Date(l2.getFullYear(), 0, 1).getTimezoneOffset(), B2 = Math.min(A3, w3);
-      return 0 > h3 ? C2()[s3 + 32 >>> 2 >>> 0] = +(w3 != A3 && B2 == y3) : 0 < h3 != (B2 == y3) && (w3 = Math.max(A3, w3), l2.setTime(l2.getTime() + 6e4 * ((0 < h3 ? B2 : w3) - y3))), C2()[s3 + 24 >>> 2 >>> 0] = l2.getDay(), h3 = (gi(l2.getFullYear()) ? bi : yi)[l2.getMonth()] + l2.getDate() - 1 | 0, C2()[s3 + 28 >>> 2 >>> 0] = h3, C2()[s3 >>> 2 >>> 0] = l2.getSeconds(), C2()[s3 + 4 >>> 2 >>> 0] = l2.getMinutes(), C2()[s3 + 8 >>> 2 >>> 0] = l2.getHours(), C2()[s3 + 12 >>> 2 >>> 0] = l2.getDate(), C2()[s3 + 16 >>> 2 >>> 0] = l2.getMonth(), C2()[s3 + 20 >>> 2 >>> 0] = l2.getYear(), s3 = l2.getTime(), BigInt(isNaN(s3) ? -1 : s3 / 1e3);
+      return 0 > h3 ? C2()[s3 + 32 >>> 2 >>> 0] = +(w3 != A3 && B2 == y3) : 0 < h3 != (B2 == y3) && (w3 = Math.max(A3, w3), l2.setTime(l2.getTime() + 6e4 * ((0 < h3 ? B2 : w3) - y3))), C2()[s3 + 24 >>> 2 >>> 0] = l2.getDay(), h3 = (gi(l2.getFullYear()) ? bi : yi2)[l2.getMonth()] + l2.getDate() - 1 | 0, C2()[s3 + 28 >>> 2 >>> 0] = h3, C2()[s3 >>> 2 >>> 0] = l2.getSeconds(), C2()[s3 + 4 >>> 2 >>> 0] = l2.getMinutes(), C2()[s3 + 8 >>> 2 >>> 0] = l2.getHours(), C2()[s3 + 12 >>> 2 >>> 0] = l2.getDate(), C2()[s3 + 16 >>> 2 >>> 0] = l2.getMonth(), C2()[s3 + 20 >>> 2 >>> 0] = l2.getYear(), s3 = l2.getTime(), BigInt(isNaN(s3) ? -1 : s3 / 1e3);
     }
     function _i(s3, l2, h3, y3, w3, A3, B2) {
       return u3 ? xe(16, 1, s3, l2, h3, y3, w3, A3, B2) : -52;
@@ -36698,7 +40075,7 @@ var Ia = U(() => {
       if (u3) return xe(17, 1, s3, l2, h3, y3, w3, A3);
     }
     var Ht = {}, _p = () => performance.timeOrigin + performance.now();
-    function vi(s3, l2) {
+    function vi2(s3, l2) {
       if (u3) return xe(18, 1, s3, l2);
       if (Ht[s3] && (clearTimeout(Ht[s3].id), delete Ht[s3]), !l2) return 0;
       var h3 = setTimeout(() => {
@@ -36728,7 +40105,7 @@ var Ia = U(() => {
     }
     var Tn = [], $i = (s3, l2) => {
       Tn.length = 0;
-      for (var h3; h3 = he()[s3++ >>> 0]; ) {
+      for (var h3; h3 = he2()[s3++ >>> 0]; ) {
         var y3 = h3 != 105;
         l2 += (y3 &= h3 != 112) && l2 % 8 ? 4 : 0, Tn.push(h3 == 112 ? V2()[l2 >>> 2 >>> 0] : h3 == 106 ? Z2[l2 >>> 3] : h3 == 105 ? C2()[l2 >>> 2 >>> 0] : ze()[l2 >>> 3 >>> 0]), l2 += y3 ? 8 : 4;
       }
@@ -36746,7 +40123,7 @@ var Ia = U(() => {
       return x2(Te(s3 >>> 0, l2 >>> 0));
     }
     var Ap = () => {
-      throw lt += 1, "unwind";
+      throw lt2 += 1, "unwind";
     };
     function Ep() {
       return 4294901760;
@@ -36757,7 +40134,7 @@ var Ia = U(() => {
     }
     function zp(s3) {
       s3 >>>= 0;
-      var l2 = he().length;
+      var l2 = he2().length;
       if (s3 <= l2 || 4294901760 < s3) return false;
       for (var h3 = 1; 4 >= h3; h3 *= 2) {
         var y3 = l2 * (1 + 0.2 / h3);
@@ -36840,7 +40217,7 @@ var Ia = U(() => {
         var B2 = V2()[l2 >>> 2 >>> 0], R2 = V2()[l2 + 4 >>> 2 >>> 0];
         l2 += 8;
         for (var G3 = 0; G3 < R2; G3++) {
-          var K2 = he()[B2 + G3 >>> 0], ae2 = Dp[s3];
+          var K2 = he2()[B2 + G3 >>> 0], ae2 = Dp[s3];
           K2 === 0 || K2 === 10 ? ((s3 === 1 ? v3 : x2)(Fo(ae2)), ae2.length = 0) : ae2.push(K2);
         }
         w3 += R2;
@@ -36849,14 +40226,14 @@ var Ia = U(() => {
     }
     u3 || function() {
       for (var s3 = n2.numThreads - 1; s3--; ) Wo();
-      mn.unshift(() => {
+      mn2.unshift(() => {
         Pt++, function(l2) {
           u3 ? l2() : Promise.all(ct.map(Vo)).then(l2);
         }(() => zo());
       });
     }();
     for (var Pi = Array(256), lr = 0; 256 > lr; ++lr) Pi[lr] = String.fromCharCode(lr);
-    ai = Pi, pt = n2.BindingError = class extends Error {
+    ai = Pi, pt2 = n2.BindingError = class extends Error {
       constructor(s3) {
         super(s3), this.name = "BindingError";
       }
@@ -36865,17 +40242,17 @@ var Ia = U(() => {
         super(s3), this.name = "InternalError";
       }
     }, at.push(0, 1, void 0, 1, null, 1, true, 1, false, 1), n2.count_emval_handles = () => at.length / 2 - 5 - yn.length;
-    var Y2, Mp = [fn, Mo, Lo, qo, jo, Zo, Qo, Yo, Xo, Jo, ei, ti, ri, ni, oi, ii, _i, wi, vi, Ti, Ii, Ci, Ai, Ei, ki];
+    var Y2, Mp = [fn, Mo, Lo, qo, jo, Zo, Qo, Yo, Xo, Jo, ei, ti, ri, ni, oi, ii, _i, wi, vi2, Ti, Ii, Ci, Ai, Ei, ki];
     (async function() {
       function s3(y3, w3) {
         return Y2 = y3.exports, Y2 = function() {
           var A3 = Y2, B2 = {};
           for (let [R2, G3] of Object.entries(A3)) B2[R2] = typeof G3 == "function" ? (...K2) => {
-            ar.push(R2);
+            ar2.push(R2);
             try {
               return G3(...K2);
             } finally {
-              te2 || (ar.pop(), Ze && ft === 1 && ar.length === 0 && (ft = 0, lt += 1, ir(Li), typeof Fibers < "u" && Fibers.rc()));
+              te3 || (ar2.pop(), Ze && ft === 1 && ar2.length === 0 && (ft = 0, lt2 += 1, ir(Li), typeof Fibers < "u" && Fibers.rc()));
             }
           } : G3;
           return B2;
@@ -36935,8 +40312,8 @@ var Ia = U(() => {
     })();
     var zi = (s3) => (zi = Y2.Da)(s3), Oi = () => (Oi = Y2.Ea)();
     n2._OrtInit = (s3, l2) => (n2._OrtInit = Y2.Fa)(s3, l2), n2._OrtGetLastError = (s3, l2) => (n2._OrtGetLastError = Y2.Ga)(s3, l2), n2._OrtCreateSessionOptions = (s3, l2, h3, y3, w3, A3, B2, R2, G3, K2) => (n2._OrtCreateSessionOptions = Y2.Ha)(s3, l2, h3, y3, w3, A3, B2, R2, G3, K2), n2._OrtAppendExecutionProvider = (s3, l2, h3, y3, w3) => (n2._OrtAppendExecutionProvider = Y2.Ia)(s3, l2, h3, y3, w3), n2._OrtAddFreeDimensionOverride = (s3, l2, h3) => (n2._OrtAddFreeDimensionOverride = Y2.Ja)(s3, l2, h3), n2._OrtAddSessionConfigEntry = (s3, l2, h3) => (n2._OrtAddSessionConfigEntry = Y2.Ka)(s3, l2, h3), n2._OrtReleaseSessionOptions = (s3) => (n2._OrtReleaseSessionOptions = Y2.La)(s3), n2._OrtCreateSession = (s3, l2, h3) => (n2._OrtCreateSession = Y2.Ma)(s3, l2, h3), n2._OrtReleaseSession = (s3) => (n2._OrtReleaseSession = Y2.Na)(s3), n2._OrtGetInputOutputCount = (s3, l2, h3) => (n2._OrtGetInputOutputCount = Y2.Oa)(s3, l2, h3), n2._OrtGetInputOutputMetadata = (s3, l2, h3, y3) => (n2._OrtGetInputOutputMetadata = Y2.Pa)(s3, l2, h3, y3), n2._OrtFree = (s3) => (n2._OrtFree = Y2.Qa)(s3), n2._OrtCreateTensor = (s3, l2, h3, y3, w3, A3) => (n2._OrtCreateTensor = Y2.Ra)(s3, l2, h3, y3, w3, A3), n2._OrtGetTensorData = (s3, l2, h3, y3, w3) => (n2._OrtGetTensorData = Y2.Sa)(s3, l2, h3, y3, w3), n2._OrtReleaseTensor = (s3) => (n2._OrtReleaseTensor = Y2.Ta)(s3), n2._OrtCreateRunOptions = (s3, l2, h3, y3) => (n2._OrtCreateRunOptions = Y2.Ua)(s3, l2, h3, y3), n2._OrtAddRunConfigEntry = (s3, l2, h3) => (n2._OrtAddRunConfigEntry = Y2.Va)(s3, l2, h3), n2._OrtReleaseRunOptions = (s3) => (n2._OrtReleaseRunOptions = Y2.Wa)(s3), n2._OrtCreateBinding = (s3) => (n2._OrtCreateBinding = Y2.Xa)(s3), n2._OrtBindInput = (s3, l2, h3) => (n2._OrtBindInput = Y2.Ya)(s3, l2, h3), n2._OrtBindOutput = (s3, l2, h3, y3) => (n2._OrtBindOutput = Y2.Za)(s3, l2, h3, y3), n2._OrtClearBoundOutputs = (s3) => (n2._OrtClearBoundOutputs = Y2._a)(s3), n2._OrtReleaseBinding = (s3) => (n2._OrtReleaseBinding = Y2.$a)(s3), n2._OrtRunWithBinding = (s3, l2, h3, y3, w3) => (n2._OrtRunWithBinding = Y2.ab)(s3, l2, h3, y3, w3), n2._OrtRun = (s3, l2, h3, y3, w3, A3, B2, R2) => (n2._OrtRun = Y2.bb)(s3, l2, h3, y3, w3, A3, B2, R2), n2._OrtEndProfiling = (s3) => (n2._OrtEndProfiling = Y2.cb)(s3), n2._JsepOutput = (s3, l2, h3) => (n2._JsepOutput = Y2.db)(s3, l2, h3), n2._JsepGetNodeName = (s3) => (n2._JsepGetNodeName = Y2.eb)(s3);
-    var cr = () => (cr = Y2.fb)(), Qe = n2._free = (s3) => (Qe = n2._free = Y2.gb)(s3), pr = n2._malloc = (s3) => (pr = n2._malloc = Y2.hb)(s3), An = (s3, l2, h3, y3, w3, A3) => (An = Y2.kb)(s3, l2, h3, y3, w3, A3), Bi = () => (Bi = Y2.lb)(), Di = (s3, l2, h3, y3, w3) => (Di = Y2.mb)(s3, l2, h3, y3, w3), Mi = (s3) => (Mi = Y2.nb)(s3), En = (s3) => (En = Y2.ob)(s3), Ri = (s3, l2) => (Ri = Y2.pb)(s3, l2), Ui = () => (Ui = Y2.qb)(), Ni = (s3, l2) => (Ni = Y2.rb)(s3, l2), mr = (s3) => (mr = Y2.sb)(s3), kn = (s3) => (kn = Y2.tb)(s3), Pn = () => (Pn = Y2.ub)(), Vi = n2.dynCall_ii = (s3, l2) => (Vi = n2.dynCall_ii = Y2.vb)(s3, l2), Wi = (s3) => (Wi = Y2.wb)(s3), Li = () => (Li = Y2.xb)(), Gi = (s3) => (Gi = Y2.yb)(s3), Hi = () => (Hi = Y2.zb)();
-    return n2.stackSave = () => Pn(), n2.stackRestore = (s3) => mr(s3), n2.stackAlloc = (s3) => kn(s3), n2.setValue = function(s3, l2, h3 = "i8") {
+    var cr = () => (cr = Y2.fb)(), Qe = n2._free = (s3) => (Qe = n2._free = Y2.gb)(s3), pr = n2._malloc = (s3) => (pr = n2._malloc = Y2.hb)(s3), An = (s3, l2, h3, y3, w3, A3) => (An = Y2.kb)(s3, l2, h3, y3, w3, A3), Bi = () => (Bi = Y2.lb)(), Di = (s3, l2, h3, y3, w3) => (Di = Y2.mb)(s3, l2, h3, y3, w3), Mi = (s3) => (Mi = Y2.nb)(s3), En = (s3) => (En = Y2.ob)(s3), Ri = (s3, l2) => (Ri = Y2.pb)(s3, l2), Ui = () => (Ui = Y2.qb)(), Ni = (s3, l2) => (Ni = Y2.rb)(s3, l2), mr2 = (s3) => (mr2 = Y2.sb)(s3), kn2 = (s3) => (kn2 = Y2.tb)(s3), Pn = () => (Pn = Y2.ub)(), Vi = n2.dynCall_ii = (s3, l2) => (Vi = n2.dynCall_ii = Y2.vb)(s3, l2), Wi = (s3) => (Wi = Y2.wb)(s3), Li = () => (Li = Y2.xb)(), Gi = (s3) => (Gi = Y2.yb)(s3), Hi = () => (Hi = Y2.zb)();
+    return n2.stackSave = () => Pn(), n2.stackRestore = (s3) => mr2(s3), n2.stackAlloc = (s3) => kn2(s3), n2.setValue = function(s3, l2, h3 = "i8") {
       switch (h3.endsWith("*") && (h3 = "*"), h3) {
         case "i1":
         case "i8":
@@ -36952,7 +40329,7 @@ var Ia = U(() => {
           Z2[s3 >>> 3] = BigInt(l2);
           break;
         case "float":
-          de()[s3 >>> 2 >>> 0] = l2;
+          de2()[s3 >>> 2 >>> 0] = l2;
           break;
         case "double":
           ze()[s3 >>> 3 >>> 0] = l2;
@@ -36975,7 +40352,7 @@ var Ia = U(() => {
         case "i64":
           return Z2[s3 >>> 3];
         case "float":
-          return de()[s3 >>> 2 >>> 0];
+          return de2()[s3 >>> 2 >>> 0];
         case "double":
           return ze()[s3 >>> 3 >>> 0];
         case "*":
@@ -36987,8 +40364,8 @@ var Ia = U(() => {
       if (0 < Pt) Lt = s3;
       else if (u3) t2(n2), _t();
       else {
-        for (; 0 < mn.length; ) mn.shift()(n2);
-        0 < Pt ? Lt = s3 : (n2.calledRun = true, te2 || (_t(), t2(n2)));
+        for (; 0 < mn2.length; ) mn2.shift()(n2);
+        0 < Pt ? Lt = s3 : (n2.calledRun = true, te3 || (_t(), t2(n2)));
       }
     }(), n2.PTR_SIZE = 4, o3;
   }), Fp = Sa, qp = globalThis.self?.name?.startsWith("em-pthread");
@@ -38259,18 +41636,18 @@ var ie = U(() => {
     let I2 = a2 < 2 ? "" : `
   fn i2o_${e2}(indices: ${f3.indices}) -> u32 {
     return ${E2.join("+")};
-  }`, z2 = (C2) => (g3.indicesToOffset = true, a2 < 2 ? C2 : `i2o_${e2}(${C2})`), O2 = (...C2) => a2 === 0 ? "0u" : `${f3.indices}(${C2.map(b3).join(",")})`, D2 = (C2, V2) => a2 < 2 ? `${C2}` : `${F(C2, V2, a2)}`, L2 = (C2, V2, de) => a2 < 2 ? `${C2}=${de};` : `${F(C2, V2, a2)}=${de};`, q3 = {}, Q2 = (C2, V2) => {
+  }`, z2 = (C2) => (g3.indicesToOffset = true, a2 < 2 ? C2 : `i2o_${e2}(${C2})`), O2 = (...C2) => a2 === 0 ? "0u" : `${f3.indices}(${C2.map(b3).join(",")})`, D2 = (C2, V2) => a2 < 2 ? `${C2}` : `${F(C2, V2, a2)}`, L2 = (C2, V2, de2) => a2 < 2 ? `${C2}=${de2};` : `${F(C2, V2, a2)}=${de2};`, q3 = {}, Q2 = (C2, V2) => {
       g3.broadcastedIndicesToOffset = true;
-      let de = `${V2.name}broadcastedIndicesTo${e2}Offset`;
-      if (de in q3) return `${de}(${C2})`;
+      let de2 = `${V2.name}broadcastedIndicesTo${e2}Offset`;
+      if (de2 in q3) return `${de2}(${C2})`;
       let ze = [];
       for (let ve = a2 - 1; ve >= 0; ve--) {
         let $e = V2.indicesGet("outputIndices", ve + V2.rank - a2);
         ze.push(`${D2($4, ve)} * (${$e} % ${D2(S2, ve)})`);
       }
-      return q3[de] = `fn ${de}(outputIndices: ${V2.type.indices}) -> u32 {
+      return q3[de2] = `fn ${de2}(outputIndices: ${V2.type.indices}) -> u32 {
              return ${ze.length > 0 ? ze.join("+") : "0u"};
-           }`, `${de}(${C2})`;
+           }`, `${de2}(${C2})`;
     }, W2 = (C2, V2) => (() => {
       if (f3.storage === f3.value) return `${e2}[${C2}]=${V2};`;
       if (f3.storage === "vec2<u32>" && f3.value === "i32") return `${e2}[${C2}]=vec2<u32>(u32(${V2}), select(0u, 0xFFFFFFFFu, ${V2} < 0));`;
@@ -38287,7 +41664,7 @@ var ie = U(() => {
   fn get_${e2}ByIndices(indices: ${f3.indices}) -> ${p3} {
     return ${Z2(`i2o_${e2}(indices)`)};
   }`, H2 = a2 < 2 ? "" : (() => {
-      let C2 = u3.map((de) => `d${de}: u32`).join(", "), V2 = u3.map((de) => `d${de}`).join(", ");
+      let C2 = u3.map((de2) => `d${de2}: u32`).join(", "), V2 = u3.map((de2) => `d${de2}`).join(", ");
       return `
   fn get_${e2}(${C2}) -> ${p3} {
     return get_${e2}ByIndices(${O2(V2)});
@@ -38296,11 +41673,11 @@ var ie = U(() => {
       if (C2.length !== a2) throw new Error(`indices length must be ${a2}`);
       let V2 = C2.map(b3).join(",");
       return a2 === 0 ? Z2("0u") : a2 === 1 ? Z2(V2[0]) : (g3.get = true, g3.getByIndices = true, g3.indicesToOffset = true, `get_${e2}(${V2})`);
-    }, te2 = (C2) => a2 < 2 ? Z2(C2) : (g3.getByIndices = true, g3.indicesToOffset = true, `get_${e2}ByIndices(${C2})`), X2 = a2 < 2 ? "" : `
+    }, te3 = (C2) => a2 < 2 ? Z2(C2) : (g3.getByIndices = true, g3.indicesToOffset = true, `get_${e2}ByIndices(${C2})`), X2 = a2 < 2 ? "" : `
   fn set_${e2}ByIndices(indices: ${f3.indices}, value: ${p3}) {
     ${W2(`i2o_${e2}(indices)`, "value")}
   }`, ue = a2 < 2 ? "" : (() => {
-      let C2 = u3.map((de) => `d${de}: u32`).join(", "), V2 = u3.map((de) => `d${de}`).join(", ");
+      let C2 = u3.map((de2) => `d${de2}: u32`).join(", "), V2 = u3.map((de2) => `d${de2}`).join(", ");
       return `
   fn set_${e2}(${C2}, value: ${p3}) {
     set_${e2}ByIndices(${O2(V2)}, value);
@@ -38308,15 +41685,15 @@ var ie = U(() => {
     })();
     return { impl: () => {
       let C2 = [], V2 = false;
-      return g3.offsetToIndices && (C2.push(x2), V2 = true), g3.indicesToOffset && (C2.push(I2), V2 = true), g3.broadcastedIndicesToOffset && (Object.values(q3).forEach((de) => C2.push(de)), V2 = true), g3.set && (C2.push(ue), V2 = true), g3.setByIndices && (C2.push(X2), V2 = true), g3.get && (C2.push(H2), V2 = true), g3.getByIndices && (C2.push(we), V2 = true), !i3 && V2 && C2.unshift(`const ${S2} = ${f3.indices}(${r2.join(",")});`, `const ${$4} = ${f3.indices}(${k.computeStrides(r2).join(",")});`), C2.join(`
+      return g3.offsetToIndices && (C2.push(x2), V2 = true), g3.indicesToOffset && (C2.push(I2), V2 = true), g3.broadcastedIndicesToOffset && (Object.values(q3).forEach((de2) => C2.push(de2)), V2 = true), g3.set && (C2.push(ue), V2 = true), g3.setByIndices && (C2.push(X2), V2 = true), g3.get && (C2.push(H2), V2 = true), g3.getByIndices && (C2.push(we), V2 = true), !i3 && V2 && C2.unshift(`const ${S2} = ${f3.indices}(${r2.join(",")});`, `const ${$4} = ${f3.indices}(${k.computeStrides(r2).join(",")});`), C2.join(`
 `);
     }, type: f3, offsetToIndices: T2, indicesToOffset: z2, broadcastedIndicesToOffset: Q2, indices: O2, indicesGet: D2, indicesSet: L2, set: (...C2) => {
       if (C2.length !== a2 + 1) throw new Error(`indices length must be ${a2}`);
       let V2 = C2[a2];
       if (typeof V2 != "string") throw new Error("value must be string");
-      let de = C2.slice(0, a2).map(b3).join(",");
-      return a2 === 0 ? W2("0u", V2) : a2 === 1 ? W2(de[0], V2) : (g3.set = true, g3.setByIndices = true, g3.indicesToOffset = true, `set_${e2}(${de}, ${V2})`);
-    }, setByOffset: W2, setByIndices: (C2, V2) => a2 < 2 ? W2(C2, V2) : (g3.setByIndices = true, g3.indicesToOffset = true, `set_${e2}ByIndices(${C2}, ${V2});`), get: j2, getByOffset: Z2, getByIndices: te2, usage: n2, name: e2, strides: $4, shape: S2, rank: a2 };
+      let de2 = C2.slice(0, a2).map(b3).join(",");
+      return a2 === 0 ? W2("0u", V2) : a2 === 1 ? W2(de2[0], V2) : (g3.set = true, g3.setByIndices = true, g3.indicesToOffset = true, `set_${e2}(${de2}, ${V2})`);
+    }, setByOffset: W2, setByIndices: (C2, V2) => a2 < 2 ? W2(C2, V2) : (g3.setByIndices = true, g3.indicesToOffset = true, `set_${e2}ByIndices(${C2}, ${V2});`), get: j2, getByOffset: Z2, getByIndices: te3, usage: n2, name: e2, strides: $4, shape: S2, rank: a2 };
   }, P = (e2, t2, r2, n2 = 1) => Wr(e2, t2, r2, "input", n2), M = (e2, t2, r2, n2 = 1) => Wr(e2, t2, r2, "output", n2), es = (e2, t2, r2) => Wr(e2, t2, r2, "atomicOutput", 1), Lr = (e2, t2, r2, n2 = 1) => Wr(e2, t2, r2, "internal", n2), oo = class {
     constructor(t2, r2) {
       this.normalizedDispatchGroup = t2;
@@ -38967,13 +42344,13 @@ var Fr = U(() => {
       Z2 && Q2.push(Z2);
       let we = M("output", t2.dataType, p3), H2 = [we];
       m3 && H2.push(M("present_key", t2.dataType, b3, S2));
-      let j2 = Ae(1, S2), te2 = [{ name: "M", type: "u32" }, { name: "K", type: "u32" }, { name: "N", type: "u32" }, { name: "num_heads", type: "u32" }, { name: "head_size", type: "u32" }, { name: "alpha", type: "f32" }, { name: "past_sequence_length", type: "u32" }, { name: "kv_sequence_length", type: "u32" }, { name: "n_reps", type: "u32" }];
+      let j2 = Ae(1, S2), te3 = [{ name: "M", type: "u32" }, { name: "K", type: "u32" }, { name: "N", type: "u32" }, { name: "num_heads", type: "u32" }, { name: "head_size", type: "u32" }, { name: "alpha", type: "f32" }, { name: "past_sequence_length", type: "u32" }, { name: "kv_sequence_length", type: "u32" }, { name: "n_reps", type: "u32" }];
       return `
   const TILE_SIZE = ${v3}u;
 
   var<workgroup> tileQ: array<${L2.type.storage}, ${v3 * v3}>;
   var<workgroup> tileK: array<${L2.type.storage}, ${v3 * v3}>;
-  ${D2.registerUniforms(te2).declareVariables(...Q2, ...H2)}
+  ${D2.registerUniforms(te3).declareVariables(...Q2, ...H2)}
   ${D2.mainStart([v3, v3, 1])}
     // x holds the N and y holds the M
     let headIdx = workgroup_id.z % uniforms.num_heads;
@@ -39859,8 +43236,8 @@ var Yr = U(() => {
               let b_data${j2} = b[(b_offset + (k + ${j2}) * uniforms.N + col) / ${m3}];`;
         for (let j2 = 0; j2 < b3; j2++) {
           H2 += `a_data = a[(a_offset + (row + ${j2}) * uniforms.K + k) / ${f3}];`;
-          for (let te2 = 0; te2 < f3; te2++) H2 += `
-            values[${j2}] = fma(${O2.type.value}(a_data${f3 === 1 ? "" : `[${te2}]`}), b_data${te2}, values[${j2}]);
+          for (let te3 = 0; te3 < f3; te3++) H2 += `
+            values[${j2}] = fma(${O2.type.value}(a_data${f3 === 1 ? "" : `[${te3}]`}), b_data${te3}, values[${j2}]);
 `;
         }
         return H2;
@@ -40203,16 +43580,16 @@ fn main(@builtin(local_invocation_id) localId : vec3<u32>,
     let L2 = ["rank", "rank"], q3 = e2.length > 2;
     q3 && (D2.push(...N(e2[2].dims)), L2.push("rank")), D2.push(...N(O2));
     let Q2 = (W2) => {
-      let Z2 = p3.length, we = Lr("batchDims", e2[0].dataType, Z2, 1), H2 = be(e2[0].dataType), j2 = P("a", e2[0].dataType, E2, x2), te2 = P("b", e2[1].dataType, z2, x2), X2 = M("result", e2[0].dataType, O2.length, x2), ue = [j2, te2];
+      let Z2 = p3.length, we = Lr("batchDims", e2[0].dataType, Z2, 1), H2 = be(e2[0].dataType), j2 = P("a", e2[0].dataType, E2, x2), te3 = P("b", e2[1].dataType, z2, x2), X2 = M("result", e2[0].dataType, O2.length, x2), ue = [j2, te3];
       if (q3) {
         let V2 = o3 ? x2 : 1;
         ue.push(P("bias", e2[2].dataType, e2[2].dims.length, V2));
       }
-      let he = [{ name: "dim_a_outer", type: "i32" }, { name: "dim_b_outer", type: "i32" }, { name: "dim_inner", type: "i32" }];
-      je(t2, he);
-      let ye = be(X2.type.tensor), re2 = Fe(t2, X2.type.value, ye), C2 = cf(x2, q3, re2, [we, j2, te2, X2], o3);
+      let he2 = [{ name: "dim_a_outer", type: "i32" }, { name: "dim_b_outer", type: "i32" }, { name: "dim_inner", type: "i32" }];
+      je(t2, he2);
+      let ye = be(X2.type.tensor), re2 = Fe(t2, X2.type.value, ye), C2 = cf(x2, q3, re2, [we, j2, te3, X2], o3);
       return `
-  ${W2.registerUniforms(he).registerInternalVariables(we).declareVariables(...ue, X2)}
+  ${W2.registerUniforms(he2).registerInternalVariables(we).declareVariables(...ue, X2)}
   ${C2}
   ${_3 ? mo(S2, $4, H2, we) : fo(S2, $4, H2, we)}
                    `;
@@ -40343,16 +43720,16 @@ var Nu = U(() => {
     let we = (H2) => {
       let j2 = [{ name: "dim_a_outer", type: "i32" }, { name: "dim_b_outer", type: "i32" }, { name: "dim_inner", type: "i32" }, { name: "pad", type: "i32", length: 2 }, { name: "stride", type: "i32", length: 2 }, { name: "dilation", type: "i32", length: 2 }];
       je(t2, j2);
-      let te2 = _3 ? 4 : 1, X2 = be(e2[0].dataType), ue = `
+      let te3 = _3 ? 4 : 1, X2 = be(e2[0].dataType), ue = `
       fn setOutputAtIndex(flatIndex : i32, value : ${_3 ? `vec4<${X2}>` : X2}) {
         result[flatIndex] = ${_3 ? `vec4<${X2}>` : X2}(value);
       }
       fn setOutputAtCoords(d0 : i32, d1 : i32, d2 : i32, d3 : i32, value : ${_3 ? `vec4<${X2}>` : X2}) {
         let flatIndex = getOutputIndexFromCoords(vec4<i32>(d0, d1, d2, d3));
         setOutputAtIndex(flatIndex ${_3 ? "/ 4" : ""}, value);
-      }`, he = P("x", e2[0].dataType, e2[0].dims.length, E2 === 3 ? 1 : E2), ye = P("w", e2[1].dataType, e2[1].dims.length, te2), re2 = [he, ye], C2 = M("result", e2[0].dataType, r2.length, te2);
+      }`, he2 = P("x", e2[0].dataType, e2[0].dims.length, E2 === 3 ? 1 : E2), ye = P("w", e2[1].dataType, e2[1].dims.length, te3), re2 = [he2, ye], C2 = M("result", e2[0].dataType, r2.length, te3);
       if (a2) {
-        let V2 = P("bias", e2[2].dataType, e2[2].dims.length, te2);
+        let V2 = P("bias", e2[2].dataType, e2[2].dims.length, te3);
         re2.push(V2), ue += `
         fn getBiasByOutputCoords(coords : vec4<i32>) -> ${_3 ? `vec4<${X2}>` : X2} {
           return bias[coords.${c3 ? "w" : "y"}${_3 ? "/ 4" : ""}];
@@ -40801,8 +44178,8 @@ var Yu = U(() => {
     let v3 = ["rank", "rank"], x2 = [t2.strides[0], t2.strides[1]], T2 = [t2.kernelShape[i3 ? 1 : 2], t2.kernelShape[i3 ? 2 : 3]], E2 = [t2.dilations[0], t2.dilations[1]], I2 = [T2[0] + (t2.dilations[0] <= 1 ? 0 : (t2.kernelShape[i3 ? 1 : 2] - 1) * (t2.dilations[0] - 1)), T2[1] + (t2.dilations[1] <= 1 ? 0 : (t2.kernelShape[i3 ? 2 : 3] - 1) * (t2.dilations[1] - 1))], z2 = [I2[0] - 1 - Math.floor((t2.pads[0] + t2.pads[2]) / 2), I2[1] - 1 - Math.floor((t2.pads[1] + t2.pads[3]) / 2)], O2 = [{ type: 12, data: S2 }, { type: 12, data: x2 }, { type: 12, data: T2 }, { type: 12, data: E2 }, { type: 12, data: I2 }, { type: 6, data: z2 }, { type: 12, data: f3 }, { type: 12, data: d3 }, { type: 12, data: c3 }, ...N(e2[0].dims, e2[1].dims)];
     n2 && (O2.push(...N(e2[2].dims)), v3.push("rank")), O2.push(...N(o3));
     let D2 = (L2) => {
-      let q3 = [{ name: "output_size", type: "u32" }, { name: "strides", type: "u32", length: x2.length }, { name: "filter_dims", type: "u32", length: T2.length }, { name: "dilations", type: "u32", length: T2.length }, { name: "effective_filter_dims", type: "u32", length: I2.length }, { name: "pads", type: "i32", length: z2.length }, { name: "input_channels_per_group_int", type: "u32" }, { name: "input_channels_per_group", type: "u32" }, { name: "output_channels_per_group", type: "u32" }], Q2 = be(e2[0].dataType), W2 = i3 ? 1 : 2, Z2 = i3 ? 2 : 3, we = i3 ? 3 : 1, H2 = P("W", e2[1].dataType, e2[1].dims.length, _3), j2 = P("Dy", e2[0].dataType, e2[0].dims.length, p3), te2 = [j2, H2];
-      n2 && te2.push(P("bias", e2[2].dataType, [o3[we]].length, g3));
+      let q3 = [{ name: "output_size", type: "u32" }, { name: "strides", type: "u32", length: x2.length }, { name: "filter_dims", type: "u32", length: T2.length }, { name: "dilations", type: "u32", length: T2.length }, { name: "effective_filter_dims", type: "u32", length: I2.length }, { name: "pads", type: "i32", length: z2.length }, { name: "input_channels_per_group_int", type: "u32" }, { name: "input_channels_per_group", type: "u32" }, { name: "output_channels_per_group", type: "u32" }], Q2 = be(e2[0].dataType), W2 = i3 ? 1 : 2, Z2 = i3 ? 2 : 3, we = i3 ? 3 : 1, H2 = P("W", e2[1].dataType, e2[1].dims.length, _3), j2 = P("Dy", e2[0].dataType, e2[0].dims.length, p3), te3 = [j2, H2];
+      n2 && te3.push(P("bias", e2[2].dataType, [o3[we]].length, g3));
       let X2 = M("result", e2[0].dataType, o3.length, g3), ue = () => {
         let re2 = "";
         if (m3) p3 === 4 ? re2 += `
@@ -40827,7 +44204,7 @@ var Yu = U(() => {
             let wValue${C2} = ${H2.getByOffset(`${H2.indicesToOffset(`${H2.type.indices}(u32(wRPerm), u32(wCPerm), inputChannel + ${C2}, wOutChannel)`)} / ${_3}`)};
             dotProd = dotProd + xValue[${C2}] * wValue${C2};`;
         return re2;
-      }, he = () => {
+      }, he2 = () => {
         if (b3 === 0) return "";
         if (!m3) throw new Error(`packInputAs4 ${m3} is not true.`);
         let re2 = "";
@@ -40899,7 +44276,7 @@ var Yu = U(() => {
                   ${ue()}
                   inputChannel = inputChannel + ${m3 ? 4 : p3};
                 }
-                ${he()}
+                ${he2()}
                 wC = wC + uniforms.strides.y - 1;
               }
               wR = wR + uniforms.strides[0] - 1;
@@ -40908,7 +44285,7 @@ var Yu = U(() => {
             ${X2.setByOffset("global_idx", "value")};
           `;
       return `
-    ${L2.registerUniforms(q3).declareVariables(...te2, X2)}
+    ${L2.registerUniforms(q3).declareVariables(...te3, X2)}
       ${L2.mainStart()}
       ${L2.guardAgainstOutOfBoundsWorkgroupSizes("uniforms.output_size")};
     ${ye}}`;
@@ -42489,7 +45866,7 @@ var tl = U(() => {
     let z2 = (O2) => {
       let D2 = T2.length, L2 = P("a", e2[0].dataType, D2, f3), q3 = P("b", 12, E2.length, b3), Q2 = P("scales", e2[2].dataType, e2[2].dims.length), W2 = [L2, q3, Q2], Z2 = e2.length === 4 ? P("zero_points", 12, e2[3].dims.length) : void 0;
       Z2 && W2.push(Z2);
-      let we = I2.length, H2 = M("output", e2[0].dataType, we, g3), j2 = be(e2[0].dataType), te2 = (() => {
+      let we = I2.length, H2 = M("output", e2[0].dataType, we, g3), j2 = be(e2[0].dataType), te3 = (() => {
         switch (f3) {
           case 1:
             return `array<${j2}, 8>`;
@@ -42504,7 +45881,7 @@ var tl = U(() => {
         let ye = `
           // reuse a data
             var input_offset = ${L2.indicesToOffset(`${L2.type.indices}(batch, row, word_offset)`)};
-            var a_data: ${te2};
+            var a_data: ${te3};
             for (var j: u32 = 0; j < ${8 / f3}; j++) {
               a_data[j] = ${L2.getByOffset("input_offset")};
               input_offset++;
@@ -42514,8 +45891,8 @@ var tl = U(() => {
             b_value = ${b3 === 1 ? `b${re2}_data` : `b${re2}_data[i]`};
             b_value_lower = unpack4xU8(b_value & b_mask);
             b_value_upper = unpack4xU8((b_value >> 4) & b_mask);
-            b_quantized_values = ${te2}(${Array.from({ length: 4 }, (C2, V2) => `${j2}(b_value_lower[${V2}]), ${j2}(b_value_upper[${V2}])`).join(", ")});
-            b_dequantized_values = ${f3 === 1 ? `${te2}(${Array.from({ length: 8 }, (C2, V2) => `(b_quantized_values[${V2}] - ${Z2 ? `zero_point${re2}` : "zero_point"}) * scale${re2}`).join(", ")});` : `(b_quantized_values - ${te2}(${Array(8).fill(`${Z2 ? `zero_point${re2}` : "zero_point"}`).join(",")})) * scale${re2};`};
+            b_quantized_values = ${te3}(${Array.from({ length: 4 }, (C2, V2) => `${j2}(b_value_lower[${V2}]), ${j2}(b_value_upper[${V2}])`).join(", ")});
+            b_dequantized_values = ${f3 === 1 ? `${te3}(${Array.from({ length: 8 }, (C2, V2) => `(b_quantized_values[${V2}] - ${Z2 ? `zero_point${re2}` : "zero_point"}) * scale${re2}`).join(", ")});` : `(b_quantized_values - ${te3}(${Array(8).fill(`${Z2 ? `zero_point${re2}` : "zero_point"}`).join(",")})) * scale${re2};`};
             workgroup_shared[local_id.x * ${S2} + ${Math.floor(re2 / g3)}]${g3 > 1 ? `[${re2 % g3}]` : ""} += ${Array.from({ length: 8 / f3 }, (C2, V2) => `${f3 === 1 ? `a_data[${V2}] * b_dequantized_values[${V2}]` : `dot(a_data[${V2}], b_dequantized_values[${V2}])`}`).join(" + ")};
           `;
         return ye;
@@ -42544,7 +45921,7 @@ var tl = U(() => {
             let zero_point${re2} = ${j2}((zero_point_word) & 0xFu);` : ""}
             col_index += 1;`;
         return ye;
-      }, he = () => {
+      }, he2 = () => {
         let ye = `col_index = col * ${g3};`;
         for (let re2 = 0; re2 < g3 * S2; re2++) ye += `
             let b${re2}_data = ${q3.getByIndices(`${q3.type.indices}(col_index, block, word)`)};
@@ -42554,8 +45931,8 @@ var tl = U(() => {
             let b_mask: u32 = 0x0F0F0F0Fu;
             var b_value_lower: vec4<u32>;
             var b_value_upper: vec4<u32>;
-            var b_quantized_values: ${te2};
-            var b_dequantized_values: ${te2};`, ye;
+            var b_quantized_values: ${te3};
+            var b_dequantized_values: ${te3};`, ye;
       };
       return `
         var<workgroup> workgroup_shared: array<${H2.type.value}, ${S2 * v3}>;
@@ -42572,7 +45949,7 @@ var tl = U(() => {
             var word_offset: u32 = block * ${t2.blockSize / f3};
             ${ue()}
             for (var word: u32 = 0; word < ${p3}; word += ${b3}) {
-              ${he()}
+              ${he2()}
               for (var i: u32 = 0; i < ${b3}; i++) {
                 ${X2()}
                 word_offset += ${8 / f3};
@@ -42601,7 +45978,7 @@ var tl = U(() => {
     let L2 = (q3) => {
       let Q2 = z2.length, W2 = P("a", e2[0].dataType, Q2, f3), Z2 = P("b", 12, O2.length, b3), we = P("scales", e2[2].dataType, e2[2].dims.length), H2 = [W2, Z2, we], j2 = e2.length === 4 ? P("zero_points", 12, e2[3].dims.length) : void 0;
       j2 && H2.push(j2);
-      let te2 = D2.length, X2 = M("output", e2[0].dataType, te2), ue = be(e2[0].dataType), he = () => {
+      let te3 = D2.length, X2 = M("output", e2[0].dataType, te3), ue = be(e2[0].dataType), he2 = () => {
         switch (f3) {
           case 1:
             return `
@@ -42665,7 +46042,7 @@ var tl = U(() => {
             let b_data = ${Z2.getByIndices(`${Z2.type.indices}(b_row, block, 0)`)};
             var word_offset = local_id.x * ${t2.blockSize / f3};
             for (var i: u32 = 0; i < ${b3}; i++) {
-              ${he()}
+              ${he2()}
               let b_value = ${b3 === 1 ? "b_data" : "b_data[i]"};
               let b_value_lower = unpack4xU8(b_value & 0x0F0F0F0Fu);
               let b_value_upper = unpack4xU8((b_value >> 4) & 0x0F0F0F0Fu);
@@ -44834,48 +48211,48 @@ var Vn = U(() => {
           Q2.push(o3[W2]);
           continue;
         }
-        let we = a2.stackSave(), H2 = a2.stackAlloc(4 * u3), j2 = false, te2, X2 = 0;
+        let we = a2.stackSave(), H2 = a2.stackAlloc(4 * u3), j2 = false, te3, X2 = 0;
         try {
           a2._OrtGetTensorData(Z2, H2, H2 + u3, H2 + 2 * u3, H2 + 3 * u3) !== 0 && pe(`Can't access output tensor data on index ${W2}.`);
-          let he = u3 === 4 ? "i32" : "i64", ye = Number(a2.getValue(H2, he));
+          let he2 = u3 === 4 ? "i32" : "i64", ye = Number(a2.getValue(H2, he2));
           X2 = a2.getValue(H2 + u3, "*");
-          let re2 = a2.getValue(H2 + u3 * 2, "*"), C2 = Number(a2.getValue(H2 + u3 * 3, he)), V2 = [];
-          for (let ve = 0; ve < C2; ve++) V2.push(Number(a2.getValue(re2 + ve * u3, he)));
+          let re2 = a2.getValue(H2 + u3 * 2, "*"), C2 = Number(a2.getValue(H2 + u3 * 3, he2)), V2 = [];
+          for (let ve = 0; ve < C2; ve++) V2.push(Number(a2.getValue(re2 + ve * u3, he2)));
           a2._OrtFree(re2) !== 0 && pe("Can't free memory for tensor dims.");
-          let de = V2.reduce((ve, $e) => ve * $e, 1);
-          te2 = Ye(ye);
+          let de2 = V2.reduce((ve, $e) => ve * $e, 1);
+          te3 = Ye(ye);
           let ze = f3?.outputPreferredLocations[n2[W2]];
-          if (te2 === "string") {
+          if (te3 === "string") {
             if (ze === "gpu-buffer" || ze === "ml-tensor") throw new Error("String tensor is not supported on GPU.");
             let ve = [];
-            for (let $e = 0; $e < de; $e++) {
-              let Ce2 = a2.getValue(X2 + $e * u3, "*"), _t = a2.getValue(X2 + ($e + 1) * u3, "*"), kt = $e === de - 1 ? void 0 : _t - Ce2;
+            for (let $e = 0; $e < de2; $e++) {
+              let Ce2 = a2.getValue(X2 + $e * u3, "*"), _t = a2.getValue(X2 + ($e + 1) * u3, "*"), kt = $e === de2 - 1 ? void 0 : _t - Ce2;
               ve.push(a2.UTF8ToString(Ce2, kt));
             }
-            Q2.push([te2, V2, ve, "cpu"]);
-          } else if (ze === "gpu-buffer" && de > 0) {
+            Q2.push([te3, V2, ve, "cpu"]);
+          } else if (ze === "gpu-buffer" && de2 > 0) {
             let ve = a2.jsepGetBuffer;
             if (!ve) throw new Error('preferredLocation "gpu-buffer" is not supported without using WebGPU.');
-            let $e = ve(X2), Ce2 = gt(ye, de);
-            if (Ce2 === void 0 || !zr(te2)) throw new Error(`Unsupported data type: ${te2}`);
-            j2 = true, Q2.push([te2, V2, { gpuBuffer: $e, download: a2.jsepCreateDownloader($e, Ce2, te2), dispose: () => {
+            let $e = ve(X2), Ce2 = gt(ye, de2);
+            if (Ce2 === void 0 || !zr(te3)) throw new Error(`Unsupported data type: ${te3}`);
+            j2 = true, Q2.push([te3, V2, { gpuBuffer: $e, download: a2.jsepCreateDownloader($e, Ce2, te3), dispose: () => {
               a2._OrtReleaseTensor(Z2) !== 0 && pe("Can't release tensor.");
             } }, "gpu-buffer"]);
-          } else if (ze === "ml-tensor" && de > 0) {
+          } else if (ze === "ml-tensor" && de2 > 0) {
             let ve = a2.webnnEnsureTensor, $e = a2.webnnIsInt64Supported;
             if (!ve || !$e) throw new Error('preferredLocation "ml-tensor" is not supported without using WebNN.');
-            if (gt(ye, de) === void 0 || !Or(te2)) throw new Error(`Unsupported data type: ${te2}`);
-            if (te2 === "int64" && !$e(e2)) throw new Error('preferredLocation "ml-tensor" for int64 output is not supported by current WebNN Context.');
+            if (gt(ye, de2) === void 0 || !Or(te3)) throw new Error(`Unsupported data type: ${te3}`);
+            if (te3 === "int64" && !$e(e2)) throw new Error('preferredLocation "ml-tensor" for int64 output is not supported by current WebNN Context.');
             let _t = await ve(e2, X2, ye, V2, false);
-            j2 = true, Q2.push([te2, V2, { mlTensor: _t, download: a2.webnnCreateMLTensorDownloader(X2, te2), dispose: () => {
+            j2 = true, Q2.push([te3, V2, { mlTensor: _t, download: a2.webnnCreateMLTensorDownloader(X2, te3), dispose: () => {
               a2.webnnReleaseTensorId(X2), a2._OrtReleaseTensor(Z2);
             } }, "ml-tensor"]);
           } else {
-            let ve = Pr(te2), $e = new ve(de);
-            new Uint8Array($e.buffer, $e.byteOffset, $e.byteLength).set(a2.HEAPU8.subarray(X2, X2 + $e.byteLength)), Q2.push([te2, V2, $e, "cpu"]);
+            let ve = Pr(te3), $e = new ve(de2);
+            new Uint8Array($e.buffer, $e.byteOffset, $e.byteLength).set(a2.HEAPU8.subarray(X2, X2 + $e.byteLength)), Q2.push([te3, V2, $e, "cpu"]);
           }
         } finally {
-          a2.stackRestore(we), te2 === "string" && X2 && a2._free(X2), j2 || a2._OrtReleaseTensor(Z2), a2.webnnOnRunEnd?.(c3);
+          a2.stackRestore(we), te3 === "string" && X2 && a2._free(X2), j2 || a2._OrtReleaseTensor(Z2), a2.webnnOnRunEnd?.(c3);
         }
       }
       return f3 && !b3 && (a2._OrtClearBoundOutputs(f3.handle) !== 0 && pe("Can't clear bound outputs."), At.set(e2, [c3, p3, m3, f3, b3, false])), Q2;
@@ -45797,7 +49174,7 @@ var __webpack_modules__ = {
               throw new SyntaxError(`Unexpected token type: ${tokens[current2].type}`);
           }
         }
-        function is2(...types) {
+        function is3(...types) {
           return current2 + types.length <= tokens.length && types.every((type, i3) => type === tokens[current2 + i3].type);
         }
         function isStatement(...names) {
@@ -45845,7 +49222,7 @@ var __webpack_modules__ = {
             case "call": {
               ++current2;
               let callerArgs = null;
-              if (is2(TOKEN_TYPES.OpenParen)) {
+              if (is3(TOKEN_TYPES.OpenParen)) {
                 callerArgs = parseArgs();
               }
               const callee = parsePrimaryExpression();
@@ -45878,7 +49255,7 @@ var __webpack_modules__ = {
             case "filter": {
               ++current2;
               let filterNode = parsePrimaryExpression();
-              if (filterNode instanceof Identifier && is2(TOKEN_TYPES.OpenParen)) {
+              if (filterNode instanceof Identifier && is3(TOKEN_TYPES.OpenParen)) {
                 filterNode = parseCallExpression(filterNode);
               }
               expect(TOKEN_TYPES.CloseStatement, "Expected closing statement token");
@@ -45907,7 +49284,7 @@ var __webpack_modules__ = {
           const left = parseExpressionSequence();
           let value = null;
           const body = [];
-          if (is2(TOKEN_TYPES.Equals)) {
+          if (is3(TOKEN_TYPES.Equals)) {
             ++current2;
             value = parseExpressionSequence();
           } else {
@@ -45960,11 +49337,11 @@ var __webpack_modules__ = {
         function parseExpressionSequence(primary = false) {
           const fn = primary ? parsePrimaryExpression : parseExpression;
           const expressions = [fn()];
-          const isTuple = is2(TOKEN_TYPES.Comma);
+          const isTuple = is3(TOKEN_TYPES.Comma);
           while (isTuple) {
             ++current2;
             expressions.push(fn());
-            if (!is2(TOKEN_TYPES.Comma)) {
+            if (!is3(TOKEN_TYPES.Comma)) {
               break;
             }
           }
@@ -46053,7 +49430,7 @@ var __webpack_modules__ = {
               current2 += 2;
             } else if (isIdentifier("in")) {
               operator = tokens[current2++];
-            } else if (is2(TOKEN_TYPES.ComparisonBinaryOperator)) {
+            } else if (is3(TOKEN_TYPES.ComparisonBinaryOperator)) {
               operator = tokens[current2++];
             } else {
               break;
@@ -46065,7 +49442,7 @@ var __webpack_modules__ = {
         }
         function parseAdditiveExpression() {
           let left = parseMultiplicativeExpression();
-          while (is2(TOKEN_TYPES.AdditiveBinaryOperator)) {
+          while (is3(TOKEN_TYPES.AdditiveBinaryOperator)) {
             const operator = tokens[current2];
             ++current2;
             const right = parseMultiplicativeExpression();
@@ -46075,7 +49452,7 @@ var __webpack_modules__ = {
         }
         function parseCallMemberExpression() {
           const member = parseMemberExpression(parsePrimaryExpression());
-          if (is2(TOKEN_TYPES.OpenParen)) {
+          if (is3(TOKEN_TYPES.OpenParen)) {
             return parseCallExpression(member);
           }
           return member;
@@ -46083,7 +49460,7 @@ var __webpack_modules__ = {
         function parseCallExpression(callee) {
           let expression = new CallExpression(callee, parseArgs());
           expression = parseMemberExpression(expression);
-          if (is2(TOKEN_TYPES.OpenParen)) {
+          if (is3(TOKEN_TYPES.OpenParen)) {
             expression = parseCallExpression(expression);
           }
           return expression;
@@ -46096,7 +49473,7 @@ var __webpack_modules__ = {
         }
         function parseArgumentsList() {
           const args = [];
-          while (!is2(TOKEN_TYPES.CloseParen)) {
+          while (!is3(TOKEN_TYPES.CloseParen)) {
             let argument;
             if (tokens[current2].type === TOKEN_TYPES.MultiplicativeBinaryOperator && tokens[current2].value === "*") {
               ++current2;
@@ -46104,7 +49481,7 @@ var __webpack_modules__ = {
               argument = new SpreadExpression(expr);
             } else {
               argument = parseExpression();
-              if (is2(TOKEN_TYPES.Equals)) {
+              if (is3(TOKEN_TYPES.Equals)) {
                 ++current2;
                 if (!(argument instanceof Identifier)) {
                   throw new SyntaxError(`Expected identifier for keyword argument`);
@@ -46114,7 +49491,7 @@ var __webpack_modules__ = {
               }
             }
             args.push(argument);
-            if (is2(TOKEN_TYPES.Comma)) {
+            if (is3(TOKEN_TYPES.Comma)) {
               ++current2;
             }
           }
@@ -46123,14 +49500,14 @@ var __webpack_modules__ = {
         function parseMemberExpressionArgumentsList() {
           const slices = [];
           let isSlice = false;
-          while (!is2(TOKEN_TYPES.CloseSquareBracket)) {
-            if (is2(TOKEN_TYPES.Colon)) {
+          while (!is3(TOKEN_TYPES.CloseSquareBracket)) {
+            if (is3(TOKEN_TYPES.Colon)) {
               slices.push(void 0);
               ++current2;
               isSlice = true;
             } else {
               slices.push(parseExpression());
-              if (is2(TOKEN_TYPES.Colon)) {
+              if (is3(TOKEN_TYPES.Colon)) {
                 ++current2;
                 isSlice = true;
               }
@@ -46148,7 +49525,7 @@ var __webpack_modules__ = {
           return slices[0];
         }
         function parseMemberExpression(object) {
-          while (is2(TOKEN_TYPES.Dot) || is2(TOKEN_TYPES.OpenSquareBracket)) {
+          while (is3(TOKEN_TYPES.Dot) || is3(TOKEN_TYPES.OpenSquareBracket)) {
             const operator = tokens[current2];
             ++current2;
             let property;
@@ -46168,7 +49545,7 @@ var __webpack_modules__ = {
         }
         function parseMultiplicativeExpression() {
           let left = parseTestExpression();
-          while (is2(TOKEN_TYPES.MultiplicativeBinaryOperator)) {
+          while (is3(TOKEN_TYPES.MultiplicativeBinaryOperator)) {
             const operator = tokens[current2++];
             const right = parseTestExpression();
             left = new BinaryExpression(operator, left, right);
@@ -46193,13 +49570,13 @@ var __webpack_modules__ = {
         }
         function parseFilterExpression() {
           let operand = parseCallMemberExpression();
-          while (is2(TOKEN_TYPES.Pipe)) {
+          while (is3(TOKEN_TYPES.Pipe)) {
             ++current2;
             let filter = parsePrimaryExpression();
             if (!(filter instanceof Identifier)) {
               throw new SyntaxError(`Expected identifier for the filter`);
             }
-            if (is2(TOKEN_TYPES.OpenParen)) {
+            if (is3(TOKEN_TYPES.OpenParen)) {
               filter = parseCallExpression(filter);
             }
             operand = new FilterExpression(operand, filter);
@@ -46215,7 +49592,7 @@ var __webpack_modules__ = {
             }
             case TOKEN_TYPES.StringLiteral: {
               let value = token2.value;
-              while (is2(TOKEN_TYPES.StringLiteral)) {
+              while (is3(TOKEN_TYPES.StringLiteral)) {
                 value += tokens[current2++].value;
               }
               return new StringLiteral(value);
@@ -46229,9 +49606,9 @@ var __webpack_modules__ = {
             }
             case TOKEN_TYPES.OpenSquareBracket: {
               const values = [];
-              while (!is2(TOKEN_TYPES.CloseSquareBracket)) {
+              while (!is3(TOKEN_TYPES.CloseSquareBracket)) {
                 values.push(parseExpression());
-                if (is2(TOKEN_TYPES.Comma)) {
+                if (is3(TOKEN_TYPES.Comma)) {
                   ++current2;
                 }
               }
@@ -46240,12 +49617,12 @@ var __webpack_modules__ = {
             }
             case TOKEN_TYPES.OpenCurlyBracket: {
               const values = /* @__PURE__ */ new Map();
-              while (!is2(TOKEN_TYPES.CloseCurlyBracket)) {
+              while (!is3(TOKEN_TYPES.CloseCurlyBracket)) {
                 const key = parseExpression();
                 expect(TOKEN_TYPES.Colon, "Expected colon between key and value in object literal");
                 const value = parseExpression();
                 values.set(key, value);
-                if (is2(TOKEN_TYPES.Comma)) {
+                if (is3(TOKEN_TYPES.Comma)) {
                   ++current2;
                 }
               }
@@ -49355,8 +52732,8 @@ var __webpack_modules__ = {
           const batch_size = options?.batch_size ?? 1;
           for (let i3 = 0; i3 < layer_types.length; ++i3) {
             if (layer_types[i3] === "full_attention") {
-              for (const kv of ["key", "value"]) {
-                cache_values[`${pkv_prefix}.${i3}.${kv}`] = [batch_size, num_key_value_heads, 0, head_dim];
+              for (const kv2 of ["key", "value"]) {
+                cache_values[`${pkv_prefix}.${i3}.${kv2}`] = [batch_size, num_key_value_heads, 0, head_dim];
               }
             } else if (layer_types[i3] === "conv") {
               cache_values[`${conv_prefix}_conv.${i3}`] = [batch_size, hidden_size, conv_L_cache];
@@ -59592,10 +62969,10 @@ var __webpack_modules__ = {
         [MODEL_FOR_IMAGE_FEATURE_EXTRACTION_MAPPING_NAMES, MODEL_TYPES.EncoderOnly]
       ];
       for (const [mappings, type] of MODEL_CLASS_TYPE_MAPPING) {
-        for (const [name, model] of mappings.values()) {
+        for (const [name, model2] of mappings.values()) {
           MODEL_TYPE_MAPPING.set(name, type);
-          MODEL_CLASS_TO_NAME_MAPPING.set(model, name);
-          MODEL_NAME_TO_CLASS_MAPPING.set(name, model);
+          MODEL_CLASS_TO_NAME_MAPPING.set(model2, name);
+          MODEL_NAME_TO_CLASS_MAPPING.set(name, model2);
         }
       }
       const CUSTOM_MAPPING = [
@@ -59617,10 +62994,10 @@ var __webpack_modules__ = {
         ["Gemma3nForConditionalGeneration", Gemma3nForConditionalGeneration, MODEL_TYPES.ImageAudioTextToText],
         ["SupertonicForConditionalGeneration", SupertonicForConditionalGeneration, MODEL_TYPES.Supertonic]
       ];
-      for (const [name, model, type] of CUSTOM_MAPPING) {
+      for (const [name, model2, type] of CUSTOM_MAPPING) {
         MODEL_TYPE_MAPPING.set(name, type);
-        MODEL_CLASS_TO_NAME_MAPPING.set(model, name);
-        MODEL_NAME_TO_CLASS_MAPPING.set(name, model);
+        MODEL_CLASS_TO_NAME_MAPPING.set(model2, name);
+        MODEL_NAME_TO_CLASS_MAPPING.set(name, model2);
       }
       const CUSTOM_ARCHITECTURES = /* @__PURE__ */ new Map([
         ["modnet", MODEL_FOR_IMAGE_SEGMENTATION_MAPPING_NAMES],
@@ -63654,7 +67031,7 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
             const prompt_chunks = text.map((t2, i3) => t2.split(IMAGE_TOKEN_PATTERN).join(IMAGE_TOKEN.repeat(num_img_tokens[i3])));
             text_inputs = this.tokenizer(prompt_chunks, { padding, truncation });
             const image_token_id = this.tokenizer.model.convert_tokens_to_ids([IMAGE_TOKEN])[0];
-            text_inputs.input_ids.map_((id2) => id2 == image_token_id ? -id2 : id2);
+            text_inputs.input_ids.map_((id3) => id3 == image_token_id ? -id3 : id3);
           } else {
             text_inputs = this.tokenizer(text);
           }
@@ -64109,11 +67486,11 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
             let current_speaker = -1;
             for (let i3 = 0; i3 < scores.length; ++i3) {
               const probabilities = (0, _utils_maths_js__WEBPACK_IMPORTED_MODULE_2__.softmax)(scores[i3]);
-              const [score, id2] = (0, _utils_maths_js__WEBPACK_IMPORTED_MODULE_2__.max)(probabilities);
+              const [score, id3] = (0, _utils_maths_js__WEBPACK_IMPORTED_MODULE_2__.max)(probabilities);
               const [start, end] = [i3, i3 + 1];
-              if (id2 !== current_speaker) {
-                current_speaker = id2;
-                accumulated_segments.push({ id: id2, start, end, score });
+              if (id3 !== current_speaker) {
+                current_speaker = id3;
+                accumulated_segments.push({ id: id3, start, end, score });
               } else {
                 accumulated_segments.at(-1).end = end;
                 accumulated_segments.at(-1).score += score;
@@ -64122,8 +67499,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
             results.push(accumulated_segments.map(
               // Convert frame-space to time-space
               // and compute the confidence
-              ({ id: id2, start, end, score }) => ({
-                id: id2,
+              ({ id: id3, start, end, score }) => ({
+                id: id3,
                 start: start * ratio,
                 end: end * ratio,
                 confidence: score / (end - start)
@@ -66518,10 +69895,10 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @param {PreTrainedTokenizer} [options.tokenizer=null] The tokenizer used by the pipeline (if any).
          * @param {Processor} [options.processor=null] The processor used by the pipeline (if any).
          */
-        constructor({ task, model, tokenizer = null, processor = null }) {
+        constructor({ task, model: model2, tokenizer = null, processor = null }) {
           super();
           this.task = task;
-          this.model = model;
+          this.model = model2;
           this.tokenizer = tokenizer;
           this.processor = processor;
         }
@@ -68180,7 +71557,7 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
         // Add for backwards compatibility
         "embeddings": "feature-extraction"
       });
-      async function pipeline(task, model = null, {
+      async function pipeline(task, model2 = null, {
         progress_callback = null,
         config = null,
         cache_dir = null,
@@ -68198,9 +71575,9 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
         if (!pipelineInfo) {
           throw Error(`Unsupported pipeline: ${task}. Must be one of [${Object.keys(SUPPORTED_TASKS)}]`);
         }
-        if (!model) {
-          model = pipelineInfo.default.model;
-          console.log(`No model specified. Using default model: "${model}".`);
+        if (!model2) {
+          model2 = pipelineInfo.default.model;
+          console.log(`No model specified. Using default model: "${model2}".`);
         }
         const pretrainedOptions = {
           progress_callback,
@@ -68220,17 +71597,17 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           ["model", pipelineInfo.model],
           ["processor", pipelineInfo.processor]
         ]);
-        const results = await loadItems(classes, model, pretrainedOptions);
+        const results = await loadItems(classes, model2, pretrainedOptions);
         results.task = task;
         (0, _utils_core_js__WEBPACK_IMPORTED_MODULE_5__.dispatchCallback)(progress_callback, {
           "status": "ready",
           "task": task,
-          "model": model
+          "model": model2
         });
         const pipelineClass = pipelineInfo.pipeline;
         return new pipelineClass(results);
       }
-      async function loadItems(mapping, model, pretrainedOptions) {
+      async function loadItems(mapping, model2, pretrainedOptions) {
         const result = /* @__PURE__ */ Object.create(null);
         const promises = [];
         for (const [name, cls] of mapping.entries()) {
@@ -68245,7 +71622,7 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
                   return;
                 }
                 try {
-                  resolve(await c3.from_pretrained(model, pretrainedOptions));
+                  resolve(await c3.from_pretrained(model2, pretrainedOptions));
                   return;
                 } catch (err) {
                   if (err.message?.includes("Unsupported model type")) {
@@ -68261,7 +71638,7 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
               reject(e2);
             });
           } else {
-            promise = cls.from_pretrained(model, pretrainedOptions);
+            promise = cls.from_pretrained(model2, pretrainedOptions);
           }
           result[name] = promise;
           promises.push(promise);
@@ -68927,22 +72304,22 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
         }
       }
       const BYTES_TO_UNICODE = (() => {
-        const bs2 = [
+        const bs3 = [
           ...Array.from({ length: "~".charCodeAt(0) - "!".charCodeAt(0) + 1 }, (_3, i3) => i3 + "!".charCodeAt(0)),
           ...Array.from({ length: "\xAC".charCodeAt(0) - "\xA1".charCodeAt(0) + 1 }, (_3, i3) => i3 + "\xA1".charCodeAt(0)),
           ...Array.from({ length: "\xFF".charCodeAt(0) - "\xAE".charCodeAt(0) + 1 }, (_3, i3) => i3 + "\xAE".charCodeAt(0))
         ];
-        const cs2 = bs2.slice();
+        const cs3 = bs3.slice();
         let n2 = 0;
         for (let b3 = 0; b3 < 256; ++b3) {
-          if (!bs2.includes(b3)) {
-            bs2.push(b3);
-            cs2.push(256 + n2);
+          if (!bs3.includes(b3)) {
+            bs3.push(b3);
+            cs3.push(256 + n2);
             n2 += 1;
           }
         }
-        const ccs = cs2.map((n3) => String.fromCharCode(n3));
-        return Object.fromEntries(bs2.map((b3, i3) => [b3, ccs[i3]]));
+        const ccs = cs3.map((n3) => String.fromCharCode(n3));
+        return Object.fromEntries(bs3.map((b3, i3) => [b3, ccs[i3]]));
       })();
       const UNICODE_TO_BYTES = (0, _utils_core_js__WEBPACK_IMPORTED_MODULE_1__.reverseDictionary)(BYTES_TO_UNICODE);
       class BPE extends TokenizerModel {
@@ -73377,8 +76754,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @param {string} request
          * @returns {Promise<FileResponse | undefined>}
          */
-        async match(request) {
-          let filePath = node_path__WEBPACK_IMPORTED_MODULE_1__.join(this.path, request);
+        async match(request2) {
+          let filePath = node_path__WEBPACK_IMPORTED_MODULE_1__.join(this.path, request2);
           let file = new FileResponse(filePath);
           if (file.exists) {
             return file;
@@ -73394,8 +76771,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * The function to call with progress updates
          * @returns {Promise<void>}
          */
-        async put(request, response, progress_callback = void 0) {
-          let filePath = node_path__WEBPACK_IMPORTED_MODULE_1__.join(this.path, request);
+        async put(request2, response, progress_callback = void 0) {
+          let filePath = node_path__WEBPACK_IMPORTED_MODULE_1__.join(this.path, request2);
           try {
             const contentLength = response.headers.get("Content-Length");
             const total = parseInt(contentLength ?? "0");
@@ -73651,7 +77028,7 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
         let buffer = new Uint8Array(total);
         let loaded = 0;
         const reader = response.body.getReader();
-        async function read() {
+        async function read2() {
           const { done, value } = await reader.read();
           if (done) return;
           const newLoaded = loaded + value.length;
@@ -73665,9 +77042,9 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
           loaded = newLoaded;
           const progress = loaded / total * 100;
           progress_callback({ progress, loaded, total });
-          return read();
+          return read2();
         }
-        await read();
+        await read2();
         return buffer;
       }
       function pathJoin(...parts) {
@@ -74433,7 +77810,7 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
         /* harmony export */
         min: () => (
           /* binding */
-          min
+          min2
         ),
         /* harmony export */
         permute_data: () => (
@@ -74549,19 +77926,19 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
       function magnitude(arr) {
         return Math.sqrt(arr.reduce((acc, val) => acc + val * val, 0));
       }
-      function min(arr) {
+      function min2(arr) {
         if (arr.length === 0) throw Error("Array must not be empty");
-        let min2 = arr[0];
+        let min3 = arr[0];
         let indexOfMin = 0;
         for (let i3 = 1; i3 < arr.length; ++i3) {
-          if (arr[i3] < min2) {
-            min2 = arr[i3];
+          if (arr[i3] < min3) {
+            min3 = arr[i3];
             indexOfMin = i3;
           }
         }
         return (
           /** @type {T extends bigint[]|BigTypedArray ? [bigint, number] : [number, number]} */
-          [min2, indexOfMin]
+          [min3, indexOfMin]
         );
       }
       function max(arr) {
@@ -75119,8 +78496,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
       }
       function bankers_round(x2) {
         const r2 = Math.round(x2);
-        const br2 = Math.abs(x2) % 1 === 0.5 ? r2 % 2 === 0 ? r2 : r2 - 1 : r2;
-        return br2;
+        const br3 = Math.abs(x2) % 1 === 0.5 ? r2 % 2 === 0 ? r2 : r2 - 1 : r2;
+        return br3;
       }
       function dynamic_time_warping(matrix) {
         const output_length = matrix.length;
@@ -75936,10 +79313,10 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
         /**
          * In-place version of @see {@link Tensor.clamp}
          */
-        clamp_(min, max) {
+        clamp_(min2, max) {
           const this_data = this.data;
           for (let i3 = 0; i3 < this_data.length; ++i3) {
-            this_data[i3] = Math.min(Math.max(this_data[i3], min), max);
+            this_data[i3] = Math.min(Math.max(this_data[i3], min2), max);
           }
           return this;
         }
@@ -75949,8 +79326,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @param {number} max upper-bound of the range to be clamped to
          * @returns {Tensor} the output tensor.
          */
-        clamp(min, max) {
-          return this.clone().clamp_(min, max);
+        clamp(min2, max) {
+          return this.clone().clamp_(min2, max);
         }
         /**
          * In-place version of @see {@link Tensor.round}
@@ -82004,7 +85381,7 @@ var b = { Memory: function(A3) {
                   g: {
                     r: {
                       if (g5 = f4[33691], (C3 = f4[33285]) ? A6 = 0 : (C3 = f4[33285], A6 = f4[33283], A6 = f4[A6 >> 2] == f4[A6 + 4 >> 2]), g5 | !A6 | C3 || !(f4[32524] < 0)) {
-                        if (!mr(f4[o4 + 2156 >> 2])) {
+                        if (!mr2(f4[o4 + 2156 >> 2])) {
                           if ((C3 = (0 | (A6 = f4[49828])) > 0) & (0 | (g5 = A6)) < (0 | (A6 = f4[33284]))) break r;
                           if (!((0 | (g5 = f4[49845])) <= 0 | (0 | A6) < (0 | g5))) {
                             f4[49845] = 0, a3[134760] = 1, f4[33285] = f4[o4 + 2152 >> 2], r4 = 16384;
@@ -82047,7 +85424,7 @@ var b = { Memory: function(A3) {
                                     if (A6 = f4[33283], f4[A6 >> 2] == f4[A6 + 4 >> 2]) break I;
                                     g5 = f4[o4 + 2156 >> 2];
                                   }
-                                  if (!(!((g5 = !!(0 | mr(g5))) | 35 == (0 | (A6 = f4[o4 + 2156 >> 2]))) | k5 >>> 0 > 19)) {
+                                  if (!(!((g5 = !!(0 | mr2(g5))) | 35 == (0 | (A6 = f4[o4 + 2156 >> 2]))) | k5 >>> 0 > 19)) {
                                     a3[(o4 + 112 | 0) + k5 | 0] = A6, k5 = k5 + 1 | 0, (g5 = f4[33285]) ? (f4[33285] = 0, C3 = 0) : (f4[33284] = f4[33284] + 1, A6 = f4[33283], g5 = 0 | HC[f4[A6 + 8 >> 2]](A6), C3 = f4[33285]);
                                     continue;
                                   }
@@ -82098,7 +85475,7 @@ var b = { Memory: function(A3) {
                               for (A6 = (C3 + (Rr2(C3) << 2) | 0) - 4 | 0, 47 == (0 | (Z3 = f4[A6 >> 2])) && (f4[A6 >> 2] = 32); ; ) {
                                 if (A6 = f4[C3 + (g5 << 2) >> 2]) {
                                   if (er2(A6)) A6 = g5;
-                                  else if (a3[(N4 + 512 | 0) + g5 | 0] = ar(A6 << 24 >> 24), A6 = 39, 39 != (0 | (g5 = g5 + 1 | 0))) continue;
+                                  else if (a3[(N4 + 512 | 0) + g5 | 0] = ar2(A6 << 24 >> 24), A6 = 39, 39 != (0 | (g5 = g5 + 1 | 0))) continue;
                                 } else A6 = g5;
                                 break;
                               }
@@ -82267,7 +85644,7 @@ var b = { Memory: function(A3) {
                                             if (0 | HC[f4[34441]](1, A6 + f4[33282] | 0, P4)) break t;
                                             f4[N4 + 68 >> 2] = A6, f4[N4 + 64 >> 2] = 1, dg2(N4 + 352 | 0, 89658, N4 - -64 | 0);
                                           } else {
-                                            if (!P4 | 47 == i4[N4 + 352 | 0] ? A6 = bg2(N4 + 352 | 0) : (f4[N4 + 48 >> 2] = P4, f4[N4 + 52 >> 2] = N4 + 352, dg2(A6 = N4 + 96 | 0, 89564, N4 + 48 | 0), A6 = bg2(A6)), (0 | A6) < 0) break t;
+                                            if (!P4 | 47 == i4[N4 + 352 | 0] ? A6 = bg3(N4 + 352 | 0) : (f4[N4 + 48 >> 2] = P4, f4[N4 + 52 >> 2] = N4 + 352, dg2(A6 = N4 + 96 | 0, 89564, N4 + 48 | 0), A6 = bg3(A6)), (0 | A6) < 0) break t;
                                             f4[N4 + 36 >> 2] = A6, f4[N4 + 32 >> 2] = 1, dg2(N4 + 352 | 0, 89623, N4 + 32 | 0);
                                           }
                                           A6 = N4 + 352 | 0, rg2(f4[y4 >> 2] + 189424 | 0, A6), f4[y4 >> 2] = f4[y4 >> 2] + Lg(A6), f4[4 + (134912 + (g5 << 6) | 0) >> 2] = 1;
@@ -82455,7 +85832,7 @@ var b = { Memory: function(A3) {
                           }
                           f4[o4 + 2156 >> 2] = A6, C3 = A6;
                         }
-                        mr(C3) ? (p4 = 1, g5 = f4[o4 + 2156 >> 2]) : W3 ? (f4[33285] = f4[o4 + 2152 >> 2], g5 = 1328, f4[o4 + 2156 >> 2] = 1328, f4[o4 + 2152 >> 2] = 32, W3 = 0) : 3851 != (0 | (g5 = f4[o4 + 2156 >> 2])) ? (W3 = 0, 3405 != (0 | g5) | 8205 != f4[o4 + 2152 >> 2] || (g5 = 3406, f4[o4 + 2156 >> 2] = 3406)) : (g5 = 32, f4[o4 + 2156 >> 2] = 32, W3 = 0);
+                        mr2(C3) ? (p4 = 1, g5 = f4[o4 + 2156 >> 2]) : W3 ? (f4[33285] = f4[o4 + 2152 >> 2], g5 = 1328, f4[o4 + 2156 >> 2] = 1328, f4[o4 + 2152 >> 2] = 32, W3 = 0) : 3851 != (0 | (g5 = f4[o4 + 2156 >> 2])) ? (W3 = 0, 3405 != (0 | g5) | 8205 != f4[o4 + 2152 >> 2] || (g5 = 3406, f4[o4 + 2156 >> 2] = 3406)) : (g5 = 32, f4[o4 + 2156 >> 2] = 32, W3 = 0);
                         C: if (nr(g5)) {
                           if (f4[v4 + 8216 >> 2] = f4[v4 + 8216 >> 2] + 1, f4[33692] | 2 != f4[47200]) break C;
                           if (nr(F4)) break C;
@@ -82500,7 +85877,7 @@ var b = { Memory: function(A3) {
                           A6 = r4;
                           break g;
                         }
-                        if (kg(f4[o4 + 2156 >> 2]) && ur(f4[o4 + 2156 >> 2])) break g;
+                        if (kg(f4[o4 + 2156 >> 2]) && ur2(f4[o4 + 2156 >> 2])) break g;
                         f4[33691] = f4[o4 + 2156 >> 2], a3[0 | (A6 = q4 + 189424 | 0)] = 32, a3[A6 + 1 | 0] = 0, f4[33285] = f4[o4 + 2152 >> 2];
                         break A;
                       }
@@ -82642,7 +86019,7 @@ var b = { Memory: function(A3) {
                     r4 = 46 == (0 | (u4 = f4[o4 + 2156 >> 2])) && (0 | g5) < 2 ? 4194304 | M5 : M5;
                     g: {
                       if (!g5) {
-                        k5 = 1, 44 != (0 | u4) | 46 != (0 | F4) | 26741 != f4[v4 + 212 >> 2] | P4 - 48 >>> 0 >= 10 || w4 - 48 >>> 0 >= 10 && !ur(w4) || (f4[o4 + 2156 >> 2] = 1367, k5 = 0), 46 != (0 | (M5 = f4[o4 + 2156 >> 2])) | 39 != (0 | w4) || (u4 = k5, M5 = f4[33283], (0 | (N4 = f4[M5 >> 2])) == f4[M5 + 4 >> 2] ? k5 = 0 : (k5 = 0 | HC[f4[M5 + 8 >> 2]](M5), f4[M5 >> 2] = N4), M5 = f4[o4 + 2156 >> 2], k5 = 115 != (0 | k5) & u4);
+                        k5 = 1, 44 != (0 | u4) | 46 != (0 | F4) | 26741 != f4[v4 + 212 >> 2] | P4 - 48 >>> 0 >= 10 || w4 - 48 >>> 0 >= 10 && !ur2(w4) || (f4[o4 + 2156 >> 2] = 1367, k5 = 0), 46 != (0 | (M5 = f4[o4 + 2156 >> 2])) | 39 != (0 | w4) || (u4 = k5, M5 = f4[33283], (0 | (N4 = f4[M5 >> 2])) == f4[M5 + 4 >> 2] ? k5 = 0 : (k5 = 0 | HC[f4[M5 + 8 >> 2]](M5), f4[M5 >> 2] = N4), M5 = f4[o4 + 2156 >> 2], k5 = 115 != (0 | k5) & u4);
                         r: if (46 != (0 | M5)) k5 &= p4;
                         else {
                           C: if (1 & a3[v4 + 106 | 0]) {
@@ -82650,9 +86027,9 @@ var b = { Memory: function(A3) {
                               if ((u4 = F4 - 73 | 0) >>> 0 > 15 | !(1 << u4 & 40969)) break C;
                               if (!(1 << (u4 = P4 - 73 | 0) & 40969 && u4 >>> 0 <= 15 || er2(P4))) break C;
                             }
-                            k5 = F4 - 48 >>> 0 >= 10 ? 0 : !ur(w4) & 45 != (0 | w4) & k5;
+                            k5 = F4 - 48 >>> 0 >= 10 ? 0 : !ur2(w4) & 45 != (0 | w4) & k5;
                           }
-                          if (ur(w4) && (k5 = 0 != i4[v4 + 208 | 0] & k5), p4) {
+                          if (ur2(w4) && (k5 = 0 != i4[v4 + 208 | 0] & k5), p4) {
                             M5 = f4[o4 + 2156 >> 2];
                             break r;
                           }
@@ -82942,7 +86319,7 @@ var b = { Memory: function(A3) {
                               A6 = oA3 ? w4 : 712, r4 = oA3 ? r4 : w4, oA3 = 1;
                               break e;
                             }
-                            if (ur(f4[D3 + 6812 >> 2])) {
+                            if (ur2(f4[D3 + 6812 >> 2])) {
                               if (32 == f4[D3 + 6808 >> 2]) {
                                 A6 = w4;
                                 break e;
@@ -82968,7 +86345,7 @@ var b = { Memory: function(A3) {
                               A6 = w4;
                               break e;
                             }
-                            if (!ur(f4[D3 + 6804 >> 2])) {
+                            if (!ur2(f4[D3 + 6804 >> 2])) {
                               A6 = w4;
                               break e;
                             }
@@ -83069,7 +86446,7 @@ var b = { Memory: function(A3) {
                                 }
                                 b: {
                                   if (46 != (0 | (w4 = f4[D3 + 6812 >> 2])) || (C3 = 115, 115 != f4[D3 + 6804 >> 2])) {
-                                    if (!mr(w4)) break b;
+                                    if (!mr2(w4)) break b;
                                     C3 = f4[D3 + 6804 >> 2];
                                   }
                                   if (kg(C3)) break r;
@@ -88992,7 +92369,7 @@ var b = { Memory: function(A3) {
                       case 5:
                         if ((0 | A6) >= f4[34064]) break g;
                         if (!f4[(t3 = (C3 = A6 << 4) + 136272 | 0) + 4 >> 2]) break g;
-                        he(10, 0), A6 = 216192 + (f4[50758] << 4) | 0, f4[A6 >> 2] = 6, t3 = f4[t3 + 4 >> 2], f4[A6 + 8 >> 2] = f4[8 + (C3 + 136272 | 0) >> 2] + 44, f4[A6 + 12 >> 2] = 5376, f4[A6 + 4 >> 2] = t3;
+                        he2(10, 0), A6 = 216192 + (f4[50758] << 4) | 0, f4[A6 >> 2] = 6, t3 = f4[t3 + 4 >> 2], f4[A6 + 8 >> 2] = f4[8 + (C3 + 136272 | 0) >> 2] + 44, f4[A6 + 12 >> 2] = 5376, f4[A6 + 4 >> 2] = t3;
                         break r;
                       case 8:
                         if ((0 | ((0 | (C3 = f4[50757] - f4[50758] | 0)) <= 0 ? C3 + 170 : C3)) < 6) break g;
@@ -89005,7 +92382,7 @@ var b = { Memory: function(A3) {
                       default:
                         break C;
                     }
-                    he(10, 0), C3 = 216192 + (f4[50758] << 4) | 0, f4[C3 >> 2] = 12, f4[C3 + 8 >> 2] = A6, f4[C3 + 4 >> 2] = t3;
+                    he2(10, 0), C3 = 216192 + (f4[50758] << 4) | 0, f4[C3 >> 2] = 12, f4[C3 + 8 >> 2] = A6, f4[C3 + 4 >> 2] = t3;
                   }
                   A6 = f4[50758] + 1 | 0, f4[50758] = (0 | A6) <= 169 ? A6 : 0;
                 }
@@ -89013,7 +92390,7 @@ var b = { Memory: function(A3) {
               }
               break;
             }
-            (A6 = i4[r4 + 20 | 0]) && (1 & a3[f4[47192] + 48 | 0] & 2 == i4[r4 + 17 | 0] | 1 & a3[f4[r4 + 8 >> 2] + 7 | 0] || (f4[36426] = 0), g5 = f4[47353] + (2047 & B2[r4 + 4 >> 1]) | 0, f4[36445] = g5, 4 & A6 && ((0 | ((0 | (A6 = f4[50757] - f4[50758] | 0)) <= 0 ? A6 + 170 : A6)) < 6 || (C3 = f4[47568], A6 = 216192 + (f4[50758] << 4) | 0, f4[A6 >> 2] = 522, f4[A6 + 8 >> 2] = C3, f4[A6 + 4 >> 2] = 16777215 & g5, A6 = f4[50758] + 1 | 0, f4[50758] = (0 | A6) <= 169 ? A6 : 0)), 1 & a3[r4 + 20 | 0] && (g5 = B2[r4 + 4 >> 1], C3 = f4[36444], f4[36444] = C3 + 1, (0 | ((0 | (A6 = f4[50757] - f4[50758] | 0)) <= 0 ? A6 + 170 : A6)) < 6 || (o4 = f4[36445], t3 = f4[47355], A6 = 216192 + (f4[50758] << 4) | 0, f4[A6 >> 2] = 266, f4[A6 + 8 >> 2] = C3 + t3, f4[A6 + 4 >> 2] = 16777215 & o4 | (63488 & g5) << 13, A6 = f4[50758] + 1 | 0, f4[50758] = (0 | A6) <= 169 ? A6 : 0))), (0 | (A6 = f4[36441])) > 0 && (g5 = 216192 + (f4[36425] << 4) | 0, f4[g5 + 4 >> 2] || (f4[g5 + 4 >> 2] = A6), f4[36441] = 0), A6 = k5 + 1 << 5, g5 = k5 - 1 << 5, !(C3 = i4[r4 + 18 | 0]) | 2 & i4[f4[r4 + 8 >> 2] + 7 | 0] || he(C3, 1), t3 = A6 + 145840 | 0, b4 = g5 + 145840 | 0, o4 = 1;
+            (A6 = i4[r4 + 20 | 0]) && (1 & a3[f4[47192] + 48 | 0] & 2 == i4[r4 + 17 | 0] | 1 & a3[f4[r4 + 8 >> 2] + 7 | 0] || (f4[36426] = 0), g5 = f4[47353] + (2047 & B2[r4 + 4 >> 1]) | 0, f4[36445] = g5, 4 & A6 && ((0 | ((0 | (A6 = f4[50757] - f4[50758] | 0)) <= 0 ? A6 + 170 : A6)) < 6 || (C3 = f4[47568], A6 = 216192 + (f4[50758] << 4) | 0, f4[A6 >> 2] = 522, f4[A6 + 8 >> 2] = C3, f4[A6 + 4 >> 2] = 16777215 & g5, A6 = f4[50758] + 1 | 0, f4[50758] = (0 | A6) <= 169 ? A6 : 0)), 1 & a3[r4 + 20 | 0] && (g5 = B2[r4 + 4 >> 1], C3 = f4[36444], f4[36444] = C3 + 1, (0 | ((0 | (A6 = f4[50757] - f4[50758] | 0)) <= 0 ? A6 + 170 : A6)) < 6 || (o4 = f4[36445], t3 = f4[47355], A6 = 216192 + (f4[50758] << 4) | 0, f4[A6 >> 2] = 266, f4[A6 + 8 >> 2] = C3 + t3, f4[A6 + 4 >> 2] = 16777215 & o4 | (63488 & g5) << 13, A6 = f4[50758] + 1 | 0, f4[50758] = (0 | A6) <= 169 ? A6 : 0))), (0 | (A6 = f4[36441])) > 0 && (g5 = 216192 + (f4[36425] << 4) | 0, f4[g5 + 4 >> 2] || (f4[g5 + 4 >> 2] = A6), f4[36441] = 0), A6 = k5 + 1 << 5, g5 = k5 - 1 << 5, !(C3 = i4[r4 + 18 | 0]) | 2 & i4[f4[r4 + 8 >> 2] + 7 | 0] || he2(C3, 1), t3 = A6 + 145840 | 0, b4 = g5 + 145840 | 0, o4 = 1;
             g: {
               r: {
                 if (f4[47198] && (n3 = f4[r4 + 8 >> 2], 15 != i4[n3 + 10 | 0])) {
@@ -89028,7 +92405,7 @@ var b = { Memory: function(A3) {
                 }
                 C: switch (i4[r4 + 17 | 0]) {
                   case 0:
-                    he(f4[r4 + 12 >> 2], 0), a3[r4 + 23 | 0] = i4[f4[r4 + 8 >> 2] + 14 | 0];
+                    he2(f4[r4 + 12 >> 2], 0), a3[r4 + 23 | 0] = i4[f4[r4 + 8 >> 2] + 14 | 0];
                     break g;
                   case 4:
                     g5 = f4[r4 + 8 >> 2], 2 == (0 | (A6 = i4[t3 + 17 | 0])) | !i4[t3 + 20 | 0] & 3 == (0 | A6) || (I3[r4 >> 1] = 8192 | B2[r4 >> 1]), 2 & i4[g5 + 7 | 0] && (f4[e4 + 88 >> 2] = 0, f4[e4 + 92 >> 2] = 0, f4[e4 + 80 >> 2] = 0, f4[e4 + 84 >> 2] = 0, f4[e4 + 72 >> 2] = 0, f4[e4 + 76 >> 2] = 0, f4[Q3 >> 2] = 0, f4[Q3 + 4 >> 2] = 0, f4[e4 + 56 >> 2] = 0, f4[e4 + 60 >> 2] = 0, f4[e4 + 48 >> 2] = 0, f4[e4 + 52 >> 2] = 0, bA2(0, 1, r4, e4 + 552 | 0, 145784), f4[e4 + 56 >> 2] = f4[e4 + 620 >> 2], f4[Q3 >> 2] = f4[e4 + 640 >> 2], f4[36424] < 0 && (C3 = i4[t3 + 19 | 0], A6 = f4[50758], f4[36425] = A6, f4[36441] = 0, f4[(A6 = 216192 + (A6 << 4) | 0) + 12 >> 2] = C3, f4[A6 + 8 >> 2] = 0, f4[A6 >> 2] = 8, f4[A6 + 4 >> 2] = 0, A6 = f4[50758] + 1 | 0, f4[50758] = (0 | A6) <= 169 ? A6 : 0, o4 = i4[t3 + 22 | 0], C3 = i4[t3 + 21 | 0], t3 = f4[129280 + (i4[r4 + 16 | 0] << 2) >> 2], (0 | (A6 = f4[36424])) < 0 | (0 | (n3 = f4[36440])) <= 0 || f4[(A6 = 216192 + (A6 << 4) | 0) + 4 >> 2] || (f4[A6 + 4 >> 2] = n3), A6 = f4[50758], f4[36424] = A6, f4[36440] = 0, f4[(A6 = 216192 + (A6 << 4) | 0) >> 2] = 9, f4[A6 + 4 >> 2] = 0, o4 |= C3 << 16, C3 = 255 == (0 | C3), f4[A6 + 12 >> 2] = C3 ? 3604556 : o4, f4[A6 + 8 >> 2] = C3 ? c4 : t3, A6 = f4[50758] + 1 | 0, f4[50758] = (0 | A6) <= 169 ? A6 : 0), eA2(g5, 0, e4 + 48 | 0, r4, 0)), bA2(0, 0, r4, e4 + 552 | 0, 145784), f4[e4 + 552 >> 2] = 4 | f4[e4 + 552 >> 2], (0 | (A6 = f4[36440])) <= 0 || (0 | (g5 = f4[36424])) < 0 || (f4[(g5 = 216192 + (g5 << 4) | 0) + 4 >> 2] || (f4[g5 + 4 >> 2] = A6), f4[36440] = 0), f4[36426] = 0, f4[36439] = -1, f4[36455] = f4[50758], kA2(), f4[36427] = -1, f4[36422] = 0, (A6 = f4[e4 + 624 >> 2]) && (C3 = A6, A6 = f4[e4 + 644 >> 2], qA2(C3, 2, f4[e4 + 596 >> 2] << 1, f4[e4 + 552 >> 2], 0, A6 ? (A6 << 5) / 100 | 0 : 32)), f4[36426] = 0;
@@ -89060,18 +92437,18 @@ var b = { Memory: function(A3) {
                       }
                       G4 = f4[50758], f4[36424] = G4, f4[36440] = 0, f4[(G4 = 216192 + (G4 << 4) | 0) >> 2] = 9, f4[G4 + 4 >> 2] = 0, f4[G4 + 12 >> 2] = s4 ? 3604556 : 255 & g5 | (255 & n3) << 16, f4[G4 + 8 >> 2] = A6, A6 = f4[50758] + 1 | 0, f4[50758] = (0 | A6) <= 169 ? A6 : 0;
                     }
-                    a: if (!(2 & i4[C3 + 7 | 0]) & 2 != i4[b4 + 17 | 0]) 8 & i4[0 | r4] && he(50, 0);
+                    a: if (!(2 & i4[C3 + 7 | 0]) & 2 != i4[b4 + 17 | 0]) 8 & i4[0 | r4] && he2(50, 0);
                     else {
                       if (bA2(0, 1, r4, e4 + 552 | 0, 145784), f4[e4 + 56 >> 2] = f4[e4 + 620 >> 2], f4[e4 + 64 >> 2] = f4[e4 + 640 >> 2], eA2(C3, 0, e4 + 48 | 0, r4, 0), !(8 & i4[0 | r4])) break a;
-                      he(25, 1), eA2(C3, 0, e4 + 48 | 0, r4, 0);
+                      he2(25, 1), eA2(C3, 0, e4 + 48 | 0, r4, 0);
                     }
                     a: if (o4) {
                       if (f4[36455] != f4[36454]) break a;
                       f4[36455] = f4[50758];
                     } else I3[r4 >> 1] = 8192 | B2[r4 >> 1];
                     if (bA2(0, 0, r4, e4 + 552 | 0, 145784), f4[e4 + 56 >> 2] = f4[e4 + 620 >> 2], f4[e4 + 64 >> 2] = f4[e4 + 640 >> 2], f4[e4 + 76 >> 2] = f4[e4 + 636 >> 2], f4[e4 + 80 >> 2] = f4[e4 + 656 >> 2], eA2(C3, 0, e4 + 48 | 0, r4, 0), i4[r4 + 20 | 0] | i4[84 + (145840 + (k5 << 5) | 0) | 0]) break g;
-                    if (7 == (0 | (A6 = i4[t3 + 17 | 0])) && (he(20, 0), A6 = i4[t3 + 17 | 0]), 6 != (255 & A6)) break g;
-                    he(12, 0);
+                    if (7 == (0 | (A6 = i4[t3 + 17 | 0])) && (he2(20, 0), A6 = i4[t3 + 17 | 0]), 6 != (255 & A6)) break g;
+                    he2(12, 0);
                     break g;
                   case 7:
                     a: {
@@ -89128,7 +92505,7 @@ var b = { Memory: function(A3) {
                     f4[36426] = 0, eA2(f4[r4 + 8 >> 2], 0, e4 + 48 | 0, r4, 0), f4[36426] = 0;
                     break g;
                   case 3:
-                    f4[e4 + 88 >> 2] = 0, f4[e4 + 92 >> 2] = 0, f4[e4 + 80 >> 2] = 0, f4[e4 + 84 >> 2] = 0, f4[e4 + 72 >> 2] = 0, f4[e4 + 76 >> 2] = 0, f4[Q3 >> 2] = 0, f4[Q3 + 4 >> 2] = 0, f4[e4 + 56 >> 2] = 0, f4[e4 + 60 >> 2] = 0, f4[e4 + 48 >> 2] = 0, f4[e4 + 52 >> 2] = 0, C3 = f4[f4[r4 + 8 >> 2] + 4 >> 2], 1 & a3[0 | r4] || (g5 = i4[r4 + 19 | 0], A6 = f4[50758], f4[36425] = A6, f4[36441] = 0, f4[(A6 = 216192 + (A6 << 4) | 0) + 12 >> 2] = g5, f4[A6 + 8 >> 2] = 0, f4[A6 >> 2] = 8, f4[A6 + 4 >> 2] = 0, A6 = f4[50758] + 1 | 0, f4[50758] = (0 | A6) <= 169 ? A6 : 0, o4 = i4[r4 + 22 | 0], g5 = i4[r4 + 21 | 0], n3 = f4[129280 + (i4[r4 + 16 | 0] << 2) >> 2], (0 | (A6 = f4[36424])) < 0 | (0 | (s4 = f4[36440])) <= 0 || f4[(A6 = 216192 + (A6 << 4) | 0) + 4 >> 2] || (f4[A6 + 4 >> 2] = s4), A6 = f4[50758], f4[36424] = A6, f4[36440] = 0, f4[(A6 = 216192 + (A6 << 4) | 0) >> 2] = 9, f4[A6 + 4 >> 2] = 0, o4 |= g5 << 16, g5 = 255 == (0 | g5), f4[A6 + 12 >> 2] = g5 ? 3604556 : o4, f4[A6 + 8 >> 2] = g5 ? c4 : n3, A6 = f4[50758] + 1 | 0, f4[50758] = (0 | A6) <= 169 ? A6 : 0), 8 == i4[b4 + 17 | 0] && (f4[36426] = 0), 2 != i4[t3 + 17 | 0] | f4[36455] != f4[36454] || (f4[36455] = f4[50758]), bA2(0, 0, r4, e4 + 552 | 0, 145784), (0 | (A6 = f4[e4 + 584 >> 2] - i4[r4 + 18 | 0] | 0)) > 0 && he(A6, 1), f4[e4 + 56 >> 2] = f4[e4 + 620 >> 2], f4[e4 + 64 >> 2] = f4[e4 + 640 >> 2], f4[e4 + 76 >> 2] = f4[e4 + 636 >> 2], f4[e4 + 80 >> 2] = f4[e4 + 656 >> 2], f4[e4 + 92 >> 2] = f4[e4 + 596 >> 2] << 1, eA2(f4[r4 + 8 >> 2], 0, e4 + 48 | 0, r4, C3 << 24 >> 31 & 5);
+                    f4[e4 + 88 >> 2] = 0, f4[e4 + 92 >> 2] = 0, f4[e4 + 80 >> 2] = 0, f4[e4 + 84 >> 2] = 0, f4[e4 + 72 >> 2] = 0, f4[e4 + 76 >> 2] = 0, f4[Q3 >> 2] = 0, f4[Q3 + 4 >> 2] = 0, f4[e4 + 56 >> 2] = 0, f4[e4 + 60 >> 2] = 0, f4[e4 + 48 >> 2] = 0, f4[e4 + 52 >> 2] = 0, C3 = f4[f4[r4 + 8 >> 2] + 4 >> 2], 1 & a3[0 | r4] || (g5 = i4[r4 + 19 | 0], A6 = f4[50758], f4[36425] = A6, f4[36441] = 0, f4[(A6 = 216192 + (A6 << 4) | 0) + 12 >> 2] = g5, f4[A6 + 8 >> 2] = 0, f4[A6 >> 2] = 8, f4[A6 + 4 >> 2] = 0, A6 = f4[50758] + 1 | 0, f4[50758] = (0 | A6) <= 169 ? A6 : 0, o4 = i4[r4 + 22 | 0], g5 = i4[r4 + 21 | 0], n3 = f4[129280 + (i4[r4 + 16 | 0] << 2) >> 2], (0 | (A6 = f4[36424])) < 0 | (0 | (s4 = f4[36440])) <= 0 || f4[(A6 = 216192 + (A6 << 4) | 0) + 4 >> 2] || (f4[A6 + 4 >> 2] = s4), A6 = f4[50758], f4[36424] = A6, f4[36440] = 0, f4[(A6 = 216192 + (A6 << 4) | 0) >> 2] = 9, f4[A6 + 4 >> 2] = 0, o4 |= g5 << 16, g5 = 255 == (0 | g5), f4[A6 + 12 >> 2] = g5 ? 3604556 : o4, f4[A6 + 8 >> 2] = g5 ? c4 : n3, A6 = f4[50758] + 1 | 0, f4[50758] = (0 | A6) <= 169 ? A6 : 0), 8 == i4[b4 + 17 | 0] && (f4[36426] = 0), 2 != i4[t3 + 17 | 0] | f4[36455] != f4[36454] || (f4[36455] = f4[50758]), bA2(0, 0, r4, e4 + 552 | 0, 145784), (0 | (A6 = f4[e4 + 584 >> 2] - i4[r4 + 18 | 0] | 0)) > 0 && he2(A6, 1), f4[e4 + 56 >> 2] = f4[e4 + 620 >> 2], f4[e4 + 64 >> 2] = f4[e4 + 640 >> 2], f4[e4 + 76 >> 2] = f4[e4 + 636 >> 2], f4[e4 + 80 >> 2] = f4[e4 + 656 >> 2], f4[e4 + 92 >> 2] = f4[e4 + 596 >> 2] << 1, eA2(f4[r4 + 8 >> 2], 0, e4 + 48 | 0, r4, C3 << 24 >> 31 & 5);
                     break g;
                   case 2:
                     break C;
@@ -89183,7 +92560,7 @@ var b = { Memory: function(A3) {
         V2 = C3 = V2 - 48 | 0;
         A: {
           if (g5 >>> 0 <= 2) {
-            for (P4 = f4[(g5 <<= 2) + 124732 >> 2], F4 = f4[g5 + 124720 >> 2]; (0 | (g5 = f4[e4 + 4 >> 2])) == f4[e4 + 104 >> 2] ? g5 = ce3(e4) : (f4[e4 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5]), 32 == (0 | g5) | g5 - 9 >>> 0 < 5; ) ;
+            for (P4 = f4[(g5 <<= 2) + 124732 >> 2], F4 = f4[g5 + 124720 >> 2]; (0 | (g5 = f4[e4 + 4 >> 2])) == f4[e4 + 104 >> 2] ? g5 = ce4(e4) : (f4[e4 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5]), 32 == (0 | g5) | g5 - 9 >>> 0 < 5; ) ;
             u4 = 1;
             e: {
               g: switch (g5 - 43 | 0) {
@@ -89193,13 +92570,13 @@ var b = { Memory: function(A3) {
                 default:
                   break e;
               }
-              u4 = 45 == (0 | g5) ? -1 : 1, (0 | (g5 = f4[e4 + 4 >> 2])) == f4[e4 + 104 >> 2] ? g5 = ce3(e4) : (f4[e4 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5]);
+              u4 = 45 == (0 | g5) ? -1 : 1, (0 | (g5 = f4[e4 + 4 >> 2])) == f4[e4 + 104 >> 2] ? g5 = ce4(e4) : (f4[e4 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5]);
             }
             e: {
               g: {
                 for (; ; ) {
                   if (a3[t3 + 84056 | 0] == (32 | g5)) {
-                    if (t3 >>> 0 > 6 || ((0 | (g5 = f4[e4 + 4 >> 2])) == f4[e4 + 104 >> 2] ? g5 = ce3(e4) : (f4[e4 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5])), 8 != (0 | (t3 = t3 + 1 | 0))) continue;
+                    if (t3 >>> 0 > 6 || ((0 | (g5 = f4[e4 + 4 >> 2])) == f4[e4 + 104 >> 2] ? g5 = ce4(e4) : (f4[e4 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5])), 8 != (0 | (t3 = t3 + 1 | 0))) continue;
                     break g;
                   }
                   break;
@@ -89219,15 +92596,15 @@ var b = { Memory: function(A3) {
                 r: if (!t3) {
                   for (t3 = 0; ; ) {
                     if (a3[t3 + 84473 | 0] != (32 | g5)) break r;
-                    if (t3 >>> 0 > 1 || ((0 | (g5 = f4[e4 + 4 >> 2])) == f4[e4 + 104 >> 2] ? g5 = ce3(e4) : (f4[e4 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5])), 3 == (0 | (t3 = t3 + 1 | 0))) break;
+                    if (t3 >>> 0 > 1 || ((0 | (g5 = f4[e4 + 4 >> 2])) == f4[e4 + 104 >> 2] ? g5 = ce4(e4) : (f4[e4 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5])), 3 == (0 | (t3 = t3 + 1 | 0))) break;
                   }
                   break g;
                 }
                 r: switch (0 | t3) {
                   case 0:
                     if (48 == (0 | g5)) {
-                      if ((0 | (t3 = f4[e4 + 4 >> 2])) == f4[e4 + 104 >> 2] ? t3 = ce3(e4) : (f4[e4 + 4 >> 2] = t3 + 1, t3 = i4[0 | t3]), 88 == (-33 & t3)) {
-                        V2 = s4 = V2 - 432 | 0, (0 | (g5 = f4[e4 + 4 >> 2])) == f4[e4 + 104 >> 2] ? t3 = ce3(e4) : (f4[e4 + 4 >> 2] = g5 + 1, t3 = i4[0 | g5]);
+                      if ((0 | (t3 = f4[e4 + 4 >> 2])) == f4[e4 + 104 >> 2] ? t3 = ce4(e4) : (f4[e4 + 4 >> 2] = t3 + 1, t3 = i4[0 | t3]), 88 == (-33 & t3)) {
+                        V2 = s4 = V2 - 432 | 0, (0 | (g5 = f4[e4 + 4 >> 2])) == f4[e4 + 104 >> 2] ? t3 = ce4(e4) : (f4[e4 + 4 >> 2] = g5 + 1, t3 = i4[0 | g5]);
                         C: {
                           a: {
                             for (; ; ) {
@@ -89239,12 +92616,12 @@ var b = { Memory: function(A3) {
                                 }
                                 break;
                               }
-                              (0 | (g5 = f4[e4 + 4 >> 2])) != f4[e4 + 104 >> 2] ? (N4 = 1, f4[e4 + 4 >> 2] = g5 + 1, t3 = i4[0 | g5]) : (N4 = 1, t3 = ce3(e4));
+                              (0 | (g5 = f4[e4 + 4 >> 2])) != f4[e4 + 104 >> 2] ? (N4 = 1, f4[e4 + 4 >> 2] = g5 + 1, t3 = i4[0 | g5]) : (N4 = 1, t3 = ce4(e4));
                             }
-                            t3 = ce3(e4);
+                            t3 = ce4(e4);
                           }
                           if (d4 = 1, 48 == (0 | t3)) {
-                            for (; m4 = (g5 = m4) - 1 | 0, M5 = M5 - !g5 | 0, (0 | (g5 = f4[e4 + 4 >> 2])) == f4[e4 + 104 >> 2] ? t3 = ce3(e4) : (f4[e4 + 4 >> 2] = g5 + 1, t3 = i4[0 | g5]), 48 == (0 | t3); ) ;
+                            for (; m4 = (g5 = m4) - 1 | 0, M5 = M5 - !g5 | 0, (0 | (g5 = f4[e4 + 4 >> 2])) == f4[e4 + 104 >> 2] ? t3 = ce4(e4) : (f4[e4 + 4 >> 2] = g5 + 1, t3 = i4[0 | g5]), 48 == (0 | t3); ) ;
                             N4 = 1;
                           }
                         }
@@ -89262,7 +92639,7 @@ var b = { Memory: function(A3) {
                               }
                               g5 = (0 | t3) > 57 ? g5 - 87 | 0 : y4, (0 | k5) <= 0 & B3 >>> 0 <= 7 | (0 | k5) < 0 ? I4 = g5 + (I4 << 4) | 0 : !k5 & B3 >>> 0 <= 28 ? (Yg(s4 + 48 | 0, g5), QA2(s4 + 32 | 0, Y3, H3, n3, E3, 0, 0, 0, 1073414144), Y3 = f4[s4 + 32 >> 2], H3 = f4[s4 + 36 >> 2], n3 = f4[s4 + 40 >> 2], E3 = f4[s4 + 44 >> 2], QA2(s4 + 16 | 0, f4[s4 + 48 >> 2], f4[s4 + 52 >> 2], f4[s4 + 56 >> 2], f4[s4 + 60 >> 2], Y3, H3, n3, E3), dA2(s4, f4[s4 + 16 >> 2], f4[s4 + 20 >> 2], f4[s4 + 24 >> 2], f4[s4 + 28 >> 2], Q3, x3, h4, p4), h4 = f4[s4 + 8 >> 2], p4 = f4[s4 + 12 >> 2], Q3 = f4[s4 >> 2], x3 = f4[s4 + 4 >> 2]) : l3 | !g5 || (QA2(s4 + 80 | 0, Y3, H3, n3, E3, 0, 0, 0, 1073610752), dA2(s4 - -64 | 0, f4[s4 + 80 >> 2], f4[s4 + 84 >> 2], f4[s4 + 88 >> 2], f4[s4 + 92 >> 2], Q3, x3, h4, p4), h4 = f4[s4 + 72 >> 2], p4 = f4[s4 + 76 >> 2], l3 = 1, Q3 = f4[s4 + 64 >> 2], x3 = f4[s4 + 68 >> 2]), k5 = (B3 = B3 + 1 | 0) ? k5 : k5 + 1 | 0, N4 = 1;
                             }
-                            (0 | (g5 = f4[e4 + 4 >> 2])) != f4[e4 + 104 >> 2] ? (f4[e4 + 4 >> 2] = g5 + 1, t3 = i4[0 | g5]) : t3 = ce3(e4);
+                            (0 | (g5 = f4[e4 + 4 >> 2])) != f4[e4 + 104 >> 2] ? (f4[e4 + 4 >> 2] = g5 + 1, t3 = i4[0 | g5]) : t3 = ce4(e4);
                             continue;
                           }
                           break;
@@ -89325,12 +92702,12 @@ var b = { Memory: function(A3) {
                             }
                             break;
                           }
-                          (0 | (e4 = f4[t3 + 4 >> 2])) != f4[t3 + 104 >> 2] ? (f4[t3 + 4 >> 2] = e4 + 1, g5 = i4[0 | e4]) : g5 = ce3(t3), e4 = 1;
+                          (0 | (e4 = f4[t3 + 4 >> 2])) != f4[t3 + 104 >> 2] ? (f4[t3 + 4 >> 2] = e4 + 1, g5 = i4[0 | e4]) : g5 = ce4(t3), e4 = 1;
                         }
-                        g5 = ce3(t3);
+                        g5 = ce4(t3);
                       }
                       if (l3 = 1, 48 == (0 | g5)) {
-                        for (; B3 = (e4 = B3) - 1 | 0, k5 = k5 - !e4 | 0, (0 | (e4 = f4[t3 + 4 >> 2])) == f4[t3 + 104 >> 2] ? g5 = ce3(t3) : (f4[t3 + 4 >> 2] = e4 + 1, g5 = i4[0 | e4]), 48 == (0 | g5); ) ;
+                        for (; B3 = (e4 = B3) - 1 | 0, k5 = k5 - !e4 | 0, (0 | (e4 = f4[t3 + 4 >> 2])) == f4[t3 + 104 >> 2] ? g5 = ce4(t3) : (f4[t3 + 4 >> 2] = e4 + 1, g5 = i4[0 | e4]), 48 == (0 | g5); ) ;
                         e4 = 1;
                       }
                     }
@@ -89352,7 +92729,7 @@ var b = { Memory: function(A3) {
                                   }
                                   E3 = (n3 = n3 + 1 | 0) ? E3 : E3 + 1 | 0, (0 | u4) <= 2044 ? (N4 = 48 == (0 | g5) ? N4 : n3, e4 = (I4 + 784 | 0) + (u4 << 2) | 0, d4 && (Q3 = (G3(f4[e4 >> 2], 10) + g5 | 0) - 48 | 0), f4[e4 >> 2] = Q3, e4 = 1, d4 = (g5 = 9 == (0 | (r4 = d4 + 1 | 0))) ? 0 : r4, u4 = g5 + u4 | 0) : 48 != (0 | g5) && (f4[I4 + 8960 >> 2] = 1 | f4[I4 + 8960 >> 2], N4 = 18396);
                                 }
-                                if ((0 | (g5 = f4[t3 + 4 >> 2])) == f4[t3 + 104 >> 2] ? g5 = ce3(t3) : (f4[t3 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5]), !((r4 = 46 == (0 | g5)) | (Q3 = g5 - 48 | 0) >>> 0 < 10)) break;
+                                if ((0 | (g5 = f4[t3 + 4 >> 2])) == f4[t3 + 104 >> 2] ? g5 = ce4(t3) : (f4[t3 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5]), !((r4 = 46 == (0 | g5)) | (Q3 = g5 - 48 | 0) >>> 0 < 10)) break;
                               }
                               if (B3 = l3 ? B3 : n3, k5 = l3 ? k5 : E3, !(!e4 | 69 != (-33 & g5))) {
                                 if (Q3 = RA2(t3, s4), x3 = e4 = U3, !(Q3 | -2147483648 != (0 | e4))) {
@@ -89477,12 +92854,12 @@ var b = { Memory: function(A3) {
                 (0 | (g5 = f4[e4 + 116 >> 2])) > 0 | (0 | g5) >= 0 && (f4[e4 + 4 >> 2] = f4[e4 + 4 >> 2] - 1);
                 break e;
               }
-              if ((0 | (g5 = f4[e4 + 4 >> 2])) == f4[e4 + 104 >> 2] ? g5 = ce3(e4) : (f4[e4 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5]), 40 != (0 | g5)) {
+              if ((0 | (g5 = f4[e4 + 4 >> 2])) == f4[e4 + 104 >> 2] ? g5 = ce4(e4) : (f4[e4 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5]), 40 != (0 | g5)) {
                 if (k5 = 2147450880, f4[e4 + 116 >> 2] < 0) break A;
                 f4[e4 + 4 >> 2] = f4[e4 + 4 >> 2] - 1;
                 break A;
               }
-              for (t3 = 1; (0 | (g5 = f4[e4 + 4 >> 2])) == f4[e4 + 104 >> 2] ? g5 = ce3(e4) : (f4[e4 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5]), g5 - 48 >>> 0 < 10 | g5 - 65 >>> 0 < 26 | 95 == (0 | g5) || !(g5 - 97 >>> 0 >= 26); ) t3 = t3 + 1 | 0;
+              for (t3 = 1; (0 | (g5 = f4[e4 + 4 >> 2])) == f4[e4 + 104 >> 2] ? g5 = ce4(e4) : (f4[e4 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5]), g5 - 48 >>> 0 < 10 | g5 - 65 >>> 0 < 26 | 95 == (0 | g5) || !(g5 - 97 >>> 0 >= 26); ) t3 = t3 + 1 | 0;
               if (k5 = 2147450880, 41 == (0 | g5)) break A;
               (0 | (g5 = f4[e4 + 116 >> 2])) > 0 | (0 | g5) >= 0 && (f4[e4 + 4 >> 2] = f4[e4 + 4 >> 2] - 1);
               g: {
@@ -89555,7 +92932,7 @@ var b = { Memory: function(A3) {
                 }
                 4 & n3 && (I3[A6 >> 1] = 32 | B2[A6 >> 1]), 2 & n3 && (I3[A6 >> 1] = 16 | B2[A6 >> 1]);
               }
-              64 & n3 && he(20, 0), A6 = k5 & n3 << 27 >> 31;
+              64 & n3 && he2(20, 0), A6 = k5 & n3 << 27 >> 31;
             } else A6 = 0;
             t3 = A6 + f4[36422] | 0, f4[36422] = t3, e4 = f4[E3 + 12 >> 2];
           }
@@ -90038,10 +93415,10 @@ var b = { Memory: function(A3) {
             } else fA2(A6, r4 = C3 + 1616 | 0, C3 + 1832 | 0, -1, !!(0 | Q3) << 1), f4[C3 + 40 >> 2] = r4, f4[C3 + 36 >> 2] = C3 + 1200, f4[C3 + 32 >> 2] = C3 + 992, Gg(189088, 200, 85233, C3 + 32 | 0), a3[189287] = 0;
             i4[C3 + 784 | 0] && (r4 = Lg(189088), a3[983 + (C3 - r4 | 0) | 0] = 0, rg2(r4 + 189088 | 0, C3 + 784 | 0)), 16 & (r4 = c4 | l3) && (f4[C3 + 1832 >> 2] = -268435457 & f4[C3 + 1832 >> 2]);
             g: if (!(128 & r4) | !(16 & i4[A6 + 14 | 0])) if (3072 & r4) {
-              if (te2(A6, 6), !(2048 & r4)) break g;
+              if (te3(A6, 6), !(2048 & r4)) break g;
               f4[C3 + 1832 >> 2] = 268435456 | f4[C3 + 1832 >> 2];
-            } else 16 & i4[G3(f4[33264], 12) + g5 | 0] && (1536 & (g5 = f4[C3 + 1832 >> 2]) ? te2(A6, 4) : 2048 & g5 && te2(A6, 3));
-            else te2(A6, 3);
+            } else 16 & i4[G3(f4[33264], 12) + g5 | 0] && (1536 & (g5 = f4[C3 + 1832 >> 2]) ? te3(A6, 4) : 2048 & g5 && te3(A6, 3));
+            else te3(A6, 3);
             8192 & n3 && (f4[A6 + 8192 >> 2] = 2, f4[A6 + 8184 >> 2] = 2);
             g: {
               if (8 & (g5 = f4[C3 + 1836 >> 2])) f4[A6 + 8184 >> 2] = 0, f4[A6 + 8188 >> 2] = 3, r4 = A6 + 8196 | 0;
@@ -90792,9 +94169,9 @@ var b = { Memory: function(A3) {
             if (!(8 & e4)) break A;
           }
           if (oC(g5 + 1088 | 0, A6, 40), 16 & e4) {
-            if ((0 | fr2(rg2(g5 + 704 | 0, A6))) <= 0) break A;
+            if ((0 | fr3(rg2(g5 + 704 | 0, A6))) <= 0) break A;
             u4 = 8 & e4;
-          } else (u4 = 8 & e4) | i4[g5 + 1088 | 0] || (I3[g5 + 1088 >> 1] = i4[85055] | i4[85056] << 8, a3[g5 + 1090 | 0] = i4[85057]), f4[g5 + 496 >> 2] = 137584, f4[g5 + 500 >> 2] = 47, f4[g5 + 504 >> 2] = 47, dg2(r4 = g5 + 512 | 0, 85286, g5 + 496 | 0), f4[g5 + 484 >> 2] = g5 + 1088, f4[g5 + 480 >> 2] = r4, dg2(r4 = g5 + 704 | 0, 85425, g5 + 480 | 0), (0 | fr2(r4)) > 0 || (f4[g5 + 468 >> 2] = 47, f4[g5 + 472 >> 2] = 47, f4[g5 + 464 >> 2] = 137584, dg2(r4 = g5 + 512 | 0, 85648, g5 + 464 | 0), f4[g5 + 452 >> 2] = g5 + 1088, f4[g5 + 448 >> 2] = r4, dg2(g5 + 704 | 0, 85425, g5 + 448 | 0));
+          } else (u4 = 8 & e4) | i4[g5 + 1088 | 0] || (I3[g5 + 1088 >> 1] = i4[85055] | i4[85056] << 8, a3[g5 + 1090 | 0] = i4[85057]), f4[g5 + 496 >> 2] = 137584, f4[g5 + 500 >> 2] = 47, f4[g5 + 504 >> 2] = 47, dg2(r4 = g5 + 512 | 0, 85286, g5 + 496 | 0), f4[g5 + 484 >> 2] = g5 + 1088, f4[g5 + 480 >> 2] = r4, dg2(r4 = g5 + 704 | 0, 85425, g5 + 480 | 0), (0 | fr3(r4)) > 0 || (f4[g5 + 468 >> 2] = 47, f4[g5 + 472 >> 2] = 47, f4[g5 + 464 >> 2] = 137584, dg2(r4 = g5 + 512 | 0, 85648, g5 + 464 | 0), f4[g5 + 452 >> 2] = g5 + 1088, f4[g5 + 448 >> 2] = r4, dg2(g5 + 704 | 0, 85425, g5 + 448 | 0));
           if (C3 = u4 ? 86012 : 85055, !(l3 = Ae3(g5 + 704 | 0, 85712))) {
             if (r4 = 0, 3 & e4) break A;
             C3 = (0 | Ng(r4 = g5 + 1088 | 0)) < 0 ? C3 : r4;
@@ -90826,7 +94203,7 @@ var b = { Memory: function(A3) {
                       f4[s4 + 324 >> 2] = f4[C3 + 412 >> 2];
                       break e;
                     case 8:
-                      tg2(A6, s4 + 320 | 0, 27);
+                      tg3(A6, s4 + 320 | 0, 27);
                       break e;
                     case 2:
                       if (f4[C3 + 48 >> 2] = 188784, aA2(A6, 84249, C3 + 48 | 0), !(A6 = i4[188784])) break e;
@@ -90869,22 +94246,22 @@ var b = { Memory: function(A3) {
                       f4[C3 + 88 >> 2] = s4 + 20, f4[C3 + 84 >> 2] = s4 + 16, f4[C3 + 80 >> 2] = s4 + 8, aA2(A6, 84778, C3 + 80 | 0);
                       break e;
                     case 10:
-                      tg2(A6, s4 + 12 | 0, 29);
+                      tg3(A6, s4 + 12 | 0, 29);
                       break e;
                     case 5:
-                      if ((0 | (o4 = ug2(A6, C3 + 160 | 0))) <= 0) break e;
+                      if ((0 | (o4 = ug3(A6, C3 + 160 | 0))) <= 0) break e;
                       if (r4 = 0, A6 = 0, o4 >>> 0 >= 4) for (w4 = -4 & o4, t3 = s4 + 304 | 0; k5 = C3 + 160 | 0, I3[t3 + (A6 << 1) >> 1] = f4[k5 + (A6 << 2) >> 2], I3[t3 + ((n3 = 1 | A6) << 1) >> 1] = f4[k5 + (n3 << 2) >> 2], I3[t3 + ((n3 = 2 | A6) << 1) >> 1] = f4[k5 + (n3 << 2) >> 2], I3[t3 + ((n3 = 3 | A6) << 1) >> 1] = f4[k5 + (n3 << 2) >> 2], A6 = A6 + 4 | 0, (0 | w4) != (0 | (b4 = b4 + 4 | 0)); ) ;
                       if (!(b4 = 3 & o4)) break e;
                       for (; I3[304 + (s4 + (A6 << 1) | 0) >> 1] = f4[(C3 + 160 | 0) + (A6 << 2) >> 2], A6 = A6 + 1 | 0, (0 | b4) != (0 | (r4 = r4 + 1 | 0)); ) ;
                       break e;
                     case 6:
-                      if ((0 | (o4 = ug2(A6, C3 + 160 | 0))) <= 0) break e;
+                      if ((0 | (o4 = ug3(A6, C3 + 160 | 0))) <= 0) break e;
                       if (r4 = 0, A6 = 0, o4 >>> 0 >= 4) for (w4 = -4 & o4, t3 = s4 + 296 | 0; k5 = C3 + 160 | 0, a3[A6 + t3 | 0] = f4[k5 + (A6 << 2) >> 2], a3[(n3 = 1 | A6) + t3 | 0] = f4[k5 + (n3 << 2) >> 2], a3[(n3 = 2 | A6) + t3 | 0] = f4[k5 + (n3 << 2) >> 2], a3[(n3 = 3 | A6) + t3 | 0] = f4[k5 + (n3 << 2) >> 2], A6 = A6 + 4 | 0, (0 | w4) != (0 | (b4 = b4 + 4 | 0)); ) ;
                       if (!(b4 = 3 & o4)) break e;
                       for (; a3[296 + (A6 + s4 | 0) | 0] = f4[(C3 + 160 | 0) + (A6 << 2) >> 2], A6 = A6 + 1 | 0, (0 | b4) != (0 | (r4 = r4 + 1 | 0)); ) ;
                       break e;
                     case 7:
-                      if ((0 | (o4 = ug2(A6, C3 + 160 | 0))) <= 0) break e;
+                      if ((0 | (o4 = ug3(A6, C3 + 160 | 0))) <= 0) break e;
                       if (r4 = 0, A6 = 0, o4 >>> 0 >= 4) for (w4 = -4 & o4, t3 = s4 + 304 | 0; n3 = k5 = t3 + (A6 << 1) | 0, c4 = B2[k5 >> 1], k5 = C3 + 160 | 0, I3[n3 >> 1] = c4 + B2[k5 + (A6 << 2) >> 1], I3[(c4 = t3 + ((n3 = 1 | A6) << 1) | 0) >> 1] = B2[c4 >> 1] + B2[k5 + (n3 << 2) >> 1], I3[(c4 = t3 + ((n3 = 2 | A6) << 1) | 0) >> 1] = B2[c4 >> 1] + B2[k5 + (n3 << 2) >> 1], I3[(c4 = t3 + ((n3 = 3 | A6) << 1) | 0) >> 1] = B2[c4 >> 1] + B2[k5 + (n3 << 2) >> 1], A6 = A6 + 4 | 0, (0 | w4) != (0 | (b4 = b4 + 4 | 0)); ) ;
                       if (!(b4 = 3 & o4)) break e;
                       for (; I3[(t3 = s4 + (A6 << 1) | 0) + 304 >> 1] = B2[t3 + 304 >> 1] + B2[(C3 + 160 | 0) + (A6 << 2) >> 1], A6 = A6 + 1 | 0, (0 | b4) != (0 | (r4 = r4 + 1 | 0)); ) ;
@@ -91015,7 +94392,7 @@ var b = { Memory: function(A3) {
                 f4[g5 + 16 >> 2] = g5 + 704, eC(v4, 87359, g5 + 16 | 0);
               }
             }
-            tr2(l3);
+            tr3(l3);
           }
           e: {
             if ((A6 = f4[47192]) | D3) {
@@ -91050,7 +94427,7 @@ var b = { Memory: function(A3) {
                         f: {
                           i: if (32 == (0 | (e4 &= 255)) | e4 - 9 >>> 0 < 5) {
                             for (; e4 = s4, s4 = s4 + 1 | 0, 32 == (0 | (g5 = i4[e4 + 1 | 0])) | g5 - 9 >>> 0 < 5; ) ;
-                            for (Tg(r4, 0, 0); (0 | (g5 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? g5 = ce3(r4) : (f4[r4 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5]), 32 == (0 | g5) | g5 - 9 >>> 0 < 5; ) ;
+                            for (Tg(r4, 0, 0); (0 | (g5 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? g5 = ce4(r4) : (f4[r4 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5]), 32 == (0 | g5) | g5 - 9 >>> 0 < 5; ) ;
                             s4 = f4[r4 + 4 >> 2], (0 | (g5 = f4[r4 + 116 >> 2])) > 0 | (0 | g5) >= 0 && (s4 = s4 - 1 | 0, f4[r4 + 4 >> 2] = s4), s4 = g5 = s4 - f4[r4 + 44 >> 2] | 0, o4 = l3 + f4[r4 + 124 >> 2] | 0, o4 = (t3 = g5 >> 31) + ((g5 = E3 + f4[r4 + 120 >> 2] | 0) >>> 0 < E3 >>> 0 ? o4 + 1 | 0 : o4) | 0, l3 = (E3 = g5 + s4 | 0) >>> 0 < g5 >>> 0 ? o4 + 1 | 0 : o4;
                           } else {
                             b: {
@@ -91060,9 +94437,9 @@ var b = { Memory: function(A3) {
                                     if (42 == (0 | (e4 = i4[s4 + 1 | 0]))) break t;
                                     if (37 != (0 | e4)) break s;
                                   }
-                                  if (Tg(r4, 0, 0), 37 != i4[0 | s4]) (0 | (e4 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? e4 = ce3(r4) : (f4[r4 + 4 >> 2] = e4 + 1, e4 = i4[0 | e4]);
+                                  if (Tg(r4, 0, 0), 37 != i4[0 | s4]) (0 | (e4 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? e4 = ce4(r4) : (f4[r4 + 4 >> 2] = e4 + 1, e4 = i4[0 | e4]);
                                   else {
-                                    for (; (0 | (e4 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? e4 = ce3(r4) : (f4[r4 + 4 >> 2] = e4 + 1, e4 = i4[0 | e4]), 32 == (0 | e4) | e4 - 9 >>> 0 < 5; ) ;
+                                    for (; (0 | (e4 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? e4 = ce4(r4) : (f4[r4 + 4 >> 2] = e4 + 1, e4 = i4[0 | e4]), 32 == (0 | e4) | e4 - 9 >>> 0 < 5; ) ;
                                     s4 = s4 + 1 | 0;
                                   }
                                   if (i4[0 | s4] != (0 | e4)) {
@@ -91135,11 +94512,11 @@ var b = { Memory: function(A3) {
                                 Br2(B3, m4, E3, l3);
                                 break i;
                               }
-                              for (Tg(r4, 0, 0); (0 | (g5 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? g5 = ce3(r4) : (f4[r4 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5]), 32 == (0 | g5) | g5 - 9 >>> 0 < 5; ) ;
+                              for (Tg(r4, 0, 0); (0 | (g5 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? g5 = ce4(r4) : (f4[r4 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5]), 32 == (0 | g5) | g5 - 9 >>> 0 < 5; ) ;
                               g5 = f4[r4 + 4 >> 2], (0 | (t3 = f4[r4 + 116 >> 2])) > 0 | (0 | t3) >= 0 && (g5 = g5 - 1 | 0, f4[r4 + 4 >> 2] = g5), t3 = g5 = g5 - f4[r4 + 44 >> 2] | 0, o4 = l3 + f4[r4 + 124 >> 2] | 0, l3 = (n3 = g5 >> 31) + ((g5 = E3 + f4[r4 + 120 >> 2] | 0) >>> 0 < E3 >>> 0 ? o4 + 1 | 0 : o4) | 0, l3 = (E3 = g5 + t3 | 0) >>> 0 < g5 >>> 0 ? l3 + 1 | 0 : l3;
                             }
                             if (u4 = s4, Tg(r4, s4, x3 = s4 >> 31), (0 | (g5 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2]) {
-                              if ((0 | ce3(r4)) < 0) break C;
+                              if ((0 | ce4(r4)) < 0) break C;
                             } else f4[r4 + 4 >> 2] = g5 + 1;
                             (0 | (g5 = f4[r4 + 116 >> 2])) > 0 | (0 | g5) >= 0 && (f4[r4 + 4 >> 2] = f4[r4 + 4 >> 2] - 1), g5 = 16;
                             b: {
@@ -91230,7 +94607,7 @@ var b = { Memory: function(A3) {
                                   }
                                   k5 = 0, o4 = 0, t3 = 0, n3 = 0, D3 = 0, V2 = M5 = V2 - 16 | 0;
                                   n: if (1 != (0 | g5) & g5 >>> 0 <= 36) {
-                                    for (; (0 | (s4 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? s4 = ce3(r4) : (f4[r4 + 4 >> 2] = s4 + 1, s4 = i4[0 | s4]), 32 == (0 | s4) | s4 - 9 >>> 0 < 5; ) ;
+                                    for (; (0 | (s4 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? s4 = ce4(r4) : (f4[r4 + 4 >> 2] = s4 + 1, s4 = i4[0 | s4]), 32 == (0 | s4) | s4 - 9 >>> 0 < 5; ) ;
                                     k: {
                                       o: switch (s4 - 43 | 0) {
                                         case 0:
@@ -91239,15 +94616,15 @@ var b = { Memory: function(A3) {
                                         default:
                                           break k;
                                       }
-                                      D3 = 45 == (0 | s4) ? -1 : 0, (0 | (s4 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? s4 = ce3(r4) : (f4[r4 + 4 >> 2] = s4 + 1, s4 = i4[0 | s4]);
+                                      D3 = 45 == (0 | s4) ? -1 : 0, (0 | (s4 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? s4 = ce4(r4) : (f4[r4 + 4 >> 2] = s4 + 1, s4 = i4[0 | s4]);
                                     }
                                     k: {
                                       o: {
                                         B: {
                                           c: {
                                             if (!(!!(0 | g5) & 16 != (0 | g5) | 48 != (0 | s4))) {
-                                              if ((0 | (s4 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? s4 = ce3(r4) : (f4[r4 + 4 >> 2] = s4 + 1, s4 = i4[0 | s4]), 88 == (-33 & s4)) {
-                                                if (g5 = 16, (0 | (s4 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? s4 = ce3(r4) : (f4[r4 + 4 >> 2] = s4 + 1, s4 = i4[0 | s4]), i4[s4 + 121329 | 0] < 16) break B;
+                                              if ((0 | (s4 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? s4 = ce4(r4) : (f4[r4 + 4 >> 2] = s4 + 1, s4 = i4[0 | s4]), 88 == (-33 & s4)) {
+                                                if (g5 = 16, (0 | (s4 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? s4 = ce4(r4) : (f4[r4 + 4 >> 2] = s4 + 1, s4 = i4[0 | s4]), i4[s4 + 121329 | 0] < 16) break B;
                                                 (0 | (g5 = f4[r4 + 116 >> 2])) > 0 | (0 | g5) >= 0 && (f4[r4 + 4 >> 2] = f4[r4 + 4 >> 2] - 1), Tg(r4, 0, 0);
                                                 break n;
                                               }
@@ -91262,12 +94639,12 @@ var b = { Memory: function(A3) {
                                           }
                                           if (10 == (0 | g5)) {
                                             if ((t3 = s4 - 48 | 0) >>> 0 <= 9) {
-                                              for (g5 = 0; n3 = (g5 = G3(g5, 10) + t3 | 0) >>> 0 < 429496729, (0 | (s4 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? s4 = ce3(r4) : (f4[r4 + 4 >> 2] = s4 + 1, s4 = i4[0 | s4]), n3 & (t3 = s4 - 48 | 0) >>> 0 <= 9; ) ;
+                                              for (g5 = 0; n3 = (g5 = G3(g5, 10) + t3 | 0) >>> 0 < 429496729, (0 | (s4 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? s4 = ce4(r4) : (f4[r4 + 4 >> 2] = s4 + 1, s4 = i4[0 | s4]), n3 & (t3 = s4 - 48 | 0) >>> 0 <= 9; ) ;
                                               k5 = g5;
                                             }
                                             c: if (!(t3 >>> 0 > 9)) {
                                               for (g5 = Cr2(k5, 0, 10, 0), n3 = U3; ; ) {
-                                                if (o4 = n3, n3 = 429496729 == (0 | (o4 = (k5 = g5 + t3 | 0) >>> 0 < t3 >>> 0 ? o4 + 1 | 0 : o4)) & k5 >>> 0 >= 2576980378 | o4 >>> 0 > 429496729, (0 | (g5 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? s4 = ce3(r4) : (f4[r4 + 4 >> 2] = g5 + 1, s4 = i4[0 | g5]), n3 | (t3 = s4 - 48 | 0) >>> 0 > 9) break c;
+                                                if (o4 = n3, n3 = 429496729 == (0 | (o4 = (k5 = g5 + t3 | 0) >>> 0 < t3 >>> 0 ? o4 + 1 | 0 : o4)) & k5 >>> 0 >= 2576980378 | o4 >>> 0 > 429496729, (0 | (g5 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? s4 = ce4(r4) : (f4[r4 + 4 >> 2] = g5 + 1, s4 = i4[0 | g5]), n3 | (t3 = s4 - 48 | 0) >>> 0 > 9) break c;
                                                 if (g5 = Cr2(k5, o4, 10, 0), !(-1 == (0 | (n3 = U3)) & ~t3 >>> 0 >= g5 >>> 0 | -1 != (0 | n3))) break;
                                               }
                                               g5 = 10;
@@ -91279,28 +94656,28 @@ var b = { Memory: function(A3) {
                                         }
                                         if (g5 - 1 & g5) {
                                           if ((n3 = i4[s4 + 121329 | 0]) >>> 0 < g5 >>> 0) {
-                                            for (; k5 = (t3 = G3(g5, t3) + n3 | 0) >>> 0 < 119304647, (0 | (s4 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? s4 = ce3(r4) : (f4[r4 + 4 >> 2] = s4 + 1, s4 = i4[0 | s4]), k5 & (n3 = i4[s4 + 121329 | 0]) >>> 0 < g5 >>> 0; ) ;
+                                            for (; k5 = (t3 = G3(g5, t3) + n3 | 0) >>> 0 < 119304647, (0 | (s4 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? s4 = ce4(r4) : (f4[r4 + 4 >> 2] = s4 + 1, s4 = i4[0 | s4]), k5 & (n3 = i4[s4 + 121329 | 0]) >>> 0 < g5 >>> 0; ) ;
                                             k5 = t3;
                                           }
                                           if (g5 >>> 0 <= n3 >>> 0) break o;
                                           for (; ; ) {
                                             if (t3 = Cr2(k5, o4, g5, 0), -1 == (0 | (u4 = U3)) & ~(n3 &= 255) >>> 0 < t3 >>> 0) break o;
-                                            if (o4 = u4, o4 = (k5 = t3 + n3 | 0) >>> 0 < n3 >>> 0 ? o4 + 1 | 0 : o4, (0 | (s4 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? s4 = ce3(r4) : (f4[r4 + 4 >> 2] = s4 + 1, s4 = i4[0 | s4]), g5 >>> 0 <= (n3 = i4[s4 + 121329 | 0]) >>> 0) break o;
+                                            if (o4 = u4, o4 = (k5 = t3 + n3 | 0) >>> 0 < n3 >>> 0 ? o4 + 1 | 0 : o4, (0 | (s4 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? s4 = ce4(r4) : (f4[r4 + 4 >> 2] = s4 + 1, s4 = i4[0 | s4]), g5 >>> 0 <= (n3 = i4[s4 + 121329 | 0]) >>> 0) break o;
                                             if (gg(M5, g5, 0, 0, 0, k5, o4, 0, 0), f4[M5 + 8 >> 2] | f4[M5 + 12 >> 2]) break;
                                           }
                                         } else {
                                           if (u4 = a3[84400 + (G3(g5, 23) >>> 5 & 7) | 0], (t3 = i4[s4 + 121329 | 0]) >>> 0 < g5 >>> 0) {
-                                            for (; k5 = (n3 = n3 << u4 | t3) >>> 0 < 134217728, (0 | (s4 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? s4 = ce3(r4) : (f4[r4 + 4 >> 2] = s4 + 1, s4 = i4[0 | s4]), k5 & (t3 = i4[s4 + 121329 | 0]) >>> 0 < g5 >>> 0; ) ;
+                                            for (; k5 = (n3 = n3 << u4 | t3) >>> 0 < 134217728, (0 | (s4 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? s4 = ce4(r4) : (f4[r4 + 4 >> 2] = s4 + 1, s4 = i4[0 | s4]), k5 & (t3 = i4[s4 + 121329 | 0]) >>> 0 < g5 >>> 0; ) ;
                                             k5 = n3;
                                           }
                                           if (!(g5 >>> 0 <= t3 >>> 0 || (x3 = 31 & u4, (63 & u4) >>> 0 >= 32 ? (n3 = 0, x3 = -1 >>> x3 | 0) : x3 = (n3 = -1 >>> x3 | 0) | (1 << x3) - 1 << 32 - x3, !n3 & k5 >>> 0 > x3 >>> 0))) for (; ; ) {
-                                            if (p4 = 255 & t3, t3 = k5, s4 = 31 & u4, (63 & u4) >>> 0 >= 32 ? (o4 = t3 << s4, s4 = 0) : (o4 = (1 << s4) - 1 & t3 >>> 32 - s4 | o4 << s4, s4 = t3 << s4), k5 = p4 | s4, (0 | (s4 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? s4 = ce3(r4) : (f4[r4 + 4 >> 2] = s4 + 1, s4 = i4[0 | s4]), g5 >>> 0 <= (t3 = i4[s4 + 121329 | 0]) >>> 0) break o;
+                                            if (p4 = 255 & t3, t3 = k5, s4 = 31 & u4, (63 & u4) >>> 0 >= 32 ? (o4 = t3 << s4, s4 = 0) : (o4 = (1 << s4) - 1 & t3 >>> 32 - s4 | o4 << s4, s4 = t3 << s4), k5 = p4 | s4, (0 | (s4 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? s4 = ce4(r4) : (f4[r4 + 4 >> 2] = s4 + 1, s4 = i4[0 | s4]), g5 >>> 0 <= (t3 = i4[s4 + 121329 | 0]) >>> 0) break o;
                                             if (!((0 | n3) == (0 | o4) & k5 >>> 0 <= x3 >>> 0 | n3 >>> 0 > o4 >>> 0)) break;
                                           }
                                         }
                                       }
                                       if (!(i4[s4 + 121329 | 0] >= g5 >>> 0)) {
-                                        for (; (0 | (s4 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? s4 = ce3(r4) : (f4[r4 + 4 >> 2] = s4 + 1, s4 = i4[0 | s4]), i4[s4 + 121329 | 0] < g5 >>> 0; ) ;
+                                        for (; (0 | (s4 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? s4 = ce4(r4) : (f4[r4 + 4 >> 2] = s4 + 1, s4 = i4[0 | s4]), i4[s4 + 121329 | 0] < g5 >>> 0; ) ;
                                         f4[56798] = 68, D3 = 0, k5 = -1, o4 = -1;
                                       }
                                     }
@@ -91346,7 +94723,7 @@ var b = { Memory: function(A3) {
                                   if (s4 = 0, !(g5 = IA2(t3))) break I;
                                   for (; ; ) {
                                     for (A6 = g5; ; ) {
-                                      if ((0 | (g5 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? g5 = ce3(r4) : (f4[r4 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5]), !i4[33 + (g5 + C3 | 0) | 0]) {
+                                      if ((0 | (g5 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? g5 = ce4(r4) : (f4[r4 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5]), !i4[33 + (g5 + C3 | 0) | 0]) {
                                         t3 = 0, w4 = A6;
                                         break s;
                                       }
@@ -91358,13 +94735,13 @@ var b = { Memory: function(A3) {
                                   break r;
                                 }
                                 if (s4 = 0, B3) for (; ; ) {
-                                  if ((0 | (A6 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? A6 = ce3(r4) : (f4[r4 + 4 >> 2] = A6 + 1, A6 = i4[0 | A6]), !i4[33 + (A6 + C3 | 0) | 0]) {
+                                  if ((0 | (A6 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? A6 = ce4(r4) : (f4[r4 + 4 >> 2] = A6 + 1, A6 = i4[0 | A6]), !i4[33 + (A6 + C3 | 0) | 0]) {
                                     t3 = 0, w4 = A6 = B3;
                                     break s;
                                   }
                                   a3[s4 + B3 | 0] = A6, s4 = s4 + 1 | 0;
                                 }
-                                for (; (0 | (A6 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? A6 = ce3(r4) : (f4[r4 + 4 >> 2] = A6 + 1, A6 = i4[0 | A6]), i4[33 + (A6 + C3 | 0) | 0]; ) ;
+                                for (; (0 | (A6 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? A6 = ce4(r4) : (f4[r4 + 4 >> 2] = A6 + 1, A6 = i4[0 | A6]), i4[33 + (A6 + C3 | 0) | 0]; ) ;
                                 A6 = 0, w4 = 0, t3 = 0;
                               } else {
                                 if (g5 = B3, c4 && !(g5 = IA2(t3 << 2))) break I;
@@ -91372,7 +94749,7 @@ var b = { Memory: function(A3) {
                                   A6 = g5;
                                   t: {
                                     for (; ; ) {
-                                      if ((0 | (g5 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? g5 = ce3(r4) : (f4[r4 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5]), !i4[33 + (g5 + C3 | 0) | 0]) break t;
+                                      if ((0 | (g5 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? g5 = ce4(r4) : (f4[r4 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5]), !i4[33 + (g5 + C3 | 0) | 0]) break t;
                                       a3[C3 + 27 | 0] = g5, k5 = C3 + 28 | 0, g5 = f4[(n3 = (g5 = C3 + 296 | 0) || 228604) >> 2];
                                       n: {
                                         k: {
@@ -92805,7 +96182,7 @@ var b = { Memory: function(A3) {
                 }
                 r: if (pg2(e4, 87276, 3)) JA2(e4, 189088, C3 + 240 | 0);
                 else {
-                  if (c4 = 0, 223 & (s4 = i4[0 | (w4 = e4 + 3 | 0)])) for (; a3[(C3 + 240 | 0) + c4 | 0] = ar(s4 << 24 >> 24), c4 = c4 + 1 | 0, 223 & (s4 = i4[0 | (w4 = w4 + 1 | 0)]); ) ;
+                  if (c4 = 0, 223 & (s4 = i4[0 | (w4 = e4 + 3 | 0)])) for (; a3[(C3 + 240 | 0) + c4 | 0] = ar2(s4 << 24 >> 24), c4 = c4 + 1 | 0, 223 & (s4 = i4[0 | (w4 = w4 + 1 | 0)]); ) ;
                   a3[(r4 = C3 + 240 | 0) + c4 | 0] = 0, s4 = 0;
                   C: if (!((0 | (g5 = f4[34461])) <= 0)) {
                     for (; ; ) {
@@ -93470,7 +96847,7 @@ var b = { Memory: function(A3) {
                                         B3 = f4[t3 + 64 >> 2];
                                         break n;
                                       }
-                                      o4 = 0, br2(A6, 32, d4, 0, D3);
+                                      o4 = 0, br3(A6, 32, d4, 0, D3);
                                       break t;
                                     }
                                     f4[t3 + 12 >> 2] = 0, f4[t3 + 8 >> 2] = f4[t3 + 64 >> 2], B3 = t3 + 8 | 0, f4[t3 + 64 >> 2] = B3, w4 = -1;
@@ -93488,14 +96865,14 @@ var b = { Memory: function(A3) {
                                     if (c4) break e;
                                   }
                                   if (u4 = 61, (0 | o4) < 0) break g;
-                                  if (br2(A6, 32, d4, o4, D3), o4) for (u4 = 0, B3 = f4[t3 + 64 >> 2]; ; ) {
+                                  if (br3(A6, 32, d4, o4, D3), o4) for (u4 = 0, B3 = f4[t3 + 64 >> 2]; ; ) {
                                     if (!(c4 = f4[B3 >> 2])) break t;
                                     if ((u4 = (c4 = je2(t3 + 4 | 0, c4)) + u4 | 0) >>> 0 > o4 >>> 0) break t;
                                     if (kC(A6, t3 + 4 | 0, c4), B3 = B3 + 4 | 0, !(o4 >>> 0 > u4 >>> 0)) break;
                                   }
                                   else o4 = 0;
                                 }
-                                br2(A6, 32, d4, o4, 8192 ^ D3), o4 = (0 | o4) < (0 | d4) ? d4 : o4;
+                                br3(A6, 32, d4, o4, 8192 ^ D3), o4 = (0 | o4) < (0 | d4) ? d4 : o4;
                                 continue C;
                               }
                               if ((0 | w4) < 0 && h4) break r;
@@ -93528,7 +96905,7 @@ var b = { Memory: function(A3) {
                     }
                     if ((0 | (B3 = (0 | w4) > (0 | (E3 = u4 - c4 | 0)) ? w4 : E3)) > (2147483647 ^ x3)) break r;
                     if (u4 = 61, (0 | p4) < (0 | (o4 = (0 | (w4 = B3 + x3 | 0)) < (0 | d4) ? d4 : w4))) break g;
-                    br2(A6, 32, o4, w4, D3), kC(A6, v4, x3), br2(A6, 48, o4, w4, 65536 ^ D3), br2(A6, 48, B3, E3, 0), kC(A6, c4, E3), br2(A6, 32, o4, w4, 8192 ^ D3);
+                    br3(A6, 32, o4, w4, D3), kC(A6, v4, x3), br3(A6, 48, o4, w4, 65536 ^ D3), br3(A6, 48, B3, E3, 0), kC(A6, c4, E3), br3(A6, 32, o4, w4, 8192 ^ D3);
                     continue;
                   }
                   break;
@@ -93707,7 +97084,7 @@ var b = { Memory: function(A3) {
           E3 = g5 + 1536 | 0, V2 = Q3 = V2 - 336 | 0;
           e: if (!(!(A6 = f4[(w4 = g5 + 2944 | 0) + 4 >> 2]) | !i4[0 | A6])) {
             if ((0 | (D3 = Lg(A6))) >= 0) {
-              for (r4 = D3 >>> 0 >= 79 ? 79 : D3, k5 = 1; A6 = ar(a3[f4[w4 + 4 >> 2] + C3 | 0]), a3[(Q3 + 256 | 0) + C3 | 0] = A6, k5 = (45 == (255 & A6)) + k5 | 0, A6 = (0 | r4) != (0 | C3), C3 = C3 + 1 | 0, A6; ) ;
+              for (r4 = D3 >>> 0 >= 79 ? 79 : D3, k5 = 1; A6 = ar2(a3[f4[w4 + 4 >> 2] + C3 | 0]), a3[(Q3 + 256 | 0) + C3 | 0] = A6, k5 = (45 == (255 & A6)) + k5 | 0, A6 = (0 | r4) != (0 | C3), C3 = C3 + 1 | 0, A6; ) ;
               if (1 != (0 | k5)) break e;
             }
             k5 = 1;
@@ -94905,8 +98282,8 @@ var b = { Memory: function(A3) {
       }
       function HA2(A6, e4, g5) {
         var r4, C3 = 0, I4 = 0, b4 = 0, s4 = 0, t3 = 0, n3 = 0, k5 = 0, o4 = 0;
-        V2 = r4 = V2 - 288 | 0, 132848 != (0 | e4) && Pe2(132848, e4, 40), (0 | (C3 = A6 + 228 | 0)) != (0 | e4) && Pe2(C3, e4, 40), f4[r4 + 88 >> 2] = e4, f4[r4 + 84 >> 2] = 47, f4[r4 + 80 >> 2] = 137584, dg2(C3 = r4 + 96 | 0, 84089, r4 + 80 | 0), I4 = fr2(C3), (C3 = f4[A6 + 688 >> 2]) && (mA2(C3), f4[A6 + 688 >> 2] = 0), C3 = Ae3(r4 + 96 | 0, 84577);
-        A: if ((0 | I4) > 0 && C3) if (g5 = IA2(I4), f4[A6 + 688 >> 2] = g5, g5) if (n3 = Eg(g5, I4, C3), tr2(C3), n3 >>> 0 <= 1032) f4[r4 + 16 >> 2] = r4 + 96, eC(f4[30450], 85164, r4 + 16 | 0), g5 = 2;
+        V2 = r4 = V2 - 288 | 0, 132848 != (0 | e4) && Pe2(132848, e4, 40), (0 | (C3 = A6 + 228 | 0)) != (0 | e4) && Pe2(C3, e4, 40), f4[r4 + 88 >> 2] = e4, f4[r4 + 84 >> 2] = 47, f4[r4 + 80 >> 2] = 137584, dg2(C3 = r4 + 96 | 0, 84089, r4 + 80 | 0), I4 = fr3(C3), (C3 = f4[A6 + 688 >> 2]) && (mA2(C3), f4[A6 + 688 >> 2] = 0), C3 = Ae3(r4 + 96 | 0, 84577);
+        A: if ((0 | I4) > 0 && C3) if (g5 = IA2(I4), f4[A6 + 688 >> 2] = g5, g5) if (n3 = Eg(g5, I4, C3), tr3(C3), n3 >>> 0 <= 1032) f4[r4 + 16 >> 2] = r4 + 96, eC(f4[30450], 85164, r4 + 16 | 0), g5 = 2;
         else if (C3 = f4[A6 + 688 >> 2], g5 = f4[C3 + 4 >> 2], !(1024 != (0 | (I4 = f4[C3 >> 2])) | (0 | g5) <= 0) & (0 | g5) < 134217729) {
           C3 = g5 + C3 | 0, f4[A6 + 684 >> 2] = C3, o4 = ue(A6 + 5168 | 0, 0, 1024), ue(A6 + 7664 | 0, 0, 260), ue(A6 + 7924 | 0, 255, 256), ue(A6 + 4788 | 0, 0, 380), ue(A6 + 6192 | 0, 0, 512);
           e: if (7 != (0 | (g5 = i4[0 | C3]))) for (; ; ) {
@@ -94959,10 +98336,10 @@ var b = { Memory: function(A3) {
           }
           g5 = 0, (0 | (A6 = f4[A6 + 324 >> 2])) <= 0 | A6 >>> 0 <= n3 >>> 0 || (f4[r4 + 48 >> 2] = e4, eC(f4[30450], 85519, r4 + 48 | 0));
         } else f4[r4 + 40 >> 2] = g5, f4[r4 + 36 >> 2] = I4, f4[r4 + 32 >> 2] = r4 + 96, eC(f4[30450], 85349, r4 + 32 | 0), g5 = 2;
-        else tr2(C3), g5 = 3;
+        else tr3(C3), g5 = 3;
         else {
           if (g5 || (f4[r4 >> 2] = r4 + 96, eC(f4[30450], 84963, r4)), g5 = 1, !C3) break A;
-          tr2(C3);
+          tr3(C3);
         }
         return V2 = r4 + 288 | 0, g5;
       }
@@ -95024,13 +98401,13 @@ var b = { Memory: function(A3) {
       }
       function FA2(A6, e4, g5) {
         var r4, C3, I4 = 0, b4 = 0, s4 = 0, t3 = 0, n3 = 0, k5 = 0, o4 = 0, B3 = 0, c4 = 0;
-        if (V2 = r4 = V2 - 1040 | 0, (0 | (b4 = Sg(A6, 589824, 0))) >= 0 && ((I4 = hr2(1, 2072)) ? f4[I4 + 8 >> 2] = b4 : (d3(0 | b4), I4 = 0)), C3 = I4, I4) {
+        if (V2 = r4 = V2 - 1040 | 0, (0 | (b4 = Sg(A6, 589824, 0))) >= 0 && ((I4 = hr3(1, 2072)) ? f4[I4 + 8 >> 2] = b4 : (d3(0 | b4), I4 = 0)), C3 = I4, I4) {
           A: if (I4 = yg2(C3)) for (c4 = f4[30450], B3 = (r4 + 96 | 0) + e4 | 0; ; ) {
             if ((0 | (b4 = f4[50303])) >= 348) {
               f4[r4 + 4 >> 2] = 350, f4[r4 >> 2] = b4 + 1, eC(c4, 91860, r4);
               break A;
             }
-            if (46 != i4[I4 + 19 | 0]) if (f4[r4 + 88 >> 2] = I4 + 19, f4[r4 + 84 >> 2] = 47, f4[r4 + 80 >> 2] = A6, dg2(I4 = r4 + 96 | 0, 91924, r4 + 80 | 0), -31 != (0 | (I4 = fr2(I4)))) {
+            if (46 != i4[I4 + 19 | 0]) if (f4[r4 + 88 >> 2] = I4 + 19, f4[r4 + 84 >> 2] = 47, f4[r4 + 80 >> 2] = A6, dg2(I4 = r4 + 96 | 0, 91924, r4 + 80 | 0), -31 != (0 | (I4 = fr3(I4)))) {
               if (!((0 | I4) <= 0) && (o4 = Ae3(r4 + 96 | 0, 85712))) {
                 s4 = 0, a3[r4 + 832 | 0] = 0, a3[r4 + 752 | 0] = 0, f4[r4 + 360 >> 2] = 0, f4[r4 + 356 >> 2] = 4, n3 = 0;
                 e: for (; ; ) {
@@ -95076,7 +98453,7 @@ var b = { Memory: function(A3) {
                   }
                   break;
                 }
-                a3[(r4 + 368 | 0) + n3 | 0] = 0, b4 = Hr2(132112, r4 + 752 | 0), s4 ? (t3 = Lg(B3) + n3 | 0, k5 = _A2((s4 = hr2(28 + (Lg(r4 + 832 | 0) + t3 | 0) | 0, 1)) + 24 | 0, r4 + 368 | 0, I4 = n3 + 1 | 0), f4[s4 + 4 >> 2] = k5, I4 = rg2(I4 + k5 | 0, B3), f4[s4 >> 2] = I4, f4[s4 + 8 >> 2] = I4, i4[r4 + 832 | 0] && (f4[s4 >> 2] = rg2(2 + (t3 + k5 | 0) | 0, r4 + 832 | 0)), I4 = f4[r4 + 360 >> 2], a3[s4 + 14 | 0] = 0, a3[s4 + 12 | 0] = b4, a3[s4 + 13 | 0] = I4, a3[s4 + 15 | 0] = f4[r4 + 356 >> 2], tr2(o4), I4 = f4[50303], f4[50303] = I4 + 1, f4[201216 + (I4 << 2) >> 2] = s4) : tr2(o4);
+                a3[(r4 + 368 | 0) + n3 | 0] = 0, b4 = Hr2(132112, r4 + 752 | 0), s4 ? (t3 = Lg(B3) + n3 | 0, k5 = _A2((s4 = hr3(28 + (Lg(r4 + 832 | 0) + t3 | 0) | 0, 1)) + 24 | 0, r4 + 368 | 0, I4 = n3 + 1 | 0), f4[s4 + 4 >> 2] = k5, I4 = rg2(I4 + k5 | 0, B3), f4[s4 >> 2] = I4, f4[s4 + 8 >> 2] = I4, i4[r4 + 832 | 0] && (f4[s4 >> 2] = rg2(2 + (t3 + k5 | 0) | 0, r4 + 832 | 0)), I4 = f4[r4 + 360 >> 2], a3[s4 + 14 | 0] = 0, a3[s4 + 12 | 0] = b4, a3[s4 + 13 | 0] = I4, a3[s4 + 15 | 0] = f4[r4 + 356 >> 2], tr3(o4), I4 = f4[50303], f4[50303] = I4 + 1, f4[201216 + (I4 << 2) >> 2] = s4) : tr3(o4);
               }
             } else FA2(r4 + 96 | 0, e4, g5);
             if (!(I4 = yg2(C3))) break;
@@ -95095,7 +98472,7 @@ var b = { Memory: function(A3) {
               if (r4 = Ae3(A6, 84577)) {
                 if (-1 == (0 | Jr2(r4, 20))) break e;
                 if (b4 = Tr2(r4), C3 = Tr2(r4), t3 = Tr2(r4), !(65537 != (0 | b4) | (0 | C3) != f4[50754]) & (0 | t3) == C3 << 1) break g;
-                tr2(r4), I3[g5 + 256 >> 1] = i4[84864] | i4[84865] << 8, A6 = i4[84852] | i4[84853] << 8 | i4[84854] << 16 | i4[84855] << 24, f4[g5 + 240 >> 2] = i4[84848] | i4[84849] << 8 | i4[84850] << 16 | i4[84851] << 24, f4[g5 + 244 >> 2] = A6, A6 = i4[84860] | i4[84861] << 8 | i4[84862] << 16 | i4[84863] << 24, f4[g5 + 248 >> 2] = i4[84856] | i4[84857] << 8 | i4[84858] << 16 | i4[84859] << 24, f4[g5 + 252 >> 2] = A6, V2 = b4 = V2 - 16 | 0;
+                tr3(r4), I3[g5 + 256 >> 1] = i4[84864] | i4[84865] << 8, A6 = i4[84852] | i4[84853] << 8 | i4[84854] << 16 | i4[84855] << 24, f4[g5 + 240 >> 2] = i4[84848] | i4[84849] << 8 | i4[84850] << 16 | i4[84851] << 24, f4[g5 + 244 >> 2] = A6, A6 = i4[84860] | i4[84861] << 8 | i4[84862] << 16 | i4[84863] << 24, f4[g5 + 248 >> 2] = i4[84856] | i4[84857] << 8 | i4[84858] << 16 | i4[84859] << 24, f4[g5 + 252 >> 2] = A6, V2 = b4 = V2 - 16 | 0;
                 r: {
                   if ((r4 = Lg(A6 = g5 + 240 | 0)) >>> 0 >= 6 && !pg2(t3 = (A6 + r4 | 0) - 6 | 0, 84274, 6)) {
                     for (k5 = 100; ; ) {
@@ -95110,30 +98487,30 @@ var b = { Memory: function(A3) {
                 V2 = b4 + 16 | 0, (0 | r4) < 0 || iC(r4);
               }
               if (!(r4 = Ae3(A6, 84577))) {
-                A6 = sr(0, f4[56798], A6);
+                A6 = sr2(0, f4[56798], A6);
                 break A;
               }
             }
-            if ((0 | (b4 = fr2(A6))) < 0) {
-              tr2(r4), A6 = sr(0, 0 - b4 | 0, A6);
+            if ((0 | (b4 = fr3(A6))) < 0) {
+              tr3(r4), A6 = sr2(0, 0 - b4 | 0, A6);
               break A;
             }
             if (-1 == (0 | Jr2(r4, 0))) {
-              e4 = f4[56798], tr2(r4), A6 = sr(0, e4, A6);
+              e4 = f4[56798], tr3(r4), A6 = sr2(0, e4, A6);
               break A;
             }
             if (!(C3 = OA2(f4[(t3 = 136280 + (e4 << 4) | 0) >> 2], b4))) {
-              tr2(r4), A6 = 48;
+              tr3(r4), A6 = 48;
               break A;
             }
             if ((0 | Eg(C3, b4, r4)) != (0 | b4)) {
-              e4 = f4[56798], tr2(r4), i4[g5 + 240 | 0] && Xr2(g5 + 240 | 0), mA2(C3), A6 = sr(0, e4, A6);
+              e4 = f4[56798], tr3(r4), i4[g5 + 240 | 0] && Xr2(g5 + 240 | 0), mA2(C3), A6 = sr2(0, e4, A6);
               break A;
             }
-            tr2(r4), i4[g5 + 240 | 0] && Xr2(g5 + 240 | 0), f4[136276 + (e4 << 4) >> 2] = (i4[C3 + 40 | 0] | i4[C3 + 41 | 0] << 8 | i4[C3 + 42 | 0] << 16 | i4[C3 + 43 | 0] << 24) / 2, f4[t3 >> 2] = C3, A6 = 0;
+            tr3(r4), i4[g5 + 240 | 0] && Xr2(g5 + 240 | 0), f4[136276 + (e4 << 4) >> 2] = (i4[C3 + 40 | 0] | i4[C3 + 41 | 0] << 8 | i4[C3 + 42 | 0] << 16 | i4[C3 + 43 | 0] << 24) / 2, f4[t3 >> 2] = C3, A6 = 0;
             break A;
           }
-          e4 = f4[56798], tr2(r4), A6 = sr(0, e4, A6);
+          e4 = f4[56798], tr3(r4), A6 = sr2(0, e4, A6);
         } else A6 = 28;
         return V2 = g5 + 352 | 0, A6;
       }
@@ -95524,7 +98901,7 @@ var b = { Memory: function(A3) {
               e: if (21 == (0 | n3)) {
                 g: if (32 == (0 | (C3 = i4[0 | A6])) | C3 - 9 >>> 0 < 5) r4 = I4;
                 else if (r4 = I4, C3) for (; ; ) {
-                  if (a3[0 | r4] = ar(C3), r4 = r4 + 1 | 0, 32 == (0 | (C3 = i4[0 | (A6 = A6 + 1 | 0)])) | C3 - 9 >>> 0 < 5) break g;
+                  if (a3[0 | r4] = ar2(C3), r4 = r4 + 1 | 0, 32 == (0 | (C3 = i4[0 | (A6 = A6 + 1 | 0)])) | C3 - 9 >>> 0 < 5) break g;
                   if (!C3) break;
                 }
                 if (a3[0 | r4] = 0, !C3) {
@@ -95546,14 +98923,14 @@ var b = { Memory: function(A3) {
           e: {
             g: {
               r: {
-                C: switch ((0 | (g5 = f4[A6 + 4 >> 2])) == f4[A6 + 104 >> 2] ? g5 = ce3(A6) : (f4[A6 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5]), g5 - 43 | 0) {
+                C: switch ((0 | (g5 = f4[A6 + 4 >> 2])) == f4[A6 + 104 >> 2] ? g5 = ce4(A6) : (f4[A6 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5]), g5 - 43 | 0) {
                   case 0:
                   case 2:
                     break C;
                   default:
                     break r;
                 }
-                if (a4 = 45 == (0 | g5), I4 = !e4, (0 | (g5 = f4[A6 + 4 >> 2])) == f4[A6 + 104 >> 2] ? g5 = ce3(A6) : (f4[A6 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5]), I4 | (e4 = g5 - 58 | 0) >>> 0 > 4294967285) break g;
+                if (a4 = 45 == (0 | g5), I4 = !e4, (0 | (g5 = f4[A6 + 4 >> 2])) == f4[A6 + 104 >> 2] ? g5 = ce4(A6) : (f4[A6 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5]), I4 | (e4 = g5 - 58 | 0) >>> 0 > 4294967285) break g;
                 if (f4[A6 + 116 >> 2] < 0) break e;
                 f4[A6 + 4 >> 2] = f4[A6 + 4 >> 2] - 1;
                 break e;
@@ -95562,14 +98939,14 @@ var b = { Memory: function(A3) {
             }
             if (!(e4 >>> 0 < 4294967286)) {
               if ((e4 = g5 - 48 | 0) >>> 0 < 10) {
-                for (; C3 = (0 | (r4 = (r4 = G3(r4, 10) + g5 | 0) - 48 | 0)) < 214748364, (0 | (e4 = f4[A6 + 4 >> 2])) == f4[A6 + 104 >> 2] ? g5 = ce3(A6) : (f4[A6 + 4 >> 2] = e4 + 1, g5 = i4[0 | e4]), C3 & (e4 = g5 - 48 | 0) >>> 0 <= 9; ) ;
+                for (; C3 = (0 | (r4 = (r4 = G3(r4, 10) + g5 | 0) - 48 | 0)) < 214748364, (0 | (e4 = f4[A6 + 4 >> 2])) == f4[A6 + 104 >> 2] ? g5 = ce4(A6) : (f4[A6 + 4 >> 2] = e4 + 1, g5 = i4[0 | e4]), C3 & (e4 = g5 - 48 | 0) >>> 0 <= 9; ) ;
                 C3 = r4 >> 31;
               }
               g: if (!(e4 >>> 0 >= 10)) for (; ; ) {
-                if (e4 = (r4 = Cr2(r4, C3, 10, 0)) + g5 | 0, g5 = U3, g5 = e4 >>> 0 < r4 >>> 0 ? g5 + 1 | 0 : g5, r4 = e4 - 48 | 0, C3 = g5 - (e4 >>> 0 < 48) | 0, (0 | (e4 = f4[A6 + 4 >> 2])) == f4[A6 + 104 >> 2] ? g5 = ce3(A6) : (f4[A6 + 4 >> 2] = e4 + 1, g5 = i4[0 | e4]), (e4 = g5 - 48 | 0) >>> 0 > 9) break g;
+                if (e4 = (r4 = Cr2(r4, C3, 10, 0)) + g5 | 0, g5 = U3, g5 = e4 >>> 0 < r4 >>> 0 ? g5 + 1 | 0 : g5, r4 = e4 - 48 | 0, C3 = g5 - (e4 >>> 0 < 48) | 0, (0 | (e4 = f4[A6 + 4 >> 2])) == f4[A6 + 104 >> 2] ? g5 = ce4(A6) : (f4[A6 + 4 >> 2] = e4 + 1, g5 = i4[0 | e4]), (e4 = g5 - 48 | 0) >>> 0 > 9) break g;
                 if (!(r4 >>> 0 < 2061584302 & (0 | C3) <= 21474836 | (0 | C3) < 21474836)) break;
               }
-              if (e4 >>> 0 < 10) for (; (0 | (e4 = f4[A6 + 4 >> 2])) == f4[A6 + 104 >> 2] ? e4 = ce3(A6) : (f4[A6 + 4 >> 2] = e4 + 1, e4 = i4[0 | e4]), e4 - 48 >>> 0 < 10; ) ;
+              if (e4 >>> 0 < 10) for (; (0 | (e4 = f4[A6 + 4 >> 2])) == f4[A6 + 104 >> 2] ? e4 = ce4(A6) : (f4[A6 + 4 >> 2] = e4 + 1, e4 = i4[0 | e4]), e4 - 48 >>> 0 < 10; ) ;
               (0 | (e4 = f4[A6 + 116 >> 2])) > 0 | (0 | e4) >= 0 && (f4[A6 + 4 >> 2] = f4[A6 + 4 >> 2] - 1), A6 = r4, r4 = a4 ? 0 - A6 | 0 : A6, C3 = a4 ? 0 - (!!(0 | A6) + C3 | 0) | 0 : C3;
               break A;
             }
@@ -95927,7 +99304,7 @@ var b = { Memory: function(A3) {
       function fe3() {
         vr2(), f4[55928] = 0, f4[55926] = 0, f4[55927] = 0, f4[55924] = 0, f4[56244] = 0, f4[56245] = 0, f4[56246] = 0, f4[56247] = 0, f4[56260] = 0, f4[56261] = 0, f4[56262] = 0, f4[56263] = 0, f4[56276] = 0, f4[56277] = 0, f4[56278] = 0, f4[56279] = 0, f4[55974] = 0, f4[55975] = 0, f4[55972] = 0, f4[55973] = 0, f4[55988] = 0, f4[55989] = 0, f4[55990] = 0, f4[55991] = 0, f4[56004] = 0, f4[56005] = 0, f4[56006] = 0, f4[56007] = 0, f4[56020] = 0, f4[56021] = 0, f4[56022] = 0, f4[56023] = 0, f4[56036] = 0, f4[56037] = 0, f4[56038] = 0, f4[56039] = 0, f4[56052] = 0, f4[56053] = 0, f4[56054] = 0, f4[56055] = 0, f4[56068] = 0, f4[56069] = 0, f4[56070] = 0, f4[56071] = 0, f4[56086] = 0, f4[56087] = 0, f4[56084] = 0, f4[56085] = 0, f4[56102] = 0, f4[56103] = 0, f4[56100] = 0, f4[56101] = 0, f4[56118] = 0, f4[56119] = 0, f4[56116] = 0, f4[56117] = 0, f4[56134] = 0, f4[56135] = 0, f4[56132] = 0, f4[56133] = 0, f4[56150] = 0, f4[56151] = 0, f4[56148] = 0, f4[56149] = 0, f4[56166] = 0, f4[56167] = 0, f4[56164] = 0, f4[56165] = 0, f4[56182] = 0, f4[56183] = 0, f4[56180] = 0, f4[56181] = 0, f4[56198] = 0, f4[56199] = 0, f4[56196] = 0, f4[56197] = 0, f4[56214] = 0, f4[56215] = 0, f4[56212] = 0, f4[56213] = 0, f4[56230] = 0, f4[56231] = 0, f4[56228] = 0, f4[56229] = 0;
       }
-      function ie3(A6, e4) {
+      function ie4(A6, e4) {
         var g5 = 0, r4 = 0, C3 = 0, a4 = 0, I4 = 0, i5 = 0, b4 = 0, s4 = 0, t3 = 0, n3 = 0;
         A: {
           if ((0 | (a4 = f4[A6 + 4 >> 2])) == f4[A6 >> 2]) if ((I4 = f4[A6 + 8 >> 2]) >>> 0 < (g5 = f4[A6 + 12 >> 2]) >>> 0) g5 = (C3 = (1 + (g5 - I4 >> 2) | 0) / 2 << 2) + I4 | 0, (0 | a4) != (0 | I4) && (Qe(g5 = g5 - (r4 = I4 - a4 | 0) | 0, a4, r4), a4 = f4[A6 + 8 >> 2]), f4[A6 + 4 >> 2] = g5, f4[A6 + 8 >> 2] = C3 + a4;
@@ -95944,7 +99321,7 @@ var b = { Memory: function(A3) {
         }
         Lr2(), k4();
       }
-      function be3(A6, e4, g5) {
+      function be4(A6, e4, g5) {
         var r4 = 0, C3 = 0, a4 = 0, I4 = 0, f5 = 0, i5 = 0, b4 = 0, s4 = 0, t3 = 0;
         A: {
           e: {
@@ -96003,7 +99380,7 @@ var b = { Memory: function(A3) {
         }
         Lr2(), k4();
       }
-      function te2(A6, e4) {
+      function te3(A6, e4) {
         var g5, r4 = 0, C3 = 0, I4 = 0, b4 = 0, s4 = 0;
         C3 = 189088, V2 = g5 = V2 - 320 | 0, f4[g5 + 312 >> 2] = 0, I4 = zA2(A6, b4 = rg2(g5 + 112 | 0, 189088), g5, g5 + 316 | 0, g5 + 312 | 0, 0), r4 = f4[g5 + 316 >> 2];
         A: if ((0 | e4) <= 3) {
@@ -96024,7 +99401,7 @@ var b = { Memory: function(A3) {
         if (A6 = i4[0 | b4]) for (e4 = 1; r4 = f4[144464 + ((255 & A6) << 2) >> 2], 2 != i4[r4 + 11 | 0] | 16 & i4[r4 + 6 | 0] || (I4 = 255 & (r4 = a3[e4 + g5 | 0]), (0 | r4) < 2 && I4 || (a3[0 | C3] = i4[I4 + 94151 | 0], C3 = C3 + 1 | 0, A6 = i4[0 | b4]), e4 = e4 + 1 | 0), a3[0 | C3] = A6, C3 = C3 + 1 | 0, A6 = i4[0 | (b4 = b4 + 1 | 0)]; ) ;
         a3[0 | C3] = 0, V2 = g5 + 320 | 0;
       }
-      function ne3(A6) {
+      function ne4(A6) {
         var e4 = 0, g5 = 0, r4 = 0, C3 = 0, a4 = 0, I4 = 0;
         g5 = e4 = f4[(A6 |= 0) >> 2], f4[A6 >> 2] = e4 + 1;
         A: {
@@ -96081,7 +99458,7 @@ var b = { Memory: function(A3) {
         var C3, b4, s4 = 0, t3 = 0, n3 = 0, k5 = 0, o4 = 0, B3 = 0;
         if (V2 = C3 = V2 - 432 | 0, !(!r4 | !(536870912 & (b4 = gA2(A6, e4, g5, r4)))) && (I3[C3 + 48 >> 1] = 8192, r4 = rg2(C3 + 48 | 2, r4), i4[0 | r4])) {
           for (n3 = C3 + 224 | 0, s4 = 1, k5 = 200; ; ) {
-            if (Te(C3 + 44 | 0, r4), e4 = nr(f4[C3 + 44 >> 2]), t3 = f4[g5 >> 2], e4 ? (f4[g5 >> 2] = 2 | t3, Fg(ar(f4[C3 + 44 >> 2]), r4)) : f4[g5 >> 2] = -3 & t3, B3 = f4[33264], gA2(A6, r4, g5, 0), 1 & s4 ? (f4[C3 + 16 >> 2] = 189088, t3 = Gg(n3, k5, 84130, C3 + 16 | 0)) : (f4[C3 + 32 >> 2] = 15, f4[C3 + 36 >> 2] = 189088, t3 = Gg(n3, k5, 84434, C3 + 32 | 0)), s4 = (e4 = f4[33264]) + 1 | 0, f4[33264] = s4, e4 >>> 0 <= 2147483646) {
+            if (Te(C3 + 44 | 0, r4), e4 = nr(f4[C3 + 44 >> 2]), t3 = f4[g5 >> 2], e4 ? (f4[g5 >> 2] = 2 | t3, Fg(ar2(f4[C3 + 44 >> 2]), r4)) : f4[g5 >> 2] = -3 & t3, B3 = f4[33264], gA2(A6, r4, g5, 0), 1 & s4 ? (f4[C3 + 16 >> 2] = 189088, t3 = Gg(n3, k5, 84130, C3 + 16 | 0)) : (f4[C3 + 32 >> 2] = 15, f4[C3 + 36 >> 2] = 189088, t3 = Gg(n3, k5, 84434, C3 + 32 | 0)), s4 = (e4 = f4[33264]) + 1 | 0, f4[33264] = s4, e4 >>> 0 <= 2147483646) {
               for (; ; ) if (e4 = r4, r4 = r4 + 1 | 0, 32 == (0 | (o4 = a3[0 | e4])) | o4 - 9 >>> 0 < 5) {
                 for (; e4 = (r4 = e4) + 1 | 0, 32 == (0 | (o4 = a3[0 | r4])) | o4 - 9 >>> 0 < 5; ) ;
                 if (s4 = s4 - 1 | 0, f4[33264] = s4, !((0 | s4) > 0)) break;
@@ -96152,7 +99529,7 @@ var b = { Memory: function(A3) {
         }
         return V2 = e4 + 48 | 0, I4;
       }
-      function ce3(A6) {
+      function ce4(A6) {
         var e4 = 0, g5 = 0, r4 = 0, C3 = 0, I4 = 0, i5 = 0, b4 = 0, s4 = 0, t3 = 0;
         s4 = !!((e4 = f4[A6 + 112 >> 2]) | (r4 = f4[A6 + 116 >> 2])), C3 = e4, i5 = e4 = (I4 = f4[A6 + 4 >> 2]) - (b4 = f4[A6 + 44 >> 2]) | 0, g5 = e4 + f4[A6 + 120 >> 2] | 0, e4 = f4[A6 + 124 >> 2] + (e4 >> 31) | 0;
         A: {
@@ -96315,9 +99692,9 @@ var b = { Memory: function(A3) {
         } else if (e4 = f4[g5 + 72 >> 2], f4[g5 + 72 >> 2] = e4 - 1 | e4, !I4) return a3[0 | A6] = 0, A6;
         return r4;
       }
-      function de(A6) {
+      function de2(A6) {
         var e4 = 0, g5 = 0, r4 = 0, C3 = 0, a4 = 0, I4 = 0, b4 = 0, s4 = 0;
-        if (e4 = G3(A6, 44), (0 | (A6 = f4[e4 + 137896 >> 2])) > 0 && de(A6 - 1 | 0), A6 = f4[36115], !((0 | (e4 = f4[(g5 = e4 + 137856 | 0) + 36 >> 2])) <= 0)) {
+        if (e4 = G3(A6, 44), (0 | (A6 = f4[e4 + 137896 >> 2])) > 0 && de2(A6 - 1 | 0), A6 = f4[36115], !((0 | (e4 = f4[(g5 = e4 + 137856 | 0) + 36 >> 2])) <= 0)) {
           if (C3 = f4[g5 + 32 >> 2], b4 = 1 & e4, 1 != (0 | e4)) for (s4 = -2 & e4, g5 = 0; e4 = i4[(a4 = (r4 = g5 << 4) + C3 | 0) + 10 | 0], f4[144464 + (e4 << 2) >> 2] = a4, (0 | A6) >= (0 | e4) ? e4 = A6 : ue(144464 + ((A6 = A6 + 1 | 0) << 2) | 0, 0, e4 - A6 << 2), A6 = i4[(r4 = (16 | r4) + C3 | 0) + 10 | 0], f4[144464 + (A6 << 2) >> 2] = r4, (0 | A6) <= (0 | e4) ? A6 = e4 : ue(144464 + ((e4 = e4 + 1 | 0) << 2) | 0, 0, A6 - e4 << 2), g5 = g5 + 2 | 0, (0 | s4) != (0 | (I4 = I4 + 2 | 0)); ) ;
           else g5 = 0;
           b4 && (e4 = i4[(g5 = (g5 << 4) + C3 | 0) + 10 | 0], f4[144464 + (e4 << 2) >> 2] = g5, (0 | A6) >= (0 | e4) || (ue(144464 + ((A6 = A6 + 1 | 0) << 2) | 0, 0, e4 - A6 << 2), A6 = e4));
@@ -96346,7 +99723,7 @@ var b = { Memory: function(A3) {
               if (f4[A6 + 48 >> 2]) {
                 if (f4[A6 + 16 >> 2]) break e;
               } else f4[A6 + 48 >> 2] = 80, f4[A6 + 28 >> 2] = 0, f4[A6 + 16 >> 2] = 0, f4[A6 + 20 >> 2] = 0, i5 = f4[A6 + 44 >> 2], f4[A6 + 44 >> 2] = a4;
-              if (g5 = -1, or(A6)) break A;
+              if (g5 = -1, or2(A6)) break A;
             }
             g5 = cA2(A6, e4, a4 + 200 | 0, a4 + 80 | 0, a4 + 160 | 0, r4, C3);
           }
@@ -96379,7 +99756,7 @@ var b = { Memory: function(A3) {
         }
         (0 | g5) >= 2 && (a3[0 | e4] = 11, e4 = e4 + 1 | 0), a3[0 | e4] = 0, V2 = C3 + 208 | 0;
       }
-      function he(A6, e4) {
+      function he2(A6, e4) {
         var g5 = 0;
         g5 = 0, A6 && (g5 = f4[50754], g5 = (A6 = (A6 = (0 | G3(f4[145712 + (e4 ? 12 : ((0 | A6) > 199) << 2) >> 2], A6)) / 256 | 0) >>> 0 > (e4 = f4[36430]) >>> 0 ? A6 : e4) >>> 0 <= 89999 ? (G3(A6, g5) >>> 0) / 1e3 | 0 : (G3(A6, (0 | g5) / 25 | 0) >>> 0) / 40 | 0), (0 | (A6 = f4[36440])) <= 0 || (0 | (e4 = f4[36424])) < 0 || (f4[(e4 = 216192 + (e4 << 4) | 0) + 4 >> 2] || (f4[e4 + 4 >> 2] = A6), f4[36440] = 0), f4[36426] = 0, f4[36439] = -1, f4[36455] = f4[50758], kA2(), f4[36427] = -1, A6 = 216192 + (f4[50758] << 4) | 0, f4[A6 >> 2] = 5, f4[A6 + 4 >> 2] = g5, A6 = f4[50758] + 1 | 0, f4[50758] = (0 | A6) <= 169 ? A6 : 0, f4[36426] = 0, f4[36438] && (f4[36438] = 0, A6 = 216192 + (f4[50758] << 4) | 0, f4[A6 >> 2] = 14, f4[A6 + 4 >> 2] = 0, A6 = f4[50758] + 1 | 0, f4[50758] = (0 | A6) <= 169 ? A6 : 0);
       }
@@ -96506,7 +99883,7 @@ var b = { Memory: function(A3) {
             }
             if (C3) break A;
           }
-          mg2(I4, s4), xg(g5, e4, r4, a4);
+          mg3(I4, s4), xg(g5, e4, r4, a4);
         }
         V2 = I4 + 240 | 0;
       }
@@ -96608,7 +99985,7 @@ var b = { Memory: function(A3) {
       }
       function Le2(A6, e4, g5, r4) {
         var C3, a4 = 0, I4 = 0;
-        return V2 = C3 = V2 - 224 | 0, A6 ? (f4[C3 >> 2] = 137584, f4[C3 + 4 >> 2] = 47, f4[C3 + 8 >> 2] = e4, dg2(e4 = C3 + 16 | 0, 85430, C3), (0 | (a4 = fr2(e4))) < 0 ? e4 = sr(r4, 0 - a4 | 0, C3 + 16 | 0) : (e4 = Ae3(C3 + 16 | 0, 85659)) ? ((I4 = f4[A6 >> 2]) && mA2(I4), a4 ? (I4 = IA2(a4), f4[A6 >> 2] = I4, I4 ? (0 | Eg(I4, a4, e4)) == (0 | a4) ? (tr2(e4), e4 = 0, g5 && (f4[g5 >> 2] = a4)) : (g5 = f4[56798], tr2(e4), mA2(f4[A6 >> 2]), f4[A6 >> 2] = 0, e4 = sr(r4, g5, C3 + 16 | 0)) : (tr2(e4), e4 = 48)) : (e4 = 0, f4[A6 >> 2] = 0)) : e4 = sr(r4, f4[56798], C3 + 16 | 0)) : e4 = 28, V2 = C3 + 224 | 0, e4;
+        return V2 = C3 = V2 - 224 | 0, A6 ? (f4[C3 >> 2] = 137584, f4[C3 + 4 >> 2] = 47, f4[C3 + 8 >> 2] = e4, dg2(e4 = C3 + 16 | 0, 85430, C3), (0 | (a4 = fr3(e4))) < 0 ? e4 = sr2(r4, 0 - a4 | 0, C3 + 16 | 0) : (e4 = Ae3(C3 + 16 | 0, 85659)) ? ((I4 = f4[A6 >> 2]) && mA2(I4), a4 ? (I4 = IA2(a4), f4[A6 >> 2] = I4, I4 ? (0 | Eg(I4, a4, e4)) == (0 | a4) ? (tr3(e4), e4 = 0, g5 && (f4[g5 >> 2] = a4)) : (g5 = f4[56798], tr3(e4), mA2(f4[A6 >> 2]), f4[A6 >> 2] = 0, e4 = sr2(r4, g5, C3 + 16 | 0)) : (tr3(e4), e4 = 48)) : (e4 = 0, f4[A6 >> 2] = 0)) : e4 = sr2(r4, f4[56798], C3 + 16 | 0)) : e4 = 28, V2 = C3 + 224 | 0, e4;
       }
       function Te(A6, e4) {
         var g5 = 0, r4 = 0, C3 = 0, a4 = 0, I4 = 0;
@@ -96643,7 +100020,7 @@ var b = { Memory: function(A3) {
       }
       function Ue2(A6) {
         var e4, g5 = 0, r4 = 0, C3 = 0;
-        for (V2 = e4 = V2 - 96 | 0, oC(e4, A6, 60), Ag(e4, 1); C3 = ar(a3[0 | (r4 = e4 + g5 | 0)]), a3[0 | r4] = C3, g5 = g5 + 1 | 0, 255 & C3; ) ;
+        for (V2 = e4 = V2 - 96 | 0, oC(e4, A6, 60), Ag(e4, 1); C3 = ar2(a3[0 | (r4 = e4 + g5 | 0)]), a3[0 | r4] = C3, g5 = g5 + 1 | 0, 255 & C3; ) ;
         f4[e4 + 92 >> 2] = 0, f4[e4 + 84 >> 2] = 0, f4[e4 + 88 >> 2] = 0, f4[e4 + 76 >> 2] = 0, f4[e4 + 80 >> 2] = 0, f4[e4 + 72 >> 2] = A6;
         A: {
           e: {
@@ -96907,7 +100284,7 @@ var b = { Memory: function(A3) {
         var r4 = 0, C3 = 0, a4 = 0;
         A: {
           if (!(r4 = f4[g5 + 16 >> 2])) {
-            if (or(g5)) break A;
+            if (or2(g5)) break A;
             r4 = f4[g5 + 16 >> 2];
           }
           if (r4 - (a4 = f4[g5 + 20 >> 2]) >>> 0 < e4 >>> 0) return 0 | HC[f4[g5 + 36 >> 2]](g5, A6, e4);
@@ -96927,7 +100304,7 @@ var b = { Memory: function(A3) {
         }
         return C3;
       }
-      function bg2(A6) {
+      function bg3(A6) {
         var e4, g5 = 0, r4 = 0;
         A: {
           if ((0 | (e4 = f4[34064])) > 0) for (; ; ) {
@@ -96959,7 +100336,7 @@ var b = { Memory: function(A3) {
         }
         V2 = g5 + 16 | 0;
       }
-      function tg2(A6, e4, g5) {
+      function tg3(A6, e4, g5) {
         var r4, C3 = 0, I4 = 0, b4 = 0;
         if (V2 = r4 = V2 - 16 | 0, i4[0 | A6]) {
           for (b4 = f4[30450]; ; ) if (I4 = A6, A6 = A6 + 1 | 0, !(32 == (0 | (C3 = a3[0 | I4])) | C3 - 9 >>> 0 < 5)) {
@@ -97102,7 +100479,7 @@ var b = { Memory: function(A3) {
         if (g5 - 48 >>> 0 < 10) for (; r4 = 48 + (G3(r4, 10) - a3[0 | e4] | 0) | 0, A6 = a3[e4 + 1 | 0], e4 = e4 + 1 | 0, A6 - 48 >>> 0 < 10; ) ;
         return C3 ? r4 : 0 - r4 | 0;
       }
-      function ug2(A6, e4) {
+      function ug3(A6, e4) {
         var g5, r4, C3, a4 = 0;
         return V2 = g5 = V2 - 32 | 0, f4[e4 >> 2] = 0, f4[e4 + 4 >> 2] = 0, f4[(a4 = r4 = e4 + 24 | 0) >> 2] = 0, f4[a4 + 4 >> 2] = 0, f4[(a4 = C3 = e4 + 16 | 0) >> 2] = 0, f4[a4 + 4 >> 2] = 0, f4[(a4 = e4 + 8 | 0) >> 2] = 0, f4[a4 + 4 >> 2] = 0, f4[g5 + 28 >> 2] = e4 + 28, f4[g5 + 24 >> 2] = r4, f4[g5 + 20 >> 2] = e4 + 20, f4[g5 + 16 >> 2] = C3, f4[g5 + 12 >> 2] = e4 + 12, f4[g5 + 8 >> 2] = a4, f4[g5 + 4 >> 2] = e4 + 4, f4[g5 >> 2] = e4, A6 = aA2(A6, 84553, g5), V2 = g5 + 32 | 0, A6;
       }
@@ -97121,13 +100498,13 @@ var b = { Memory: function(A3) {
           if ((0 | bC(A6, I4 = (a4 = a4 - 4 | 0) - f4[((b4 = g5 - 2 | 0) << 2) + r4 >> 2] | 0, e4)) >= 0 && (0 | bC(A6, a4, e4)) >= 0) break A;
           if (s4 = I4, a4 = (I4 = (0 | bC(I4, a4, e4)) >= 0) ? s4 : a4, f4[(i5 << 2) + C3 >> 2] = a4, i5 = i5 + 1 | 0, !((0 | (g5 = I4 ? g5 - 1 | 0 : b4)) > 1)) break;
         }
-        mg2(C3, i5), V2 = C3 + 240 | 0;
+        mg3(C3, i5), V2 = C3 + 240 | 0;
       }
       function dg2(A6, e4, g5) {
         var r4, C3, I4, i5 = 0;
         return V2 = C3 = V2 - 16 | 0, f4[C3 + 12 >> 2] = g5, V2 = r4 = V2 - 160 | 0, _A2(I4 = r4 + 8 | 0, 124528, 144), f4[r4 + 52 >> 2] = A6, f4[r4 + 28 >> 2] = A6, i5 = (i5 = -2 - A6 | 0) >>> 0 > 2147483647 ? 2147483647 : i5, f4[r4 + 56 >> 2] = i5, A6 = A6 + i5 | 0, f4[r4 + 36 >> 2] = A6, f4[r4 + 24 >> 2] = A6, A6 = QC(I4, e4, g5), i5 && (e4 = f4[r4 + 28 >> 2], a3[e4 - ((0 | e4) == f4[r4 + 24 >> 2]) | 0] = 0), V2 = r4 + 160 | 0, V2 = C3 + 16 | 0, A6;
       }
-      function mg2(A6, e4) {
+      function mg3(A6, e4) {
         var g5, r4 = 0, C3 = 0, a4 = 0, I4 = 0, i5 = 0;
         if (r4 = 4, V2 = g5 = V2 - 256 | 0, (0 | e4) >= 2) for (f4[(i5 = (e4 << 2) + A6 | 0) >> 2] = g5; ; ) {
           for (a4 = r4 >>> 0 >= 256 ? 256 : r4, _A2(f4[i5 >> 2], f4[A6 >> 2], a4), C3 = 0; I4 = (C3 << 2) + A6 | 0, C3 = C3 + 1 | 0, _A2(f4[I4 >> 2], f4[(C3 << 2) + A6 >> 2], a4), f4[I4 >> 2] = f4[I4 >> 2] + a4, (0 | e4) != (0 | C3); ) ;
@@ -97213,7 +100590,7 @@ var b = { Memory: function(A3) {
           }
           return -1;
         }
-        return (A6 = (0 | e4) == (0 | g5)) ? -1 : ((0 | (A6 = A6 ? -1 : e4)) != f4[36114] && (f4[36115] = 0, de(A6), f4[36114] = A6, f4[36115] = f4[36115] + 1), e4);
+        return (A6 = (0 | e4) == (0 | g5)) ? -1 : ((0 | (A6 = A6 ? -1 : e4)) != f4[36114] && (f4[36115] = 0, de2(A6), f4[36114] = A6, f4[36115] = f4[36115] + 1), e4);
       }
       function Pg(A6, e4, g5, r4) {
         var C3 = 0, a4 = 0;
@@ -97276,7 +100653,7 @@ var b = { Memory: function(A3) {
         V2 = e4 = V2 - 16 | 0, a3[e4 + 15 | 0] = 10;
         A: {
           if (!(g5 = f4[A6 + 16 >> 2])) {
-            if (or(A6)) break A;
+            if (or2(A6)) break A;
             g5 = f4[A6 + 16 >> 2];
           }
           (0 | g5) == (0 | (g5 = f4[A6 + 20 >> 2])) | 10 == f4[A6 + 80 >> 2] ? HC[f4[A6 + 36 >> 2]](A6, e4 + 15 | 0, 1) : (f4[A6 + 20 >> 2] = g5 + 1, a3[0 | g5] = 10);
@@ -97395,7 +100772,7 @@ var b = { Memory: function(A3) {
         var g5 = 0;
         if (!(!A6 | f4[A6 >> 2] - 48 >>> 0 >= 10)) {
           if (f4[A6 >> 2] - 48 >>> 0 < 10) for (; g5 = (f4[A6 >> 2] + G3(g5, 10) | 0) - 48 | 0, f4[(A6 = A6 + 4 | 0) >> 2] - 48 >>> 0 < 10; ) ;
-          1 == (0 | e4) && (g5 = 115 == (0 | ar(f4[A6 >> 2])) ? G3(g5, 1e3) : g5);
+          1 == (0 | e4) && (g5 = 115 == (0 | ar2(f4[A6 >> 2])) ? G3(g5, 1e3) : g5);
         }
         return g5;
       }
@@ -97439,7 +100816,7 @@ var b = { Memory: function(A3) {
         var C3, a4, I4, f5, i5 = 0, b4 = 0;
         return f5 = G3(i5 = g5 >>> 16 | 0, b4 = A6 >>> 16 | 0), i5 = (65535 & (b4 = ((I4 = G3(C3 = 65535 & g5, a4 = 65535 & A6)) >>> 16 | 0) + G3(b4, C3) | 0)) + G3(i5, a4) | 0, U3 = (G3(e4, g5) + f5 | 0) + G3(A6, r4) + (b4 >>> 16) + (i5 >>> 16) | 0, 65535 & I4 | i5 << 16;
       }
-      function ar(A6) {
+      function ar2(A6) {
         var e4 = 0, g5 = 0, r4 = 0, C3 = 0;
         for (e4 = 2778; ; ) {
           if ((0 | (g5 = f4[1040 + ((r4 = (e4 + C3 | 0) / 2 | 0) << 4) >> 2])) == (0 | A6)) return (e4 = f4[1048 + (r4 << 4) >> 2]) || A6;
@@ -97455,7 +100832,7 @@ var b = { Memory: function(A3) {
         }
         return A6;
       }
-      function fr2(A6) {
+      function fr3(A6) {
         var e4, g5 = 0;
         return V2 = e4 = V2 - 112 | 0, (A6 = 0 | z2(0 | A6, 0 | e4)) >>> 0 >= 4294963201 && (f4[56798] = 0 - A6, A6 = -1), g5 = 0 - f4[56798] | 0, A6 || (g5 = -31, 16384 != (61440 & f4[e4 + 12 >> 2]) && (g5 = f4[e4 + 40 >> 2])), V2 = e4 + 112 | 0, A6 = g5;
       }
@@ -97470,7 +100847,7 @@ var b = { Memory: function(A3) {
           a3[A6 + 54 | 0] = 1, f4[A6 + 24 >> 2] = 2, f4[A6 + 36 >> 2] = f4[A6 + 36 >> 2] + 1;
         }
       }
-      function br2(A6, e4, g5, r4, C3) {
+      function br3(A6, e4, g5, r4, C3) {
         var a4;
         if (V2 = a4 = V2 - 256 | 0, !(73728 & C3 | (0 | g5) <= (0 | r4))) {
           if (ue(a4, 255 & e4, (g5 = (r4 = g5 - r4 | 0) >>> 0 < 256) ? r4 : 256), !g5) for (; kC(A6, a4, 256), (r4 = r4 - 256 | 0) >>> 0 > 255; ) ;
@@ -97478,7 +100855,7 @@ var b = { Memory: function(A3) {
         }
         V2 = a4 + 256 | 0;
       }
-      function sr(A6, e4, g5) {
+      function sr2(A6, e4, g5) {
         var r4 = 0;
         A: {
           if (A6) {
@@ -97493,7 +100870,7 @@ var b = { Memory: function(A3) {
         }
         return f4[r4 >> 2] = 0, f4[r4 + 4 >> 2] = $r2(g5), A6 = f4[A6 >> 2], f4[A6 + 8 >> 2] = 0, f4[A6 + 12 >> 2] = 0, e4;
       }
-      function tr2(A6) {
+      function tr3(A6) {
         var e4 = 0, g5 = 0;
         We2(A6), HC[f4[A6 + 12 >> 2]](A6), 1 & a3[0 | A6] || ((e4 = f4[A6 + 52 >> 2]) && (f4[e4 + 56 >> 2] = f4[A6 + 56 >> 2]), (g5 = f4[A6 + 56 >> 2]) && (f4[g5 + 52 >> 2] = e4), f4[56816] == (0 | A6) && (f4[56816] = g5), mA2(f4[A6 + 96 >> 2]), mA2(A6));
       }
@@ -97514,7 +100891,7 @@ var b = { Memory: function(A3) {
                 default:
                   break e;
               }
-              return (0 | ar(A6)) != (0 | A6);
+              return (0 | ar2(A6)) != (0 | A6);
             }
             return S2(A6, g5) >>> 15 & 1;
           }
@@ -97530,7 +100907,7 @@ var b = { Memory: function(A3) {
         }
         return _A2(C3 + e4 | 0, A6, r4), f4[33287] = g5, e4;
       }
-      function or(A6) {
+      function or2(A6) {
         var e4 = 0;
         return e4 = f4[A6 + 72 >> 2], f4[A6 + 72 >> 2] = e4 - 1 | e4, 8 & (e4 = f4[A6 >> 2]) ? (f4[A6 >> 2] = 32 | e4, -1) : (f4[A6 + 4 >> 2] = 0, f4[A6 + 8 >> 2] = 0, e4 = f4[A6 + 44 >> 2], f4[A6 + 28 >> 2] = e4, f4[A6 + 20 >> 2] = e4, f4[A6 + 16 >> 2] = e4 + f4[A6 + 48 >> 2], 0);
       }
@@ -97599,7 +100976,7 @@ var b = { Memory: function(A3) {
         var e4, g5;
         return (A6 = (e4 = f4[33175]) + (g5 = A6 + 7 & -8) | 0) >>> 0 <= e4 >>> 0 && g5 || A6 >>> 0 > r3.byteLength / 65536 << 16 >>> 0 && !(0 | y3(0 | A6)) ? (f4[56798] = 48, -1) : (f4[33175] = A6, e4);
       }
-      function ur(A6) {
+      function ur2(A6) {
         var e4 = 0;
         A: if (!((e4 = Je2(A6)) >>> 0 > 27)) {
           if (!(1 << e4 & 134259072)) {
@@ -97625,7 +101002,7 @@ var b = { Memory: function(A3) {
         var e4 = 0;
         return e4 = f4[A6 >> 2] - 1 | 0, (e4 = a3[121600 + (G3(0 - e4 & e4, 124511785) >>> 27 | 0) | 0]) || (A6 = f4[A6 + 4 >> 2], e4 = (A6 = a3[121600 + (G3(0 - A6 & A6, 124511785) >>> 27 | 0) | 0]) ? A6 + 32 | 0 : 0), e4;
       }
-      function mr(A6) {
+      function mr2(A6) {
         var e4 = 0, g5 = 0, r4 = 0;
         A: {
           if (!((e4 = Je2(A6)) >>> 0 > 27)) {
@@ -97651,7 +101028,7 @@ var b = { Memory: function(A3) {
         var A6, e4 = 0;
         (A6 = f4[56797]) && ((e4 = f4[A6 + 8 >> 2]) && HC[f4[f4[e4 >> 2] + 12 >> 2]](e4), (e4 = f4[A6 + 4 >> 2]) && HC[f4[f4[e4 >> 2] + 16 >> 2]](e4), mA2(A6)), f4[56797] = 0, f4[56797] = ZA2();
       }
-      function hr2(A6, e4) {
+      function hr3(A6, e4) {
         var g5 = 0;
         return A6 && (g5 = Cr2(A6, 0, e4, 0), (A6 | e4) >>> 0 < 65536 || (g5 = U3 ? -1 : g5)), !(A6 = IA2(g5)) | !(3 & i4[A6 - 4 | 0]) || ue(A6, 0, g5), A6;
       }
@@ -97755,10 +101132,10 @@ var b = { Memory: function(A3) {
       }
       function Sr2(A6, e4) {
         var g5 = 0;
-        return 73 == (0 | A6) && (g5 = 305, i4[e4 + 173 | 0]) || (g5 = ar(A6)), g5;
+        return 73 == (0 | A6) && (g5 = 305, i4[e4 + 173 | 0]) || (g5 = ar2(A6)), g5;
       }
       function qr2(A6) {
-        f4[36114] != (0 | A6) && (f4[36115] = 0, de(A6), f4[36114] = A6, f4[36115] = f4[36115] + 1);
+        f4[36114] != (0 | A6) && (f4[36115] = 0, de2(A6), f4[36114] = A6, f4[36115] = f4[36115] + 1);
       }
       function _r2(A6) {
         return A6 ? f4[34460] + A6 | 0 : (gC(85328, 20, f4[30450]), f4[32320]);
@@ -97804,7 +101181,7 @@ var b = { Memory: function(A3) {
         return A6 = _e(A6, e4), i4[0 | A6] == (255 & e4) ? A6 : 0;
       }
       function tC(A6, e4) {
-        return be3(A6, e4, 2147483647), U3 = R2, J3;
+        return be4(A6, e4, 2147483647), U3 = R2, J3;
       }
       function nC(A6) {
         return A6 ? 31 - D2(A6 - 1 ^ A6) | 0 : 32;
@@ -97843,7 +101220,7 @@ var b = { Memory: function(A3) {
         return f4[(A6 |= 0) >> 2];
       }
       function xC(A6, e4, g5) {
-        return be3(A6, e4, g5);
+        return be4(A6, e4, g5);
       }
       function dC(A6) {
         (A6 |= 0) && mA2(A6);
@@ -97871,8 +101248,8 @@ var b = { Memory: function(A3) {
         return e4 = f4[(A6 |= 0) >> 2], g5 = f4[e4 >> 2], f4[A6 >> 2] = e4 + 4, 0 | g5;
       }, function(A6) {
         var e4 = 0, g5 = 0;
-        return e4 = f4[(A6 |= 0) >> 2], 65533 == (0 | (g5 = ne3(A6))) && (f4[A6 >> 2] = e4 + 1, f4[A6 + 8 >> 2] = 1, g5 = 255 & (e4 = a3[0 | e4]), (0 | e4) >= 0 || (g5 = B2[(f4[A6 + 12 >> 2] + (g5 << 1) | 0) - 256 >> 1])), 0 | g5;
-      }, ne3, function(A6) {
+        return e4 = f4[(A6 |= 0) >> 2], 65533 == (0 | (g5 = ne4(A6))) && (f4[A6 >> 2] = e4 + 1, f4[A6 + 8 >> 2] = 1, g5 = 255 & (e4 = a3[0 | e4]), (0 | e4) >= 0 || (g5 = B2[(f4[A6 + 12 >> 2] + (g5 << 1) | 0) - 256 >> 1])), 0 | g5;
+      }, ne4, function(A6) {
         var e4, g5, r4 = 0;
         return (r4 = f4[4 + (A6 |= 0) >> 2]) >>> 0 <= (g5 = (e4 = f4[A6 >> 2]) + 1 | 0) >>> 0 ? (f4[A6 >> 2] = r4, 65533) : (f4[A6 >> 2] = g5, r4 = i4[0 | e4], f4[A6 >> 2] = e4 + 2, r4 | i4[e4 + 1 | 0] << 8);
       }, function(A6, e4) {
@@ -97993,7 +101370,7 @@ var b = { Memory: function(A3) {
               t3 = (0 | r4) > 0 ? r4 : 0;
             }
             if ((0 | (r4 = t3 + u4 | 0)) > (2147483647 ^ d4)) break A;
-            br2(A6, 32, g5, u4 = r4 + d4 | 0, C3), kC(A6, p4, d4), br2(A6, 48, g5, u4, 65536 ^ C3);
+            br3(A6, 32, g5, u4 = r4 + d4 | 0, C3), kC(A6, p4, d4), br3(A6, 48, g5, u4, 65536 ^ C3);
             g: {
               r: {
                 C: {
@@ -98025,14 +101402,14 @@ var b = { Memory: function(A3) {
                     if (kC(A6, t3, (0 | (I4 = B3 - t3 | 0)) > (0 | Q3) ? Q3 : I4), Q3 = Q3 - I4 | 0, l3 >>> 0 <= (k5 = k5 + 4 | 0) >>> 0) break a;
                     if (!((0 | Q3) >= 0)) break;
                   }
-                  br2(A6, 48, Q3 + 18 | 0, 18, 0), kC(A6, m4, M5 - m4 | 0);
+                  br3(A6, 48, Q3 + 18 | 0, 18, 0), kC(A6, m4, M5 - m4 | 0);
                   break g;
                 }
                 t3 = Q3;
               }
-              br2(A6, 48, t3 + 9 | 0, 9, 0);
+              br3(A6, 48, t3 + 9 | 0, 9, 0);
             }
-            br2(A6, 32, g5, u4, 8192 ^ C3), w4 = (0 | g5) < (0 | u4) ? u4 : g5;
+            br3(A6, 32, g5, u4, 8192 ^ C3), w4 = (0 | g5) < (0 | u4) ? u4 : g5;
             break A;
           }
           if (c4 = (I4 << 26 >> 31 & 9) + p4 | 0, !(r4 >>> 0 > 11)) {
@@ -98040,8 +101417,8 @@ var b = { Memory: function(A3) {
             e4 = 45 != i4[0 | c4] ? e4 + x3 - x3 : -(x3 + (-e4 - x3));
           }
           for ((0 | M5) == (0 | (t3 = Ug(((t3 = f4[s4 + 44 >> 2]) ^ (k5 = t3 >> 31)) - k5 | 0, 0, M5))) && (a3[s4 + 15 | 0] = 48, t3 = s4 + 15 | 0), l3 = 2 | d4, o4 = 32 & I4, k5 = f4[s4 + 44 >> 2], a3[0 | (Q3 = t3 - 2 | 0)] = I4 + 15, a3[t3 - 1 | 0] = (0 | k5) < 0 ? 45 : 43, t3 = 8 & C3, k5 = s4 + 16 | 0; I4 = k5, B3 = E2(e4) < 2147483648 ? ~~e4 : -2147483648, a3[0 | k5] = o4 | i4[B3 + 124512 | 0], !((0 | r4) > 0 | t3) & 0 == (e4 = 16 * (e4 - +(0 | B3))) | 1 != ((k5 = I4 + 1 | 0) - (s4 + 16 | 0) | 0) || (a3[I4 + 1 | 0] = 46, k5 = I4 + 2 | 0), 0 != e4; ) ;
-          w4 = -1, (2147483645 - (I4 = (t3 = M5 - Q3 | 0) + l3 | 0) | 0) < (0 | r4) || (br2(A6, 32, g5, I4 = (r4 = !r4 || ((o4 = k5 - (s4 + 16 | 0) | 0) - 2 | 0) >= (0 | r4) ? o4 = k5 - (s4 + 16 | 0) | 0 : r4 + 2 | 0) + I4 | 0, C3), kC(A6, c4, l3), br2(A6, 48, g5, I4, 65536 ^ C3), kC(A6, s4 + 16 | 0, o4), br2(A6, 48, r4 - o4 | 0, 0, 0), kC(A6, Q3, t3), br2(A6, 32, g5, I4, 8192 ^ C3), w4 = (0 | g5) < (0 | I4) ? I4 : g5);
-        } else br2(A6, 32, g5, t3 = d4 + 3 | 0, -65537 & C3), kC(A6, p4, d4), r4 = 32 & I4, kC(A6, e4 != e4 ? r4 ? 85596 : 85774 : r4 ? 85247 : 85460, 3), br2(A6, 32, g5, t3, 8192 ^ C3), w4 = (0 | g5) < (0 | t3) ? t3 : g5;
+          w4 = -1, (2147483645 - (I4 = (t3 = M5 - Q3 | 0) + l3 | 0) | 0) < (0 | r4) || (br3(A6, 32, g5, I4 = (r4 = !r4 || ((o4 = k5 - (s4 + 16 | 0) | 0) - 2 | 0) >= (0 | r4) ? o4 = k5 - (s4 + 16 | 0) | 0 : r4 + 2 | 0) + I4 | 0, C3), kC(A6, c4, l3), br3(A6, 48, g5, I4, 65536 ^ C3), kC(A6, s4 + 16 | 0, o4), br3(A6, 48, r4 - o4 | 0, 0, 0), kC(A6, Q3, t3), br3(A6, 32, g5, I4, 8192 ^ C3), w4 = (0 | g5) < (0 | I4) ? I4 : g5);
+        } else br3(A6, 32, g5, t3 = d4 + 3 | 0, -65537 & C3), kC(A6, p4, d4), r4 = 32 & I4, kC(A6, e4 != e4 ? r4 ? 85596 : 85774 : r4 ? 85247 : 85460, 3), br3(A6, 32, g5, t3, 8192 ^ C3), w4 = (0 | g5) < (0 | t3) ? t3 : g5;
         return V2 = s4 + 560 | 0, 0 | w4;
       }, function(A6, e4) {
         var g5;
@@ -98147,7 +101524,7 @@ var b = { Memory: function(A3) {
                       f4[s4 + 8 >> 2] = Or2(4096), se3(I4, s4 + 8 | 0);
                       break A;
                     }
-                    if (f4[s4 + 8 >> 2] = Or2(4096), ie3(I4, s4 + 8 | 0), e4 = f4[I4 + 4 >> 2], c4 = f4[e4 >> 2], C3 = e4 + 4 | 0, f4[I4 + 4 >> 2] = C3, (0 | (e4 = f4[I4 + 8 >> 2])) == f4[I4 + 12 >> 2]) if ((t3 = f4[I4 >> 2]) >>> 0 < C3 >>> 0) g5 = Qe((r4 = (1 + (C3 - t3 >> 2) | 0) / -2 << 2) + C3 | 0, C3, e4 = e4 - C3 | 0) + e4 | 0, f4[I4 + 8 >> 2] = g5, f4[I4 + 4 >> 2] = r4 + f4[I4 + 4 >> 2];
+                    if (f4[s4 + 8 >> 2] = Or2(4096), ie4(I4, s4 + 8 | 0), e4 = f4[I4 + 4 >> 2], c4 = f4[e4 >> 2], C3 = e4 + 4 | 0, f4[I4 + 4 >> 2] = C3, (0 | (e4 = f4[I4 + 8 >> 2])) == f4[I4 + 12 >> 2]) if ((t3 = f4[I4 >> 2]) >>> 0 < C3 >>> 0) g5 = Qe((r4 = (1 + (C3 - t3 >> 2) | 0) / -2 << 2) + C3 | 0, C3, e4 = e4 - C3 | 0) + e4 | 0, f4[I4 + 8 >> 2] = g5, f4[I4 + 4 >> 2] = r4 + f4[I4 + 4 >> 2];
                     else {
                       if ((g5 = (0 | e4) == (0 | t3) ? 1 : e4 - t3 >> 1) >>> 0 >= 1073741824) break r;
                       if (G4 = (r4 = g5 << 2) + (n3 = Or2(r4)) | 0, g5 = r4 = n3 + (-4 & g5) | 0, (0 | e4) != (0 | C3)) {
@@ -98166,7 +101543,7 @@ var b = { Memory: function(A3) {
                       e4 = C3;
                       break e;
                     }
-                    for (; ie3(s4 + 8 | 0, C3 = C3 - 4 | 0), f4[I4 + 4 >> 2] != (0 | C3); ) ;
+                    for (; ie4(s4 + 8 | 0, C3 = C3 - 4 | 0), f4[I4 + 4 >> 2] != (0 | C3); ) ;
                     break g;
                   }
                 }
@@ -98271,10 +101648,10 @@ var b = { Memory: function(A3) {
           V2 = e4 = (V2 = v4 = V2 - 16 | 0) - 80 | 0;
           A: {
             if (g5 = Hg(84292)) {
-              if (f4[e4 + 32 >> 2] = g5, Gg(137584, 160, 85959, e4 + 32 | 0), -31 == (0 | fr2(137584))) break A;
-              if (f4[e4 + 16 >> 2] = g5, Gg(137584, 160, 86031, e4 + 16 | 0), -31 == (0 | fr2(137584))) break A;
+              if (f4[e4 + 32 >> 2] = g5, Gg(137584, 160, 85959, e4 + 32 | 0), -31 == (0 | fr3(137584))) break A;
+              if (f4[e4 + 16 >> 2] = g5, Gg(137584, 160, 86031, e4 + 16 | 0), -31 == (0 | fr3(137584))) break A;
             }
-            (g5 = Hg(84619)) && (f4[e4 >> 2] = g5, Gg(137584, 160, 85959, e4), -31 == (0 | fr2(137584))) || (g5 = i4[84826] | i4[84827] << 8 | i4[84828] << 16 | i4[84829] << 24, f4[34396] = i4[84822] | i4[84823] << 8 | i4[84824] << 16 | i4[84825] << 24, f4[34397] = g5, I3[68804] = i4[84846] | i4[84847] << 8, g5 = i4[84842] | i4[84843] << 8 | i4[84844] << 16 | i4[84845] << 24, f4[34400] = i4[84838] | i4[84839] << 8 | i4[84840] << 16 | i4[84841] << 24, f4[34401] = g5, g5 = i4[84834] | i4[84835] << 8 | i4[84836] << 16 | i4[84837] << 24, f4[34398] = i4[84830] | i4[84831] << 8 | i4[84832] << 16 | i4[84833] << 24, f4[34399] = g5);
+            (g5 = Hg(84619)) && (f4[e4 >> 2] = g5, Gg(137584, 160, 85959, e4), -31 == (0 | fr3(137584))) || (g5 = i4[84826] | i4[84827] << 8 | i4[84828] << 16 | i4[84829] << 24, f4[34396] = i4[84822] | i4[84823] << 8 | i4[84824] << 16 | i4[84825] << 24, f4[34397] = g5, I3[68804] = i4[84846] | i4[84847] << 8, g5 = i4[84842] | i4[84843] << 8 | i4[84844] << 16 | i4[84845] << 24, f4[34400] = i4[84838] | i4[84839] << 8 | i4[84840] << 16 | i4[84841] << 24, f4[34401] = g5, g5 = i4[84834] | i4[84835] << 8 | i4[84836] << 16 | i4[84837] << 24, f4[34398] = i4[84830] | i4[84831] << 8 | i4[84832] << 16 | i4[84833] << 24, f4[34399] = g5);
           }
           if (V2 = e4 + 80 | 0, f4[v4 + 12 >> 2] = 0, C3 = v4 + 12 | 0, V2 = t3 = V2 - 16 | 0, f4[t3 + 12 >> 2] = 22050, Be2(85144) || Be2(85315) || Be2(85473) || Be2(85698), w4 = t3 + 12 | 0, V2 = b4 = V2 - 16 | 0, f4[b4 + 12 >> 2] = 0, !((e4 = Le2(137832, 84262, 0, C3)) || (e4 = Le2(137836, 84420, 0, C3)) || (e4 = Le2(137840, 84813, 0, C3)) || (e4 = Le2(137820, 85016, b4 + 12 | 0, C3)))) if (f4[34454] = c3[b4 + 12 >> 2] / 68, g5 = f4[34460], f4[34456] = g5, g5 && 83969 == (0 | (k5 = i4[0 | g5] | i4[g5 + 1 | 0] << 8 | i4[g5 + 2 | 0] << 16 | i4[g5 + 3 | 0] << 24))) {
             if (D3 = i4[g5 + 4 | 0] | i4[g5 + 5 | 0] << 8 | i4[g5 + 6 | 0] << 16 | i4[g5 + 7 | 0] << 24, g5 = f4[34458], l3 = i4[0 | g5], f4[34461] = l3, l3) for (e4 = g5 + 4 | 0, k5 = 0; r4 = G3(k5, 44) + 137856 | 0, C3 = i4[0 | e4], f4[r4 + 36 >> 2] = C3, f4[r4 + 40 >> 2] = i4[e4 + 1 | 0], s4 = i4[e4 + 8 | 0] | i4[e4 + 9 | 0] << 8 | i4[e4 + 10 | 0] << 16 | i4[e4 + 11 | 0] << 24, g5 = i4[e4 + 4 | 0] | i4[e4 + 5 | 0] << 8 | i4[e4 + 6 | 0] << 16 | i4[e4 + 7 | 0] << 24, a3[0 | r4] = g5, a3[r4 + 1 | 0] = g5 >>> 8, a3[r4 + 2 | 0] = g5 >>> 16, a3[r4 + 3 | 0] = g5 >>> 24, a3[r4 + 4 | 0] = s4, a3[r4 + 5 | 0] = s4 >>> 8, a3[r4 + 6 | 0] = s4 >>> 16, a3[r4 + 7 | 0] = s4 >>> 24, s4 = i4[e4 + 16 | 0] | i4[e4 + 17 | 0] << 8 | i4[e4 + 18 | 0] << 16 | i4[e4 + 19 | 0] << 24, g5 = i4[e4 + 12 | 0] | i4[e4 + 13 | 0] << 8 | i4[e4 + 14 | 0] << 16 | i4[e4 + 15 | 0] << 24, a3[r4 + 8 | 0] = g5, a3[r4 + 9 | 0] = g5 >>> 8, a3[r4 + 10 | 0] = g5 >>> 16, a3[r4 + 11 | 0] = g5 >>> 24, a3[r4 + 12 | 0] = s4, a3[r4 + 13 | 0] = s4 >>> 8, a3[r4 + 14 | 0] = s4 >>> 16, a3[r4 + 15 | 0] = s4 >>> 24, s4 = i4[e4 + 24 | 0] | i4[e4 + 25 | 0] << 8 | i4[e4 + 26 | 0] << 16 | i4[e4 + 27 | 0] << 24, g5 = i4[e4 + 20 | 0] | i4[e4 + 21 | 0] << 8 | i4[e4 + 22 | 0] << 16 | i4[e4 + 23 | 0] << 24, a3[r4 + 16 | 0] = g5, a3[r4 + 17 | 0] = g5 >>> 8, a3[r4 + 18 | 0] = g5 >>> 16, a3[r4 + 19 | 0] = g5 >>> 24, a3[r4 + 20 | 0] = s4, a3[r4 + 21 | 0] = s4 >>> 8, a3[r4 + 22 | 0] = s4 >>> 16, a3[r4 + 23 | 0] = s4 >>> 24, s4 = i4[e4 + 32 | 0] | i4[e4 + 33 | 0] << 8 | i4[e4 + 34 | 0] << 16 | i4[e4 + 35 | 0] << 24, g5 = i4[e4 + 28 | 0] | i4[e4 + 29 | 0] << 8 | i4[e4 + 30 | 0] << 16 | i4[e4 + 31 | 0] << 24, a3[r4 + 24 | 0] = g5, a3[r4 + 25 | 0] = g5 >>> 8, a3[r4 + 26 | 0] = g5 >>> 16, a3[r4 + 27 | 0] = g5 >>> 24, a3[r4 + 28 | 0] = s4, a3[r4 + 29 | 0] = s4 >>> 8, a3[r4 + 30 | 0] = s4 >>> 16, a3[r4 + 31 | 0] = s4 >>> 24, g5 = e4 + 36 | 0, f4[r4 + 32 >> 2] = g5, e4 = g5 + (C3 << 4) | 0, (0 | l3) != (0 | (k5 = k5 + 1 | 0)); ) ;
@@ -98300,7 +101677,7 @@ var b = { Memory: function(A3) {
             }
             if (f4[50801] = 105792, f4[56797] = ZA2(), f4[55964] = 38, f4[55921] = 1, f4[55918] = 22050, f4[56606] = 0, f4[55960] = 110928, f4[55958] = 0, f4[55959] = 1074266112, f4[55956] = 100, f4[55922] = 20, f4[55923] = 220, f4[55916] = 1, f4[55917] = 0, vr2(), f4[56244] = 0, f4[56245] = 0, f4[55928] = 0, f4[55926] = 0, f4[55927] = 0, f4[55924] = 0, f4[56246] = 0, f4[56247] = 0, f4[56260] = 0, f4[56261] = 0, f4[56262] = 0, f4[56263] = 0, f4[56276] = 0, f4[56277] = 0, f4[56278] = 0, f4[56279] = 0, f4[55974] = 0, f4[55975] = 0, f4[55972] = 0, f4[55973] = 0, m4 = -3.141592653589793 / +(0 | (e4 = f4[55918])), Q2[27967] = m4, C3 = (0 | G3(e4, 630)) / 1e4 | 0, f4[55920] = C3, e4 = (0 | G3(e4, 950)) / 1e4 | 0, f4[55919] = e4, n3 = -2 * m4, Q2[27968] = n3, m4 = (H3 = $A2(m4 * +(0 | C3))) * -H3, Q2[28129] = m4, n3 = H3 * Cg(n3 * +(0 | e4)), n3 += n3, Q2[28128] = n3, Q2[28127] = 1 - n3 - m4, f4[55990] = 0, f4[55991] = 0, f4[55988] = 0, f4[55989] = 0, f4[56006] = 0, f4[56007] = 0, f4[56004] = 0, f4[56005] = 0, f4[56022] = 0, f4[56023] = 0, f4[56020] = 0, f4[56021] = 0, f4[56038] = 0, f4[56039] = 0, f4[56036] = 0, f4[56037] = 0, f4[56054] = 0, f4[56055] = 0, f4[56052] = 0, f4[56053] = 0, f4[56070] = 0, f4[56071] = 0, f4[56068] = 0, f4[56069] = 0, f4[56086] = 0, f4[56087] = 0, f4[56084] = 0, f4[56085] = 0, f4[56102] = 0, f4[56103] = 0, f4[56100] = 0, f4[56101] = 0, f4[56118] = 0, f4[56119] = 0, f4[56116] = 0, f4[56117] = 0, f4[56134] = 0, f4[56135] = 0, f4[56132] = 0, f4[56133] = 0, f4[56150] = 0, f4[56151] = 0, f4[56148] = 0, f4[56149] = 0, f4[56166] = 0, f4[56167] = 0, f4[56164] = 0, f4[56165] = 0, f4[56182] = 0, f4[56183] = 0, f4[56180] = 0, f4[56181] = 0, f4[56198] = 0, f4[56199] = 0, f4[56196] = 0, f4[56197] = 0, f4[56214] = 0, f4[56215] = 0, f4[56212] = 0, f4[56213] = 0, f4[56230] = 0, f4[56231] = 0, f4[56228] = 0, f4[56229] = 0, f4[56639] = 59, f4[56640] = 59, f4[56629] = 0, f4[56630] = 59, f4[56619] = 89, f4[56620] = 160, f4[56609] = 280, f4[56610] = 688, f4[56611] = 1064, f4[56621] = 70, f4[56631] = 59, f4[56612] = 2806, f4[56613] = 3260, f4[56622] = 160, f4[56623] = 200, f4[56632] = 59, f4[56633] = 59, f4[56641] = 89, f4[56642] = 149, f4[56643] = 200, f4[56644] = 200, f4[56634] = 59, f4[56635] = 59, f4[56624] = 200, f4[56625] = 500, f4[56614] = 3700, f4[56615] = 6500, f4[56645] = 500, f4[56646] = 0, f4[56616] = 7e3, f4[56626] = 500, f4[56636] = 0, f4[56647] = 0, f4[56637] = 0, f4[56627] = 500, f4[56617] = 8e3, f4[56669] = 89, f4[56648] = 0, f4[56638] = 0, f4[56628] = 89, f4[56618] = 280, f4[56657] = 62, f4[56655] = 0, f4[56656] = 0, f4[56653] = 50, f4[56654] = 0, f4[56651] = 0, f4[56652] = 0, f4[56649] = 0, f4[56650] = 40, f4[56607] = 1e3, f4[56608] = 59, V2 = b4 = V2 - 416 | 0, f4[b4 + 16 >> 2] = 137584, f4[b4 + 20 >> 2] = 47, f4[b4 + 24 >> 2] = 85952, dg2(e4 = b4 + 240 | 0, 85699, b4 + 16 | 0), s4 = Ae3(e4, 86034)) {
               if (xe(b4 + 240 | 0, 170, s4)) for (w4 = 5 | (e4 = b4 + 240 | 0), D3 = 10 | e4; 47 != i4[b4 + 240 | 0] && (1701736308 != f4[b4 + 240 >> 2] ? pg2(b4 + 240 | 0, 86614, 9) || (f4[b4 + 4 >> 2] = b4 + 32, f4[b4 >> 2] = b4 + 239, 2 == (0 | aA2(D3, 86829, b4)) && (C3 = f4[34064], f4[(l3 = 136272 + (C3 << 4) | 0) >> 2] = a3[b4 + 239 | 0], e4 = $r2(b4 + 32 | 0), f4[34064] = C3 + 1, f4[l3 + 12 >> 2] = e4, f4[l3 + 4 >> 2] = 0)) : (V2 = e4 = V2 - 48 | 0, f4[32960] = -1, f4[32961] = -1, f4[32970] = -1, f4[32971] = -1, f4[32968] = -1, f4[32969] = -1, f4[32966] = -1, f4[32967] = -1, f4[32964] = -1, f4[32965] = -1, f4[32962] = -1, f4[32963] = -1, f4[e4 + 36 >> 2] = 131876, f4[e4 + 32 >> 2] = 131872, f4[e4 + 28 >> 2] = 131868, f4[e4 + 24 >> 2] = 131864, f4[e4 + 20 >> 2] = 131860, f4[e4 + 16 >> 2] = 131856, f4[e4 + 12 >> 2] = 131852, f4[e4 + 8 >> 2] = 131848, f4[e4 + 4 >> 2] = 131844, f4[e4 >> 2] = 131840, aA2(w4, 84222, e4), V2 = e4 + 48 | 0)), xe(b4 + 240 | 0, 170, s4); ) ;
-              tr2(s4);
+              tr3(s4);
             }
             V2 = b4 + 416 | 0, f4[50297] = 0, f4[50298] = 0, f4[50301] = 0, f4[50302] = 0, f4[50299] = 0, f4[50300] = 0, og2(0, 85698), f4[36425] = 0, f4[36424] = 0, f4[36426] = 0, f4[36427] = -1, AC2(), YA2(0), r4 = f4[25690], f4[34062] = r4, o4 = f4[25689], b4 = f4[25688], f4[34060] = b4, f4[34061] = o4, d4 = f4[25687], s4 = f4[25686], f4[34058] = s4, f4[34059] = d4, M5 = f4[25685], l3 = f4[25684], f4[34056] = l3, f4[34057] = M5, p4 = f4[25683], w4 = f4[25682], f4[34054] = w4, f4[34055] = p4, Y3 = f4[25681], D3 = f4[25680], f4[34052] = D3, f4[34053] = Y3, u4 = f4[25679], C3 = f4[25678], f4[34050] = C3, f4[34051] = u4, x3 = f4[25677], e4 = f4[25676], f4[34048] = e4, f4[34049] = x3, f4[33729] = e4, f4[33730] = x3, f4[33731] = C3, f4[33732] = u4, f4[33733] = D3, f4[33734] = Y3, f4[33735] = w4, f4[33736] = p4, f4[33737] = l3, f4[33738] = M5, f4[33739] = s4, f4[33740] = d4, f4[33741] = b4, f4[33742] = o4, f4[33743] = r4, ye(1, 175), ye(2, 100), ye(6, f4[47200]), ye(5, f4[47201]), ye(7, 0), f4[47198] = 0, f4[47197] = 0, n3 = +h3() / 1e3, C3 = Cr2(e4 = E2(n3) < 9223372036854776e3 ? ~~n3 >>> 0 : 0, 0, 1103515245, 0), e4 = U3, e4 = (C3 = C3 + 12345 | 0) >>> 0 < 12345 ? e4 + 1 | 0 : e4, f4[33209] = tC(C3, e4);
           }
@@ -98399,7 +101776,7 @@ var b = { Memory: function(A3) {
       }, Y: function(A6, e4, g5) {
         A6 |= 0, e4 |= 0, g5 |= 0, f4[34440] = g5, xr2(3, f4[A6 + 12 >> 2]), xr2(1, f4[A6 + 8 >> 2]), (A6 = f4[A6 + 16 >> 2]) ? eg2(A6) : Xg(1024), _3(e4), f4[34440] = 0;
       }, Z: function(A6, e4, g5) {
-        return A6 |= 0, e4 |= 0, g5 |= 0, f4[34440] = 0, (A6 = Ae3(g5, 1032)) ? (f4[47195] = A6, f4[47197] = 130, A6 || (f4[47195] = f4[30450]), _3(e4), f4[47195] = 0, f4[47197] = 0, f4[47195] = f4[30450], tr2(A6), 0) : -1;
+        return A6 |= 0, e4 |= 0, g5 |= 0, f4[34440] = 0, (A6 = Ae3(g5, 1032)) ? (f4[47195] = A6, f4[47197] = 130, A6 || (f4[47195] = f4[30450]), _3(e4), f4[47195] = 0, f4[47197] = 0, f4[47195] = f4[30450], tr3(A6), 0) : -1;
       }, _: function(A6) {
         return 36;
       }, $: function(A6, e4, g5) {
@@ -100404,11 +103781,11 @@ var VOICES = [
   { id: "af_sky", name: "Sky", desc: "American woman", group: "American women" }
 ];
 var GROUPS = [...new Set(VOICES.map((v3) => v3.group))];
-function voiceInfo(id2) {
-  return VOICES.find((v3) => v3.id === id2) || { id: id2, name: id2, desc: "", group: "" };
+function voiceInfo(id3) {
+  return VOICES.find((v3) => v3.id === id3) || { id: id3, name: id3, desc: "", group: "" };
 }
-function parseVoice(id2) {
-  const parts = String(id2 || "bm_fable").split("+").map((p3) => {
+function parseVoice(id3) {
+  const parts = String(id3 || "bm_fable").split("+").map((p3) => {
     const [name, w3] = p3.trim().split("*");
     return { name: name.trim(), w: w3 == null ? 1 : Number(w3) };
   }).filter((p3) => /^[a-z][fm]_[a-z]+$/.test(p3.name) && p3.w > 0);
@@ -100416,11 +103793,1654 @@ function parseVoice(id2) {
   const sum = parts.reduce((a2, p3) => a2 + p3.w, 0);
   return parts.map((p3) => ({ name: p3.name, w: p3.w / sum }));
 }
-function baseVoice(id2) {
-  return parseVoice(id2)[0].name;
+function baseVoice(id3) {
+  return parseVoice(id3)[0].name;
 }
 
-// src/lang.js
+// node_modules/fasttext.wasm.js/dist/helpers/modules/common.mjs
+async function initializeFastTextModule(options = {}) {
+  const { wasmPath, ...rest } = options;
+  const fastTextModularized = (await Promise.resolve().then(() => (init_fastText_common(), fastText_common_exports))).default;
+  return await fastTextModularized({
+    // Binding js use the callback to locate wasm for now
+    locateFile: (url, scriptDirectory) => {
+      if (wasmPath) {
+        return typeof wasmPath === "string" ? wasmPath : wasmPath(url, scriptDirectory);
+      }
+      return (scriptDirectory || "/") + url;
+    },
+    ...rest
+  });
+}
+async function getFastTextModule(options = {}) {
+  return await initializeFastTextModule(options);
+}
+
+// node_modules/fasttext.wasm.js/dist/constants.mjs
+var commonAssetsDir = "/fastText";
+var commonAssetsModelsDir = "/fastText/models";
+var trainFileInWasmFs = "train.txt";
+var testFileInWasmFs = "test.txt";
+var modelFileInWasmFs = "model.bin";
+var IS_BROWSER = typeof window !== "undefined" && !!window.document && !!window.document.createElement;
+var IS_WORKER = (
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-expect-error
+  "importScripts" in globalThis && typeof globalThis.importScripts == "function"
+);
+
+// node_modules/fasttext.wasm.js/dist/helpers/modules/index.mjs
+var readFile;
+var request;
+var fileURLToPath;
+var buffer2Uin8Array = (buf) => new Uint8Array(buf.buffer, buf.byteOffset, buf.length);
+var fetchFile = async (url) => {
+  if (IS_BROWSER || IS_WORKER) {
+    return new Uint8Array(await (await fetch(url)).arrayBuffer());
+  }
+  if (url.startsWith("file://")) {
+    readFile ??= (await import("fs/promises")).readFile;
+    fileURLToPath ??= (await import("url")).fileURLToPath;
+    return buffer2Uin8Array(await readFile(fileURLToPath(url)));
+  } else {
+    request ??= (await import("http")).request;
+    return new Promise((resolve, reject) => {
+      const chunks = [];
+      request(
+        url,
+        (res) => res.on("close", () => resolve(buffer2Uin8Array(Buffer.concat(chunks)))).on("data", (chunk) => chunks.push(chunk)).on("error", (err) => reject(err))
+      );
+    });
+  }
+};
+
+// node_modules/fasttext.wasm.js/dist/FastTextModel.mjs
+var FastTextModel = class {
+  core;
+  ft;
+  constructor(fastTextNative, fastTextModule2) {
+    this.ft = fastTextNative;
+    this.core = fastTextModule2;
+  }
+  getFloat32ArrayFromHeap = (len) => {
+    const dataBytes = len * Float32Array.BYTES_PER_ELEMENT;
+    const dataPtr = this.core._malloc(dataBytes);
+    const dataHeap = new Uint8Array(this.core.HEAPU8.buffer, dataPtr, dataBytes);
+    return {
+      ptr: dataHeap.byteOffset,
+      size: len,
+      buffer: dataHeap.buffer
+    };
+  };
+  heapToFloat32 = (r2) => new Float32Array(r2.buffer, r2.ptr, r2.size);
+  /**
+   * isQuant
+   *
+   * @return {bool}   true if the model is quantized
+   */
+  isQuant() {
+    return this.ft.isQuant;
+  }
+  /**
+   * getDimension
+   *
+   * @return {number}    the dimension (size) of a lookup vector (hidden layer)
+   */
+  getDimension() {
+    return this.ft.args.dim;
+  }
+  /**
+   * getWordVector
+   *
+   * @param {string}          word
+   *
+   * @return {Float32Array}   the vector representation of `word`.
+   *
+   */
+  getWordVector(word) {
+    const b3 = this.getFloat32ArrayFromHeap(this.getDimension());
+    this.ft.getWordVector(b3, word);
+    return this.heapToFloat32(b3);
+  }
+  /**
+   * getSentenceVector
+   *
+   * @return {Float32Array}   the vector representation of `text`.
+   *
+   */
+  getSentenceVector(text) {
+    if (text.includes("\n")) ;
+    text += "\n";
+    const b3 = this.getFloat32ArrayFromHeap(this.getDimension());
+    this.ft.getSentenceVector(b3, text);
+    return this.heapToFloat32(b3);
+  }
+  /**
+   * getNearestNeighbors
+   *
+   * returns the nearest `k` neighbors of `word`.
+   *
+   * @return words and their corresponding cosine similarities.
+   *
+   */
+  getNearestNeighbors(word, k4 = 10) {
+    return this.ft.getNN(word, k4);
+  }
+  /**
+   * getAnalogies
+   *
+   * returns the nearest `k` neighbors of the operation
+   * `wordA - wordB + wordC`.
+   *
+   * @return words and their corresponding cosine similarities
+   *
+   */
+  getAnalogies(wordA, wordB, wordC, k4) {
+    return this.ft.getAnalogies(k4, wordA, wordB, wordC);
+  }
+  /**
+   * getWordId
+   *
+   * Given a word, get the word id within the dictionary.
+   * Returns -1 if word is not in the dictionary.
+   */
+  getWordId(word) {
+    return this.ft.getWordId(word);
+  }
+  /**
+   * getSubwordId
+   *
+   * Given a subword, return the index (within input matrix) it hashes to.
+   */
+  getSubwordId(subword) {
+    return this.ft.getSubwordId(subword);
+  }
+  /**
+   * getSubwords
+   *
+   * returns the subwords and their indicies.
+   *
+   * @return words and their corresponding indicies
+   *
+   */
+  getSubwords(word) {
+    return this.ft.getSubwords(word);
+  }
+  /**
+   * getInputVector
+   *
+   * Given an index, get the corresponding vector of the Input Matrix.
+   *
+   * @return {Float32Array}   the vector of the `ind`'th index
+   *
+   */
+  getInputVector(ind) {
+    const b3 = this.getFloat32ArrayFromHeap(this.getDimension());
+    this.ft.getInputVector(b3, ind);
+    return this.heapToFloat32(b3);
+  }
+  /**
+   * predict
+   *
+   * Given a string, get a list of labels and a list of corresponding
+   * probabilities. k controls the number of returned labels.
+   *
+   * @return labels and their probabilities
+   *
+   */
+  predict(text, k4 = 1, threshold = 0) {
+    return this.ft.predict(text, k4, threshold);
+  }
+  /**
+   * getInputMatrix
+   *
+   * Get a reference to the full input matrix of a Model. This only
+   * works if the model is not quantized.
+   *
+   * @return {DenseMatrix}
+   *     densematrix with functions: `rows`, `cols`, `at(i,j)`
+   *
+   * example:
+   *     let inputMatrix = model.getInputMatrix();
+   *     let value = inputMatrix.at(1, 2);
+   */
+  getInputMatrix() {
+    if (this.isQuant()) {
+      throw new Error("Can't get quantized Matrix");
+    }
+    return this.ft.getInputMatrix();
+  }
+  /**
+   * getOutputMatrix
+   *
+   * Get a reference to the full input matrix of a Model. This only
+   * works if the model is not quantized.
+   *
+   * @return {DenseMatrix}
+   *     densematrix with functions: `rows`, `cols`, `at(i,j)`
+   *
+   * example:
+   *     let outputMatrix = model.getOutputMatrix();
+   *     let value = outputMatrix.at(1, 2);
+   */
+  getOutputMatrix() {
+    if (this.isQuant()) {
+      throw new Error("Can't get quantized Matrix");
+    }
+    return this.ft.getOutputMatrix();
+  }
+  /**
+   * getWords
+   *
+   * Get the entire list of words of the dictionary including the frequency
+   * of the individual words. This does not include any subwords. For that
+   * please consult the function get_subwords.
+   *
+   * @return {Pair.<Array.<string>, Array.<int>>}
+   *     words and their corresponding frequencies
+   *
+   */
+  getWords() {
+    return this.ft.getWords();
+  }
+  /**
+   * getLabels
+   *
+   * Get the entire list of labels of the dictionary including the frequency
+   * of the individual labels.
+   *
+   * @return {Pair.<Array.<string>, Array.<int>>}
+   *     labels and their corresponding frequencies
+   *
+   */
+  getLabels() {
+    return this.ft.getLabels();
+  }
+  /**
+   * getLine
+   *
+   * Split a line of text into words and labels. Labels must start with
+   * the prefix used to create the model (__label__ by default).
+   *
+   * @return {Pair.<Array.<string>, Array.<string>>}
+   *     words and labels
+   *
+   */
+  getLine(text) {
+    return this.ft.getLine(text);
+  }
+  /**
+   * saveModel
+   *
+   * Saves the model file in web assembly in-memory FS and returns a blob
+   *
+   * @return {Blob}           blob data of the file saved in web assembly FS
+   *
+   */
+  saveModel() {
+    this.ft.saveModel(modelFileInWasmFs);
+    const content = this.core.FS.readFile(modelFileInWasmFs, {
+      encoding: "binary"
+    });
+    return new Blob(
+      [new Uint8Array(content, content.byteOffset, content.length)],
+      { type: " application/octet-stream" }
+    );
+  }
+  /**
+   * test
+   *
+   * Downloads the test file from the specified url, evaluates the supervised
+   * model with it.
+   *
+   * @return {Promise}   promise object that resolves to a `Meter` object
+   *
+   * example:
+   * model.test("/absolute/url/to/test.txt", 1, 0.0).then((meter) => {
+   *     console.log(meter.precision);
+   *     console.log(meter.recall);
+   *     console.log(meter.f1Score);
+   *     console.log(meter.nexamples());
+   * });
+   *
+   */
+  test(url, k4, threshold) {
+    const fetchFunc = globalThis.fetch || fetch;
+    const fastTextNative = this.ft;
+    return new Promise((resolve, reject) => {
+      fetchFunc(url).then((response) => {
+        return response.arrayBuffer();
+      }).then((bytes) => {
+        const byteArray = new Uint8Array(bytes);
+        const FS = this.core.FS;
+        FS.writeFile(testFileInWasmFs, byteArray);
+      }).then(() => {
+        const meter = fastTextNative.test(testFileInWasmFs, k4, threshold);
+        resolve(meter);
+      }).catch((error) => {
+        reject(error);
+      });
+    });
+  }
+};
+
+// node_modules/fasttext.wasm.js/dist/FastText.mjs
+var getFastTextClass = async (options) => {
+  const { getFastTextModule: getFastTextModule2 } = options;
+  const fastTextModule2 = await getFastTextModule2();
+  return class FastText {
+    core;
+    ft;
+    fs;
+    constructor() {
+      this.core = fastTextModule2;
+      this.ft = new fastTextModule2.FastText();
+      this.fs = fastTextModule2.FS;
+    }
+    /**
+     * loadModel
+     *
+     * Loads the model file from the specified url, and returns the
+     * corresponding `FastTextModel` object.
+     */
+    async loadModel(url) {
+      const fastTextNative = this.ft;
+      const arrayBuffer = await fetchFile(url);
+      const byteArray = new Uint8Array(arrayBuffer);
+      const FS = fastTextModule2.FS;
+      await FS.writeFile(modelFileInWasmFs, byteArray);
+      fastTextNative.loadModel(modelFileInWasmFs);
+      return new FastTextModel(fastTextNative, this.core);
+    }
+    _train(url, modelName, kwargs = {}, callback = null) {
+      const fetchFunc = globalThis.fetch || fetch;
+      const fastTextNative = this.ft;
+      return new Promise((resolve, reject) => {
+        fetchFunc(url).then((response) => {
+          return response.arrayBuffer();
+        }).then((bytes) => {
+          const byteArray = new Uint8Array(bytes);
+          const FS = fastTextModule2.FS;
+          FS.writeFile(trainFileInWasmFs, byteArray);
+        }).then(() => {
+          const argsList = [
+            "lr",
+            "lrUpdateRate",
+            "dim",
+            "ws",
+            "epoch",
+            "minCount",
+            "minCountLabel",
+            "neg",
+            "wordNgrams",
+            "loss",
+            "model",
+            "bucket",
+            "minn",
+            "maxn",
+            "t",
+            "label",
+            "verbose",
+            "pretrainedVectors",
+            "saveOutput",
+            "seed",
+            "qout",
+            "retrain",
+            "qnorm",
+            "cutoff",
+            "dsub",
+            "qnorm",
+            "autotuneValidationFile",
+            "autotuneMetric",
+            "autotunePredictions",
+            "autotuneDuration",
+            "autotuneModelSize"
+          ];
+          const args = new fastTextModule2.Args();
+          argsList.forEach((k4) => {
+            if (k4 in kwargs) {
+              args[k4] = kwargs[k4];
+            }
+          });
+          args.model = fastTextModule2.ModelName[modelName];
+          args.loss = "loss" in kwargs ? fastTextModule2.LossName[kwargs.loss] : "hs";
+          args.thread = 1;
+          args.input = trainFileInWasmFs;
+          fastTextNative.train(args, callback);
+          resolve(new FastTextModel(fastTextNative, this.core));
+        }).catch((error) => {
+          reject(error);
+        });
+      });
+    }
+    /**
+     * trainSupervised
+     *
+     * Downloads the input file from the specified url, trains a supervised
+     * model and returns a `FastTextModel` object.
+     */
+    trainSupervised(url, kwargs = {}, callback) {
+      const self2 = this;
+      return new Promise((resolve, reject) => {
+        self2._train(url, "supervised", kwargs, callback).then((model2) => {
+          resolve(model2);
+        }).catch((error) => {
+          reject(error);
+        });
+      });
+    }
+    /**
+     * trainUnsupervised
+     *
+     * Downloads the input file from the specified url, trains an unsupervised
+     * model and returns a `FastTextModel` object.
+     *
+     * @param {function}   callback
+     *     train callback function
+     *     `callback` function is called regularly from the train loop:
+     *     `callback(progress, loss, wordsPerSec, learningRate, eta)`
+     *
+     * @return {Promise}   promise object that resolves to a `FastTextModel`
+     *
+     */
+    trainUnsupervised(url, modelName, kwargs = {}, callback) {
+      const self2 = this;
+      return new Promise((resolve, reject) => {
+        self2._train(url, modelName, kwargs, callback).then((model2) => {
+          resolve(model2);
+        }).catch((error) => {
+          reject(error);
+        });
+      });
+    }
+  };
+};
+
+// node_modules/fasttext.wasm.js/dist/models/language-identification/assets/languages.json.mjs
+var af2 = {
+  alpha3: "afr",
+  alpha2: "af",
+  refName: "Afrikaans"
+};
+var als = {
+  alpha3: "gsw",
+  alpha2: null,
+  refName: "Swiss German"
+};
+var am2 = {
+  alpha3: "amh",
+  alpha2: "am",
+  refName: "Amharic"
+};
+var an2 = {
+  alpha3: "arg",
+  alpha2: "an",
+  refName: "Aragonese"
+};
+var ar = {
+  alpha3: "ara",
+  alpha2: "ar",
+  refName: "Arabic"
+};
+var arz = {
+  alpha3: "arz",
+  alpha2: null,
+  refName: "Egyptian Arabic"
+};
+var as2 = {
+  alpha3: "asm",
+  alpha2: "as",
+  refName: "Assamese"
+};
+var ast = {
+  alpha3: "ast",
+  alpha2: null,
+  refName: "Asturian"
+};
+var av = {
+  alpha3: "ava",
+  alpha2: "av",
+  refName: "Avaric"
+};
+var az = {
+  alpha3: "aze",
+  alpha2: "az",
+  refName: "Azerbaijani"
+};
+var azb = {
+  alpha3: "azb",
+  alpha2: null,
+  refName: "South Azerbaijani"
+};
+var ba2 = {
+  alpha3: "bak",
+  alpha2: "ba",
+  refName: "Bashkir"
+};
+var bar = {
+  alpha3: "bar",
+  alpha2: null,
+  refName: "Bavarian"
+};
+var bcl = {
+  alpha3: "bcl",
+  alpha2: null,
+  refName: "Central Bikol"
+};
+var be3 = {
+  alpha3: "bel",
+  alpha2: "be",
+  refName: "Belarusian"
+};
+var bg2 = {
+  alpha3: "bul",
+  alpha2: "bg",
+  refName: "Bulgarian"
+};
+var bh2 = {
+  alpha3: "bih",
+  alpha2: "bh",
+  refName: "Bihari languages"
+};
+var bn = {
+  alpha3: "ben",
+  alpha2: "bn",
+  refName: "Bengali"
+};
+var bo2 = {
+  alpha3: "bod",
+  alpha2: "bo",
+  refName: "Tibetan"
+};
+var bpy = {
+  alpha3: "bpy",
+  alpha2: null,
+  refName: "Bishnupriya"
+};
+var br2 = {
+  alpha3: "bre",
+  alpha2: "br",
+  refName: "Breton"
+};
+var bs2 = {
+  alpha3: "bos",
+  alpha2: "bs",
+  refName: "Bosnian"
+};
+var bxr = {
+  alpha3: "bxr",
+  alpha2: null,
+  refName: "Russia Buriat"
+};
+var ca2 = {
+  alpha3: "cat",
+  alpha2: "ca",
+  refName: "Catalan"
+};
+var cbk = {
+  alpha3: "cbk",
+  alpha2: null,
+  refName: "Chavacano"
+};
+var ce3 = {
+  alpha3: "che",
+  alpha2: "ce",
+  refName: "Chechen"
+};
+var ceb = {
+  alpha3: "ceb",
+  alpha2: null,
+  refName: "Cebuano"
+};
+var ckb = {
+  alpha3: "kur",
+  alpha2: "ku",
+  refName: "Kurdish"
+};
+var co2 = {
+  alpha3: "cos",
+  alpha2: "co",
+  refName: "Corsican"
+};
+var cs2 = {
+  alpha3: "ces",
+  alpha2: "cs",
+  refName: "Czech"
+};
+var cv = {
+  alpha3: "chv",
+  alpha2: "cv",
+  refName: "Chuvash"
+};
+var cy = {
+  alpha3: "cym",
+  alpha2: "cy",
+  refName: "Welsh"
+};
+var da2 = {
+  alpha3: "dan",
+  alpha2: "da",
+  refName: "Danish"
+};
+var de = {
+  alpha3: "deu",
+  alpha2: "de",
+  refName: "German"
+};
+var diq = {
+  alpha3: "zza",
+  alpha2: null,
+  refName: "Zaza"
+};
+var dsb = {
+  alpha3: "dsb",
+  alpha2: null,
+  refName: "Lower Sorbian"
+};
+var dty = {
+  alpha3: "dty",
+  alpha2: null,
+  refName: "Dotyali"
+};
+var dv = {
+  alpha3: "div",
+  alpha2: "dv",
+  refName: "Dhivehi"
+};
+var el2 = {
+  alpha3: "ell",
+  alpha2: "el",
+  refName: "Modern Greek (1453-)"
+};
+var eml = {
+  alpha3: "eml",
+  alpha2: null,
+  refName: "Emiliano-Romagnolo"
+};
+var en2 = {
+  alpha3: "eng",
+  alpha2: "en",
+  refName: "English"
+};
+var eo2 = {
+  alpha3: "epo",
+  alpha2: "eo",
+  refName: "Esperanto"
+};
+var es2 = {
+  alpha3: "spa",
+  alpha2: "es",
+  refName: "Spanish"
+};
+var et2 = {
+  alpha3: "est",
+  alpha2: "et",
+  refName: "Estonian"
+};
+var eu2 = {
+  alpha3: "eus",
+  alpha2: "eu",
+  refName: "Basque"
+};
+var fa2 = {
+  alpha3: "fas",
+  alpha2: "fa",
+  refName: "Persian"
+};
+var fi = {
+  alpha3: "fin",
+  alpha2: "fi",
+  refName: "Finnish"
+};
+var fr2 = {
+  alpha3: "fra",
+  alpha2: "fr",
+  refName: "French"
+};
+var frr = {
+  alpha3: "frr",
+  alpha2: null,
+  refName: "Northern Frisian"
+};
+var fy = {
+  alpha3: "fry",
+  alpha2: "fy",
+  refName: "Western Frisian"
+};
+var ga2 = {
+  alpha3: "gle",
+  alpha2: "ga",
+  refName: "Irish"
+};
+var gd2 = {
+  alpha3: "gla",
+  alpha2: "gd",
+  refName: "Scottish Gaelic"
+};
+var gl2 = {
+  alpha3: "glg",
+  alpha2: "gl",
+  refName: "Galician"
+};
+var gn = {
+  alpha3: "grn",
+  alpha2: "gn",
+  refName: "Guarani"
+};
+var gom = {
+  alpha3: "gom",
+  alpha2: null,
+  refName: "Goan Konkani"
+};
+var gu2 = {
+  alpha3: "guj",
+  alpha2: "gu",
+  refName: "Gujarati"
+};
+var gv = {
+  alpha3: "glv",
+  alpha2: "gv",
+  refName: "Manx"
+};
+var he = {
+  alpha3: "heb",
+  alpha2: "he",
+  refName: "Hebrew"
+};
+var hi = {
+  alpha3: "hin",
+  alpha2: "hi",
+  refName: "Hindi"
+};
+var hif = {
+  alpha3: "hif",
+  alpha2: null,
+  refName: "Fiji Hindi"
+};
+var hr2 = {
+  alpha3: "hrv",
+  alpha2: "hr",
+  refName: "Croatian"
+};
+var hsb = {
+  alpha3: "hsb",
+  alpha2: null,
+  refName: "Upper Sorbian"
+};
+var ht2 = {
+  alpha3: "hat",
+  alpha2: "ht",
+  refName: "Haitian"
+};
+var hu2 = {
+  alpha3: "hun",
+  alpha2: "hu",
+  refName: "Hungarian"
+};
+var hy = {
+  alpha3: "hye",
+  alpha2: "hy",
+  refName: "Armenian"
+};
+var ia2 = {
+  alpha3: "ina",
+  alpha2: "ia",
+  refName: "Interlingua (International Auxiliary Language Association)"
+};
+var id2 = {
+  alpha3: "ind",
+  alpha2: "id",
+  refName: "Indonesian"
+};
+var ie3 = {
+  alpha3: "ile",
+  alpha2: "ie",
+  refName: "Interlingue"
+};
+var ilo = {
+  alpha3: "ilo",
+  alpha2: null,
+  refName: "Iloko"
+};
+var io2 = {
+  alpha3: "ido",
+  alpha2: "io",
+  refName: "Ido"
+};
+var is2 = {
+  alpha3: "isl",
+  alpha2: "is",
+  refName: "Icelandic"
+};
+var it = {
+  alpha3: "ita",
+  alpha2: "it",
+  refName: "Italian"
+};
+var ja2 = {
+  alpha3: "jpn",
+  alpha2: "ja",
+  refName: "Japanese"
+};
+var jbo = {
+  alpha3: "jbo",
+  alpha2: null,
+  refName: "Lojban"
+};
+var jv = {
+  alpha3: "jav",
+  alpha2: "jv",
+  refName: "Javanese"
+};
+var ka2 = {
+  alpha3: "kat",
+  alpha2: "ka",
+  refName: "Georgian"
+};
+var kk = {
+  alpha3: "kaz",
+  alpha2: "kk",
+  refName: "Kazakh"
+};
+var km2 = {
+  alpha3: "khm",
+  alpha2: "km",
+  refName: "Khmer"
+};
+var kn = {
+  alpha3: "kan",
+  alpha2: "kn",
+  refName: "Kannada"
+};
+var ko2 = {
+  alpha3: "kor",
+  alpha2: "ko",
+  refName: "Korean"
+};
+var krc = {
+  alpha3: "krc",
+  alpha2: null,
+  refName: "Karachay-Balkar"
+};
+var ku2 = {
+  alpha3: "kmr",
+  alpha2: null,
+  refName: "Northern Kurdish"
+};
+var kv = {
+  alpha3: "kom",
+  alpha2: "kv",
+  refName: "Komi"
+};
+var kw = {
+  alpha3: "cor",
+  alpha2: "kw",
+  refName: "Cornish"
+};
+var ky = {
+  alpha3: "kir",
+  alpha2: "ky",
+  refName: "Kirghiz"
+};
+var la2 = {
+  alpha3: "lat",
+  alpha2: "la",
+  refName: "Latin"
+};
+var lb = {
+  alpha3: "ltz",
+  alpha2: "lb",
+  refName: "Luxembourgish"
+};
+var lez = {
+  alpha3: "lez",
+  alpha2: null,
+  refName: "Lezghian"
+};
+var li = {
+  alpha3: "lim",
+  alpha2: "li",
+  refName: "Limburgan"
+};
+var lmo = {
+  alpha3: "lmo",
+  alpha2: null,
+  refName: "Lombard"
+};
+var lo2 = {
+  alpha3: "lao",
+  alpha2: "lo",
+  refName: "Lao"
+};
+var lrc = {
+  alpha3: "lrc",
+  alpha2: null,
+  refName: "Northern Luri"
+};
+var lt = {
+  alpha3: "lit",
+  alpha2: "lt",
+  refName: "Lithuanian"
+};
+var lv = {
+  alpha3: "lav",
+  alpha2: "lv",
+  refName: "Latvian"
+};
+var mai = {
+  alpha3: "mai",
+  alpha2: null,
+  refName: "Maithili"
+};
+var mg2 = {
+  alpha3: "mlg",
+  alpha2: "mg",
+  refName: "Malagasy"
+};
+var mhr = {
+  alpha3: "mhr",
+  alpha2: null,
+  refName: "Eastern Mari"
+};
+var min = {
+  alpha3: "min",
+  alpha2: null,
+  refName: "Minangkabau"
+};
+var mk = {
+  alpha3: "mkd",
+  alpha2: "mk",
+  refName: "Macedonian"
+};
+var ml2 = {
+  alpha3: "mal",
+  alpha2: "ml",
+  refName: "Malayalam"
+};
+var mn = {
+  alpha3: "mon",
+  alpha2: "mn",
+  refName: "Mongolian"
+};
+var mr = {
+  alpha3: "mar",
+  alpha2: "mr",
+  refName: "Marathi"
+};
+var mrj = {
+  alpha3: "mrj",
+  alpha2: null,
+  refName: "Western Mari"
+};
+var ms2 = {
+  alpha3: "msa",
+  alpha2: "ms",
+  refName: "Malay (macrolanguage)"
+};
+var mt = {
+  alpha3: "mlt",
+  alpha2: "mt",
+  refName: "Maltese"
+};
+var mwl = {
+  alpha3: "mwl",
+  alpha2: null,
+  refName: "Mirandese"
+};
+var my = {
+  alpha3: "mya",
+  alpha2: "my",
+  refName: "Burmese"
+};
+var myv = {
+  alpha3: "myv",
+  alpha2: null,
+  refName: "Erzya"
+};
+var mzn = {
+  alpha3: "mzn",
+  alpha2: null,
+  refName: "Mazanderani"
+};
+var nah = {
+  alpha3: "nah",
+  alpha2: null,
+  refName: "Nahuatl languages"
+};
+var nap = {
+  alpha3: "nap",
+  alpha2: null,
+  refName: "Neapolitan"
+};
+var nds = {
+  alpha3: "nds",
+  alpha2: null,
+  refName: "Low German"
+};
+var ne3 = {
+  alpha3: "nep",
+  alpha2: "ne",
+  refName: "Nepali (macrolanguage)"
+};
+var nl2 = {
+  alpha3: "nld",
+  alpha2: "nl",
+  refName: "Dutch"
+};
+var nn2 = {
+  alpha3: "nor",
+  alpha2: "no",
+  refName: "Norwegian"
+};
+var no2 = {
+  alpha3: "nor",
+  alpha2: "no",
+  refName: "Norwegian"
+};
+var oc2 = {
+  alpha3: "oci",
+  alpha2: "oc",
+  refName: "Occitan (post 1500)"
+};
+var or = {
+  alpha3: "ory",
+  alpha2: null,
+  refName: "Odia"
+};
+var os2 = {
+  alpha3: "oss",
+  alpha2: "os",
+  refName: "Ossetian"
+};
+var pa2 = {
+  alpha3: "pan",
+  alpha2: "pa",
+  refName: "Panjabi"
+};
+var pam = {
+  alpha3: "pam",
+  alpha2: null,
+  refName: "Pampanga"
+};
+var pfl = {
+  alpha3: "pfl",
+  alpha2: null,
+  refName: "Pfaelzisch"
+};
+var pl2 = {
+  alpha3: "pol",
+  alpha2: "pl",
+  refName: "Polish"
+};
+var pms = {
+  alpha3: "pms",
+  alpha2: null,
+  refName: "Piemontese"
+};
+var pnb = {
+  alpha3: "pnb",
+  alpha2: null,
+  refName: "Western Panjabi"
+};
+var ps2 = {
+  alpha3: "pus",
+  alpha2: "ps",
+  refName: "Pushto"
+};
+var pt = {
+  alpha3: "por",
+  alpha2: "pt",
+  refName: "Portuguese"
+};
+var qu2 = {
+  alpha3: "que",
+  alpha2: "qu",
+  refName: "Quechua"
+};
+var rm2 = {
+  alpha3: "roh",
+  alpha2: "rm",
+  refName: "Romansh"
+};
+var ro2 = {
+  alpha3: "ron",
+  alpha2: "ro",
+  refName: "Romanian"
+};
+var ru2 = {
+  alpha3: "rus",
+  alpha2: "ru",
+  refName: "Russian"
+};
+var rue = {
+  alpha3: "rue",
+  alpha2: null,
+  refName: "Rusyn"
+};
+var sa2 = {
+  alpha3: "san",
+  alpha2: "sa",
+  refName: "Sanskrit"
+};
+var sah = {
+  alpha3: "sah",
+  alpha2: null,
+  refName: "Yakut"
+};
+var sc2 = {
+  alpha3: "srd",
+  alpha2: "sc",
+  refName: "Sardinian"
+};
+var scn = {
+  alpha3: "scn",
+  alpha2: null,
+  refName: "Sicilian"
+};
+var sco = {
+  alpha3: "sco",
+  alpha2: null,
+  refName: "Scots"
+};
+var sd2 = {
+  alpha3: "snd",
+  alpha2: "sd",
+  refName: "Sindhi"
+};
+var sh2 = {
+  alpha3: "hbs",
+  alpha2: "sh",
+  refName: "Serbo-Croatian"
+};
+var si = {
+  alpha3: "sin",
+  alpha2: "si",
+  refName: "Sinhala"
+};
+var sk = {
+  alpha3: "slk",
+  alpha2: "sk",
+  refName: "Slovak"
+};
+var sl2 = {
+  alpha3: "slv",
+  alpha2: "sl",
+  refName: "Slovenian"
+};
+var so2 = {
+  alpha3: "som",
+  alpha2: "so",
+  refName: "Somali"
+};
+var sq = {
+  alpha3: "sqi",
+  alpha2: "sq",
+  refName: "Albanian"
+};
+var sr = {
+  alpha3: "srp",
+  alpha2: "sr",
+  refName: "Serbian"
+};
+var su2 = {
+  alpha3: "sun",
+  alpha2: "su",
+  refName: "Sundanese"
+};
+var sv = {
+  alpha3: "swe",
+  alpha2: "sv",
+  refName: "Swedish"
+};
+var sw = {
+  alpha3: "swa",
+  alpha2: "sw",
+  refName: "Swahili (macrolanguage)"
+};
+var ta2 = {
+  alpha3: "tam",
+  alpha2: "ta",
+  refName: "Tamil"
+};
+var te2 = {
+  alpha3: "tel",
+  alpha2: "te",
+  refName: "Telugu"
+};
+var tg2 = {
+  alpha3: "tgk",
+  alpha2: "tg",
+  refName: "Tajik"
+};
+var th2 = {
+  alpha3: "tha",
+  alpha2: "th",
+  refName: "Thai"
+};
+var tk = {
+  alpha3: "tuk",
+  alpha2: "tk",
+  refName: "Turkmen"
+};
+var tl2 = {
+  alpha3: "tgl",
+  alpha2: "tl",
+  refName: "Tagalog"
+};
+var tr2 = {
+  alpha3: "tur",
+  alpha2: "tr",
+  refName: "Turkish"
+};
+var tt2 = {
+  alpha3: "tat",
+  alpha2: "tt",
+  refName: "Tatar"
+};
+var tyv = {
+  alpha3: "tyv",
+  alpha2: null,
+  refName: "Tuvinian"
+};
+var ug2 = {
+  alpha3: "uig",
+  alpha2: "ug",
+  refName: "Uighur"
+};
+var uk = {
+  alpha3: "ukr",
+  alpha2: "uk",
+  refName: "Ukrainian"
+};
+var ur = {
+  alpha3: "urd",
+  alpha2: "ur",
+  refName: "Urdu"
+};
+var uz = {
+  alpha3: "uzb",
+  alpha2: "uz",
+  refName: "Uzbek"
+};
+var vec = {
+  alpha3: "vec",
+  alpha2: null,
+  refName: "Venetian"
+};
+var vep = {
+  alpha3: "vep",
+  alpha2: null,
+  refName: "Veps"
+};
+var vi = {
+  alpha3: "vie",
+  alpha2: "vi",
+  refName: "Vietnamese"
+};
+var vls = {
+  alpha3: "vls",
+  alpha2: null,
+  refName: "Vlaams"
+};
+var vo2 = {
+  alpha3: "vol",
+  alpha2: "vo",
+  refName: "Volap\xFCk"
+};
+var wa2 = {
+  alpha3: "wln",
+  alpha2: "wa",
+  refName: "Walloon"
+};
+var war = {
+  alpha3: "war",
+  alpha2: null,
+  refName: "Waray (Philippines)"
+};
+var wuu = {
+  alpha3: "wuu",
+  alpha2: null,
+  refName: "Wu Chinese"
+};
+var xal = {
+  alpha3: "xal",
+  alpha2: null,
+  refName: "Kalmyk"
+};
+var xmf = {
+  alpha3: "xmf",
+  alpha2: null,
+  refName: "Mingrelian"
+};
+var yi = {
+  alpha3: "yid",
+  alpha2: "yi",
+  refName: "Yiddish"
+};
+var yo2 = {
+  alpha3: "yor",
+  alpha2: "yo",
+  refName: "Yoruba"
+};
+var yue = {
+  alpha3: "yue",
+  alpha2: null,
+  refName: "Yue Chinese"
+};
+var zh2 = {
+  alpha3: "zho",
+  alpha2: "zh",
+  refName: "Chinese"
+};
+var languages = {
+  af: af2,
+  als,
+  am: am2,
+  an: an2,
+  ar,
+  arz,
+  as: as2,
+  ast,
+  av,
+  az,
+  azb,
+  ba: ba2,
+  bar,
+  bcl,
+  be: be3,
+  bg: bg2,
+  bh: bh2,
+  bn,
+  bo: bo2,
+  bpy,
+  br: br2,
+  bs: bs2,
+  bxr,
+  ca: ca2,
+  cbk,
+  ce: ce3,
+  ceb,
+  ckb,
+  co: co2,
+  cs: cs2,
+  cv,
+  cy,
+  da: da2,
+  de,
+  diq,
+  dsb,
+  dty,
+  dv,
+  el: el2,
+  eml,
+  en: en2,
+  eo: eo2,
+  es: es2,
+  et: et2,
+  eu: eu2,
+  fa: fa2,
+  fi,
+  fr: fr2,
+  frr,
+  fy,
+  ga: ga2,
+  gd: gd2,
+  gl: gl2,
+  gn,
+  gom,
+  gu: gu2,
+  gv,
+  he,
+  hi,
+  hif,
+  hr: hr2,
+  hsb,
+  ht: ht2,
+  hu: hu2,
+  hy,
+  ia: ia2,
+  id: id2,
+  ie: ie3,
+  ilo,
+  io: io2,
+  is: is2,
+  it,
+  ja: ja2,
+  jbo,
+  jv,
+  ka: ka2,
+  kk,
+  km: km2,
+  kn,
+  ko: ko2,
+  krc,
+  ku: ku2,
+  kv,
+  kw,
+  ky,
+  la: la2,
+  lb,
+  lez,
+  li,
+  lmo,
+  lo: lo2,
+  lrc,
+  lt,
+  lv,
+  mai,
+  mg: mg2,
+  mhr,
+  min,
+  mk,
+  ml: ml2,
+  mn,
+  mr,
+  mrj,
+  ms: ms2,
+  mt,
+  mwl,
+  my,
+  myv,
+  mzn,
+  nah,
+  nap,
+  nds,
+  ne: ne3,
+  "new": {
+    alpha3: "new",
+    alpha2: null,
+    refName: "Newari"
+  },
+  nl: nl2,
+  nn: nn2,
+  no: no2,
+  oc: oc2,
+  or,
+  os: os2,
+  pa: pa2,
+  pam,
+  pfl,
+  pl: pl2,
+  pms,
+  pnb,
+  ps: ps2,
+  pt,
+  qu: qu2,
+  rm: rm2,
+  ro: ro2,
+  ru: ru2,
+  rue,
+  sa: sa2,
+  sah,
+  sc: sc2,
+  scn,
+  sco,
+  sd: sd2,
+  sh: sh2,
+  si,
+  sk,
+  sl: sl2,
+  so: so2,
+  sq,
+  sr,
+  su: su2,
+  sv,
+  sw,
+  ta: ta2,
+  te: te2,
+  tg: tg2,
+  th: th2,
+  tk,
+  tl: tl2,
+  tr: tr2,
+  tt: tt2,
+  tyv,
+  ug: ug2,
+  uk,
+  ur,
+  uz,
+  vec,
+  vep,
+  vi,
+  vls,
+  vo: vo2,
+  wa: wa2,
+  war,
+  wuu,
+  xal,
+  xmf,
+  yi,
+  yo: yo2,
+  yue,
+  zh: zh2
+};
+
+// node_modules/fasttext.wasm.js/dist/models/language-identification/base.mjs
+var LANGUAGES_LIMIT = Object.keys(languages).length;
+var BaseLanguageIdentificationModel = class _BaseLanguageIdentificationModel {
+  getFastTextModule;
+  wasmPath;
+  modelPath;
+  model = null;
+  static formatLang(raw) {
+    const identifyLang = raw.replace("__label__", "");
+    return _BaseLanguageIdentificationModel.normalizeIdentifyLang(identifyLang);
+  }
+  /**
+   * fastText [language identification model](https://fasttext.cc/docs/en/language-identification.html)
+   * result is based on [List of Wikipedias](https://en.wikipedia.org/wiki/List_of_Wikipedias) `WP code`
+   *
+   * This lib provide a normalize method to transform `WP code` to ISO 639-3 as much as possible.
+   *
+   * More detail refer to [languages scripts](https://github.com/yunsii/fasttext.wasm.js/tree/master/scripts/languages).
+   *
+   * Notice: ISO 639 provides two and three-character codes for representing names of languages. ISO 3166 provides two and three-character codes for representing names of countries.
+   */
+  static normalizeIdentifyLang(lang) {
+    return languages[lang];
+  }
+  constructor(options) {
+    const { getFastTextModule: getFastTextModule2, wasmPath, modelPath } = options;
+    if (!modelPath) {
+      throw new Error("No model path provided.");
+    }
+    this.getFastTextModule = getFastTextModule2;
+    this.wasmPath = wasmPath;
+    this.modelPath = modelPath;
+  }
+  /**
+   * Use `lid.176.ftz` as default model
+   */
+  async load() {
+    if (!this.model) {
+      const FastText = await getFastTextClass({
+        getFastTextModule: () => {
+          return this.getFastTextModule({
+            wasmPath: this.wasmPath
+          });
+        }
+      });
+      const fastText = new FastText();
+      const modelHref = this.modelPath;
+      this.model = await fastText.loadModel(modelHref);
+    }
+    return this.model;
+  }
+  async identify(text, top) {
+    const minTop = Math.max(top || 1, 1);
+    const limitTop = Math.min(LANGUAGES_LIMIT, minTop);
+    const vector = (await this.load()).predict(text, limitTop, 0);
+    if (typeof top === "undefined") {
+      return {
+        ..._BaseLanguageIdentificationModel.formatLang(vector.get(0)[1]),
+        possibility: vector.get(0)[0]
+      };
+    }
+    return Array.from({ length: vector.size() }).map((_3, index) => {
+      return {
+        ..._BaseLanguageIdentificationModel.formatLang(vector.get(index)[1]),
+        possibility: vector.get(index)[0]
+      };
+    });
+  }
+};
+
+// node_modules/fasttext.wasm.js/dist/models/language-identification/common.mjs
+var LanguageIdentificationModel = class extends BaseLanguageIdentificationModel {
+  constructor(options = {}) {
+    const origin = typeof globalThis.location !== "undefined" ? globalThis.location.origin : "";
+    super({
+      wasmPath: `${origin}${commonAssetsDir}/fastText.common.wasm`,
+      modelPath: `${origin}${commonAssetsModelsDir}/lid.176.ftz`,
+      ...options,
+      getFastTextModule
+    });
+  }
+};
+async function getLanguageIdentificationModel(options = {}) {
+  return new LanguageIdentificationModel(options);
+}
+var getLIDModel = getLanguageIdentificationModel;
+
+// src/langid.js
+var paths = null;
+var modelP = null;
+function configureLangId(p3) {
+  paths = p3;
+}
+function model() {
+  if (!modelP) {
+    modelP = (async () => {
+      const m3 = await getLIDModel(paths || {});
+      await m3.load();
+      return m3;
+    })();
+    modelP.catch(() => modelP = null);
+  }
+  return modelP;
+}
+var RENAME = { nb: "no", nn: "no", he: "he", iw: "he" };
+function tidy(text) {
+  let t2 = String(text || "").replace(/https?:\/\/\S+|www\.\S+|\S+@\S+\.\S+/g, " ").replace(/[\d_*#|<>=+~^`\\/[\]{}()"“”«»•·—–]+/g, " ").replace(/\s+/g, " ").trim();
+  const letters = t2.replace(/[^\p{L}]/gu, "");
+  if (letters.length >= 4 && letters === letters.toUpperCase() && letters !== letters.toLowerCase()) t2 = t2.toLowerCase();
+  return t2;
+}
+async function identify(text, top = 6) {
+  const t2 = tidy(text);
+  if (!new RegExp("\\p{L}", "u").test(t2)) return [];
+  const m3 = await model();
+  const rows = await m3.identify(t2, top);
+  const out = [];
+  for (const r2 of rows) {
+    const code = r2 && (r2.alpha2 || r2.alpha3);
+    if (!code) continue;
+    out.push({ lang: RENAME[code] || code, p: r2.possibility });
+  }
+  return out;
+}
+
+// src/lang-lite.js
 var LANGS = {
   en: { name: "English", espeak: "en-gb" },
   es: { name: "Spanish", espeak: ["es-419", "es"] },
@@ -100504,65 +105524,6 @@ var HINTS = {
   it: ["il", "la", "di", "che", "e", "un", "una", "per", "non", "con", "sono", "gli", "della", "del", "anche"],
   pt: ["o", "a", "de", "que", "e", "do", "da", "em", "um", "uma", "para", "com", "n\xE3o", "os", "as", "se", "voc\xEA"]
 };
-function guessLanguage(text) {
-  const byScript = scriptLanguage(text);
-  if (byScript && SUPPORTED.includes(byScript)) return byScript;
-  const words = text.toLowerCase().match(/[\p{L}']+/gu) || [];
-  if (words.length < 3) return null;
-  const score = {};
-  for (const [lang, list] of Object.entries(HINTS)) {
-    const set = new Set(list);
-    score[lang] = words.filter((w3) => set.has(w3) && (lang === "en" || !ALSO_ENGLISH.has(w3))).length / words.length;
-  }
-  const best = Object.entries(score).sort((a2, b3) => b3[1] - a2[1])[0];
-  if (!best || best[1] < 0.08) return null;
-  if (best[0] !== "en" && (score.en || 0) >= best[1]) return null;
-  return best[0];
-}
-function hasHintWord(text, lang) {
-  const list = HINTS[lang];
-  if (!list) {
-    const latinOnly = !/[^\p{Script=Latin}\P{L}]/u.test(text);
-    return !latinOnly || text.length >= 160;
-  }
-  const words = text.toLowerCase().match(/[\p{L}']+/gu) || [];
-  const set = new Set(list);
-  return words.some((w3) => set.has(w3) && !ALSO_ENGLISH.has(w3));
-}
-async function detectLanguage(text) {
-  const t2 = (text || "").trim();
-  if (t2.length < 12) return null;
-  try {
-    if (typeof chrome !== "undefined" && chrome.i18n?.detectLanguage) {
-      const r2 = await chrome.i18n.detectLanguage(t2);
-      const top = r2?.languages?.[0];
-      const need = t2.length < 160 ? 80 : 55;
-      if (top && top.percentage >= need && (r2.isReliable || t2.length >= 160 || scriptLanguage(t2))) {
-        const code = top.language.split("-")[0];
-        if (code === "en") return "en";
-        if (SUPPORTED.includes(code)) return hasHintWord(t2, code) ? code : null;
-        return "en";
-      }
-    }
-  } catch {
-  }
-  return guessLanguage(t2);
-}
-async function tagLanguages(blocks, { pageLang = null } = {}) {
-  let whole = "";
-  for (const b3 of blocks) {
-    if (whole.length >= 4e3) break;
-    whole += (whole ? "\n" : "") + b3.text;
-  }
-  const main = await detectLanguage(whole.slice(0, 4e3)) || (SUPPORTED.includes(pageLang) ? pageLang : "en");
-  const langs = await Promise.all(
-    blocks.map(async (b3) => {
-      if (b3.lang && SUPPORTED.includes(b3.lang) && b3.lang !== pageLang) return b3.lang;
-      return b3.text.length >= 25 && await detectLanguage(b3.text) || main;
-    })
-  );
-  return { main, langs };
-}
 var EVERYDAY = {
   fr: [...HINTS.fr, "bonne", "bon", "tr\xE8s", "avec", "mais", "ce", "cette", "au", "aux", "du", "sur", "sont", "\xEAtre", "\xE0", "o\xF9", "merci", "oui", "il", "elle", "mon", "ma", "votre", "notre", "tout", "bien", "chez"],
   es: [...HINTS.es, "muy", "pero", "m\xE1s", "est\xE1", "como", "gracias", "buena", "buen", "s\xED", "su", "mi", "al", "lo", "hay", "todo", "bien"],
@@ -100570,29 +105531,98 @@ var EVERYDAY = {
   pt: [...HINTS.pt, "muito", "mas", "mais", "est\xE1", "obrigado", "obrigada", "boa", "bom", "sim", "ao", "na", "no", "isso", "tudo", "bem"],
   de: ["der", "das", "und", "ist", "nicht", "ich", "ein", "eine", "mit", "f\xFCr", "auf", "zu", "den", "dem", "sie", "wir", "sehr", "aber", "auch", "gut", "guten", "danke", "viel"]
 };
-var ALSO_ENGLISH = /* @__PURE__ */ new Set(["a", "as", "do", "no", "me", "he", "i", "in", "on", "or", "an", "so", "die", "den", "is", "us", "at", "am", "be", "we", "pour", "son", "come", "sure", "mi", "ma", "ho", "bon", "al", "lo", "tout", "chez", "per", "con", "non", "des", "du", "se", "les", "mon", "par", "e", "o", "y", "bien", "gut", "sie", "au", "ce", "le", "la", "de", "un", "il", "elle", "su", "si", "mas", "na", "ao"]);
 var ENGLISH_EVERYDAY = /* @__PURE__ */ new Set([...HINTS.en, "i", "i'll", "i'm", "it's", "a", "an", "on", "be", "at", "have", "has", "not", "we", "will", "your", "my", "by", "what", "when", "then", "from", "but", "or", "if", "so", "he", "she", "they", "as", "do", "can", "there", "here", "about", "more", "just", "all", "one", "would", "which", "their", "had", "been", "were"]);
-function everydayCounts(text) {
-  const words = (text.toLowerCase().match(/[\p{L}'’]+/gu) || []).map((w3) => w3.replace(/’/g, "'"));
-  const score = {};
-  for (const [lang, list] of Object.entries(EVERYDAY)) {
-    const set = new Set(list);
-    const sure = words.filter((w3) => set.has(w3) && !ALSO_ENGLISH.has(w3)).length;
-    const shared = words.filter((w3) => set.has(w3) && ALSO_ENGLISH.has(w3) && !ENGLISH_EVERYDAY.has(w3)).length;
-    score[lang] = { sure, all: sure + shared };
+
+// src/lang.js
+var SAME_SCRIPT = {
+  zh: ["zh", "ja"],
+  ja: ["ja", "zh"],
+  hi: ["hi", "mr", "ne"],
+  ar: ["ar", "fa", "ur", "ku"],
+  ru: ["ru", "uk", "bg", "sr", "kk"]
+};
+var letterCount = (t2) => (t2.match(new RegExp("\\p{L}", "gu")) || []).length;
+var EVERYDAY_LANGS = /* @__PURE__ */ new Set(["en", "fr", "es", "it", "pt", "de"]);
+async function judge(text, base, near = []) {
+  const n2 = letterCount(text);
+  if (!n2) return base;
+  const script = scriptLanguage(text);
+  if (script) {
+    const inScript = (text.match(/[^\p{Script=Latin}\P{L}]/gu) || []).length;
+    if (inScript >= n2 * 0.5) {
+      const family = SAME_SCRIPT[script];
+      if (family && n2 >= 12) {
+        const rows2 = await identify(text).catch(() => []);
+        const hit = rows2.find((r2) => family.includes(r2.lang) && SUPPORTED.includes(r2.lang));
+        if (hit && hit.p >= 0.5) return hit.lang;
+        if (family.includes(base)) return base;
+      }
+      if (script === "zh" && /[\p{Script=Hiragana}\p{Script=Katakana}]/u.test(text)) return "ja";
+      return script;
+    }
+    return base;
   }
-  const english = words.filter((w3) => ENGLISH_EVERYDAY.has(w3)).length;
-  return { words, score, english };
+  if (n2 < 12) return base;
+  const rows = await identify(text).catch(() => []);
+  const top = rows[0];
+  if (!top || top.lang === base || !SUPPORTED.includes(top.lang)) return base;
+  const pBase = rows.find((r2) => r2.lang === base)?.p || 0;
+  let need = n2 < 25 ? 0.9 : n2 < 60 ? 0.75 : n2 < 150 ? 0.6 : 0.5;
+  if (!near.includes(top.lang) && !EVERYDAY_LANGS.has(top.lang)) need = Math.min(0.97, need + 0.15);
+  if (near.includes(top.lang)) need -= 0.1;
+  return top.p >= need && top.p >= pBase * 5 ? top.lang : base;
 }
-function sentenceLanguage(text) {
-  const { words, score, english } = everydayCounts(text || "");
-  if (words.length < 3 || english > 0) return null;
-  const ranked = Object.entries(score).sort((a2, b3) => b3[1].all - a2[1].all || b3[1].sure - a2[1].sure);
-  const [lang, top] = ranked[0];
-  const next = ranked[1][1];
-  if (top.sure < 1 || top.all < 2 || top.all / words.length < 0.25) return null;
-  if (top.all === next.all && top.sure === next.sure) return null;
-  return lang;
+async function mainLanguage(texts, pageLang) {
+  const votes = {};
+  let seen = 0;
+  for (const t2 of texts) {
+    if (seen >= 6e3) break;
+    const n2 = letterCount(t2);
+    if (n2 < 20) continue;
+    seen += n2;
+    const script = scriptLanguage(t2);
+    const rows = await identify(t2.slice(0, 1200), 3).catch(() => []);
+    for (const r2 of rows) if (r2.p >= 0.1) votes[r2.lang] = (votes[r2.lang] || 0) + r2.p * Math.min(n2, 400);
+    if (script && !rows.length) votes[script] = (votes[script] || 0) + Math.min(n2, 400);
+  }
+  if (pageLang) votes[pageLang] = (votes[pageLang] || 0) + (seen < 200 ? 60 : 25);
+  const best = Object.entries(votes).filter(([l2]) => SUPPORTED.includes(l2) && !LANGS[l2].hidden).sort((a2, b3) => b3[1] - a2[1])[0];
+  return best ? best[0] : SUPPORTED.includes(pageLang) ? pageLang : "en";
+}
+async function tagSentences(items, { pageLang = null } = {}) {
+  pageLang = pageLang && SUPPORTED.includes(pageLang) ? pageLang : null;
+  const blocks = [];
+  const blockOf = /* @__PURE__ */ new Map();
+  for (const [i3, it2] of items.entries()) {
+    const key = it2.block === void 0 ? i3 : it2.block;
+    let b3 = blockOf.get(key);
+    if (!b3) {
+      b3 = { text: "", attr: it2.attr || null, items: [] };
+      blockOf.set(key, b3);
+      blocks.push(b3);
+    }
+    b3.text += (b3.text ? " " : "") + it2.text;
+    b3.items.push(i3);
+  }
+  const main = await mainLanguage(blocks.map((b3) => b3.text), pageLang);
+  const langs = new Array(items.length).fill(main);
+  let prevBlock = main;
+  for (const b3 of blocks) {
+    let lang;
+    if (b3.attr && SUPPORTED.includes(b3.attr) && b3.attr !== pageLang) lang = b3.attr;
+    else lang = await judge(b3.text, main, [prevBlock]);
+    prevBlock = lang;
+    if (b3.items.length === 1) {
+      langs[b3.items[0]] = lang;
+      continue;
+    }
+    let prev = lang;
+    for (const i3 of b3.items) {
+      langs[i3] = await judge(items[i3].text, lang, [prev, main]);
+      prev = langs[i3];
+    }
+  }
+  return { main, langs };
 }
 
 // src/lexicon.js
@@ -100612,8 +105642,8 @@ function getLexicon(accent = "b") {
       (async () => {
         if (!loader) throw new Error("lexicon loader not configured");
         const p3 = key === "b" ? "gb" : "us";
-        const [gold, silver] = await Promise.all([loader(`${p3}_gold.json`), loader(`${p3}_silver.json`)]);
-        return new Lexicon(gold, silver, key === "b");
+        const [gold, silver, names] = await Promise.all([loader(`${p3}_gold.json`), loader(`${p3}_silver.json`), Promise.resolve(loader(`names_${p3}.json`)).catch(() => null)]);
+        return new Lexicon(gold, silver, key === "b", names);
       })()
     );
   }
@@ -100621,10 +105651,11 @@ function getLexicon(accent = "b") {
 }
 var cap = (w3) => w3[0].toUpperCase() + w3.slice(1);
 var Lexicon = class {
-  constructor(gold, silver, british) {
+  constructor(gold, silver, british, names = null) {
     this.gold = gold;
     this.silver = silver;
     this.british = british;
+    this.names = names;
   }
   // Raw dictionary value for a word, also trying the other capitalisation
   // (misaki "grows" its dictionary the same way).
@@ -100638,6 +105669,7 @@ var Lexicon = class {
       const c3 = cap(word);
       v3 = g3[c3] ?? s3[c3];
     }
+    if (v3 === void 0 && this.names && /^[A-Z][a-z]{2,}$/.test(word)) v3 = this.names[lower];
     return v3;
   }
   has(word) {
@@ -100659,9 +105691,9 @@ var Lexicon = class {
       parts.push(typeof p3 === "string" ? p3 : p3.DEFAULT);
     }
     if (!parts.length) return null;
-    const ps2 = parts.map((p3) => p3.replace(/[ˈˌ]/g, "")).map((p3) => "\u02CC" + p3);
-    ps2[ps2.length - 1] = ps2[ps2.length - 1].replace("\u02CC", "\u02C8");
-    return ps2.join("");
+    const ps3 = parts.map((p3) => p3.replace(/[ˈˌ]/g, "")).map((p3) => "\u02CC" + p3);
+    ps3[ps3.length - 1] = ps3[ps3.length - 1].replace("\u02CC", "\u02C8");
+    return ps3.join("");
   }
   lookup(word) {
     let v3 = this.raw(word);
@@ -100746,9 +105778,9 @@ var Lexicon = class {
     return null;
   }
 };
-function startsWithVowel(ps2) {
-  if (!ps2) return null;
-  for (const c3 of ps2) {
+function startsWithVowel(ps3) {
+  if (!ps3) return null;
+  for (const c3 of ps3) {
     if (c3 === "\u02C8" || c3 === "\u02CC") continue;
     return VOWELS.has(c3);
   }
@@ -125135,13 +130167,13 @@ var applyThirdToneSandhi = (list) => {
   }
 };
 var middlewareToneSandhi = (list, toneSandhi) => {
-  const { yi, bu, thirdTone } = resolveToneSandhi(toneSandhi);
+  const { yi: yi2, bu, thirdTone } = resolveToneSandhi(toneSandhi);
   if (thirdTone) {
     applyThirdToneSandhi(list);
   }
-  if (!yi || !bu) {
+  if (!yi2 || !bu) {
     list.forEach((item) => {
-      if (!yi && item.origin === "\u4E00") {
+      if (!yi2 && item.origin === "\u4E00") {
         item.result = item.originPinyin = "y\u012B";
       } else if (!bu && item.origin === "\u4E0D") {
         item.result = item.originPinyin = "b\xF9";
@@ -125428,7 +130460,7 @@ async function phonemizeEnglish(text, accent) {
     }
     const lead = /^\s*/.exec(raw)[0];
     const trail = /\s*$/.exec(raw)[0];
-    out += lead + await m2(raw.trim(), accent) + trail;
+    out += lead + await m2(raw.trim().replace(/\bTch(?=[aeiouy])/g, "Ch"), accent) + trail;
     raw = "";
   };
   const ABBREV_DOT = /^(Dr|Mr|Mrs|Ms|Prof|St|Jr|Sr|Mt|Ft|vs|etc|Inc|Ltd|Co|Corp|Capt|Sgt|Lt|Col|Gen|Rev|Hon|Dept|Univ|approx|fig|figs|vol|ch|pp|ed|eds|al|cf|e\.g\.|i\.e\.)$/;
@@ -125462,10 +130494,10 @@ async function phonemizeFor(text, lang = "en", accent = "b") {
   if (lang === "zh" || lang === "zh-latn") return phonemizeChinese(text, lang === "zh-latn");
   const { e: e2, byLang } = await getEspeak();
   const wanted = [].concat(LANGS[lang].espeak);
-  const id2 = wanted.map((w3) => byLang.get(w3)).find(Boolean) || wanted[0];
-  if (currentVoice !== id2) {
-    e2.set_voice(id2);
-    currentVoice = id2;
+  const id3 = wanted.map((w3) => byLang.get(w3)).find(Boolean) || wanted[0];
+  if (currentVoice !== id3) {
+    e2.set_voice(id3);
+    currentVoice = id3;
   }
   const parts = text.split(PUNCT);
   let out = "";
@@ -125489,8 +130521,8 @@ async function phonemizeFor(text, lang = "en", accent = "b") {
 
 // src/speech.js
 var mixCache = /* @__PURE__ */ new Map();
-async function loadVoiceMix(id2) {
-  const parts = parseVoice(id2);
+async function loadVoiceMix(id3) {
+  const parts = parseVoice(id3);
   if (parts.length === 1) return k3(parts[0].name);
   const key = parts.map((p3) => `${p3.name}*${p3.w.toFixed(4)}`).join("+");
   if (mixCache.has(key)) return mixCache.get(key);
@@ -125542,17 +130574,17 @@ async function mapWordsToGroups(words, groups, lang, accent) {
   }
   return map2;
 }
-async function synthesize({ model, vocab, text, voice = "bm_fable", speed = 1, lang = "en" }) {
+async function synthesize({ model: model2, vocab, text, voice = "bm_fable", speed = 1, lang = "en" }) {
   const accent = parseVoice(voice)[0].name[0] === "a" ? "a" : "b";
   const words = splitWords(text);
   const phon = await phonemizeFor(text, lang, accent);
   const ids = [0];
   const tokOfChar = new Int32Array(phon.length).fill(-1);
   for (let p3 = 0; p3 < phon.length && ids.length <= MAX_TOKENS; p3++) {
-    const id2 = vocab.get(phon[p3]);
-    if (id2 === void 0) continue;
+    const id3 = vocab.get(phon[p3]);
+    if (id3 === void 0) continue;
     tokOfChar[p3] = ids.length;
-    ids.push(id2);
+    ids.push(id3);
   }
   ids.push(0);
   const groups = [...phon.matchAll(/\S+/g)].map((m3) => [m3.index, m3.index + m3[0].length]);
@@ -125560,7 +130592,7 @@ async function synthesize({ model, vocab, text, voice = "bm_fable", speed = 1, l
   const voiceData = await loadVoiceMix(voice);
   const n2 = Math.min(Math.max(ids.length - 2, 0), 509);
   const style = voiceData.slice(256 * n2, 256 * n2 + 256);
-  const out = await model({
+  const out = await model2({
     input_ids: new __webpack_exports__Tensor("int64", BigInt64Array.from(ids.map(BigInt)), [1, ids.length]),
     style: new __webpack_exports__Tensor("float32", style, [1, 256]),
     speed: new __webpack_exports__Tensor("float32", [speed], [1])
@@ -125584,9 +130616,9 @@ async function synthesize({ model, vocab, text, voice = "bm_fable", speed = 1, l
   const starts = new Array(words.length);
   const ends = new Array(words.length);
   for (let w3 = 0; w3 < words.length; w3++) {
-    const [ga2, gb] = wordGroups[w3];
+    const [ga3, gb] = wordGroups[w3];
     let first = -1, last = -1;
-    for (let g3 = ga2; g3 < gb; g3++) {
+    for (let g3 = ga3; g3 < gb; g3++) {
       const r2 = groupTokens(groups[g3]);
       if (!r2) continue;
       if (first < 0) first = r2[0];
@@ -125668,21 +130700,21 @@ function coeffs(type, fs2, f0, gainDb, q3) {
     a1 = -2 * cos;
     a2 = 1 - alpha / A3;
   } else {
-    const sq = 2 * Math.sqrt(A3) * alpha;
+    const sq2 = 2 * Math.sqrt(A3) * alpha;
     if (type === "lowshelf") {
-      b0 = A3 * (A3 + 1 - (A3 - 1) * cos + sq);
+      b0 = A3 * (A3 + 1 - (A3 - 1) * cos + sq2);
       b1 = 2 * A3 * (A3 - 1 - (A3 + 1) * cos);
-      b22 = A3 * (A3 + 1 - (A3 - 1) * cos - sq);
-      a0 = A3 + 1 + (A3 - 1) * cos + sq;
+      b22 = A3 * (A3 + 1 - (A3 - 1) * cos - sq2);
+      a0 = A3 + 1 + (A3 - 1) * cos + sq2;
       a1 = -2 * (A3 - 1 + (A3 + 1) * cos);
-      a2 = A3 + 1 + (A3 - 1) * cos - sq;
+      a2 = A3 + 1 + (A3 - 1) * cos - sq2;
     } else {
-      b0 = A3 * (A3 + 1 + (A3 - 1) * cos + sq);
+      b0 = A3 * (A3 + 1 + (A3 - 1) * cos + sq2);
       b1 = -2 * A3 * (A3 - 1 + (A3 + 1) * cos);
-      b22 = A3 * (A3 + 1 + (A3 - 1) * cos - sq);
-      a0 = A3 + 1 - (A3 - 1) * cos + sq;
+      b22 = A3 * (A3 + 1 + (A3 - 1) * cos - sq2);
+      a0 = A3 + 1 - (A3 - 1) * cos + sq2;
       a1 = 2 * (A3 - 1 - (A3 + 1) * cos);
-      a2 = A3 + 1 - (A3 - 1) * cos - sq;
+      a2 = A3 + 1 - (A3 - 1) * cos - sq2;
     }
   }
   return [b0 / a0, b1 / a0, b22 / a0, a1 / a0, a2 / a0];
@@ -125858,10 +130890,10 @@ function timeStretch(x2, factor, rate = 24e3) {
     let best = nominal;
     if (prev >= 0) {
       const target = Math.min(prev + Ha2, x2.length - N3);
-      const lo2 = Math.max(0, nominal - tol);
-      const hi = Math.min(x2.length - N3, nominal + tol);
+      const lo3 = Math.max(0, nominal - tol);
+      const hi2 = Math.min(x2.length - N3, nominal + tol);
       let bestC = -Infinity;
-      for (let c3 = lo2; c3 <= hi; c3 += 2) {
+      for (let c3 = lo3; c3 <= hi2; c3 += 2) {
         let s3 = 0, e2 = 1e-9;
         for (let i3 = 0; i3 < N3; i3 += 2) {
           s3 += x2[c3 + i3] * x2[target + i3];
@@ -126248,8 +131280,8 @@ async function nodeFolderCache() {
   const urlName = "node:url";
   const fs2 = await import(fsName);
   const path = await import(pathName);
-  const { fileURLToPath } = await import(urlName);
-  const dir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "dev", "cache", "piper");
+  const { fileURLToPath: fileURLToPath2 } = await import(urlName);
+  const dir = path.resolve(path.dirname(fileURLToPath2(import.meta.url)), "..", "dev", "cache", "piper");
   await fs2.mkdir(dir, { recursive: true });
   return {
     async get(name) {
@@ -126376,12 +131408,12 @@ function phonemesToIds(phonemes, idMap, missing) {
   if (bos !== void 0) ids.push(bos);
   if (pad !== void 0) ids.push(pad);
   for (const ch2 of phonemes) {
-    const id2 = idMap.get(ch2);
-    if (id2 === void 0) {
+    const id3 = idMap.get(ch2);
+    if (id3 === void 0) {
       missing.add(ch2);
       continue;
     }
-    ids.push(id2);
+    ids.push(id3);
     if (pad !== void 0) ids.push(pad);
   }
   if (eos !== void 0) ids.push(eos);
@@ -126574,10 +131606,10 @@ function wavToFloat(bytes) {
   let off = 12;
   let rate = 24e3;
   while (off + 8 <= bytes.length) {
-    const id2 = String.fromCharCode(bytes[off], bytes[off + 1], bytes[off + 2], bytes[off + 3]);
+    const id3 = String.fromCharCode(bytes[off], bytes[off + 1], bytes[off + 2], bytes[off + 3]);
     const size = v3.getUint32(off + 4, true);
-    if (id2 === "fmt ") rate = v3.getUint32(off + 12, true);
-    if (id2 === "data") {
+    if (id3 === "fmt ") rate = v3.getUint32(off + 12, true);
+    if (id3 === "data") {
       const n3 = Math.floor(Math.min(size, bytes.length - off - 8) / 2);
       const out2 = new Float32Array(n3);
       for (let i3 = 0; i3 < n3; i3++) out2[i3] = v3.getInt16(off + 8 + i3 * 2, true) / 32768;
@@ -126684,18 +131716,18 @@ var SAMPLE_RATE2 = 24e3;
 function spreadWords(text, audio) {
   const F3 = 240;
   let max = 0;
-  const lv = [];
+  const lv2 = [];
   for (let s3 = 0; s3 + F3 <= audio.length; s3 += F3) {
     let e2 = 0;
     for (let i3 = 0; i3 < F3; i3++) e2 = Math.max(e2, Math.abs(audio[s3 + i3]));
-    lv.push(e2);
+    lv2.push(e2);
     if (e2 > max) max = e2;
   }
-  let a2 = lv.findIndex((e2) => e2 > max * 0.08);
-  let b3 = lv.length - 1 - [...lv].reverse().findIndex((e2) => e2 > max * 0.08);
+  let a2 = lv2.findIndex((e2) => e2 > max * 0.08);
+  let b3 = lv2.length - 1 - [...lv2].reverse().findIndex((e2) => e2 > max * 0.08);
   if (a2 < 0) {
     a2 = 0;
-    b3 = lv.length - 1;
+    b3 = lv2.length - 1;
   }
   const t0 = a2 * F3 / SAMPLE_RATE2, t1 = (b3 + 1) * F3 / SAMPLE_RATE2;
   const words = text.split(" ").filter(Boolean);
@@ -126733,8 +131765,11 @@ function createEngine({ wasmPaths, onEvent }) {
     __webpack_exports__env.backends.onnx.wasm.wasmPaths = wasmPaths;
     configureEspeak(wasmPaths + "espeak-ng.js");
     configureLexicon((f3) => fetch(wasmPaths + "lexicon/" + f3).then((r2) => r2.json()));
+    configureLangId({ wasmPath: wasmPaths + "fasttext/fastText.common.wasm", modelPath: wasmPaths + "fasttext/lid.176.ftz" });
   }
-  configurePiper({ wasmPaths: wasmPaths || void 0, onProgress: (msg) => setStatus2("loading", msg) });
+  configurePiper({ wasmPaths: wasmPaths || void 0, onProgress: (msg) => {
+    if (st2.status === "loading" || st2.status === "buffering" || st2.status === "idle") setStatus2(st2.status === "idle" ? "loading" : st2.status, msg);
+  } });
   const st2 = {
     timed: null,
     // { model, vocab } timestamped model
@@ -126827,13 +131862,13 @@ function createEngine({ wasmPaths, onEvent }) {
     files.clear();
     fromDisk = await modelCached(MODEL_ID, dtype);
     setStatus2("loading", "Getting the voice ready\u2026");
-    const model = await __webpack_exports__StyleTextToSpeech2Model.from_pretrained(MODEL_ID, { dtype, device, progress_callback: onProgress, session_options: { logSeverityLevel: 3 } });
+    const model2 = await __webpack_exports__StyleTextToSpeech2Model.from_pretrained(MODEL_ID, { dtype, device, progress_callback: onProgress, session_options: { logSeverityLevel: 3 } });
     const tok = await __webpack_exports__AutoTokenizer.from_pretrained(MODEL_ID);
     const vocab = tok.model.tokens_to_ids;
     setStatus2("loading", "Warming up voice");
-    const r2 = await synthesize({ model, vocab, text: "Ready.", voice: "bm_fable" });
+    const r2 = await synthesize({ model: model2, vocab, text: "Ready.", voice: "bm_fable" });
     if (!soundOk(r2.audio) || !(r2.starts?.length >= 1)) throw new Error("timed model produced no sound on " + device);
-    st2.timed = { model, vocab };
+    st2.timed = { model: model2, vocab };
   }
   async function loadPlain(device, dtype) {
     files.clear();
@@ -126941,9 +131976,8 @@ function createEngine({ wasmPaths, onEvent }) {
     return r2;
   }
   async function speak(text, settings2, breakKind = "sentence", lang = "en") {
-    let main = (typeof lang === "object" ? lang?.main : lang) || "en";
+    const main = (typeof lang === "object" ? lang?.main : lang) || "en";
     const hints = typeof lang === "object" ? lang?.words : null;
-    if (main === "en" && !hints && settings2.autoLanguage !== false) main = sentenceLanguage(text) || main;
     const runs = settings2.autoLanguage === false ? [{ text, lang: main, words: text.split(" ").filter(Boolean).length }] : splitByLanguage(text, main, hints);
     const parts = [];
     for (const run2 of runs) {
@@ -127004,8 +132038,8 @@ function createEngine({ wasmPaths, onEvent }) {
       if (v3 !== st2.genVersion) return null;
       r2 = await speak(text, st2.settings, st2.breaks[i3], st2.langs[i3]);
     }
-    const ms2 = Math.round(performance.now() - t0);
-    emit("perf", { index: i3, ms: ms2, audioMs: Math.round((r2.audio?.length || 0) / SAMPLE_RATE2 * 1e3) });
+    const ms3 = Math.round(performance.now() - t0);
+    emit("perf", { index: i3, ms: ms3, audioMs: Math.round((r2.audio?.length || 0) / SAMPLE_RATE2 * 1e3) });
     return { buf: toBuffer(r2.audio), starts: r2.starts, ends: r2.ends };
   }
   function getItem(i3) {
@@ -127100,9 +132134,12 @@ function createEngine({ wasmPaths, onEvent }) {
     } catch (e2) {
       if (token2 !== st2.playToken) return;
       console.error("[murmur]", e2);
+      st2.failRun = (st2.failRun || 0) + 1;
+      if (st2.failRun < 3 && i3 + 1 < st2.sentences.length && !isGpuError(e2)) return playFrom(i3 + 1);
       setStatus2("error", String(e2?.message || e2));
       return;
     }
+    st2.failRun = 0;
     if (token2 !== st2.playToken || !item) return;
     const ctx = getCtx();
     if (ctx.state !== "running") await ctx.resume();
@@ -127954,11 +132991,11 @@ var Util = class {
     if (t2 <= 0 || t2 >= 1) {
       return;
     }
-    const mt = 1 - t2;
-    const tt2 = t2 * t2;
-    const ttt = tt2 * t2;
-    const x4 = mt * (mt * (mt * x0 + 3 * t2 * x1) + 3 * tt2 * x2) + ttt * x3;
-    const y4 = mt * (mt * (mt * y0 + 3 * t2 * y1) + 3 * tt2 * y22) + ttt * y3;
+    const mt2 = 1 - t2;
+    const tt3 = t2 * t2;
+    const ttt = tt3 * t2;
+    const x4 = mt2 * (mt2 * (mt2 * x0 + 3 * t2 * x1) + 3 * tt3 * x2) + ttt * x3;
+    const y4 = mt2 * (mt2 * (mt2 * y0 + 3 * t2 * y1) + 3 * tt3 * y22) + ttt * y3;
     minMax[0] = Math.min(minMax[0], x4);
     minMax[1] = Math.min(minMax[1], y4);
     minMax[2] = Math.max(minMax[2], x4);
@@ -128065,8 +133102,8 @@ if (typeof Iterator.prototype.join !== "function") {
     return [...this].join(separator);
   };
 }
-function MathClamp(v3, min, max) {
-  return Math.min(Math.max(v3, min), max);
+function MathClamp(v3, min2, max) {
+  return Math.min(Math.max(v3, min2), max);
 }
 var PixelsPerInch = class {
   static CSS = 96;
@@ -128181,13 +133218,13 @@ function RGBToHSL(rgb, output) {
   const g3 = rgb[1] / 255;
   const b3 = rgb[2] / 255;
   const max = Math.max(r2, g3, b3);
-  const min = Math.min(r2, g3, b3);
-  const l2 = (max + min) / 2;
-  if (max === min) {
+  const min2 = Math.min(r2, g3, b3);
+  const l2 = (max + min2) / 2;
+  if (max === min2) {
     output[0] = output[1] = 0;
   } else {
-    const d3 = max - min;
-    output[1] = l2 < 0.5 ? d3 / (max + min) : d3 / (2 - max - min);
+    const d3 = max - min2;
+    output[1] = l2 < 0.5 ? d3 / (max + min2) : d3 / (2 - max - min2);
     switch (max) {
       case r2:
         output[0] = ((g3 - b3) / d3 + (g3 < b3 ? 6 : 0)) * 60;
@@ -128494,8 +133531,8 @@ var XfaLayer = class {
   static get _allowedRichTextStyles() {
     return shadow(this, "_allowedRichTextStyles", /* @__PURE__ */ new Set(["color", "font", "fontFamily", "fontSize", "fontStretch", "fontStyle", "fontWeight", "kerningMode", "letterSpacing", "lineHeight", "margin", "marginBottom", "marginLeft", "marginRight", "marginTop", "orphans", "paddingLeft", "paddingRight", "breakAfter", "breakBefore", "breakInside", "tabInterval", "tabStop", "textAlign", "textDecoration", "textIndent", "transform", "verticalAlign", "widows"]));
   }
-  static setupStorage(html, id2, element, storage, intent) {
-    const storedData = storage.getValue(id2, {
+  static setupStorage(html, id3, element, storage, intent) {
+    const storedData = storage.getValue(id3, {
       value: null
     });
     switch (element.name) {
@@ -128507,7 +133544,7 @@ var XfaLayer = class {
           break;
         }
         html.addEventListener("input", (event) => {
-          storage.setValue(id2, {
+          storage.setValue(id3, {
             value: event.target.value
           });
         });
@@ -128523,7 +133560,7 @@ var XfaLayer = class {
             break;
           }
           html.addEventListener("change", (event) => {
-            storage.setValue(id2, {
+            storage.setValue(id3, {
               value: event.target.checked ? event.target.getAttribute("xfaOn") : event.target.getAttribute("xfaOff")
             });
           });
@@ -128535,7 +133572,7 @@ var XfaLayer = class {
             break;
           }
           html.addEventListener("input", (event) => {
-            storage.setValue(id2, {
+            storage.setValue(id3, {
               value: event.target.value
             });
           });
@@ -128555,7 +133592,7 @@ var XfaLayer = class {
         html.addEventListener("input", (event) => {
           const options = event.target.options;
           const value = options.selectedIndex === -1 ? "" : options[options.selectedIndex].value;
-          storage.setValue(id2, {
+          storage.setValue(id3, {
             value
           });
         });
@@ -128712,8 +133749,8 @@ var XfaLayer = class {
         childHtml.append(node);
       }
     }
-    for (const el2 of rootDiv.querySelectorAll(".xfaNonInteractive input, .xfaNonInteractive textarea")) {
-      el2.setAttribute("readOnly", true);
+    for (const el3 of rootDiv.querySelectorAll(".xfaNonInteractive input, .xfaNonInteractive textarea")) {
+      el3.setAttribute("readOnly", true);
     }
     return {
       textDivs
@@ -128757,29 +133794,29 @@ async function fetchData(url, type = "text") {
     return response.text();
   }
   return new Promise((resolve, reject) => {
-    const request = new XMLHttpRequest();
-    request.open("GET", url, true);
-    request.responseType = type === "bytes" ? "arraybuffer" : type;
-    request.onreadystatechange = () => {
-      if (request.readyState !== XMLHttpRequest.DONE) {
+    const request2 = new XMLHttpRequest();
+    request2.open("GET", url, true);
+    request2.responseType = type === "bytes" ? "arraybuffer" : type;
+    request2.onreadystatechange = () => {
+      if (request2.readyState !== XMLHttpRequest.DONE) {
         return;
       }
-      if (request.status === 200 || request.status === 0) {
+      if (request2.status === 200 || request2.status === 0) {
         switch (type) {
           case "bytes":
-            resolve(new Uint8Array(request.response));
+            resolve(new Uint8Array(request2.response));
             return;
           case "blob":
           case "json":
-            resolve(request.response);
+            resolve(request2.response);
             return;
         }
-        resolve(request.responseText);
+        resolve(request2.responseText);
         return;
       }
-      reject(new Error(request.statusText));
+      reject(new Error(request2.statusText));
     };
-    request.send(null);
+    request2.send(null);
   });
 }
 function isDataScheme(url) {
@@ -129465,13 +134502,13 @@ var ImageManager = class _ImageManager {
   async getFromUrl(url) {
     return this.#get(url, url);
   }
-  async getFromBlob(id2, blobPromise) {
+  async getFromBlob(id3, blobPromise) {
     const blob = await blobPromise;
-    return this.#get(id2, blob);
+    return this.#get(id3, blob);
   }
-  async getFromId(id2) {
+  async getFromId(id3) {
     this.#cache ||= /* @__PURE__ */ new Map();
-    const data = this.#cache.get(id2);
+    const data = this.#cache.get(id3);
     if (!data) {
       return null;
     }
@@ -129491,9 +134528,9 @@ var ImageManager = class _ImageManager {
     }
     return this.getFromUrl(data.url);
   }
-  getFromCanvas(id2, canvas) {
+  getFromCanvas(id3, canvas) {
     this.#cache ||= /* @__PURE__ */ new Map();
-    let data = this.#cache.get(id2);
+    let data = this.#cache.get(id3);
     if (data?.bitmap) {
       data.refCounter += 1;
       return data;
@@ -129507,17 +134544,17 @@ var ImageManager = class _ImageManager {
       refCounter: 1,
       isSvg: false
     };
-    this.#cache.set(id2, data);
+    this.#cache.set(id3, data);
     this.#cache.set(data.id, data);
     return data;
   }
-  getSvgUrl(id2) {
-    const data = this.#cache.get(id2);
+  getSvgUrl(id3) {
+    const data = this.#cache.get(id3);
     return !data?.isSvg ? null : data.svgUrl;
   }
-  deleteId(id2) {
+  deleteId(id3) {
     this.#cache ||= /* @__PURE__ */ new Map();
-    const data = this.#cache.get(id2);
+    const data = this.#cache.get(id3);
     if (!data) {
       return;
     }
@@ -129537,8 +134574,8 @@ var ImageManager = class _ImageManager {
     bitmap.close?.();
     data.bitmap = null;
   }
-  isValidId(id2) {
-    return id2.startsWith(`image_${this.#baseId}_`);
+  isValidId(id3) {
+    return id3.startsWith(`image_${this.#baseId}_`);
   }
 };
 var CommandManager = class {
@@ -129838,12 +134875,12 @@ var AnnotationEditorUIManager = class _AnnotationEditorUIManager {
     const proto = _AnnotationEditorUIManager.prototype;
     const arrowChecker = (self2) => self2.#container.contains(document.activeElement) && document.activeElement.tagName !== "BUTTON" && self2.hasSomethingToControl();
     const textInputChecker = (_self, {
-      target: el2
+      target: el3
     }) => {
-      if (el2 instanceof HTMLInputElement) {
+      if (el3 instanceof HTMLInputElement) {
         const {
           type
-        } = el2;
+        } = el3;
         return type !== "text" && type !== "number";
       }
       return true;
@@ -129860,12 +134897,12 @@ var AnnotationEditorUIManager = class _AnnotationEditorUIManager {
       checker: textInputChecker
     }], [["Enter"], proto.addNewEditorFromKeyboard, {
       checker: (self2, {
-        target: el2
-      }) => !(el2 instanceof HTMLButtonElement) && self2.#container.contains(el2) && !self2.isEnterHandled
+        target: el3
+      }) => !(el3 instanceof HTMLButtonElement) && self2.#container.contains(el3) && !self2.isEnterHandled
     }], [["Space"], proto.addNewEditorFromKeyboard, {
       checker: (self2, {
-        target: el2
-      }) => !(el2 instanceof HTMLButtonElement) && self2.#container.contains(document.activeElement)
+        target: el3
+      }) => !(el3 instanceof HTMLButtonElement) && self2.#container.contains(document.activeElement)
     }], [["Escape"], proto.unselectAll], [["ArrowLeft"], proto.translateSelectedEditors, {
       args: [-small, 0],
       checker: arrowChecker
@@ -130161,12 +135198,12 @@ var AnnotationEditorUIManager = class _AnnotationEditorUIManager {
   }) {
     this.#currentPageIndex = pageNumber - 1;
   }
-  deletePage(id2) {
-    for (const editor of this.getEditors(id2)) {
+  deletePage(id3) {
+    for (const editor of this.getEditors(id3)) {
       editor.remove();
     }
-    this.#allLayers.delete(id2);
-    if (this.#currentPageIndex === id2) {
+    this.#allLayers.delete(id3);
+    if (this.#currentPageIndex === id3) {
       this.#currentPageIndex = 0;
     }
   }
@@ -130677,8 +135714,8 @@ var AnnotationEditorUIManager = class _AnnotationEditorUIManager {
     for (const editor of this.#allEditors.values()) {
       saveEditor(editor);
     }
-    for (const [id2, editor] of this.#annotationStorage) {
-      if (id2.startsWith(AnnotationEditorPrefix) && !this.#allEditors.has(id2) && Number.isInteger(editor?.pageIndex)) {
+    for (const [id3, editor] of this.#annotationStorage) {
+      if (id3.startsWith(AnnotationEditorPrefix) && !this.#allEditors.has(id3) && Number.isInteger(editor?.pageIndex)) {
         saveEditor(editor);
       }
     }
@@ -130705,9 +135742,9 @@ var AnnotationEditorUIManager = class _AnnotationEditorUIManager {
     const {
       pageIndex
     } = layer;
-    for (const [id2, editor] of this.#annotationStorage) {
+    for (const [id3, editor] of this.#annotationStorage) {
       if (editor.pageIndex === pageIndex && editor.isClone) {
-        this.#annotationStorage.remove(id2);
+        this.#annotationStorage.remove(id3);
         promises.push(layer.deserialize(editor).then((deserializedEditor) => {
           if (deserializedEditor) {
             deserializedEditor.isClone = true;
@@ -130850,11 +135887,11 @@ var AnnotationEditorUIManager = class _AnnotationEditorUIManager {
       }
       for (const annotation of this.#allEditableAnnotations) {
         const {
-          id: id2,
+          id: id3,
           popupRef,
           contentsObj
         } = annotation;
-        if (popupRef && contentsObj?.str && !elementIds.has(id2) && !this.#deletedAnnotationsElementIds.has(id2)) {
+        if (popupRef && contentsObj?.str && !elementIds.has(id3) && !this.#deletedAnnotationsElementIds.has(id3)) {
           allComments.push(annotation);
         }
       }
@@ -130987,8 +136024,8 @@ var AnnotationEditorUIManager = class _AnnotationEditorUIManager {
       }
     }
   }
-  getEditor(id2) {
-    return this.#allEditors.get(id2);
+  getEditor(id3) {
+    return this.#allEditors.get(id3);
   }
   addEditor(editor) {
     this.#allEditors.set(editor.id, editor);
@@ -131452,9 +136489,9 @@ var AnnotationEditorUIManager = class _AnnotationEditorUIManager {
   }
   addChangedExistingAnnotation({
     annotationElementId,
-    id: id2
+    id: id3
   }) {
-    (this.#changedExistingAnnotations ||= /* @__PURE__ */ new Map()).set(annotationElementId, id2);
+    (this.#changedExistingAnnotations ||= /* @__PURE__ */ new Map()).set(annotationElementId, id3);
   }
   removeChangedExistingAnnotation({
     annotationElementId
@@ -133479,13 +138516,13 @@ var AnnotationEditor = class _AnnotationEditor {
         deleted,
         richText
       },
-      uid: id2,
+      uid: id3,
       pageIndex,
       creationDate,
       modificationDate
     } = this;
     return {
-      id: id2,
+      id: id3,
       pageIndex,
       rect: this.getPDFRect(),
       richText,
@@ -136209,8 +141246,8 @@ var RadialAxialShadingPattern = class extends BaseShadingPattern {
         const precision = 1e-3;
         const n1 = Math.hypot(transf[0], transf[1]);
         const n2 = Math.hypot(transf[2], transf[3]);
-        const ps2 = (transf[0] * transf[2] + transf[1] * transf[3]) / (n1 * n2);
-        if (Math.abs(ps2) < precision) {
+        const ps3 = (transf[0] * transf[2] + transf[1] * transf[3]) / (n1 * n2);
+        if (Math.abs(ps3) < precision) {
           if (this.isRadial()) {
             if (Math.abs(n1 - n2) < precision) {
               return this._createGradient(ctx, transf);
@@ -138131,18 +143168,18 @@ var CanvasGraphics = class _CanvasGraphics {
     this.dependencyTracker?.recordOpenMarker(opIdx).resetIncrementalData("sameLineText").resetIncrementalData("moveText", opIdx);
   }
   endText(opIdx) {
-    const paths = this.pendingTextPaths;
+    const paths2 = this.pendingTextPaths;
     const ctx = this.ctx;
     if (this.dependencyTracker) {
       const {
         dependencyTracker
       } = this;
-      if (paths !== void 0) {
+      if (paths2 !== void 0) {
         dependencyTracker.recordFutureForcedDependency("textClip", dependencyTracker.getOpenMarker()).recordFutureForcedDependency("textClip", opIdx);
       }
       dependencyTracker.recordCloseMarker(opIdx);
     }
-    if (paths !== void 0) {
+    if (paths2 !== void 0) {
       const newPath = new Path2D();
       const invTransf = ctx.getTransform().invertSelf();
       for (const {
@@ -138151,7 +143188,7 @@ var CanvasGraphics = class _CanvasGraphics {
         y: y3,
         fontSize,
         path
-      } of paths) {
+      } of paths2) {
         if (!path) {
           continue;
         }
@@ -138312,8 +143349,8 @@ var CanvasGraphics = class _CanvasGraphics {
       }
     }
     if (isAddToPathSet) {
-      const paths = this.pendingTextPaths ||= [];
-      paths.push({
+      const paths2 = this.pendingTextPaths ||= [];
+      paths2.push({
         transform: getCurrentTransform(ctx),
         x: x2,
         y: y3,
@@ -138978,7 +144015,7 @@ var CanvasGraphics = class _CanvasGraphics {
       groupMeta.knockoutBackdropEntry = null;
     }
   }
-  beginAnnotation(opIdx, id2, rect, transform, matrix, hasOwnCanvas, canvasName) {
+  beginAnnotation(opIdx, id3, rect, transform, matrix, hasOwnCanvas, canvasName) {
     this.#restoreInitialState();
     resetCtxToDefault(this.ctx);
     this.ctx.save();
@@ -139005,7 +144042,7 @@ var CanvasGraphics = class _CanvasGraphics {
           context
         } = this.annotationCanvas;
         if (canvasName) {
-          const canvases = this.annotationCanvasMap.getOrInsertComputed(id2, makeArr);
+          const canvases = this.annotationCanvasMap.getOrInsertComputed(id3, makeArr);
           setAnnotationCanvasName(canvas, canvasName);
           const index = canvases.findIndex((c3) => getAnnotationCanvasName(c3) === canvasName);
           if (index === -1) {
@@ -139014,7 +144051,7 @@ var CanvasGraphics = class _CanvasGraphics {
             canvases[index] = canvas;
           }
         } else {
-          this.annotationCanvasMap.set(id2, canvas);
+          this.annotationCanvasMap.set(id3, canvas);
         }
         this.annotationCanvas.savedCtx = this.ctx;
         this.ctx = context;
@@ -139529,7 +144566,7 @@ var DOMFilterFactory = class extends BaseFilterFactory {
     const [mapR, mapG, mapB] = maps;
     return [toTable(mapR), toTable(mapG), toTable(mapB)];
   }
-  #createUrl(id2) {
+  #createUrl(id3) {
     if (this.#baseUrl === void 0) {
       this.#baseUrl = "";
       const url = this.#document.URL;
@@ -139541,7 +144578,7 @@ var DOMFilterFactory = class extends BaseFilterFactory {
         }
       }
     }
-    return `url(${this.#baseUrl}#${id2})`;
+    return `url(${this.#baseUrl}#${id3})`;
   }
   addFilter(maps) {
     if (!maps) {
@@ -139558,11 +144595,11 @@ var DOMFilterFactory = class extends BaseFilterFactory {
       this.#cache.set(maps, value);
       return value;
     }
-    const id2 = `g_${this.#docId}_transfer_map_${this.#id++}`;
-    const url = this.#createUrl(id2);
+    const id3 = `g_${this.#docId}_transfer_map_${this.#id++}`;
+    const url = this.#createUrl(id3);
     this.#cache.set(maps, url);
     this.#cache.set(key, url);
-    const filter = this.#createFilter(id2);
+    const filter = this.#createFilter(id3);
     this.#addTransferMapConversion(tableR, tableG, tableB, filter);
     return url;
   }
@@ -139601,8 +144638,8 @@ var DOMFilterFactory = class extends BaseFilterFactory {
       length: 256
     }, (_3, i3) => computeLuminance(i3 / 255));
     const table = map2.join(",");
-    const id2 = `g_${this.#docId}_hcm_filter`;
-    const filter = info2.filter = this.#createFilter(id2);
+    const id3 = `g_${this.#docId}_hcm_filter`;
+    const filter = info2.filter = this.#createFilter(id3);
     this.#addTransferMapConversion(table, table, table, filter);
     this.#addGrayConversion(filter);
     const getSteps = (c3, n2) => {
@@ -139615,7 +144652,7 @@ var DOMFilterFactory = class extends BaseFilterFactory {
       return arr.join(",");
     };
     this.#addTransferMapConversion(getSteps(0, 5), getSteps(1, 5), getSteps(2, 5), filter);
-    info2.url = this.#createUrl(id2);
+    info2.url = this.#createUrl(id3);
     return info2.url;
   }
   addSelectionHCMFilter(fgColor, bgColor) {
@@ -139646,11 +144683,11 @@ var DOMFilterFactory = class extends BaseFilterFactory {
       this.#cache.set(map2, value);
       return value;
     }
-    const id2 = `g_${this.#docId}_alpha_map_${this.#id++}`;
-    const url = this.#createUrl(id2);
+    const id3 = `g_${this.#docId}_alpha_map_${this.#id++}`;
+    const url = this.#createUrl(id3);
     this.#cache.set(map2, url);
     this.#cache.set(key, url);
-    const filter = this.#createFilter(id2);
+    const filter = this.#createFilter(id3);
     this.#addTransferMapAlphaConversion(tableA, filter);
     return url;
   }
@@ -139671,11 +144708,11 @@ var DOMFilterFactory = class extends BaseFilterFactory {
       this.#cache.set(map2, value);
       return value;
     }
-    const id2 = `g_${this.#docId}_luminosity_map_${this.#id++}`;
-    const url = this.#createUrl(id2);
+    const id3 = `g_${this.#docId}_luminosity_map_${this.#id++}`;
+    const url = this.#createUrl(id3);
     this.#cache.set(map2, url);
     this.#cache.set(key, url);
-    const filter = this.#createFilter(id2);
+    const filter = this.#createFilter(id3);
     this.#addLuminosityConversion(filter);
     if (map2) {
       this.#addTransferMapAlphaConversion(tableA, filter);
@@ -139689,10 +144726,10 @@ var DOMFilterFactory = class extends BaseFilterFactory {
     if (value) {
       return value;
     }
-    const id2 = `g_${this.#docId}_knockout_filter_${this.#id++}`;
-    const url = this.#createUrl(id2);
+    const id3 = `g_${this.#docId}_knockout_filter_${this.#id++}`;
+    const url = this.#createUrl(id3);
     this.#cache.set(key, url);
-    const filter = this.#createFilter(id2);
+    const filter = this.#createFilter(id3);
     const feComponentTransfer = this.#document.createElementNS(SVG_NS, "feComponentTransfer");
     filter.append(feComponentTransfer);
     const feFuncA = this.#document.createElementNS(SVG_NS, "feFuncA");
@@ -139732,11 +144769,11 @@ var DOMFilterFactory = class extends BaseFilterFactory {
       [fgGray, bgGray, newFgRGB, newBgRGB] = [bgGray, fgGray, newBgRGB, newFgRGB];
     }
     this.#resetDefsColor();
-    const getSteps = (fg2, bg2, n2) => {
+    const getSteps = (fg2, bg3, n2) => {
       const arr = new Array(256);
       const step = (bgGray - fgGray) / n2;
       const newStart = fg2 / 255;
-      const newStep = (bg2 - fg2) / (255 * n2);
+      const newStep = (bg3 - fg2) / (255 * n2);
       let prev = 0;
       for (let i3 = 0; i3 <= n2; i3++) {
         const k4 = Math.round(fgGray + i3 * step);
@@ -139751,11 +144788,11 @@ var DOMFilterFactory = class extends BaseFilterFactory {
       }
       return arr.join(",");
     };
-    const id2 = `g_${this.#docId}_hcm_${filterName}_filter`;
-    const filter = info2.filter = this.#createFilter(id2);
+    const id3 = `g_${this.#docId}_hcm_${filterName}_filter`;
+    const filter = info2.filter = this.#createFilter(id3);
     this.#addGrayConversion(filter);
     this.#addTransferMapConversion(getSteps(newFgRGB[0], newBgRGB[0], 5), getSteps(newFgRGB[1], newBgRGB[1], 5), getSteps(newFgRGB[2], newBgRGB[2], 5), filter);
-    info2.url = this.#createUrl(id2);
+    info2.url = this.#createUrl(id3);
     return info2.url;
   }
   destroy(keepHCM = false) {
@@ -139782,10 +144819,10 @@ var DOMFilterFactory = class extends BaseFilterFactory {
     feColorMatrix.setAttribute("values", "0.2126 0.7152 0.0722 0 0 0.2126 0.7152 0.0722 0 0 0.2126 0.7152 0.0722 0 0 0 0 0 1 0");
     filter.append(feColorMatrix);
   }
-  #createFilter(id2) {
+  #createFilter(id3) {
     const filter = this.#document.createElementNS(SVG_NS, "filter");
     filter.setAttribute("color-interpolation-filters", "sRGB");
-    filter.setAttribute("id", id2);
+    filter.setAttribute("id", id3);
     this.#defs.append(filter);
     return filter;
   }
@@ -139833,8 +144870,8 @@ var DOMFilterFactory = class extends BaseFilterFactory {
     return [blend(r2, canvasR, alpha), blend(g3, canvasG, alpha), blend(b3, canvasB, alpha)];
   }
 };
-function blend(fg2, bg2, alpha) {
-  return Math.round(alpha * fg2 + (1 - alpha) * bg2);
+function blend(fg2, bg3, alpha) {
+  return Math.round(alpha * fg2 + (1 - alpha) * bg3);
 }
 var CONTROL_CHAR_REGEXP = new RegExp("\\p{Cc}", "u");
 function isCSSString(str) {
@@ -139996,8 +145033,8 @@ var FontLoader = class {
   }
   #testFontLoaded(font) {
     function completeRequest() {
-      assert(!request.done, "completeRequest() cannot be called twice.");
-      request.done = true;
+      assert(!request2.done, "completeRequest() cannot be called twice.");
+      request2.done = true;
       while (loadingRequests.length > 0 && loadingRequests[0].done) {
         const otherRequest = loadingRequests.shift();
         setTimeout(otherRequest.resolve, 0);
@@ -140010,11 +145047,11 @@ var FontLoader = class {
       promise,
       resolve
     } = Promise.withResolvers();
-    const request = {
+    const request2 = {
       done: false,
       resolve
     };
-    loadingRequests.push(request);
+    loadingRequests.push(request2);
     this._loadTestFont ??= atob("T1RUTwALAIAAAwAwQ0ZGIDHtZg4AAAOYAAAAgUZGVE1lkzZwAAAEHAAAABxHREVGABQAFQAABDgAAAAeT1MvMlYNYwkAAAEgAAAAYGNtYXABDQLUAAACNAAAAUJoZWFk/xVFDQAAALwAAAA2aGhlYQdkA+oAAAD0AAAAJGhtdHgD6AAAAAAEWAAAAAZtYXhwAAJQAAAAARgAAAAGbmFtZVjmdH4AAAGAAAAAsXBvc3T/hgAzAAADeAAAACAAAQAAAAEAALZRFsRfDzz1AAsD6AAAAADOBOTLAAAAAM4KHDwAAAAAA+gDIQAAAAgAAgAAAAAAAAABAAADIQAAAFoD6AAAAAAD6AABAAAAAAAAAAAAAAAAAAAAAQAAUAAAAgAAAAQD6AH0AAUAAAKKArwAAACMAooCvAAAAeAAMQECAAACAAYJAAAAAAAAAAAAAQAAAAAAAAAAAAAAAFBmRWQAwAAuAC4DIP84AFoDIQAAAAAAAQAAAAAAAAAAACAAIAABAAAADgCuAAEAAAAAAAAAAQAAAAEAAAAAAAEAAQAAAAEAAAAAAAIAAQAAAAEAAAAAAAMAAQAAAAEAAAAAAAQAAQAAAAEAAAAAAAUAAQAAAAEAAAAAAAYAAQAAAAMAAQQJAAAAAgABAAMAAQQJAAEAAgABAAMAAQQJAAIAAgABAAMAAQQJAAMAAgABAAMAAQQJAAQAAgABAAMAAQQJAAUAAgABAAMAAQQJAAYAAgABWABYAAAAAAAAAwAAAAMAAAAcAAEAAAAAADwAAwABAAAAHAAEACAAAAAEAAQAAQAAAC7//wAAAC7////TAAEAAAAAAAABBgAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAAAAAAAD/gwAyAAAAAQAAAAAAAAAAAAAAAAAAAAABAAQEAAEBAQJYAAEBASH4DwD4GwHEAvgcA/gXBIwMAYuL+nz5tQXkD5j3CBLnEQACAQEBIVhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYAAABAQAADwACAQEEE/t3Dov6fAH6fAT+fPp8+nwHDosMCvm1Cvm1DAz6fBQAAAAAAAABAAAAAMmJbzEAAAAAzgTjFQAAAADOBOQpAAEAAAAAAAAADAAUAAQAAAABAAAAAgABAAAAAAAAAAAD6AAAAAAAAA==");
     function int32(data2, offset) {
       return data2.charCodeAt(offset) << 24 | data2.charCodeAt(offset + 1) << 16 | data2.charCodeAt(offset + 2) << 8 | data2.charCodeAt(offset + 3) & 255;
@@ -141697,7 +146734,7 @@ var ObjectHandler = class {
     this.pdfBug = pdfBug;
     this.shouldCreatePageObjs = shouldCreatePageObjs;
   }
-  resolveCommonObject(id2, type, exportedData) {
+  resolveCommonObject(id3, type, exportedData) {
     if (type === "CopyLocalImage") {
       const {
         imageRef
@@ -141713,7 +146750,7 @@ var ObjectHandler = class {
             return null;
           }
           const copy = structuredClone(data);
-          this.commonObjs.resolve(id2, copy);
+          this.commonObjs.resolve(id3, copy);
           return data.dataLen;
         }
       }
@@ -141724,39 +146761,39 @@ var ObjectHandler = class {
         if ("error" in exportedData) {
           const exportedError = exportedData.error;
           warn(`Error during font loading: ${exportedError}`);
-          this.commonObjs.resolve(id2, exportedError);
+          this.commonObjs.resolve(id3, exportedError);
           break;
         }
         const fontData = new FontInfo(exportedData.buffer);
         const inspectFont = this.pdfBug && globalThis.FontInspector?.enabled ? (font2, url) => globalThis.FontInspector.fontAdded(font2, url) : null;
         const font = new FontFaceObject(fontData, inspectFont, exportedData.charProcOperatorList, exportedData.extra);
         this.fontLoader.bind(font).catch(() => this.messageHandler.sendWithPromise("FontFallback", {
-          id: id2
+          id: id3
         }).catch((reason) => {
-          warn(`FontFallback failed for "${id2}": ${reason}`);
+          warn(`FontFallback failed for "${id3}": ${reason}`);
         })).finally(() => {
           if (!font.fontExtraProperties) {
             font.clearData();
           }
-          this.commonObjs.resolve(id2, font);
+          this.commonObjs.resolve(id3, font);
         });
         break;
       case "FontPath":
-        this.commonObjs.resolve(id2, new FontPathInfo(exportedData));
+        this.commonObjs.resolve(id3, new FontPathInfo(exportedData));
         break;
       case "Image":
-        this.commonObjs.resolve(id2, exportedData);
+        this.commonObjs.resolve(id3, exportedData);
         break;
       case "Pattern":
         const pattern = new PatternInfo(exportedData);
-        this.commonObjs.resolve(id2, pattern.getIR());
+        this.commonObjs.resolve(id3, pattern.getIR());
         break;
       default:
         throw new Error(`Got unknown common object type ${type}`);
     }
     return null;
   }
-  resolveObject(id2, pageProxyId, type, exportedData) {
+  resolveObject(id3, pageProxyId, type, exportedData) {
     let pageOrObjs = this.pageCache.get(pageProxyId);
     if (!pageOrObjs) {
       if (!this.shouldCreatePageObjs) {
@@ -141766,7 +146803,7 @@ var ObjectHandler = class {
       this.pageCache.set(pageProxyId, pageOrObjs);
     }
     const objs = pageOrObjs.objs || pageOrObjs;
-    if (objs.has(id2)) {
+    if (objs.has(id3)) {
       return false;
     }
     if (pageOrObjs._intentStates?.size === 0) {
@@ -141776,7 +146813,7 @@ var ObjectHandler = class {
     switch (type) {
       case "Image":
       case "Pattern":
-        objs.resolve(id2, exportedData);
+        objs.resolve(id3, exportedData);
         return true;
       default:
         throw new Error(`Got unknown object type ${type}`);
@@ -141810,13 +146847,13 @@ var OptionalContentGroup = class {
       return false;
     }
     const {
-      print,
+      print: print2,
       view
     } = this.usage;
     if (this.#isDisplay) {
       return view?.viewState !== "OFF";
     } else if (this.#isPrint) {
-      return print?.printState !== "OFF";
+      return print2?.printState !== "OFF";
     }
     return true;
   }
@@ -141858,8 +146895,8 @@ var OptionalContentConfig = class _OptionalContentConfig {
       if (groupState.size !== this.#groups.size) {
         unreachable("Incorrect serialized groupState.");
       }
-      for (const [id2, group] of groupState) {
-        this.#groups.get(id2)._setVisible(INTERNAL, group.visible, group.userSet);
+      for (const [id3, group] of groupState) {
+        this.#groups.get(id3)._setVisible(INTERNAL, group.visible, group.userSet);
       }
     } else {
       if (data.baseState === "OFF") {
@@ -141931,45 +146968,45 @@ var OptionalContentConfig = class _OptionalContentConfig {
         return this.#evaluateVisibilityExpression(group.expression);
       }
       if (!group.policy || group.policy === "AnyOn") {
-        for (const id2 of group.ids) {
-          if (!this.#groups.has(id2)) {
-            warn(`Optional content group not found: ${id2}`);
+        for (const id3 of group.ids) {
+          if (!this.#groups.has(id3)) {
+            warn(`Optional content group not found: ${id3}`);
             return true;
           }
-          if (this.#groups.get(id2).visible) {
+          if (this.#groups.get(id3).visible) {
             return true;
           }
         }
         return false;
       } else if (group.policy === "AllOn") {
-        for (const id2 of group.ids) {
-          if (!this.#groups.has(id2)) {
-            warn(`Optional content group not found: ${id2}`);
+        for (const id3 of group.ids) {
+          if (!this.#groups.has(id3)) {
+            warn(`Optional content group not found: ${id3}`);
             return true;
           }
-          if (!this.#groups.get(id2).visible) {
+          if (!this.#groups.get(id3).visible) {
             return false;
           }
         }
         return true;
       } else if (group.policy === "AnyOff") {
-        for (const id2 of group.ids) {
-          if (!this.#groups.has(id2)) {
-            warn(`Optional content group not found: ${id2}`);
+        for (const id3 of group.ids) {
+          if (!this.#groups.has(id3)) {
+            warn(`Optional content group not found: ${id3}`);
             return true;
           }
-          if (!this.#groups.get(id2).visible) {
+          if (!this.#groups.get(id3).visible) {
             return true;
           }
         }
         return false;
       } else if (group.policy === "AllOff") {
-        for (const id2 of group.ids) {
-          if (!this.#groups.has(id2)) {
-            warn(`Optional content group not found: ${id2}`);
+        for (const id3 of group.ids) {
+          if (!this.#groups.has(id3)) {
+            warn(`Optional content group not found: ${id3}`);
             return true;
           }
-          if (this.#groups.get(id2).visible) {
+          if (this.#groups.get(id3).visible) {
             return false;
           }
         }
@@ -141981,16 +147018,16 @@ var OptionalContentConfig = class _OptionalContentConfig {
     warn(`Unknown group type ${group.type}.`);
     return true;
   }
-  setVisibility(id2, visible = true, preserveRB = true) {
-    const group = this.#groups.get(id2);
+  setVisibility(id3, visible = true, preserveRB = true) {
+    const group = this.#groups.get(id3);
     if (!group) {
-      warn(`Optional content group not found: ${id2}`);
+      warn(`Optional content group not found: ${id3}`);
       return;
     }
     if (preserveRB && visible && group.rbGroups.length) {
       for (const rbGroup of group.rbGroups) {
         for (const otherId of rbGroup) {
-          if (otherId !== id2) {
+          if (otherId !== id3) {
             this.#groups.get(otherId)?._setVisible(INTERNAL, false, true);
           }
         }
@@ -142039,16 +147076,16 @@ var OptionalContentConfig = class _OptionalContentConfig {
     }
     return this.#order ? this.#order.slice() : [...this.#groups.keys()];
   }
-  getGroup(id2) {
-    return this.#groups.get(id2) || null;
+  getGroup(id3) {
+    return this.#groups.get(id3) || null;
   }
   getHash() {
     if (this.#cachedGetHash !== null) {
       return this.#cachedGetHash;
     }
     const hash2 = new MurmurHash3_64();
-    for (const [id2, group] of this.#groups) {
-      hash2.update(`${id2}:${group.visible}`);
+    for (const [id3, group] of this.#groups) {
+      hash2.update(`${id3}:${group.visible}`);
     }
     return this.#cachedGetHash = hash2.hexdigest();
   }
@@ -142057,8 +147094,8 @@ var OptionalContentConfig = class _OptionalContentConfig {
   }
   get serializable() {
     const groupState = /* @__PURE__ */ new Map();
-    for (const [id2, group] of this.#groups) {
-      groupState.set(id2, group.serializable);
+    for (const [id3, group] of this.#groups) {
+      groupState.set(id3, group.serializable);
     }
     return {
       data: this.#rawData,
@@ -142107,12 +147144,12 @@ var PagesMapper = class {
     const idToPageNumber = /* @__PURE__ */ new Map();
     const pageNumberToId = this.#pageNumberToId;
     for (let i3 = 0, ii = this.#pagesNumber; i3 < ii; i3++) {
-      const id2 = pageNumberToId[i3];
-      const pageNumbers = idToPageNumber.get(id2);
+      const id3 = pageNumberToId[i3];
+      const pageNumbers = idToPageNumber.get(id3);
       if (pageNumbers) {
         pageNumbers.push(i3 + 1);
       } else {
-        idToPageNumber.set(id2, [i3 + 1]);
+        idToPageNumber.set(id3, [i3 + 1]);
       }
     }
     return idToPageNumber;
@@ -142145,7 +147182,7 @@ var PagesMapper = class {
     prevPageNumbers.copyWithin(adjustedTarget + movedCount, adjustedTarget, remainingLen);
     prevPageNumbers.set(pagesToMove, adjustedTarget);
     this.#prevPageNumbers = prevPageNumbers;
-    if (pagesNumber === this.#initialPagesNumber && pageNumberToId.every((id2, i3) => id2 === i3 + 1)) {
+    if (pagesNumber === this.#initialPagesNumber && pageNumberToId.every((id3, i3) => id3 === i3 + 1)) {
       this.#pageNumberToId = null;
     }
   }
@@ -142226,16 +147263,16 @@ var PagesMapper = class {
         prevPageNumbers[i3] = -copiedPageNumbers[i3 - pasteIndex];
         continue;
       }
-      const id2 = newPageNumberToId[i3];
-      const oldPositions = prevIdToPageNumber.get(id2);
-      let j2 = idsIndices.get(id2) || 0;
+      const id3 = newPageNumberToId[i3];
+      const oldPositions = prevIdToPageNumber.get(id3);
+      let j2 = idsIndices.get(id3) || 0;
       if (deletedPageNumbers && oldPositions) {
         while (j2 < oldPositions.length && deletedPageNumbers.has(oldPositions[j2])) {
           j2++;
         }
       }
       prevPageNumbers[i3] = oldPositions?.[j2];
-      idsIndices.set(id2, j2 + 1);
+      idsIndices.set(id3, j2 + 1);
     }
   }
   hasBeenAltered() {
@@ -142249,16 +147286,16 @@ var PagesMapper = class {
     const counts = /* @__PURE__ */ new Map();
     if (extractedPageNumbers) {
       for (const pageNumber of extractedPageNumbers) {
-        const id2 = this.getPageId(pageNumber);
-        const level = counts.get(id2) ?? 0;
-        counts.set(id2, level + 1);
+        const id3 = this.getPageId(pageNumber);
+        const level = counts.get(id3) ?? 0;
+        counts.set(id3, level + 1);
         copyLevels[pageNumber - 1] = level;
       }
     } else {
       for (let i3 = 0, ii = this.#pagesNumber; i3 < ii; i3++) {
-        const id2 = this.#pageNumberToId[i3];
-        const level = counts.get(id2) ?? 0;
-        counts.set(id2, level + 1);
+        const id3 = this.#pageNumberToId[i3];
+        const level = counts.get(id3) ?? 0;
+        counts.set(id3, level + 1);
         copyLevels[i3] = level;
       }
     }
@@ -142278,9 +147315,9 @@ var PagesMapper = class {
         includePages: []
       };
     }
-    for (const [id2, pageNumbers] of idToPageNumber) {
+    for (const [id3, pageNumbers] of idToPageNumber) {
       for (let i3 = 0, ii = pageNumbers.length; i3 < ii; i3++) {
-        extractParams[i3].includePages.push([id2 - 1, pageNumbers[i3] - 1]);
+        extractParams[i3].includePages.push([id3 - 1, pageNumbers[i3] - 1]);
       }
     }
     for (const {
@@ -142302,8 +147339,8 @@ var PagesMapper = class {
     extractedPageNumbers = Array.from(extractedPageNumbers).sort((a2, b3) => a2 - b3);
     const usedIds = /* @__PURE__ */ new Map();
     for (let i3 = 0, ii = extractedPageNumbers.length; i3 < ii; i3++) {
-      const id2 = this.getPageId(extractedPageNumbers[i3]);
-      const usedPageNumbers = usedIds.getOrInsertComputed(id2, makeArr);
+      const id3 = this.getPageId(extractedPageNumbers[i3]);
+      const usedPageNumbers = usedIds.getOrInsertComputed(id3, makeArr);
       usedPageNumbers.push(i3 + 1);
     }
     return this.getPageMappingForSaving(usedIds, this.#buildCopyLevels(extractedPageNumbers));
@@ -142311,13 +147348,13 @@ var PagesMapper = class {
   getPrevPageNumber(pageNumber) {
     return this.#prevPageNumbers?.[pageNumber - 1] ?? 0;
   }
-  getPageNumber(id2) {
+  getPageNumber(id3) {
     if (!this.#pageNumberToId) {
-      return id2;
+      return id3;
     }
     const pageNumberToId = this.#pageNumberToId;
     for (let i3 = 0, ii = this.#pagesNumber; i3 < ii; i3++) {
-      if (pageNumberToId[i3] === id2) {
+      if (pageNumberToId[i3] === id3) {
         return i3 + 1;
       }
     }
@@ -142494,22 +147531,22 @@ var WorkerRenderTask = class {
   #drawAnnotationCanvases(annotationBitmaps) {
     const annotationCanvasMap = this.#annotationCanvasMap;
     const seen = /* @__PURE__ */ new Set();
-    for (const [id2, canvasName, bitmap] of annotationBitmaps) {
+    for (const [id3, canvasName, bitmap] of annotationBitmaps) {
       const {
         canvas,
         context
       } = this.#canvasFactory.create(bitmap.width, bitmap.height);
       context.drawImage(bitmap, 0, 0);
       if (!canvasName) {
-        annotationCanvasMap.set(id2, canvas);
+        annotationCanvasMap.set(id3, canvas);
         continue;
       }
       setAnnotationCanvasName(canvas, canvasName);
-      if (seen.has(id2)) {
-        annotationCanvasMap.get(id2).push(canvas);
+      if (seen.has(id3)) {
+        annotationCanvasMap.get(id3).push(canvas);
       } else {
-        seen.add(id2);
-        annotationCanvasMap.set(id2, [canvas]);
+        seen.add(id3);
+        annotationCanvasMap.set(id3, [canvas]);
       }
     }
   }
@@ -142588,9 +147625,9 @@ var RendererWorker = class _RendererWorker {
   #initializeFromPort(port) {
     _RendererWorker.#usedPorts.add(port);
     this.#port = port;
-    const id2 = _RendererWorker.#connectionId++;
-    const sourceName = `main${id2}`;
-    const targetName = `renderer${id2}`;
+    const id3 = _RendererWorker.#connectionId++;
+    const sourceName = `main${id3}`;
+    const targetName = `renderer${id3}`;
     this.#portNames = {
       sourceName,
       targetName
@@ -142754,28 +147791,28 @@ var RendererWorker = class _RendererWorker {
     }
     this.#messageHandler?.send(action, data);
   }
-  #sendObj(action, data, id2, pageProxyId, isFont = false) {
+  #sendObj(action, data, id3, pageProxyId, isFont = false) {
     try {
       if (this.#pendingMessages) {
         const queuedData = isFont ? structuredClone(data) : data;
-        this.#pendingMessages.push(() => this.#sendObj(action, queuedData, id2, pageProxyId));
+        this.#pendingMessages.push(() => this.#sendObj(action, queuedData, id3, pageProxyId));
         return;
       }
       this.#messageHandler?.send(action, data);
     } catch (reason) {
       warn(`RendererWorker - failed to send "${action}": ${reason}`);
       this.#send("objFailed", {
-        id: id2,
+        id: id3,
         pageProxyId,
         reason: reason.message
       });
     }
   }
-  sendCommonObj(id2, type, data) {
-    this.#sendObj("commonobj", [id2, type, data], id2, null, type === "Font");
+  sendCommonObj(id3, type, data) {
+    this.#sendObj("commonobj", [id3, type, data], id3, null, type === "Font");
   }
-  sendObj(id2, pageProxyId, type, data) {
-    this.#sendObj("obj", [id2, pageProxyId, type, data], id2, pageProxyId);
+  sendObj(id3, pageProxyId, type, data) {
+    this.#sendObj("obj", [id3, pageProxyId, type, data], id3, pageProxyId);
   }
   cleanup(keepLoadedFonts) {
     this.#send("Cleanup", {
@@ -143063,9 +148100,9 @@ var TextLayer = class _TextLayer {
       this.#container.append(textDiv);
     }
     if (textDivProperties.hasEOL) {
-      const br2 = document.createElement("br");
-      br2.setAttribute("role", "presentation");
-      this.#container.append(br2);
+      const br3 = document.createElement("br");
+      br3.setAttribute("role", "presentation");
+      this.#container.append(br3);
     }
   }
   #layout(params) {
@@ -143470,8 +148507,8 @@ var PDFDocumentProxy = class {
   getDestinations() {
     return this._transport.getDestinations();
   }
-  getDestination(id2) {
-    return this._transport.getDestination(id2);
+  getDestination(id3) {
+    return this._transport.getDestination(id3);
   }
   getPageLabels() {
     return this._transport.getPageLabels();
@@ -143491,8 +148528,8 @@ var PDFDocumentProxy = class {
   getAttachments() {
     return this._transport.getAttachments();
   }
-  getAttachmentContent(id2) {
-    return this._transport.getAttachmentContent(id2);
+  getAttachmentContent(id3) {
+    return this._transport.getAttachmentContent(id3);
   }
   getAnnotationsByType(types, pageIndexesToSkip) {
     return this._transport.getAnnotationsByType(types, pageIndexesToSkip);
@@ -143550,8 +148587,8 @@ var PDFDocumentProxy = class {
   getSignatures() {
     return this._transport.getSignatures();
   }
-  getSignatureData(id2) {
-    return this._transport.getSignatureData(id2);
+  getSignatureData(id3) {
+    return this._transport.getSignatureData(id3);
   }
   hasJSActions() {
     return this._transport.hasJSActions();
@@ -143579,8 +148616,8 @@ var PDFPageProxy = class _PDFPageProxy {
     this.#pagesMapper = pagesMapper;
     this.imageCoordinates = null;
   }
-  clone(id2) {
-    const clone = new _PDFPageProxy(id2, this._pageInfo, this._transport, this.#pagesMapper, this._pdfBug);
+  clone(id3) {
+    const clone = new _PDFPageProxy(id3, this._pageInfo, this._transport, this.#pagesMapper, this._pdfBug);
     clone.clonedFromIndex = this.clonedFromIndex ?? this._pageIndex;
     this._transport.updatePage(clone);
     return clone;
@@ -144137,10 +149174,10 @@ var PDFWorker = class _PDFWorker {
       }
       const port = new LoopbackPort();
       this.#port = port;
-      const id2 = `fake${_PDFWorker.#fakeWorkerId++}`;
-      const workerHandler = new MessageHandler(id2 + "_worker", id2, port);
+      const id3 = `fake${_PDFWorker.#fakeWorkerId++}`;
+      const workerHandler = new MessageHandler(id3 + "_worker", id3, port);
       WorkerMessageHandler.setup(workerHandler, port);
-      this.#messageHandler = new MessageHandler(id2, id2 + "_worker", port);
+      this.#messageHandler = new MessageHandler(id3, id3 + "_worker", port);
       this.#resolve();
     }).catch((reason) => {
       this.#capability.reject(new Error(`Setting up fake worker failed: "${reason.message}".`));
@@ -144467,7 +149504,7 @@ var WorkerTransport = class {
       this.rendererWorker?.messageHandler?.on("FontFallback", (data) => this.destroyed ? null : messageHandler.sendWithPromise("FontFallback", data));
     }, () => {
     });
-    messageHandler.on("commonobj", ([id2, type, exportedData]) => {
+    messageHandler.on("commonobj", ([id3, type, exportedData]) => {
       if (this.destroyed) {
         return null;
       }
@@ -144475,33 +149512,33 @@ var WorkerTransport = class {
         rendererWorker
       } = this;
       if (type === "CopyLocalImage") {
-        if (this.commonObjs.has(id2)) {
+        if (this.commonObjs.has(id3)) {
           return null;
         }
-        const dataLen = objectHandler.resolveCommonObject(id2, type, exportedData);
+        const dataLen = objectHandler.resolveCommonObject(id3, type, exportedData);
         if (dataLen) {
-          rendererWorker?.sendCommonObj(id2, "Image", this.commonObjs.get(id2));
+          rendererWorker?.sendCommonObj(id3, "Image", this.commonObjs.get(id3));
         }
         return dataLen;
       }
-      rendererWorker?.sendCommonObj(id2, type, exportedData);
-      if (!this.commonObjs.has(id2)) {
-        objectHandler.resolveCommonObject(id2, type, exportedData);
-        if (type === "Pattern" && this.commonObjs.get(id2)[0] === "Mesh") {
+      rendererWorker?.sendCommonObj(id3, type, exportedData);
+      if (!this.commonObjs.has(id3)) {
+        objectHandler.resolveCommonObject(id3, type, exportedData);
+        if (type === "Pattern" && this.commonObjs.get(id3)[0] === "Mesh") {
           this.#hasMeshPattern = true;
         }
       }
       return null;
     });
-    messageHandler.on("obj", ([id2, pageProxyId, type, imageData]) => {
+    messageHandler.on("obj", ([id3, pageProxyId, type, imageData]) => {
       if (this.destroyed) {
         return;
       }
       if (type === "Pattern" && imageData[0] === "Mesh") {
         this.#hasMeshPattern = true;
       }
-      if (objectHandler.resolveObject(id2, pageProxyId, type, imageData)) {
-        this.rendererWorker?.sendObj(id2, pageProxyId, type, imageData);
+      if (objectHandler.resolveObject(id3, pageProxyId, type, imageData)) {
+        this.rendererWorker?.sendObj(id3, pageProxyId, type, imageData);
       }
     });
     messageHandler.on("DocProgress", (data) => {
@@ -144649,8 +149686,8 @@ var WorkerTransport = class {
   getSignatures() {
     return this.#cacheSimpleMethod("GetSignatures");
   }
-  getSignatureData(id2) {
-    return this.messageHandler.sendWithPromise("GetSignatureData", id2);
+  getSignatureData(id3) {
+    return this.messageHandler.sendWithPromise("GetSignatureData", id3);
   }
   hasJSActions() {
     return this.#cacheSimpleMethod("HasJSActions");
@@ -144661,9 +149698,9 @@ var WorkerTransport = class {
   getDestinations() {
     return this.messageHandler.sendWithPromise("GetDestinations", null);
   }
-  getDestination(id2) {
-    return typeof id2 !== "string" ? Promise.reject(new Error("Invalid destination request.")) : this.messageHandler.sendWithPromise("GetDestination", {
-      id: id2
+  getDestination(id3) {
+    return typeof id3 !== "string" ? Promise.reject(new Error("Invalid destination request.")) : this.messageHandler.sendWithPromise("GetDestination", {
+      id: id3
     });
   }
   getPageLabels() {
@@ -144684,8 +149721,8 @@ var WorkerTransport = class {
   getAttachments() {
     return this.messageHandler.sendWithPromise("GetAttachments", null);
   }
-  getAttachmentContent(id2) {
-    return this.messageHandler.sendWithPromise("GetAttachmentContent", id2);
+  getAttachmentContent(id3) {
+    return this.messageHandler.sendWithPromise("GetAttachmentContent", id3);
   }
   getAnnotationsByType(types, pageIndexesToSkip) {
     return this.messageHandler.sendWithPromise("GetAnnotationsByType", {
@@ -145990,8 +151027,8 @@ var AnnotationElement = class _AnnotationElement {
     const defs = svgFactory.createElement("defs");
     svg.append(defs);
     const clipPath = svgFactory.createElement("clipPath");
-    const id2 = `clippath_${this.data.id}`;
-    clipPath.setAttribute("id", id2);
+    const id3 = `clippath_${this.data.id}`;
+    clipPath.setAttribute("id", id3);
     clipPath.setAttribute("clipPathUnits", "objectBoundingBox");
     defs.append(clipPath);
     for (let i3 = 2, ii = quadPoints.length; i3 < ii; i3 += 8) {
@@ -146016,7 +151053,7 @@ var AnnotationElement = class _AnnotationElement {
       style.backgroundImage = svgBuffer.join("");
     }
     this.container.append(svg);
-    this.container.style.clipPath = `url(#${id2})`;
+    this.container.style.clipPath = `url(#${id3})`;
   }
   _createPopup(popupData = null) {
     const {
@@ -146065,20 +151102,20 @@ var AnnotationElement = class _AnnotationElement {
       const fieldObj = this._fieldObjects.get(name) || [];
       for (const {
         page,
-        id: id2,
+        id: id3,
         exportValues
       } of fieldObj) {
-        if (page === -1 || id2 === skipId) {
+        if (page === -1 || id3 === skipId) {
           continue;
         }
         const exportValue = typeof exportValues === "string" ? exportValues : null;
-        const domElement = document.querySelector(`[data-element-id="${id2}"]`);
+        const domElement = document.querySelector(`[data-element-id="${id3}"]`);
         if (domElement && !GetElementsByNameSet.has(domElement)) {
-          warn(`_getElementsByName - element not allowed: ${id2}`);
+          warn(`_getElementsByName - element not allowed: ${id3}`);
           continue;
         }
         fields.push({
-          id: id2,
+          id: id3,
           exportValue,
           domElement
         });
@@ -146089,12 +151126,12 @@ var AnnotationElement = class _AnnotationElement {
       const {
         exportValue
       } = domElement;
-      const id2 = domElement.getAttribute("data-element-id");
-      if (id2 === skipId || !GetElementsByNameSet.has(domElement)) {
+      const id3 = domElement.getAttribute("data-element-id");
+      if (id3 === skipId || !GetElementsByNameSet.has(domElement)) {
         continue;
       }
       fields.push({
-        id: id2,
+        id: id3,
         exportValue,
         domElement
       });
@@ -146326,7 +151363,7 @@ var LinkAnnotationElement = class extends AnnotationElement {
   }
   _bindJSAction(link, {
     actions,
-    id: id2,
+    id: id3,
     overlaidText
   }) {
     link.href = this.linkService.getAnchorUrl("");
@@ -146340,7 +151377,7 @@ var LinkAnnotationElement = class extends AnnotationElement {
         this.linkService.eventBus?.dispatch("dispatcheventinsandbox", {
           source: this,
           detail: {
-            id: id2,
+            id: id3,
             name
           }
         });
@@ -146379,24 +151416,24 @@ var LinkAnnotationElement = class extends AnnotationElement {
         for (const fieldName of resetFormFields) {
           const fields = this._fieldObjects.get(fieldName) || [];
           for (const {
-            id: id2
+            id: id3
           } of fields) {
-            fieldIds.add(id2);
+            fieldIds.add(id3);
           }
         }
         const kidIdsById = /* @__PURE__ */ new Map();
         for (const fields of this._fieldObjects.values()) {
           for (const {
-            id: id2,
+            id: id3,
             kidIds
           } of fields) {
             if (kidIds) {
-              kidIdsById.set(id2, kidIds);
+              kidIdsById.set(id3, kidIds);
             }
           }
         }
-        for (const id2 of fieldIds) {
-          for (const kidId of kidIdsById.get(id2) || []) {
+        for (const id3 of fieldIds) {
+          for (const kidId of kidIdsById.get(id3) || []) {
             fieldIds.add(kidId);
           }
         }
@@ -146416,13 +151453,13 @@ var LinkAnnotationElement = class extends AnnotationElement {
       const allIds = [];
       for (const field of allFields) {
         const {
-          id: id2
+          id: id3
         } = field;
-        allIds.push(id2);
+        allIds.push(id3);
         switch (field.type) {
           case "text": {
             const value = field.defaultValue || "";
-            storage.setValue(id2, {
+            storage.setValue(id3, {
               value
             });
             break;
@@ -146430,7 +151467,7 @@ var LinkAnnotationElement = class extends AnnotationElement {
           case "checkbox":
           case "radiobutton": {
             const value = field.defaultValue === field.exportValues;
-            storage.setValue(id2, {
+            storage.setValue(id3, {
               value
             });
             break;
@@ -146438,7 +151475,7 @@ var LinkAnnotationElement = class extends AnnotationElement {
           case "combobox":
           case "listbox": {
             const value = field.defaultValue || "";
-            storage.setValue(id2, {
+            storage.setValue(id3, {
               value
             });
             break;
@@ -146446,11 +151483,11 @@ var LinkAnnotationElement = class extends AnnotationElement {
           default:
             continue;
         }
-        const domElement = document.querySelector(`[data-element-id="${id2}"]`);
+        const domElement = document.querySelector(`[data-element-id="${id3}"]`);
         if (!domElement) {
           continue;
         } else if (!GetElementsByNameSet.has(domElement)) {
-          warn(`_bindResetFormAction - element not allowed: ${id2}`);
+          warn(`_bindResetFormAction - element not allowed: ${id3}`);
           continue;
         }
         domElement.dispatchEvent(new Event("resetform"));
@@ -146616,15 +151653,15 @@ var TextWidgetAnnotationElement = class extends WidgetAnnotationElement {
   }
   render() {
     const storage = this.annotationStorage;
-    const id2 = this.data.id;
+    const id3 = this.data.id;
     this.container.classList.add("textWidgetAnnotation");
     let element = null;
     if (this.renderForms) {
-      const storedData = storage.getValue(id2, {
+      const storedData = storage.getValue(id3, {
         value: this.data.fieldValue
       });
       let textContent = storedData.value || "";
-      const maxLen = storage.getValue(id2, {
+      const maxLen = storage.getValue(id3, {
         charLimit: this.data.maxLen
       }).charLimit;
       if (maxLen && textContent.length > maxLen) {
@@ -146657,13 +151694,13 @@ var TextWidgetAnnotationElement = class extends WidgetAnnotationElement {
       }
       if (this.data.hasOwnCanvas) {
         this.container.classList.add("hasOwnCanvas");
-        if (storage.has(id2)) {
+        if (storage.has(id3)) {
           this.container.classList.add("sandboxModified");
         }
       }
       GetElementsByNameSet.add(element);
       this.contentElement = element;
-      element.setAttribute("data-element-id", id2);
+      element.setAttribute("data-element-id", id3);
       element.disabled = this.data.readOnly;
       element.name = this.data.fieldName;
       element.tabIndex = 0;
@@ -146681,7 +151718,7 @@ var TextWidgetAnnotationElement = class extends WidgetAnnotationElement {
         element.maxLength = maxLen;
       }
       element.addEventListener("input", (event) => {
-        storage.setValue(id2, {
+        storage.setValue(id3, {
           value: event.target.value
         });
         this.setPropertyOnSiblings(element, "value", event.target.value, "value");
@@ -146741,7 +151778,7 @@ var TextWidgetAnnotationElement = class extends WidgetAnnotationElement {
             value(event) {
               elementData.userValue = event.detail.value ?? "";
               if (!hasDateOrTime) {
-                storage.setValue(id2, {
+                storage.setValue(id3, {
                   value: elementData.userValue.toString()
                 });
               }
@@ -146761,7 +151798,7 @@ var TextWidgetAnnotationElement = class extends WidgetAnnotationElement {
               if (hasDateOrTime) {
                 data.value = formattedValue;
               }
-              storage.setValue(id2, data);
+              storage.setValue(id3, data);
             },
             selRange(event) {
               event.target.setSelectionRange(...event.detail.selRange);
@@ -146784,13 +151821,13 @@ var TextWidgetAnnotationElement = class extends WidgetAnnotationElement {
               }
               value = value.slice(0, charLimit);
               target.value = elementData.userValue = value;
-              storage.setValue(id2, {
+              storage.setValue(id3, {
                 value
               });
               this.linkService.eventBus?.dispatch("dispatcheventinsandbox", {
                 source: this,
                 detail: {
-                  id: id2,
+                  id: id3,
                   name: "Keystroke",
                   value,
                   willCommit: true,
@@ -146827,7 +151864,7 @@ var TextWidgetAnnotationElement = class extends WidgetAnnotationElement {
           this.linkService.eventBus?.dispatch("dispatcheventinsandbox", {
             source: this,
             detail: {
-              id: id2,
+              id: id3,
               name: "Keystroke",
               value,
               willCommit: true,
@@ -146870,7 +151907,7 @@ var TextWidgetAnnotationElement = class extends WidgetAnnotationElement {
             this.linkService.eventBus?.dispatch("dispatcheventinsandbox", {
               source: this,
               detail: {
-                id: id2,
+                id: id3,
                 name: "Keystroke",
                 value,
                 willCommit: true,
@@ -146928,7 +151965,7 @@ var TextWidgetAnnotationElement = class extends WidgetAnnotationElement {
             this.linkService.eventBus?.dispatch("dispatcheventinsandbox", {
               source: this,
               detail: {
-                id: id2,
+                id: id3,
                 name: "Keystroke",
                 value,
                 change: data || "",
@@ -146993,20 +152030,20 @@ var CheckboxWidgetAnnotationElement = class extends WidgetAnnotationElement {
   render() {
     const storage = this.annotationStorage;
     const data = this.data;
-    const id2 = data.id;
-    let value = storage.getValue(id2, {
+    const id3 = data.id;
+    let value = storage.getValue(id3, {
       value: data.exportValue === data.fieldValue
     }).value;
     if (typeof value === "string") {
       value = value !== "Off";
-      storage.setValue(id2, {
+      storage.setValue(id3, {
         value
       });
     }
     this.container.classList.add("buttonWidgetAnnotation", "checkBox");
     const element = document.createElement("input");
     GetElementsByNameSet.add(element);
-    element.setAttribute("data-element-id", id2);
+    element.setAttribute("data-element-id", id3);
     element.disabled = data.readOnly;
     this._setRequired(element, this.data.required);
     element.type = "checkbox";
@@ -147021,7 +152058,7 @@ var CheckboxWidgetAnnotationElement = class extends WidgetAnnotationElement {
         name,
         checked
       } = event.target;
-      for (const checkbox of this._getElementsByName(name, id2)) {
+      for (const checkbox of this._getElementsByName(name, id3)) {
         const curChecked = checked && checkbox.exportValue === data.exportValue;
         if (checkbox.domElement) {
           checkbox.domElement.checked = curChecked;
@@ -147030,7 +152067,7 @@ var CheckboxWidgetAnnotationElement = class extends WidgetAnnotationElement {
           value: curChecked
         });
       }
-      storage.setValue(id2, {
+      storage.setValue(id3, {
         value: checked
       });
     });
@@ -147043,7 +152080,7 @@ var CheckboxWidgetAnnotationElement = class extends WidgetAnnotationElement {
         const actions = {
           value(event) {
             event.target.checked = event.detail.value !== "Off";
-            storage.setValue(id2, {
+            storage.setValue(id3, {
               value: event.target.checked
             });
           }
@@ -147067,18 +152104,18 @@ var RadioButtonWidgetAnnotationElement = class extends WidgetAnnotationElement {
     this.container.classList.add("buttonWidgetAnnotation", "radioButton");
     const storage = this.annotationStorage;
     const data = this.data;
-    const id2 = data.id;
-    let value = storage.getValue(id2, {
+    const id3 = data.id;
+    let value = storage.getValue(id3, {
       value: data.buttonValue !== null && data.fieldValue === data.buttonValue
     }).value;
     if (typeof value === "string") {
       value = value !== data.buttonValue;
-      storage.setValue(id2, {
+      storage.setValue(id3, {
         value
       });
     }
     if (value) {
-      for (const radio of this._getElementsByName(data.fieldName, id2)) {
+      for (const radio of this._getElementsByName(data.fieldName, id3)) {
         storage.setValue(radio.id, {
           value: false
         });
@@ -147086,7 +152123,7 @@ var RadioButtonWidgetAnnotationElement = class extends WidgetAnnotationElement {
     }
     const element = document.createElement("input");
     GetElementsByNameSet.add(element);
-    element.setAttribute("data-element-id", id2);
+    element.setAttribute("data-element-id", id3);
     element.disabled = data.readOnly;
     this._setRequired(element, this.data.required);
     element.type = "radio";
@@ -147100,12 +152137,12 @@ var RadioButtonWidgetAnnotationElement = class extends WidgetAnnotationElement {
         name,
         checked
       } = event.target;
-      for (const radio of this._getElementsByName(name, id2)) {
+      for (const radio of this._getElementsByName(name, id3)) {
         storage.setValue(radio.id, {
           value: false
         });
       }
-      storage.setValue(id2, {
+      storage.setValue(id3, {
         value: checked
       });
     });
@@ -147120,7 +152157,7 @@ var RadioButtonWidgetAnnotationElement = class extends WidgetAnnotationElement {
           value: (event) => {
             const checked = pdfButtonValue === event.detail.value;
             for (const radio of this._getElementsByName(event.target.name)) {
-              const curChecked = checked && radio.id === id2;
+              const curChecked = checked && radio.id === id3;
               if (radio.domElement) {
                 radio.domElement.checked = curChecked;
               }
@@ -147167,13 +152204,13 @@ var ChoiceWidgetAnnotationElement = class extends WidgetAnnotationElement {
   render() {
     this.container.classList.add("choiceWidgetAnnotation");
     const storage = this.annotationStorage;
-    const id2 = this.data.id;
-    const storedData = storage.getValue(id2, {
+    const id3 = this.data.id;
+    const storedData = storage.getValue(id3, {
       value: this.data.fieldValue
     });
     const selectElement = document.createElement("select");
     GetElementsByNameSet.add(selectElement);
-    selectElement.setAttribute("data-element-id", id2);
+    selectElement.setAttribute("data-element-id", id3);
     selectElement.disabled = this.data.readOnly;
     this._setRequired(selectElement, this.data.required);
     selectElement.name = this.data.fieldName;
@@ -147251,7 +152288,7 @@ var ChoiceWidgetAnnotationElement = class extends WidgetAnnotationElement {
             for (const option of selectElement.options) {
               option.selected = values.has(option.value);
             }
-            storage.setValue(id2, {
+            storage.setValue(id3, {
               value: getValue(true)
             });
             selectedValues = getValue(false);
@@ -147270,7 +152307,7 @@ var ChoiceWidgetAnnotationElement = class extends WidgetAnnotationElement {
                 options[0].selected = true;
               }
             }
-            storage.setValue(id2, {
+            storage.setValue(id3, {
               value: getValue(true),
               items: getItems(event)
             });
@@ -147280,7 +152317,7 @@ var ChoiceWidgetAnnotationElement = class extends WidgetAnnotationElement {
             while (selectElement.length !== 0) {
               selectElement.remove(0);
             }
-            storage.setValue(id2, {
+            storage.setValue(id3, {
               value: null,
               items: []
             });
@@ -147301,7 +152338,7 @@ var ChoiceWidgetAnnotationElement = class extends WidgetAnnotationElement {
             } else {
               selectElement.append(optionElement);
             }
-            storage.setValue(id2, {
+            storage.setValue(id3, {
               value: getValue(true),
               items: getItems(event)
             });
@@ -147327,7 +152364,7 @@ var ChoiceWidgetAnnotationElement = class extends WidgetAnnotationElement {
             if (selectElement.options.length > 0) {
               selectElement.options[0].selected = true;
             }
-            storage.setValue(id2, {
+            storage.setValue(id3, {
               value: getValue(true),
               items: getItems(event)
             });
@@ -147338,7 +152375,7 @@ var ChoiceWidgetAnnotationElement = class extends WidgetAnnotationElement {
             for (const option of event.target.options) {
               option.selected = indices.has(option.index);
             }
-            storage.setValue(id2, {
+            storage.setValue(id3, {
               value: getValue(true)
             });
             selectedValues = getValue(false);
@@ -147352,14 +152389,14 @@ var ChoiceWidgetAnnotationElement = class extends WidgetAnnotationElement {
       selectElement.addEventListener("input", (event) => {
         const exportValue = getValue(true);
         const change = getValue(false);
-        storage.setValue(id2, {
+        storage.setValue(id3, {
           value: exportValue
         });
         event.preventDefault();
         this.linkService.eventBus?.dispatch("dispatcheventinsandbox", {
           source: this,
           detail: {
-            id: id2,
+            id: id3,
             name: "Keystroke",
             value: selectedValues,
             change,
@@ -147373,7 +152410,7 @@ var ChoiceWidgetAnnotationElement = class extends WidgetAnnotationElement {
       this._setEventListeners(selectElement, null, [["focus", "Focus"], ["blur", "Blur"], ["mousedown", "Mouse Down"], ["mouseenter", "Mouse Enter"], ["mouseleave", "Mouse Exit"], ["mouseup", "Mouse Up"], ["input", "Action"], ["input", "Validate"]], (event) => event.target.value);
     } else {
       selectElement.addEventListener("input", function(event) {
-        storage.setValue(id2, {
+        storage.setValue(id3, {
           value: getValue(true)
         });
       });
@@ -147439,7 +152476,7 @@ var PopupAnnotationElement = class extends AnnotationElement {
       elementIds.push(element.data.id);
       element.addHighlightArea();
     }
-    this.container.setAttribute("aria-controls", elementIds.map((id2) => `${AnnotationPrefix}${id2}`).join(","));
+    this.container.setAttribute("aria-controls", elementIds.map((id3) => `${AnnotationPrefix}${id3}`).join(","));
     return this.container;
   }
 };
@@ -148804,12 +153841,12 @@ var AnnotationLayer = class _AnnotationLayer {
         contentElement,
         data: {
           hidden,
-          id: id2,
-          oc: oc2
+          id: id3,
+          oc: oc3
         }
       } of this.#elements) {
-        const annotationId = contentElement.id = `${AnnotationPrefix}${id2}`;
-        const enableLinkOwnership = contentElement.localName === "a" && !hidden && !oc2;
+        const annotationId = contentElement.id = `${AnnotationPrefix}${id3}`;
+        const enableLinkOwnership = contentElement.localName === "a" && !hidden && !oc3;
         promises.push(this.#structTreeLayer?.getAriaAttributes(annotationId, {
           enableLinkOwnership
         }).then((ariaAttributes) => {
@@ -148924,8 +153961,8 @@ var AnnotationLayer = class _AnnotationLayer {
       return;
     }
     const layer = this.div;
-    for (const [id2, canvas] of this.#annotationCanvasMap) {
-      const element = layer.querySelector(`[data-annotation-id="${id2}"]`);
+    for (const [id3, canvas] of this.#annotationCanvasMap) {
+      const element = layer.querySelector(`[data-annotation-id="${id3}"]`);
       if (!element) {
         continue;
       }
@@ -148965,13 +154002,13 @@ var AnnotationLayer = class _AnnotationLayer {
           lastCanvas = canvas[i3];
         }
       }
-      this.#annotationCanvasMap.delete(id2);
-      const editableAnnotation = this.#editableAnnotations.get(id2);
+      this.#annotationCanvasMap.delete(id3);
+      const editableAnnotation = this.#editableAnnotations.get(id3);
       if (!editableAnnotation) {
         continue;
       }
       if (editableAnnotation._hasNoCanvas) {
-        this._annotationEditorUIManager?.setMissingCanvas(id2, element.id, canvas);
+        this._annotationEditorUIManager?.setMissingCanvas(id3, element.id, canvas);
         editableAnnotation._hasNoCanvas = false;
       } else {
         editableAnnotation.canvas = canvas;
@@ -148984,20 +154021,20 @@ var AnnotationLayer = class _AnnotationLayer {
   getEditableAnnotations() {
     return this.#editableAnnotations.values();
   }
-  getEditableAnnotation(id2) {
-    return this.#editableAnnotations.get(id2);
+  getEditableAnnotation(id3) {
+    return this.#editableAnnotations.get(id3);
   }
   addFakeAnnotation(editor) {
     const {
       div
     } = this;
     const {
-      id: id2,
+      id: id3,
       rotation
     } = editor;
     const element = new EditorAnnotationElement({
       data: {
-        id: id2,
+        id: id3,
         rect: editor.getPDFRect(),
         rotation
       },
@@ -149009,13 +154046,13 @@ var AnnotationLayer = class _AnnotationLayer {
       annotationStorage: this.#annotationStorage
     });
     element.render();
-    element.contentElement.id = `${AnnotationPrefix}${id2}`;
+    element.contentElement.id = `${AnnotationPrefix}${id3}`;
     element.createOrUpdatePopup();
     this.#elements.push(element);
     return element;
   }
-  removeAnnotation(id2) {
-    const index = this.#elements.findIndex((el2) => el2.data.id === id2);
+  removeAnnotation(id3) {
+    const index = this.#elements.findIndex((el3) => el3.data.id === id3);
     if (index < 0) {
       return;
     }
@@ -149571,7 +154608,7 @@ var FreeTextEditor = class _FreeTextEditor extends AnnotationEditor {
           },
           rect,
           rotation,
-          id: id2,
+          id: id3,
           popupRef,
           richText,
           contentsObj,
@@ -149598,8 +154635,8 @@ var FreeTextEditor = class _FreeTextEditor extends AnnotationEditor {
         pageIndex: pageNumber - 1,
         rect: rect.slice(0),
         rotation,
-        annotationElementId: id2,
-        id: id2,
+        annotationElementId: id3,
+        id: id3,
         deleted: false,
         popupRef,
         comment: contentsObj?.str || null,
@@ -149772,14 +154809,14 @@ var DrawingEditor = class _DrawingEditor extends AnnotationEditor {
   }
   #createDrawing(drawOutlines, parent) {
     const {
-      id: id2,
+      id: id3,
       clipPathId
     } = parent.drawLayer.draw(_DrawingEditor._mergeSVGProperties(this._drawingOptions.toSVGProperties(), drawOutlines.defaultSVGProperties), false, this.constructor._hasClipPath);
     if (this.constructor._hasClipPath) {
       this._clipPathId = clipPathId;
     }
     this.#createFocusOutline(parent);
-    return id2;
+    return id3;
   }
   #createFocusOutline(parent) {
     const properties = this._drawOutlines.getFocusSVGProperties(this.#rotationAngle);
@@ -150383,10 +155420,10 @@ var DrawingEditor = class _DrawingEditor extends AnnotationEditor {
     _DrawingEditor.#currentDrawingOptions = this.getDefaultDrawingOptions();
     this._currentParent = parent;
     const {
-      id: id2,
+      id: id3,
       clipPathId
     } = parent.drawLayer.draw(this._mergeSVGProperties(_DrawingEditor.#currentDrawingOptions.toSVGProperties(), _DrawingEditor.#currentDraw.defaultSVGProperties), true, this._hasClipPath);
-    this._currentDrawId = id2;
+    this._currentDrawId = id3;
     _DrawingEditor.#currentClipPathId = this._hasClipPath ? clipPathId : null;
   }
   static _drawMove(event) {
@@ -151775,7 +156812,7 @@ var HighlightEditor = class _HighlightEditor extends DrawingEditor {
           quadPoints,
           rect,
           rotation,
-          id: id2,
+          id: id3,
           color,
           opacity,
           popupRef,
@@ -151798,8 +156835,8 @@ var HighlightEditor = class _HighlightEditor extends DrawingEditor {
         pageIndex: pageNumber - 1,
         rect: rect.slice(0),
         rotation,
-        annotationElementId: id2,
-        id: id2,
+        annotationElementId: id3,
+        id: id3,
         deleted: false,
         popupRef,
         richText,
@@ -151813,7 +156850,7 @@ var HighlightEditor = class _HighlightEditor extends DrawingEditor {
           inkLists,
           rect,
           rotation,
-          id: id2,
+          id: id3,
           color,
           borderStyle: {
             rawWidth: thickness
@@ -151838,8 +156875,8 @@ var HighlightEditor = class _HighlightEditor extends DrawingEditor {
         pageIndex: pageNumber - 1,
         rect: rect.slice(0),
         rotation,
-        annotationElementId: id2,
-        id: id2,
+        annotationElementId: id3,
+        id: id3,
         deleted: false,
         popupRef,
         richText,
@@ -152754,7 +157791,7 @@ var InkEditor = class _InkEditor extends DrawingEditor {
           inkLists,
           rect,
           rotation,
-          id: id2,
+          id: id3,
           color,
           opacity,
           borderStyle: {
@@ -152784,8 +157821,8 @@ var InkEditor = class _InkEditor extends DrawingEditor {
         pageIndex: pageNumber - 1,
         rect: rect.slice(0),
         rotation,
-        annotationElementId: id2,
-        id: id2,
+        annotationElementId: id3,
+        id: id3,
         deleted: false,
         popupRef,
         richText,
@@ -152961,25 +157998,25 @@ var SignatureExtractor = class {
   }
   static #neighborIdToIndex = new Int32Array([0, 1, -1, 1, -1, 0, -1, -1, 0, -1, 1, -1, 1, 0, 1, 1]);
   static #clockwiseNonZero(buf, width, i0, j0, i3, j2, offset) {
-    const id2 = this.#neighborIndexToId(i0, j0, i3, j2);
+    const id3 = this.#neighborIndexToId(i0, j0, i3, j2);
     for (let k4 = 0; k4 < 8; k4++) {
-      const kk = (-k4 + id2 - offset + 16) % 8;
-      const shiftI = this.#neighborIdToIndex[2 * kk];
-      const shiftJ = this.#neighborIdToIndex[2 * kk + 1];
+      const kk2 = (-k4 + id3 - offset + 16) % 8;
+      const shiftI = this.#neighborIdToIndex[2 * kk2];
+      const shiftJ = this.#neighborIdToIndex[2 * kk2 + 1];
       if (buf[(i0 + shiftI) * width + (j0 + shiftJ)] !== 0) {
-        return kk;
+        return kk2;
       }
     }
     return -1;
   }
   static #counterClockwiseNonZero(buf, width, i0, j0, i3, j2, offset) {
-    const id2 = this.#neighborIndexToId(i0, j0, i3, j2);
+    const id3 = this.#neighborIndexToId(i0, j0, i3, j2);
     for (let k4 = 0; k4 < 8; k4++) {
-      const kk = (k4 + id2 + offset + 16) % 8;
-      const shiftI = this.#neighborIdToIndex[2 * kk];
-      const shiftJ = this.#neighborIdToIndex[2 * kk + 1];
+      const kk2 = (k4 + id3 + offset + 16) % 8;
+      const shiftI = this.#neighborIdToIndex[2 * kk2];
+      const shiftJ = this.#neighborIdToIndex[2 * kk2 + 1];
       if (buf[(i0 + shiftI) * width + (j0 + shiftJ)] !== 0) {
-        return kk;
+        return kk2;
       }
     }
     return -1;
@@ -153064,9 +158101,9 @@ var SignatureExtractor = class {
         let i32 = i3;
         let j3 = j2;
         while (true) {
-          const kk = this.#counterClockwiseNonZero(types, width, i32, j3, i22, j22, 1);
-          shiftI = this.#neighborIdToIndex[2 * kk];
-          shiftJ = this.#neighborIdToIndex[2 * kk + 1];
+          const kk2 = this.#counterClockwiseNonZero(types, width, i32, j3, i22, j22, 1);
+          shiftI = this.#neighborIdToIndex[2 * kk2];
+          shiftJ = this.#neighborIdToIndex[2 * kk2 + 1];
           const i4 = i32 + shiftI;
           const j4 = j3 + shiftJ;
           points.push(j4, i4);
@@ -153195,15 +158232,15 @@ var SignatureExtractor = class {
     const N3 = buf.length;
     const out = new Uint8ClampedArray(N3 >> 2);
     let max = -Infinity;
-    let min = Infinity;
+    let min2 = Infinity;
     for (let i3 = 0, ii = out.length; i3 < ii; i3++) {
       const pix = out[i3] = buf[i3 << 2];
       max = Math.max(max, pix);
-      min = Math.min(min, pix);
+      min2 = Math.min(min2, pix);
     }
-    const ratio = 255 / (max - min);
+    const ratio = 255 / (max - min2);
     for (let i3 = 0, ii = out.length; i3 < ii; i3++) {
-      out[i3] = (out[i3] - min) * ratio;
+      out[i3] = (out[i3] - min2) * ratio;
     }
     return out;
   }
@@ -153211,10 +158248,10 @@ var SignatureExtractor = class {
     let i3;
     let M4 = -Infinity;
     let L2 = -Infinity;
-    const min = histogram.findIndex((v3) => v3 !== 0);
-    let pos = min;
-    let spos = min;
-    for (i3 = min; i3 < 256; i3++) {
+    const min2 = histogram.findIndex((v3) => v3 !== 0);
+    let pos = min2;
+    let spos = min2;
+    for (i3 = min2; i3 < 256; i3++) {
       const v3 = histogram[i3];
       if (v3 > M4) {
         if (i3 - pos > L2) {
@@ -153464,8 +158501,8 @@ var SignatureExtractor = class {
       header[offset++] = points[0];
       header[offset++] = points[1];
     }
-    const cs2 = new CompressionStream("deflate-raw");
-    const writer = cs2.writable.getWriter();
+    const cs3 = new CompressionStream("deflate-raw");
+    const writer = cs3.writable.getWriter();
     await writer.ready;
     writer.write(header);
     const BufferCtor = bufferType.prototype.constructor;
@@ -153477,7 +158514,7 @@ var SignatureExtractor = class {
       writer.write(diffs);
     }
     writer.close();
-    const bytes = await new Response(cs2.readable).bytes();
+    const bytes = await new Response(cs3.readable).bytes();
     return bytes.toBase64();
   }
   static async decompressSignature(signatureData) {
@@ -154425,7 +159462,7 @@ var StampEditor = class extends AnnotationEditor {
         data: {
           rect: rect2,
           rotation,
-          id: id2,
+          id: id3,
           structParent,
           popupRef,
           richText,
@@ -154453,7 +159490,7 @@ var StampEditor = class extends AnnotationEditor {
         missingCanvas = true;
         data._hasNoCanvas = true;
       }
-      const altText = (await parent._structTree.getAriaAttributes(`${AnnotationPrefix}${id2}`))?.get("aria-label") || "";
+      const altText = (await parent._structTree.getAriaAttributes(`${AnnotationPrefix}${id3}`))?.get("aria-label") || "";
       initialData = data = {
         annotationType: AnnotationEditorType.STAMP,
         bitmapId: bitmapId2,
@@ -154461,8 +159498,8 @@ var StampEditor = class extends AnnotationEditor {
         pageIndex: pageNumber - 1,
         rect: rect2.slice(0),
         rotation,
-        annotationElementId: id2,
-        id: id2,
+        annotationElementId: id3,
+        id: id3,
         deleted: false,
         accessibilityData: {
           decorative: false,
@@ -154799,18 +159836,18 @@ var AnnotationEditorLayer = class _AnnotationEditorLayer {
         if (!this.div.contains(elements[0])) {
           return;
         }
-        let id2;
+        let id3;
         const regex = new RegExp(`^${AnnotationEditorPrefix}[0-9]+$`);
         for (const element of elements) {
           if (regex.test(element.id)) {
-            id2 = element.id;
+            id3 = element.id;
             break;
           }
         }
-        if (!id2) {
+        if (!id3) {
           return;
         }
-        const editor = this.#editors.get(id2);
+        const editor = this.#editors.get(id3);
         if (editor?.annotationElementId === null) {
           stopEvent(e2);
           editor.dblclick(e2);
@@ -154842,22 +159879,22 @@ var AnnotationEditorLayer = class _AnnotationEditorLayer {
       }
       for (const editable of annotationLayer.getEditableAnnotations()) {
         const {
-          id: id2
+          id: id3
         } = editable.data;
-        if (this.#uiManager.isDeletedAnnotationElement(id2)) {
+        if (this.#uiManager.isDeletedAnnotationElement(id3)) {
           editable.updateEdited({
             deleted: true
           });
           continue;
         }
-        let editor = resetAnnotations.get(id2);
+        let editor = resetAnnotations.get(id3);
         if (editor) {
           editor.resetAnnotationElement(editable);
           editor.show(false);
           editable.show();
           continue;
         }
-        editor = changedAnnotations.get(id2);
+        editor = changedAnnotations.get(id3);
         if (editor) {
           this.#uiManager.addChangedExistingAnnotation(editor);
           if (editor.renderAnnotationElement(editable)) {
@@ -154882,8 +159919,8 @@ var AnnotationEditorLayer = class _AnnotationEditorLayer {
     annotationLayer?.updateFakeAnnotations(needFakeAnnotation);
     this.#isDisabling = false;
   }
-  getEditableAnnotation(id2) {
-    return this.#annotationLayer?.getEditableAnnotation(id2) || null;
+  getEditableAnnotation(id3) {
+    return this.#annotationLayer?.getEditableAnnotation(id3) || null;
   }
   setActiveEditor(editor) {
     const currentActive = this.#uiManager.getActive();
@@ -155079,10 +160116,10 @@ var AnnotationEditorLayer = class _AnnotationEditorLayer {
       offsetX,
       offsetY
     } = this.#getCenterPoint();
-    const id2 = this.#uiManager.getId();
+    const id3 = this.#uiManager.getId();
     const editor = this.#createNewEditor({
       parent: this,
-      id: id2,
+      id: id3,
       x: offsetX,
       y: offsetY,
       uiManager: this.#uiManager,
@@ -155097,10 +160134,10 @@ var AnnotationEditorLayer = class _AnnotationEditorLayer {
     return await _AnnotationEditorLayer.#editorTypes.get(data.annotationType ?? data.annotationEditorType)?.deserialize(data, this, this.#uiManager) || null;
   }
   createAndAddNewEditor(event, isCentered, data = {}) {
-    const id2 = this.#uiManager.getId();
+    const id3 = this.#uiManager.getId();
     const editor = this.#createNewEditor({
       parent: this,
-      id: id2,
+      id: id3,
       x: event.offsetX,
       y: event.offsetY,
       uiManager: this.#uiManager,
@@ -155757,44 +160794,44 @@ var DrawLayer = class _DrawLayer {
     }
   }
   draw(properties, isPathUpdatable = false, hasClip = false) {
-    const id2 = _DrawLayer.#id++;
+    const id3 = _DrawLayer.#id++;
     const root = this.#createSVG();
     const defs = _DrawLayer._svgFactory.createElement("defs");
     root.append(defs);
     const path = _DrawLayer._svgFactory.createElement("path");
     defs.append(path);
-    const pathId = `path_${id2}`;
+    const pathId = `path_${id3}`;
     path.setAttribute("id", pathId);
     path.setAttribute("vector-effect", "non-scaling-stroke");
     if (isPathUpdatable) {
-      this.#toUpdate.set(id2, path);
+      this.#toUpdate.set(id3, path);
     }
     const clipPathId = hasClip ? this.#createClipPath(defs, pathId) : null;
     const use = _DrawLayer._svgFactory.createElement("use");
     root.append(use);
     use.setAttribute("href", `#${pathId}`);
     this.updateProperties(root, properties);
-    this.#mapping.set(id2, root);
+    this.#mapping.set(id3, root);
     return {
-      id: id2,
+      id: id3,
       clipPathId: `url(#${clipPathId})`
     };
   }
   drawOutline(properties, mustRemoveSelfIntersections) {
-    const id2 = _DrawLayer.#id++;
+    const id3 = _DrawLayer.#id++;
     const root = this.#createSVG();
     const defs = _DrawLayer._svgFactory.createElement("defs");
     root.append(defs);
     const path = _DrawLayer._svgFactory.createElement("path");
     defs.append(path);
-    const pathId = `path_${id2}`;
+    const pathId = `path_${id3}`;
     path.setAttribute("id", pathId);
     path.setAttribute("vector-effect", "non-scaling-stroke");
     let maskId;
     if (mustRemoveSelfIntersections) {
       const mask = _DrawLayer._svgFactory.createElement("mask");
       defs.append(mask);
-      maskId = `mask_${id2}`;
+      maskId = `mask_${id3}`;
       mask.setAttribute("id", maskId);
       mask.setAttribute("maskUnits", "objectBoundingBox");
       const rect = _DrawLayer._svgFactory.createElement("rect");
@@ -155821,12 +160858,12 @@ var DrawLayer = class _DrawLayer {
     use1.classList.add("mainOutline");
     use2.classList.add("secondaryOutline");
     this.updateProperties(root, properties);
-    this.#mapping.set(id2, root);
-    return id2;
+    this.#mapping.set(id3, root);
+    return id3;
   }
-  finalizeDraw(id2, properties) {
-    this.#toUpdate.delete(id2);
-    this.updateProperties(id2, properties);
+  finalizeDraw(id3, properties) {
+    this.#toUpdate.delete(id3);
+    this.updateProperties(id3, properties);
   }
   updateProperties(elementOrId, properties) {
     if (!properties) {
@@ -155862,25 +160899,25 @@ var DrawLayer = class _DrawLayer {
       this.#updateProperties(pathElement, path);
     }
   }
-  updateParent(id2, layer) {
+  updateParent(id3, layer) {
     if (layer === this) {
       return;
     }
-    const root = this.#mapping.get(id2);
+    const root = this.#mapping.get(id3);
     if (!root) {
       return;
     }
     layer.#parent.append(root);
-    this.#mapping.delete(id2);
-    layer.#mapping.set(id2, root);
+    this.#mapping.delete(id3);
+    layer.#mapping.set(id3, root);
   }
-  remove(id2) {
-    this.#toUpdate.delete(id2);
+  remove(id3) {
+    this.#toUpdate.delete(id3);
     if (this.#parent === null) {
       return;
     }
-    this.#mapping.get(id2).remove();
-    this.#mapping.delete(id2);
+    this.#mapping.get(id3).remove();
+    this.#mapping.delete(id3);
   }
   destroy() {
     this.#parent = null;
@@ -155929,9 +160966,9 @@ var TextLayerImages = class _TextLayerImages {
     const container = document.createElement("div");
     container.className = "textLayerImages";
     for (let i3 = 0; i3 < this.#coordinates.length; i3 += 6) {
-      const el2 = this.#createImagePlaceholder(this.#coordinates.subarray(i3, i3 + 6));
-      if (el2) {
-        container.append(el2);
+      const el3 = this.#createImagePlaceholder(this.#coordinates.subarray(i3, i3 + 6));
+      if (el3) {
+        container.append(el3);
       }
     }
     container.addEventListener("contextmenu", (event) => {
@@ -156195,9 +161232,9 @@ async function folderId(tok) {
   if (cached) return cached;
   const find = new URLSearchParams({ q: `name='${q2(FOLDER)}' and mimeType='application/vnd.google-apps.folder' and trashed=false`, fields: "files(id)", pageSize: "1" });
   const found = (await (await call(tok, `${API}/files?${find}`)).json()).files?.[0]?.id;
-  const id2 = found || (await (await call(tok, `${API}/files?fields=id`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: FOLDER, mimeType: "application/vnd.google-apps.folder" }) })).json()).id;
-  store.set("murmur:drive:folder", id2);
-  return id2;
+  const id3 = found || (await (await call(tok, `${API}/files?fields=id`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: FOLDER, mimeType: "application/vnd.google-apps.folder" }) })).json()).id;
+  store.set("murmur:drive:folder", id3);
+  return id3;
 }
 async function listFiles(tok, folder) {
   const out = [];
@@ -156249,8 +161286,8 @@ async function sync({ local, removed = [], ask = false, onStatus = () => {
   const missing = local.filter((d3) => d3.blob && !files.some((f3) => sameFile(f3, d3.name, d3.size)));
   for (const [i3, d3] of missing.entries()) {
     onStatus(`Sending \u201C${d3.name}\u201D to your Drive (${i3 + 1} of ${missing.length})\u2026`);
-    const id2 = await upload(tok, dir, d3.name, d3.type, d3.blob);
-    files.push({ id: id2, name: d3.name, size: String(d3.size), mimeType: d3.type, modifiedTime: (/* @__PURE__ */ new Date()).toISOString() });
+    const id3 = await upload(tok, dir, d3.name, d3.type, d3.blob);
+    files.push({ id: id3, name: d3.name, size: String(d3.size), mimeType: d3.type, modifiedTime: (/* @__PURE__ */ new Date()).toISOString() });
     uploaded++;
   }
   onStatus("Matching where you stopped\u2026");
@@ -156279,10 +161316,10 @@ async function sync({ local, removed = [], ask = false, onStatus = () => {
   onStatus("");
   return { remoteOnly, places, uploaded, total: files.filter((f3) => f3.name !== PLACES).length };
 }
-async function download(id2, ask = true) {
+async function download(id3, ask = true) {
   const tok = await token(ask);
   if (!tok) throw new Error("Sign in to Google Drive first");
-  return (await call(tok, `${API}/files/${id2}?alt=media`)).blob();
+  return (await call(tok, `${API}/files/${id3}?alt=media`)).blob();
 }
 
 // src/applink.js
@@ -156396,7 +161433,7 @@ Object.assign(globalThis, { MPEGMode: import_MPEGMode.default, Lame: import_Lame
 var isExt2 = typeof chrome !== "undefined" && !!chrome.runtime?.getURL;
 var BASE = isExt2 ? chrome.runtime.getURL("") : new URL("./", location.href).href;
 GlobalWorkerOptions.workerSrc = BASE + "pdf.worker.js";
-var $3 = (id2) => document.getElementById(id2);
+var $3 = (id3) => document.getElementById(id3);
 var docEl = $3("doc");
 var settings = { ...DEFAULTS };
 var sentences = [];
@@ -156460,12 +161497,12 @@ function saveSettings(patch) {
 }
 var follow = makeFollow((on2) => $3("locate")?.classList.toggle("away", !on2));
 var followEl = null;
-function followTo(el2) {
-  followEl = el2;
-  const r2 = el2.getBoundingClientRect();
+function followTo(el3) {
+  followEl = el3;
+  const r2 = el3.getBoundingClientRect();
   const out = r2.top < 80 || r2.bottom > window.innerHeight - 140;
   if (!follow.on && !out) follow.set(true);
-  if (follow.on && out) el2.scrollIntoView({ block: "center", behavior: "smooth" });
+  if (follow.on && out) el3.scrollIntoView({ block: "center", behavior: "smooth" });
 }
 if ($3("locate")) {
   $3("locate").onclick = () => {
@@ -156500,8 +161537,8 @@ function timeLeft() {
 function setStatus(state2, detail = "") {
   if (status === "playing" && state2 !== "playing") eta.pause();
   status = state2;
-  const el2 = $3("status");
-  el2.classList.toggle("err", state2 === "error");
+  const el3 = $3("status");
+  el3.classList.toggle("err", state2 === "error");
   const left = timeLeft();
   const map2 = {
     idle: detail || "Ready",
@@ -156511,7 +161548,7 @@ function setStatus(state2, detail = "") {
     paused: "Paused" + (left ? " \xB7 " + left : ""),
     error: detail || "Something went wrong"
   };
-  el2.textContent = map2[state2] ?? state2;
+  el3.textContent = map2[state2] ?? state2;
   $3("play").innerHTML = state2 === "playing" ? "&#10074;&#10074;" : "&#9654;";
   document.title = (state2 === "playing" ? "\u25B6 " : "") + docTitle;
 }
@@ -156535,8 +161572,8 @@ function setWord(i3, w3) {
   const s3 = sentences[i3];
   if (!s3) return;
   s3.el.querySelectorAll(".w.cur").forEach((x2) => x2.classList.remove("cur"));
-  const el2 = s3.el.querySelector(`.w[data-w="${w3}"]`);
-  if (el2) el2.classList.add("cur");
+  const el3 = s3.el.querySelector(`.w[data-w="${w3}"]`);
+  if (el3) el3.classList.add("cur");
   const cap2 = $3("caption");
   if (!cap2.hidden) {
     cap2.querySelectorAll(".w.cur").forEach((x2) => x2.classList.remove("cur"));
@@ -156759,8 +161796,8 @@ async function renderLibrary(asked = false) {
 var syncing = null;
 var currentFileKey = null;
 function driveNote(t2) {
-  const el2 = $3("driveNote");
-  if (el2) el2.textContent = t2 || "";
+  const el3 = $3("driveNote");
+  if (el3) el3.textContent = t2 || "";
 }
 function removedList() {
   try {
@@ -156955,10 +161992,10 @@ function textToBlocks(text) {
       blocks.push({ kind: "h", level: h3[1].length, text: h3[2] });
       continue;
     }
-    const li = /^([-*•]|\d+[.)])\s+(.*)$/.exec(t2);
-    if (li) {
+    const li2 = /^([-*•]|\d+[.)])\s+(.*)$/.exec(t2);
+    if (li2) {
       flush();
-      blocks.push({ kind: "li", text: li[2] });
+      blocks.push({ kind: "li", text: li2[2] });
       continue;
     }
     para.push(t2);
@@ -156972,11 +162009,11 @@ function htmlToBlocks(html) {
   const d3 = new DOMParser().parseFromString(html, "text/html");
   d3.querySelectorAll("script,style,noscript,nav,header,footer,aside,template").forEach((n2) => n2.remove());
   const blocks = [];
-  const els = [...d3.body.querySelectorAll(HTML_BLOCKS)].filter((el2) => !el2.querySelector(HTML_BLOCKS));
+  const els = [...d3.body.querySelectorAll(HTML_BLOCKS)].filter((el3) => !el3.querySelector(HTML_BLOCKS));
   if (!els.length) return textToBlocks(d3.body.textContent || "");
-  for (const el2 of els) {
-    const tag = el2.tagName;
-    const text = tag === "PRE" ? el2.textContent : (el2.textContent || "").replace(/\s+/g, " ").trim();
+  for (const el3 of els) {
+    const tag = el3.tagName;
+    const text = tag === "PRE" ? el3.textContent : (el3.textContent || "").replace(/\s+/g, " ").trim();
     if (!text) continue;
     if (/^H[1-6]$/.test(tag)) blocks.push({ kind: "h", level: Number(tag[1]), text });
     else if (tag === "LI") blocks.push({ kind: "li", text });
@@ -157063,7 +162100,7 @@ async function pdfToBlocks(data, onProgress) {
     const tc2 = await page.getTextContent();
     const vh2 = page.view[3] - page.view[1];
     pdfSizes.push({ w: page.view[2] - page.view[0], h: vh2 });
-    const typed = tc2.items.reduce((n2, it) => n2 + (it.str ? it.str.trim().length : 0), 0);
+    const typed = tc2.items.reduce((n2, it2) => n2 + (it2.str ? it2.str.trim().length : 0), 0);
     if (typed < 20 && !ocrFailed) {
       onProgress?.(`Page ${p3} of ${pdf.numPages} is a picture of text. Recognising the words\u2026 (slower, first time loads the reader)`);
       try {
@@ -157081,30 +162118,30 @@ async function pdfToBlocks(data, onProgress) {
       }
     }
     const lines = [];
-    for (const it of tc2.items) {
-      if (!("str" in it) || !it.str) continue;
-      const x2 = it.transform[4];
-      const y3 = it.transform[5];
-      const h3 = Math.abs(it.transform[3]) || it.height || 10;
+    for (const it2 of tc2.items) {
+      if (!("str" in it2) || !it2.str) continue;
+      const x2 = it2.transform[4];
+      const y3 = it2.transform[5];
+      const h3 = Math.abs(it2.transform[3]) || it2.height || 10;
       let line = lines.find((l2) => Math.abs(l2.y - y3) <= Math.max(l2.h, h3) * 0.45);
       if (!line) {
         line = { y: y3, h: h3, parts: [] };
         lines.push(line);
       }
       line.h = Math.max(line.h, h3);
-      line.parts.push({ x: x2, end: x2 + (it.width || 0), str: it.str, cw: it.width && it.str.length ? it.width / it.str.length : h3 * 0.5 });
+      line.parts.push({ x: x2, end: x2 + (it2.width || 0), str: it2.str, cw: it2.width && it2.str.length ? it2.width / it2.str.length : h3 * 0.5 });
     }
     for (const l2 of lines) {
       l2.parts.sort((a2, b3) => a2.x - b3.x);
       let text = "";
       let prevEnd = null;
       let prevCw = null;
-      for (const pt of l2.parts) {
-        const cw = Math.min(pt.cw, prevCw ?? pt.cw);
-        if (prevEnd != null && pt.x - prevEnd > Math.max(cw * 0.35, l2.h * 0.12) && !text.endsWith(" ") && !pt.str.startsWith(" ")) text += " ";
-        text += pt.str;
-        prevEnd = pt.end;
-        prevCw = pt.cw;
+      for (const pt2 of l2.parts) {
+        const cw = Math.min(pt2.cw, prevCw ?? pt2.cw);
+        if (prevEnd != null && pt2.x - prevEnd > Math.max(cw * 0.35, l2.h * 0.12) && !text.endsWith(" ") && !pt2.str.startsWith(" ")) text += " ";
+        text += pt2.str;
+        prevEnd = pt2.end;
+        prevCw = pt2.cw;
       }
       text = text.replace(new RegExp("\\b(?:\\p{L} ){2,}\\p{L}\\b", "gu"), (m3) => m3.replace(/ /g, ""));
       l2.text = text.replace(/\s+/g, " ").trim();
@@ -157381,17 +162418,9 @@ function withoutCitations(blocks) {
   return out.map((b3) => b3.kind === "pre" || b3.kind === "page" || b3.note ? b3 : { ...b3, text: stripCitations(b3.text) }).filter((b3) => b3.kind === "page" || b3.kind === "pre" || /[\p{L}\p{N}]/u.test(b3.text));
 }
 async function render(blocks, title) {
-  if (settings.autoLanguage !== false) {
-    try {
-      const { main, langs } = await tagLanguages(blocks.filter((b3) => b3.kind !== "page"));
-      let k4 = 0;
-      for (const b3 of blocks) if (b3.kind !== "page") b3.lang = langs[k4++] || main;
-      docLang = main;
-    } catch {
-    }
-  }
   docTitle = title || "Murmur";
-  $3("docTitle").textContent = (title || "") + (docLang && docLang !== "en" ? ` \xB7 ${LANGS[docLang]?.name || docLang}` : "");
+  docLang = "en";
+  $3("docTitle").textContent = title || "";
   docEl.innerHTML = "";
   sentences = [];
   pageCrop = /* @__PURE__ */ new Map();
@@ -157410,13 +162439,13 @@ async function render(blocks, title) {
       docEl.appendChild(d3);
       continue;
     }
-    const el2 = document.createElement(b3.kind === "h" ? b3.level <= 1 ? "h2" : "h3" : b3.kind === "pre" ? "pre" : "p");
+    const el3 = document.createElement(b3.kind === "h" ? b3.level <= 1 ? "h2" : "h3" : b3.kind === "pre" ? "pre" : "p");
     const text = b3.kind === "pre" ? b3.text : b3.text.replace(/\s+/g, " ").trim();
     if (!text) continue;
-    if (b3.kind === "li") el2.appendChild(document.createTextNode("\u2022 "));
+    if (b3.kind === "li") el3.appendChild(document.createTextNode("\u2022 "));
     let last = 0;
     for (const [s3, e2] of splitSentences2(text)) {
-      if (s3 > last) el2.appendChild(document.createTextNode(text.slice(last, s3)));
+      if (s3 > last) el3.appendChild(document.createTextNode(text.slice(last, s3)));
       last = e2;
       const raw = text.slice(s3, e2);
       const speak = speakable(raw, { heading: b3.kind === "h" });
@@ -157436,13 +162465,25 @@ async function render(blocks, title) {
             span.appendChild(w3);
           }
         }
-        sentences.push({ text: speak, el: span, block: el2, heading: b3.kind === "h", lang: b3.lang || "en", at: s3, end: e2 });
+        sentences.push({ text: speak, el: span, block: el3, heading: b3.kind === "h", lang: b3.lang || "en", at: s3, end: e2 });
       } else span.textContent = raw;
-      el2.appendChild(span);
+      el3.appendChild(span);
     }
-    if (last < text.length) el2.appendChild(document.createTextNode(text.slice(last)));
-    if (b3.page) blockPlace.set(el2, { page: b3.page, box: b3.box, lines: lineOffsets(b3.lines, text) });
-    docEl.appendChild(el2);
+    if (last < text.length) el3.appendChild(document.createTextNode(text.slice(last)));
+    if (b3.page) blockPlace.set(el3, { page: b3.page, box: b3.box, lines: lineOffsets(b3.lines, text) });
+    docEl.appendChild(el3);
+  }
+  if (settings.autoLanguage !== false && sentences.length) {
+    try {
+      const mine = sentences;
+      const { main, langs } = await tagSentences(mine.map((s3) => ({ text: s3.text, block: s3.block })));
+      mine.forEach((s3, i3) => s3.lang = langs[i3] || main);
+      if (sentences !== mine) return;
+      docLang = main;
+      if (docLang !== "en") $3("docTitle").textContent = (title || "") + ` \xB7 ${LANGS[docLang]?.name || docLang}`;
+    } catch (e2) {
+      console.warn("[murmur] could not work out the languages:", e2?.message || e2);
+    }
   }
   if (settings.autoLanguage !== false) {
     const sample = blocks.slice(0, 600).map((b3) => b3.text || "").join(" ");
@@ -157484,7 +162525,9 @@ async function render(blocks, title) {
     current = resume;
   }
 }
+var loadSeq = 0;
 async function loadFile(file) {
+  const my2 = ++loadSeq;
   engine.stop();
   const name = file.name || "document";
   const ext = (name.split(".").pop() || "").toLowerCase();
@@ -157518,6 +162561,7 @@ async function loadFile(file) {
     } else {
       blocks = textToBlocks(await file.text());
     }
+    if (my2 !== loadSeq) return;
     const keep = blocks.map((b3) => ({ ...b3 }));
     currentFileKey = fileKeyOf(file);
     try {
@@ -157525,26 +162569,28 @@ async function loadFile(file) {
     } finally {
       currentFileKey = null;
     }
-    if (sentences.length) rememberDoc(file, keep);
+    if (my2 === loadSeq && sentences.length) rememberDoc(file, keep);
   } catch (e2) {
     console.error(e2);
-    setStatus("error", `Could not open ${name}: ${e2.message || e2}`);
+    if (my2 === loadSeq) setStatus("error", `Could not open ${name}: ${e2.message || e2}`);
   }
 }
 async function loadUrl(src) {
   setStatus("loading", "Fetching file");
   try {
-    const res = await fetch(src);
+    const res = await fetch(src, { credentials: "include", signal: AbortSignal.timeout(9e4) });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const blob = await res.blob();
     let name = decodeURIComponent(new URL(src, location.href).pathname.split("/").pop() || "document");
     const ct = res.headers.get("content-type") || "";
+    if (/\.pdf$/i.test(name) && ct.includes("html")) throw new Error("the site sent a web page instead of the PDF (it may want you to sign in)");
     if (!/\.[a-z0-9]+$/i.test(name)) name += ct.includes("pdf") ? ".pdf" : ct.includes("html") ? ".html" : ".txt";
     await loadFile(new File([blob], name, { type: ct.split(";")[0] }));
   } catch (e2) {
+    console.warn("[murmur] could not fetch", src, e2);
     setStatus(
       "error",
-      /^file:/i.test(src) ? "Chrome won't let me open files from your computer this way. Drag the file onto this page, or click Open file." : "I couldn't download that file. Save it to your computer, then drag it onto this page."
+      /^file:/i.test(src) ? "Chrome won't let me open files from your computer this way. Drag the file onto this page, or click Open file." : `I couldn't download that file (${e2?.name === "TimeoutError" ? "it took too long" : e2?.message || e2}). Save it to your computer, then drag it onto this page.`
     );
   }
 }
@@ -157648,8 +162694,8 @@ $3("saveGo").onclick = async () => {
       list,
       settings,
       (d3, t2) => {
-        const el2 = Math.max(1, (Date.now() - t0) / 1e3);
-        const eta2 = Math.round(el2 / d3 * (t2 - d3));
+        const el3 = Math.max(1, (Date.now() - t0) / 1e3);
+        const eta2 = Math.round(el3 / d3 * (t2 - d3));
         $3("saveStatus").textContent = `Creating audio: sentence ${d3} of ${t2}${eta2 > 1 ? ` \xB7 about ${eta2}s left` : ""}`;
       },
       () => saveCancelled,
@@ -157705,13 +162751,16 @@ async function init() {
   engine.setSettings(settings, true);
   const params = new URLSearchParams(location.search);
   const wantSave = params.get("save") === "1";
-  if (params.get("src")) await loadUrl(params.get("src"));
-  else if (params.get("doc") && isExt2 && chrome.storage?.session) {
-    const key = params.get("doc");
-    const got = await chrome.storage.session.get(key);
-    const doc = got[key];
-    if (!doc) setStatus("error", "This document is no longer available. Open it again from the Murmur button.");
-    else if (doc.blocks) {
+  const key = params.get("doc");
+  const doc = key && isExt2 && chrome.storage?.session ? (await chrome.storage.session.get(key))[key] : null;
+  if (params.get("problem")) {
+    await renderLibrary(false).catch(() => {
+    });
+    setStatus("error", params.get("problem"));
+  } else if (params.get("src")) await loadUrl(params.get("src"));
+  else if (doc) {
+    setStatus("loading", "Opening\u2026");
+    if (doc.blocks) {
       forgetPdf();
       await render(doc.blocks, doc.title);
     } else if (doc.html) {
@@ -157735,7 +162784,15 @@ async function init() {
   }
   if (wantSave && sentences.length) $3("saveBtn").click();
 }
-init();
+init().catch((e2) => {
+  console.error(e2);
+  setStatus("error", "Could not open: " + (e2?.message || e2));
+});
+if (isExt2) {
+  chrome.runtime.onMessage.addListener((msg) => {
+    if (msg?.type === "reader:toggle" && sentences.length) togglePlay();
+  });
+}
 window.murmurReader = { engine, get sentences() {
   return sentences;
 }, loadFile, render, textToBlocks, htmlToBlocks, pdfToBlocks, toMp3, toWav };

@@ -1853,11 +1853,11 @@ var Ia = U(() => {
     });
     var S2 = console.log.bind(console), $4 = console.error.bind(console), v3 = S2, x2 = $4;
     Object.assign(n2, b3), b3 = null;
-    var T2, E2, I2, z2, O2, D2, L2, q2, Q2, W2, Z2, we, H2, j2 = n2.wasmBinary, te2 = false, X2 = (s3) => s3.startsWith("file://");
+    var T2, E2, I2, z2, O2, D2, L2, q2, Q2, W2, Z2, we, H2, j2 = n2.wasmBinary, te3 = false, X2 = (s3) => s3.startsWith("file://");
     function ue() {
       return T2.buffer != z2.buffer && Ce2(), z2;
     }
-    function he() {
+    function he2() {
       return T2.buffer != z2.buffer && Ce2(), O2;
     }
     function ye() {
@@ -1872,7 +1872,7 @@ var Ia = U(() => {
     function V2() {
       return T2.buffer != z2.buffer && Ce2(), Q2;
     }
-    function de() {
+    function de2() {
       return T2.buffer != z2.buffer && Ce2(), W2;
     }
     function ze() {
@@ -1930,10 +1930,10 @@ var Ia = U(() => {
       }
     }
     function dt(s3) {
-      throw x2(s3 = "Aborted(" + s3 + ")"), te2 = true, s3 = new WebAssembly.RuntimeError(s3 + ". Build with -sASSERTIONS for more info."), r2(s3), s3;
+      throw x2(s3 = "Aborted(" + s3 + ")"), te3 = true, s3 = new WebAssembly.RuntimeError(s3 + ". Build with -sASSERTIONS for more info."), r2(s3), s3;
     }
     function Oo() {
-      return { a: { L: yc, Aa: bc, b: $c, $: Go, A: qo, pa: jo, X: Zo, Z: Qo, qa: Yo, na: Xo, ga: Jo, ma: ei, J: ti, Y: ri, V: ni, oa: oi, W: ii, va: xc, E: Tc, Q: Ic, O: Ac, D: kc, u: Pc, r: zc, P: Oc, z: Vc, R: Wc, ja: Lc, T: Gc, aa: Hc, M: Fc, F: qc, ia: $n, sa: jc, t: Kc, Ba: Zc, w: Xc, o: Jc, l: tp, c: _n, n: rp, j: ip, v: ap, p: sp, f: up, s: dp, m: lp, e: cp, k: pp, i: mp, g: fp, d: hp, da: gp, ea: bp, fa: yp, ba: _i, ca: wi, N: vi, xa: wp, ua: xp, h: Sp, C: Tp, G: Ip, ta: vp, x: Cp, ra: Ap, U: Ep, q: _p, y: kp, K: Pp, S: zp, za: Op, ya: Bp, ka: Ti, la: Ii, _: hn, B: Ci, I: Ai, ha: Ei, H: ki, a: T2, wa: fn } };
+      return { a: { L: yc, Aa: bc, b: $c, $: Go, A: qo, pa: jo, X: Zo, Z: Qo, qa: Yo, na: Xo, ga: Jo, ma: ei, J: ti, Y: ri, V: ni, oa: oi, W: ii, va: xc, E: Tc, Q: Ic, O: Ac, D: kc, u: Pc, r: zc, P: Oc, z: Vc, R: Wc, ja: Lc, T: Gc, aa: Hc, M: Fc, F: qc, ia: $n, sa: jc, t: Kc, Ba: Zc, w: Xc, o: Jc, l: tp, c: _n, n: rp, j: ip, v: ap, p: sp, f: up, s: dp, m: lp, e: cp, k: pp, i: mp, g: fp, d: hp, da: gp, ea: bp, fa: yp, ba: _i, ca: wi, N: vi2, xa: wp, ua: xp, h: Sp, C: Tp, G: Ip, ta: vp, x: Cp, ra: Ap, U: Ep, q: _p, y: kp, K: Pp, S: zp, za: Op, ya: Bp, ka: Ti, la: Ii, _: hn, B: Ci, I: Ai, ha: Ei, H: ki, a: T2, wa: fn } };
     }
     var cn = { 829644: (s3, l2, h3, y3, w3) => {
       if (n2 === void 0 || !n2.Eb) return 1;
@@ -1943,7 +1943,7 @@ var Ia = U(() => {
         let A3 = s3.subarray(l2, l2 + h3);
         switch (w3) {
           case 0:
-            he().set(A3, y3 >>> 0);
+            he2().set(A3, y3 >>> 0);
             break;
           case 1:
             n2.mc ? n2.mc(y3, A3) : n2.bc(y3, A3);
@@ -1956,7 +1956,7 @@ var Ia = U(() => {
         return 4;
       }
     }, 830468: (s3, l2, h3) => {
-      n2.Ob(s3, he().subarray(l2 >>> 0, l2 + h3 >>> 0));
+      n2.Ob(s3, he2().subarray(l2 >>> 0, l2 + h3 >>> 0));
     }, 830532: () => n2.nc(), 830574: (s3) => {
       n2.Nb(s3);
     }, 830611: () => {
@@ -2166,7 +2166,7 @@ var Ia = U(() => {
     }, 843335: (s3) => {
       n2.jb("FastGelu", s3, void 0);
     }, 843391: (s3, l2, h3, y3, w3, A3, B2, R2, G3, K2, ae2, le, _e, ke2, Bt, Rp) => {
-      n2.jb("Conv", s3, { format: le ? "NHWC" : "NCHW", auto_pad: l2, dilations: h3 ? Array.from(C2().subarray(Number(h3) >>> 0, Number(y3) >>> 0)) : [], group: w3, kernel_shape: A3 ? Array.from(C2().subarray(Number(A3) >>> 0, Number(B2) >>> 0)) : [], pads: R2 ? Array.from(C2().subarray(Number(R2) >>> 0, Number(G3) >>> 0)) : [], strides: K2 ? Array.from(C2().subarray(Number(K2) >>> 0, Number(ae2) >>> 0)) : [], w_is_const: () => !!ue()[Number(_e) >>> 0], activation: Te(ke2), activation_params: Bt ? Array.from(de().subarray(Number(Bt) >>> 0, Number(Rp) >>> 0)) : [] });
+      n2.jb("Conv", s3, { format: le ? "NHWC" : "NCHW", auto_pad: l2, dilations: h3 ? Array.from(C2().subarray(Number(h3) >>> 0, Number(y3) >>> 0)) : [], group: w3, kernel_shape: A3 ? Array.from(C2().subarray(Number(A3) >>> 0, Number(B2) >>> 0)) : [], pads: R2 ? Array.from(C2().subarray(Number(R2) >>> 0, Number(G3) >>> 0)) : [], strides: K2 ? Array.from(C2().subarray(Number(K2) >>> 0, Number(ae2) >>> 0)) : [], w_is_const: () => !!ue()[Number(_e) >>> 0], activation: Te(ke2), activation_params: Bt ? Array.from(de2().subarray(Number(Bt) >>> 0, Number(Rp) >>> 0)) : [] });
     }, 843975: (s3) => {
       n2.jb("Gelu", s3, void 0);
     }, 844027: (s3, l2, h3, y3, w3, A3, B2, R2, G3) => {
@@ -2209,26 +2209,26 @@ var Ia = U(() => {
     var Bo = (s3) => {
       s3.terminate(), s3.onmessage = () => {
       };
-    }, mn = [], Do = (s3) => {
+    }, mn2 = [], Do = (s3) => {
       ct.length == 0 && (Wo(), Vo(ct[0]));
       var l2 = ct.pop();
       if (!l2) return 6;
       Gt.push(l2), wt[s3.Ab] = l2, l2.Ab = s3.Ab;
       var h3 = { Bb: "run", fc: s3.ec, Hb: s3.Hb, Ab: s3.Ab };
       return l2.postMessage(h3, s3.Mb), 0;
-    }, lt = 0, xe = (s3, l2, ...h3) => {
-      for (var y3 = 2 * h3.length, w3 = Pn(), A3 = kn(8 * y3), B2 = A3 >>> 3, R2 = 0; R2 < h3.length; R2++) {
+    }, lt2 = 0, xe = (s3, l2, ...h3) => {
+      for (var y3 = 2 * h3.length, w3 = Pn(), A3 = kn2(8 * y3), B2 = A3 >>> 3, R2 = 0; R2 < h3.length; R2++) {
         var G3 = h3[R2];
         typeof G3 == "bigint" ? (Z2[B2 + 2 * R2] = 1n, Z2[B2 + 2 * R2 + 1] = G3) : (Z2[B2 + 2 * R2] = 0n, ze()[B2 + 2 * R2 + 1 >>> 0] = G3);
       }
-      return s3 = Di(s3, 0, y3, A3, l2), mr(w3), s3;
+      return s3 = Di(s3, 0, y3, A3, l2), mr2(w3), s3;
     };
     function fn(s3) {
       if (u3) return xe(0, 1, s3);
-      if (I2 = s3, !(0 < lt)) {
+      if (I2 = s3, !(0 < lt2)) {
         for (var l2 of Gt) Bo(l2);
         for (l2 of ct) Bo(l2);
-        ct = [], Gt = [], wt = {}, te2 = true;
+        ct = [], Gt = [], wt = {}, te3 = true;
       }
       g3(0, new pn(s3));
     }
@@ -2270,9 +2270,9 @@ var Ia = U(() => {
     var _c = (s3) => {
       Ce2();
       var l2 = V2()[s3 + 52 >>> 2 >>> 0];
-      s3 = V2()[s3 + 56 >>> 2 >>> 0], Ni(l2, l2 - s3), mr(l2);
+      s3 = V2()[s3 + 56 >>> 2 >>> 0], Ni(l2, l2 - s3), mr2(l2);
     }, wc = (s3, l2) => {
-      lt = 0, s3 = Vi(s3, l2), 0 < lt ? I2 = s3 : En(s3);
+      lt2 = 0, s3 = Vi(s3, l2), 0 < lt2 ? I2 = s3 : En(s3);
     };
     class vc {
       constructor(l2) {
@@ -2307,7 +2307,7 @@ var Ia = U(() => {
         } else y3 += String.fromCharCode(w3);
       }
       return y3;
-    }, Te = (s3, l2) => (s3 >>>= 0) ? Fo(he(), s3, l2) : "";
+    }, Te = (s3, l2) => (s3 >>>= 0) ? Fo(he2(), s3, l2) : "";
     function qo(s3, l2, h3) {
       return u3 ? xe(3, 1, s3, l2, h3) : 0;
     }
@@ -2321,7 +2321,7 @@ var Ia = U(() => {
       }
       return l2;
     }, zt = (s3, l2, h3) => {
-      var y3 = he();
+      var y3 = he2();
       if (l2 >>>= 0, 0 < h3) {
         var w3 = l2;
         h3 = l2 + h3 - 1;
@@ -2384,25 +2384,25 @@ var Ia = U(() => {
     function ii(s3, l2, h3) {
       if (u3) return xe(15, 1, s3, l2, h3);
     }
-    var ai, pt, xc = () => dt(""), Ke = (s3) => {
-      for (var l2 = ""; he()[s3 >>> 0]; ) l2 += ai[he()[s3++ >>> 0]];
+    var ai, pt2, xc = () => dt(""), Ke = (s3) => {
+      for (var l2 = ""; he2()[s3 >>> 0]; ) l2 += ai[he2()[s3++ >>> 0]];
       return l2;
-    }, gn = {}, bn = {}, Sc = {};
-    function it(s3, l2, h3 = {}) {
+    }, gn2 = {}, bn2 = {}, Sc = {};
+    function it2(s3, l2, h3 = {}) {
       return function(y3, w3, A3 = {}) {
         var B2 = w3.name;
-        if (!y3) throw new pt(`type "${B2}" must have a positive integer typeid pointer`);
-        if (bn.hasOwnProperty(y3)) {
+        if (!y3) throw new pt2(`type "${B2}" must have a positive integer typeid pointer`);
+        if (bn2.hasOwnProperty(y3)) {
           if (A3.Sb) return;
-          throw new pt(`Cannot register type '${B2}' twice`);
+          throw new pt2(`Cannot register type '${B2}' twice`);
         }
-        bn[y3] = w3, delete Sc[y3], gn.hasOwnProperty(y3) && (w3 = gn[y3], delete gn[y3], w3.forEach((R2) => R2()));
+        bn2[y3] = w3, delete Sc[y3], gn2.hasOwnProperty(y3) && (w3 = gn2[y3], delete gn2[y3], w3.forEach((R2) => R2()));
       }(s3, l2, h3);
     }
-    var si = (s3, l2, h3) => {
+    var si2 = (s3, l2, h3) => {
       switch (l2) {
         case 1:
-          return h3 ? (y3) => ue()[y3 >>> 0] : (y3) => he()[y3 >>> 0];
+          return h3 ? (y3) => ue()[y3 >>> 0] : (y3) => he2()[y3 >>> 0];
         case 2:
           return h3 ? (y3) => ye()[y3 >>> 1 >>> 0] : (y3) => re2()[y3 >>> 1 >>> 0];
         case 4:
@@ -2414,19 +2414,19 @@ var Ia = U(() => {
       }
     };
     function Tc(s3, l2, h3) {
-      h3 >>>= 0, it(s3 >>>= 0, { name: l2 = Ke(l2 >>> 0), fromWireType: (y3) => y3, toWireType: function(y3, w3) {
+      h3 >>>= 0, it2(s3 >>>= 0, { name: l2 = Ke(l2 >>> 0), fromWireType: (y3) => y3, toWireType: function(y3, w3) {
         if (typeof w3 != "bigint" && typeof w3 != "number") throw w3 = w3 === null ? "null" : (y3 = typeof w3) == "object" || y3 === "array" || y3 === "function" ? w3.toString() : "" + w3, new TypeError(`Cannot convert "${w3}" to ${this.name}`);
         return typeof w3 == "number" && (w3 = BigInt(w3)), w3;
-      }, Cb: mt, readValueFromPointer: si(l2, h3, l2.indexOf("u") == -1), Db: null });
+      }, Cb: mt2, readValueFromPointer: si2(l2, h3, l2.indexOf("u") == -1), Db: null });
     }
-    var mt = 8;
+    var mt2 = 8;
     function Ic(s3, l2, h3, y3) {
-      it(s3 >>>= 0, { name: l2 = Ke(l2 >>> 0), fromWireType: function(w3) {
+      it2(s3 >>>= 0, { name: l2 = Ke(l2 >>> 0), fromWireType: function(w3) {
         return !!w3;
       }, toWireType: function(w3, A3) {
         return A3 ? h3 : y3;
-      }, Cb: mt, readValueFromPointer: function(w3) {
-        return this.fromWireType(he()[w3 >>> 0]);
+      }, Cb: mt2, readValueFromPointer: function(w3) {
+        return this.fromWireType(he2()[w3 >>> 0]);
       }, Db: null });
     }
     var yn = [], at = [];
@@ -2434,7 +2434,7 @@ var Ia = U(() => {
       9 < (s3 >>>= 0) && --at[s3 + 1] == 0 && (at[s3] = void 0, yn.push(s3));
     }
     var De = (s3) => {
-      if (!s3) throw new pt("Cannot use deleted val. handle = " + s3);
+      if (!s3) throw new pt2("Cannot use deleted val. handle = " + s3);
       return at[s3];
     }, Ve = (s3) => {
       switch (s3) {
@@ -2457,15 +2457,15 @@ var Ia = U(() => {
     var Cc = { name: "emscripten::val", fromWireType: (s3) => {
       var l2 = De(s3);
       return _n(s3), l2;
-    }, toWireType: (s3, l2) => Ve(l2), Cb: mt, readValueFromPointer: wn, Db: null };
+    }, toWireType: (s3, l2) => Ve(l2), Cb: mt2, readValueFromPointer: wn, Db: null };
     function Ac(s3) {
-      return it(s3 >>> 0, Cc);
+      return it2(s3 >>> 0, Cc);
     }
     var Ec = (s3, l2) => {
       switch (l2) {
         case 4:
           return function(h3) {
-            return this.fromWireType(de()[h3 >>> 2 >>> 0]);
+            return this.fromWireType(de2()[h3 >>> 2 >>> 0]);
           };
         case 8:
           return function(h3) {
@@ -2476,7 +2476,7 @@ var Ia = U(() => {
       }
     };
     function kc(s3, l2, h3) {
-      h3 >>>= 0, it(s3 >>>= 0, { name: l2 = Ke(l2 >>> 0), fromWireType: (y3) => y3, toWireType: (y3, w3) => w3, Cb: mt, readValueFromPointer: Ec(l2, h3), Db: null });
+      h3 >>>= 0, it2(s3 >>>= 0, { name: l2 = Ke(l2 >>> 0), fromWireType: (y3) => y3, toWireType: (y3, w3) => w3, Cb: mt2, readValueFromPointer: Ec(l2, h3), Db: null });
     }
     function Pc(s3, l2, h3, y3, w3) {
       if (s3 >>>= 0, h3 >>>= 0, l2 = Ke(l2 >>> 0), w3 === -1 && (w3 = 4294967295), w3 = (R2) => R2, y3 === 0) {
@@ -2488,7 +2488,7 @@ var Ia = U(() => {
       } : function(R2, G3) {
         return G3;
       };
-      it(s3, { name: l2, fromWireType: w3, toWireType: B2, Cb: mt, readValueFromPointer: si(l2, h3, y3 !== 0), Db: null });
+      it2(s3, { name: l2, fromWireType: w3, toWireType: B2, Cb: mt2, readValueFromPointer: si2(l2, h3, y3 !== 0), Db: null });
     }
     function zc(s3, l2, h3) {
       function y3(A3) {
@@ -2496,35 +2496,35 @@ var Ia = U(() => {
         return A3 = V2()[A3 + 4 >>> 2 >>> 0], new w3(ue().buffer, A3, B2);
       }
       var w3 = [Int8Array, Uint8Array, Int16Array, Uint16Array, Int32Array, Uint32Array, Float32Array, Float64Array, BigInt64Array, BigUint64Array][l2];
-      it(s3 >>>= 0, { name: h3 = Ke(h3 >>> 0), fromWireType: y3, Cb: mt, readValueFromPointer: y3 }, { Sb: true });
+      it2(s3 >>>= 0, { name: h3 = Ke(h3 >>> 0), fromWireType: y3, Cb: mt2, readValueFromPointer: y3 }, { Sb: true });
     }
     function Oc(s3, l2) {
-      it(s3 >>>= 0, { name: l2 = Ke(l2 >>> 0), fromWireType: function(h3) {
+      it2(s3 >>>= 0, { name: l2 = Ke(l2 >>> 0), fromWireType: function(h3) {
         for (var y3, w3 = V2()[h3 >>> 2 >>> 0], A3 = h3 + 4, B2 = A3, R2 = 0; R2 <= w3; ++R2) {
           var G3 = A3 + R2;
-          R2 != w3 && he()[G3 >>> 0] != 0 || (B2 = Te(B2, G3 - B2), y3 === void 0 ? y3 = B2 : (y3 += "\0", y3 += B2), B2 = G3 + 1);
+          R2 != w3 && he2()[G3 >>> 0] != 0 || (B2 = Te(B2, G3 - B2), y3 === void 0 ? y3 = B2 : (y3 += "\0", y3 += B2), B2 = G3 + 1);
         }
         return Qe(h3), y3;
       }, toWireType: function(h3, y3) {
         y3 instanceof ArrayBuffer && (y3 = new Uint8Array(y3));
         var w3 = typeof y3 == "string";
-        if (!(w3 || y3 instanceof Uint8Array || y3 instanceof Uint8ClampedArray || y3 instanceof Int8Array)) throw new pt("Cannot pass non-string to std::string");
+        if (!(w3 || y3 instanceof Uint8Array || y3 instanceof Uint8ClampedArray || y3 instanceof Int8Array)) throw new pt2("Cannot pass non-string to std::string");
         var A3 = w3 ? Ko(y3) : y3.length, B2 = pr(4 + A3 + 1), R2 = B2 + 4;
         if (V2()[B2 >>> 2 >>> 0] = A3, w3) zt(y3, R2, A3 + 1);
         else if (w3) for (w3 = 0; w3 < A3; ++w3) {
           var G3 = y3.charCodeAt(w3);
-          if (255 < G3) throw Qe(B2), new pt("String has UTF-16 code units that do not fit in 8 bits");
-          he()[R2 + w3 >>> 0] = G3;
+          if (255 < G3) throw Qe(B2), new pt2("String has UTF-16 code units that do not fit in 8 bits");
+          he2()[R2 + w3 >>> 0] = G3;
         }
-        else for (w3 = 0; w3 < A3; ++w3) he()[R2 + w3 >>> 0] = y3[w3];
+        else for (w3 = 0; w3 < A3; ++w3) he2()[R2 + w3 >>> 0] = y3[w3];
         return h3 !== null && h3.push(Qe, B2), B2;
-      }, Cb: mt, readValueFromPointer: wn, Db(h3) {
+      }, Cb: mt2, readValueFromPointer: wn, Db(h3) {
         Qe(h3);
       } });
     }
     var ui = typeof TextDecoder < "u" ? new TextDecoder("utf-16le") : void 0, Bc = (s3, l2) => {
       for (var h3 = s3 >> 1, y3 = h3 + l2 / 2; !(h3 >= y3) && re2()[h3 >>> 0]; ) ++h3;
-      if (32 < (h3 <<= 1) - s3 && ui) return ui.decode(he().slice(s3, h3));
+      if (32 < (h3 <<= 1) - s3 && ui) return ui.decode(he2().slice(s3, h3));
       for (h3 = "", y3 = 0; !(y3 >= l2 / 2); ++y3) {
         var w3 = ye()[s3 + 2 * y3 >>> 1 >>> 0];
         if (w3 == 0) break;
@@ -2566,22 +2566,22 @@ var Ia = U(() => {
     function Vc(s3, l2, h3) {
       if (s3 >>>= 0, l2 >>>= 0, h3 = Ke(h3 >>>= 0), l2 === 2) var y3 = Bc, w3 = Dc, A3 = Mc, B2 = (R2) => re2()[R2 >>> 1 >>> 0];
       else l2 === 4 && (y3 = Rc, w3 = Uc, A3 = Nc, B2 = (R2) => V2()[R2 >>> 2 >>> 0]);
-      it(s3, { name: h3, fromWireType: (R2) => {
+      it2(s3, { name: h3, fromWireType: (R2) => {
         for (var G3, K2 = V2()[R2 >>> 2 >>> 0], ae2 = R2 + 4, le = 0; le <= K2; ++le) {
           var _e = R2 + 4 + le * l2;
           le != K2 && B2(_e) != 0 || (ae2 = y3(ae2, _e - ae2), G3 === void 0 ? G3 = ae2 : (G3 += "\0", G3 += ae2), ae2 = _e + l2);
         }
         return Qe(R2), G3;
       }, toWireType: (R2, G3) => {
-        if (typeof G3 != "string") throw new pt(`Cannot pass non-string to C++ string type ${h3}`);
+        if (typeof G3 != "string") throw new pt2(`Cannot pass non-string to C++ string type ${h3}`);
         var K2 = A3(G3), ae2 = pr(4 + K2 + l2);
         return V2()[ae2 >>> 2 >>> 0] = K2 / l2, w3(G3, ae2 + 4, K2 + l2), R2 !== null && R2.push(Qe, ae2), ae2;
-      }, Cb: mt, readValueFromPointer: wn, Db(R2) {
+      }, Cb: mt2, readValueFromPointer: wn, Db(R2) {
         Qe(R2);
       } });
     }
     function Wc(s3, l2) {
-      it(s3 >>>= 0, { Tb: true, name: l2 = Ke(l2 >>> 0), Cb: 0, fromWireType: () => {
+      it2(s3 >>>= 0, { Tb: true, name: l2 = Ke(l2 >>> 0), Cb: 0, fromWireType: () => {
       }, toWireType: () => {
       } });
     }
@@ -2589,8 +2589,8 @@ var Ia = U(() => {
       An(s3 >>> 0, !a2, 1, !i3, 131072, false), No();
     }
     var vn = (s3) => {
-      if (!te2) try {
-        if (s3(), !(0 < lt)) try {
+      if (!te3) try {
+        if (s3(), !(0 < lt2)) try {
           u3 ? En(I2) : hn(I2);
         } catch (l2) {
           l2 instanceof pn || l2 == "unwind" || g3(0, l2);
@@ -2615,26 +2615,26 @@ var Ia = U(() => {
       return (l2 ? cn[l2] : Mp[s3])(...xn);
     }
     var Fc = () => {
-      lt = 0;
+      lt2 = 0;
     };
     function qc(s3) {
       s3 >>>= 0, u3 ? postMessage({ Bb: "cleanupThread", hc: s3 }) : Uo(wt[s3]);
     }
     function jc(s3) {
     }
-    var or = (s3, l2) => {
-      var h3 = bn[s3];
-      if (h3 === void 0) throw s3 = zi(s3), h3 = Ke(s3), Qe(s3), new pt(`${l2} has unknown type ${h3}`);
+    var or2 = (s3, l2) => {
+      var h3 = bn2[s3];
+      if (h3 === void 0) throw s3 = zi(s3), h3 = Ke(s3), Qe(s3), new pt2(`${l2} has unknown type ${h3}`);
       return h3;
     }, di = (s3, l2, h3) => {
       var y3 = [];
       return s3 = s3.toWireType(y3, h3), y3.length && (V2()[l2 >>> 2 >>> 0] = Ve(y3)), s3;
     };
     function Kc(s3, l2, h3) {
-      return l2 >>>= 0, h3 >>>= 0, s3 = De(s3 >>> 0), l2 = or(l2, "emval::as"), di(l2, h3, s3);
+      return l2 >>>= 0, h3 >>>= 0, s3 = De(s3 >>> 0), l2 = or2(l2, "emval::as"), di(l2, h3, s3);
     }
     function Zc(s3, l2) {
-      return l2 >>>= 0, s3 = De(s3 >>> 0), (l2 = or(l2, "emval::as")).toWireType(null, s3);
+      return l2 >>>= 0, s3 = De(s3 >>> 0), (l2 = or2(l2, "emval::as")).toWireType(null, s3);
     }
     var ir = (s3) => {
       try {
@@ -2642,19 +2642,19 @@ var Ia = U(() => {
       } catch (l2) {
         dt(l2);
       }
-    }, ft = 0, Ze = null, li = 0, ar = [], ci = {}, pi = {}, Qc = 0, Sn = null, Yc = [];
+    }, ft = 0, Ze = null, li2 = 0, ar2 = [], ci = {}, pi = {}, Qc = 0, Sn = null, Yc = [];
     function mi(s3) {
       return function(l2) {
-        if (!te2) {
+        if (!te3) {
           if (ft === 0) {
             var h3 = false, y3 = false;
             l2((w3 = 0) => {
-              if (!te2 && (li = w3, h3 = true, y3)) {
+              if (!te3 && (li2 = w3, h3 = true, y3)) {
                 ft = 2, ir(() => Gi(Ze)), typeof MainLoop < "u" && MainLoop.Pb && MainLoop.resume(), w3 = false;
                 try {
                   var A3 = function() {
                     var G3 = C2()[Ze + 8 >>> 2 >>> 0];
-                    return G3 = Y2[pi[G3]], --lt, G3();
+                    return G3 = Y2[pi[G3]], --lt2, G3();
                   }();
                 } catch (G3) {
                   A3 = G3, w3 = true;
@@ -2668,12 +2668,12 @@ var Ia = U(() => {
               }
             }), y3 = true, h3 || (ft = 1, Ze = function() {
               var w3 = pr(65548), A3 = w3 + 12;
-              V2()[w3 >>> 2 >>> 0] = A3, V2()[w3 + 4 >>> 2 >>> 0] = A3 + 65536, A3 = ar[0];
+              V2()[w3 >>> 2 >>> 0] = A3, V2()[w3 + 4 >>> 2 >>> 0] = A3 + 65536, A3 = ar2[0];
               var B2 = ci[A3];
               return B2 === void 0 && (B2 = Qc++, ci[A3] = B2, pi[B2] = A3), A3 = B2, C2()[w3 + 8 >>> 2 >>> 0] = A3, w3;
             }(), typeof MainLoop < "u" && MainLoop.Pb && MainLoop.pause(), ir(() => Wi(Ze)));
           } else ft === 2 ? (ft = 0, ir(Hi), Qe(Ze), Ze = null, Yc.forEach(vn)) : dt(`invalid state: ${ft}`);
-          return li;
+          return li2;
         }
       }((l2) => {
         s3().then(l2);
@@ -2685,28 +2685,28 @@ var Ia = U(() => {
         return Ve(l2);
       });
     }
-    var sr = [];
+    var sr2 = [];
     function Jc(s3, l2, h3, y3) {
-      return h3 >>>= 0, y3 >>>= 0, (s3 = sr[s3 >>> 0])(null, l2 = De(l2 >>> 0), h3, y3);
+      return h3 >>>= 0, y3 >>>= 0, (s3 = sr2[s3 >>> 0])(null, l2 = De(l2 >>> 0), h3, y3);
     }
-    var ep = {}, ur = (s3) => {
+    var ep = {}, ur2 = (s3) => {
       var l2 = ep[s3];
       return l2 === void 0 ? Ke(s3) : l2;
     };
     function tp(s3, l2, h3, y3, w3) {
-      return h3 >>>= 0, y3 >>>= 0, w3 >>>= 0, (s3 = sr[s3 >>> 0])(l2 = De(l2 >>> 0), l2[h3 = ur(h3)], y3, w3);
+      return h3 >>>= 0, y3 >>>= 0, w3 >>>= 0, (s3 = sr2[s3 >>> 0])(l2 = De(l2 >>> 0), l2[h3 = ur2(h3)], y3, w3);
     }
-    var fi = () => typeof globalThis == "object" ? globalThis : Function("return this")();
+    var fi2 = () => typeof globalThis == "object" ? globalThis : Function("return this")();
     function rp(s3) {
-      return (s3 >>>= 0) == 0 ? Ve(fi()) : (s3 = ur(s3), Ve(fi()[s3]));
+      return (s3 >>>= 0) == 0 ? Ve(fi2()) : (s3 = ur2(s3), Ve(fi2()[s3]));
     }
     var np = (s3) => {
-      var l2 = sr.length;
-      return sr.push(s3), l2;
+      var l2 = sr2.length;
+      return sr2.push(s3), l2;
     }, op = (s3, l2) => {
-      for (var h3 = Array(s3), y3 = 0; y3 < s3; ++y3) h3[y3] = or(V2()[l2 + 4 * y3 >>> 2 >>> 0], "parameter " + y3);
+      for (var h3 = Array(s3), y3 = 0; y3 < s3; ++y3) h3[y3] = or2(V2()[l2 + 4 * y3 >>> 2 >>> 0], "parameter " + y3);
       return h3;
-    }, hi = (s3, l2) => Object.defineProperty(l2, "name", { value: s3 });
+    }, hi2 = (s3, l2) => Object.defineProperty(l2, "name", { value: s3 });
     function ip(s3, l2, h3) {
       var y3 = (l2 = op(s3, l2 >>> 0)).shift();
       s3--;
@@ -2721,13 +2721,13 @@ var Ia = U(() => {
 `), s3 = function(ae2) {
         var le = Function;
         if (!(le instanceof Function)) throw new TypeError(`new_ called with constructor type ${typeof le} which is not a function`);
-        var _e = hi(le.name || "unknownFunctionName", function() {
+        var _e = hi2(le.name || "unknownFunctionName", function() {
         });
         return _e.prototype = le.prototype, _e = new _e(), (ae2 = le.apply(_e, ae2)) instanceof Object ? ae2 : _e;
-      }(R2)(...G3), h3 = `methodCaller<(${l2.map((ae2) => ae2.name).join(", ")}) => ${y3.name}>`, np(hi(h3, s3));
+      }(R2)(...G3), h3 = `methodCaller<(${l2.map((ae2) => ae2.name).join(", ")}) => ${y3.name}>`, np(hi2(h3, s3));
     }
     function ap(s3) {
-      return s3 = ur(s3 >>> 0), Ve(n2[s3]);
+      return s3 = ur2(s3 >>> 0), Ve(n2[s3]);
     }
     function sp(s3, l2) {
       return l2 >>>= 0, s3 = De(s3 >>> 0), l2 = De(l2), Ve(s3[l2]);
@@ -2744,7 +2744,7 @@ var Ia = U(() => {
       return Ve(l2);
     }
     function cp(s3) {
-      return Ve(ur(s3 >>> 0));
+      return Ve(ur2(s3 >>> 0));
     }
     function pp() {
       return Ve({});
@@ -2760,15 +2760,15 @@ var Ia = U(() => {
       l2 >>>= 0, h3 >>>= 0, s3 = De(s3 >>> 0), l2 = De(l2), h3 = De(h3), s3[l2] = h3;
     }
     function hp(s3, l2) {
-      return l2 >>>= 0, s3 = (s3 = or(s3 >>> 0, "_emval_take_value")).readValueFromPointer(l2), Ve(s3);
+      return l2 >>>= 0, s3 = (s3 = or2(s3 >>> 0, "_emval_take_value")).readValueFromPointer(l2), Ve(s3);
     }
     function gp(s3, l2) {
       s3 = -9007199254740992 > s3 || 9007199254740992 < s3 ? NaN : Number(s3), l2 >>>= 0, s3 = new Date(1e3 * s3), C2()[l2 >>> 2 >>> 0] = s3.getUTCSeconds(), C2()[l2 + 4 >>> 2 >>> 0] = s3.getUTCMinutes(), C2()[l2 + 8 >>> 2 >>> 0] = s3.getUTCHours(), C2()[l2 + 12 >>> 2 >>> 0] = s3.getUTCDate(), C2()[l2 + 16 >>> 2 >>> 0] = s3.getUTCMonth(), C2()[l2 + 20 >>> 2 >>> 0] = s3.getUTCFullYear() - 1900, C2()[l2 + 24 >>> 2 >>> 0] = s3.getUTCDay(), s3 = (s3.getTime() - Date.UTC(s3.getUTCFullYear(), 0, 1, 0, 0, 0, 0)) / 864e5 | 0, C2()[l2 + 28 >>> 2 >>> 0] = s3;
     }
-    var gi = (s3) => s3 % 4 == 0 && (s3 % 100 != 0 || s3 % 400 == 0), bi = [0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335], yi = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
+    var gi = (s3) => s3 % 4 == 0 && (s3 % 100 != 0 || s3 % 400 == 0), bi = [0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335], yi2 = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
     function bp(s3, l2) {
       s3 = -9007199254740992 > s3 || 9007199254740992 < s3 ? NaN : Number(s3), l2 >>>= 0, s3 = new Date(1e3 * s3), C2()[l2 >>> 2 >>> 0] = s3.getSeconds(), C2()[l2 + 4 >>> 2 >>> 0] = s3.getMinutes(), C2()[l2 + 8 >>> 2 >>> 0] = s3.getHours(), C2()[l2 + 12 >>> 2 >>> 0] = s3.getDate(), C2()[l2 + 16 >>> 2 >>> 0] = s3.getMonth(), C2()[l2 + 20 >>> 2 >>> 0] = s3.getFullYear() - 1900, C2()[l2 + 24 >>> 2 >>> 0] = s3.getDay();
-      var h3 = (gi(s3.getFullYear()) ? bi : yi)[s3.getMonth()] + s3.getDate() - 1 | 0;
+      var h3 = (gi(s3.getFullYear()) ? bi : yi2)[s3.getMonth()] + s3.getDate() - 1 | 0;
       C2()[l2 + 28 >>> 2 >>> 0] = h3, C2()[l2 + 36 >>> 2 >>> 0] = -60 * s3.getTimezoneOffset(), h3 = new Date(s3.getFullYear(), 6, 1).getTimezoneOffset();
       var y3 = new Date(s3.getFullYear(), 0, 1).getTimezoneOffset();
       s3 = 0 | (h3 != y3 && s3.getTimezoneOffset() == Math.min(y3, h3)), C2()[l2 + 32 >>> 2 >>> 0] = s3;
@@ -2776,7 +2776,7 @@ var Ia = U(() => {
     function yp(s3) {
       s3 >>>= 0;
       var l2 = new Date(C2()[s3 + 20 >>> 2 >>> 0] + 1900, C2()[s3 + 16 >>> 2 >>> 0], C2()[s3 + 12 >>> 2 >>> 0], C2()[s3 + 8 >>> 2 >>> 0], C2()[s3 + 4 >>> 2 >>> 0], C2()[s3 >>> 2 >>> 0], 0), h3 = C2()[s3 + 32 >>> 2 >>> 0], y3 = l2.getTimezoneOffset(), w3 = new Date(l2.getFullYear(), 6, 1).getTimezoneOffset(), A3 = new Date(l2.getFullYear(), 0, 1).getTimezoneOffset(), B2 = Math.min(A3, w3);
-      return 0 > h3 ? C2()[s3 + 32 >>> 2 >>> 0] = +(w3 != A3 && B2 == y3) : 0 < h3 != (B2 == y3) && (w3 = Math.max(A3, w3), l2.setTime(l2.getTime() + 6e4 * ((0 < h3 ? B2 : w3) - y3))), C2()[s3 + 24 >>> 2 >>> 0] = l2.getDay(), h3 = (gi(l2.getFullYear()) ? bi : yi)[l2.getMonth()] + l2.getDate() - 1 | 0, C2()[s3 + 28 >>> 2 >>> 0] = h3, C2()[s3 >>> 2 >>> 0] = l2.getSeconds(), C2()[s3 + 4 >>> 2 >>> 0] = l2.getMinutes(), C2()[s3 + 8 >>> 2 >>> 0] = l2.getHours(), C2()[s3 + 12 >>> 2 >>> 0] = l2.getDate(), C2()[s3 + 16 >>> 2 >>> 0] = l2.getMonth(), C2()[s3 + 20 >>> 2 >>> 0] = l2.getYear(), s3 = l2.getTime(), BigInt(isNaN(s3) ? -1 : s3 / 1e3);
+      return 0 > h3 ? C2()[s3 + 32 >>> 2 >>> 0] = +(w3 != A3 && B2 == y3) : 0 < h3 != (B2 == y3) && (w3 = Math.max(A3, w3), l2.setTime(l2.getTime() + 6e4 * ((0 < h3 ? B2 : w3) - y3))), C2()[s3 + 24 >>> 2 >>> 0] = l2.getDay(), h3 = (gi(l2.getFullYear()) ? bi : yi2)[l2.getMonth()] + l2.getDate() - 1 | 0, C2()[s3 + 28 >>> 2 >>> 0] = h3, C2()[s3 >>> 2 >>> 0] = l2.getSeconds(), C2()[s3 + 4 >>> 2 >>> 0] = l2.getMinutes(), C2()[s3 + 8 >>> 2 >>> 0] = l2.getHours(), C2()[s3 + 12 >>> 2 >>> 0] = l2.getDate(), C2()[s3 + 16 >>> 2 >>> 0] = l2.getMonth(), C2()[s3 + 20 >>> 2 >>> 0] = l2.getYear(), s3 = l2.getTime(), BigInt(isNaN(s3) ? -1 : s3 / 1e3);
     }
     function _i(s3, l2, h3, y3, w3, A3, B2) {
       return u3 ? xe(16, 1, s3, l2, h3, y3, w3, A3, B2) : -52;
@@ -2785,7 +2785,7 @@ var Ia = U(() => {
       if (u3) return xe(17, 1, s3, l2, h3, y3, w3, A3);
     }
     var Ht = {}, _p = () => performance.timeOrigin + performance.now();
-    function vi(s3, l2) {
+    function vi2(s3, l2) {
       if (u3) return xe(18, 1, s3, l2);
       if (Ht[s3] && (clearTimeout(Ht[s3].id), delete Ht[s3]), !l2) return 0;
       var h3 = setTimeout(() => {
@@ -2815,7 +2815,7 @@ var Ia = U(() => {
     }
     var Tn = [], $i = (s3, l2) => {
       Tn.length = 0;
-      for (var h3; h3 = he()[s3++ >>> 0]; ) {
+      for (var h3; h3 = he2()[s3++ >>> 0]; ) {
         var y3 = h3 != 105;
         l2 += (y3 &= h3 != 112) && l2 % 8 ? 4 : 0, Tn.push(h3 == 112 ? V2()[l2 >>> 2 >>> 0] : h3 == 106 ? Z2[l2 >>> 3] : h3 == 105 ? C2()[l2 >>> 2 >>> 0] : ze()[l2 >>> 3 >>> 0]), l2 += y3 ? 8 : 4;
       }
@@ -2833,7 +2833,7 @@ var Ia = U(() => {
       return x2(Te(s3 >>> 0, l2 >>> 0));
     }
     var Ap = () => {
-      throw lt += 1, "unwind";
+      throw lt2 += 1, "unwind";
     };
     function Ep() {
       return 4294901760;
@@ -2844,7 +2844,7 @@ var Ia = U(() => {
     }
     function zp(s3) {
       s3 >>>= 0;
-      var l2 = he().length;
+      var l2 = he2().length;
       if (s3 <= l2 || 4294901760 < s3) return false;
       for (var h3 = 1; 4 >= h3; h3 *= 2) {
         var y3 = l2 * (1 + 0.2 / h3);
@@ -2927,7 +2927,7 @@ var Ia = U(() => {
         var B2 = V2()[l2 >>> 2 >>> 0], R2 = V2()[l2 + 4 >>> 2 >>> 0];
         l2 += 8;
         for (var G3 = 0; G3 < R2; G3++) {
-          var K2 = he()[B2 + G3 >>> 0], ae2 = Dp[s3];
+          var K2 = he2()[B2 + G3 >>> 0], ae2 = Dp[s3];
           K2 === 0 || K2 === 10 ? ((s3 === 1 ? v3 : x2)(Fo(ae2)), ae2.length = 0) : ae2.push(K2);
         }
         w3 += R2;
@@ -2936,14 +2936,14 @@ var Ia = U(() => {
     }
     u3 || function() {
       for (var s3 = n2.numThreads - 1; s3--; ) Wo();
-      mn.unshift(() => {
+      mn2.unshift(() => {
         Pt++, function(l2) {
           u3 ? l2() : Promise.all(ct.map(Vo)).then(l2);
         }(() => zo());
       });
     }();
     for (var Pi = Array(256), lr = 0; 256 > lr; ++lr) Pi[lr] = String.fromCharCode(lr);
-    ai = Pi, pt = n2.BindingError = class extends Error {
+    ai = Pi, pt2 = n2.BindingError = class extends Error {
       constructor(s3) {
         super(s3), this.name = "BindingError";
       }
@@ -2952,17 +2952,17 @@ var Ia = U(() => {
         super(s3), this.name = "InternalError";
       }
     }, at.push(0, 1, void 0, 1, null, 1, true, 1, false, 1), n2.count_emval_handles = () => at.length / 2 - 5 - yn.length;
-    var Y2, Mp = [fn, Mo, Lo, qo, jo, Zo, Qo, Yo, Xo, Jo, ei, ti, ri, ni, oi, ii, _i, wi, vi, Ti, Ii, Ci, Ai, Ei, ki];
+    var Y2, Mp = [fn, Mo, Lo, qo, jo, Zo, Qo, Yo, Xo, Jo, ei, ti, ri, ni, oi, ii, _i, wi, vi2, Ti, Ii, Ci, Ai, Ei, ki];
     (async function() {
       function s3(y3, w3) {
         return Y2 = y3.exports, Y2 = function() {
           var A3 = Y2, B2 = {};
           for (let [R2, G3] of Object.entries(A3)) B2[R2] = typeof G3 == "function" ? (...K2) => {
-            ar.push(R2);
+            ar2.push(R2);
             try {
               return G3(...K2);
             } finally {
-              te2 || (ar.pop(), Ze && ft === 1 && ar.length === 0 && (ft = 0, lt += 1, ir(Li), typeof Fibers < "u" && Fibers.rc()));
+              te3 || (ar2.pop(), Ze && ft === 1 && ar2.length === 0 && (ft = 0, lt2 += 1, ir(Li), typeof Fibers < "u" && Fibers.rc()));
             }
           } : G3;
           return B2;
@@ -3022,8 +3022,8 @@ var Ia = U(() => {
     })();
     var zi = (s3) => (zi = Y2.Da)(s3), Oi = () => (Oi = Y2.Ea)();
     n2._OrtInit = (s3, l2) => (n2._OrtInit = Y2.Fa)(s3, l2), n2._OrtGetLastError = (s3, l2) => (n2._OrtGetLastError = Y2.Ga)(s3, l2), n2._OrtCreateSessionOptions = (s3, l2, h3, y3, w3, A3, B2, R2, G3, K2) => (n2._OrtCreateSessionOptions = Y2.Ha)(s3, l2, h3, y3, w3, A3, B2, R2, G3, K2), n2._OrtAppendExecutionProvider = (s3, l2, h3, y3, w3) => (n2._OrtAppendExecutionProvider = Y2.Ia)(s3, l2, h3, y3, w3), n2._OrtAddFreeDimensionOverride = (s3, l2, h3) => (n2._OrtAddFreeDimensionOverride = Y2.Ja)(s3, l2, h3), n2._OrtAddSessionConfigEntry = (s3, l2, h3) => (n2._OrtAddSessionConfigEntry = Y2.Ka)(s3, l2, h3), n2._OrtReleaseSessionOptions = (s3) => (n2._OrtReleaseSessionOptions = Y2.La)(s3), n2._OrtCreateSession = (s3, l2, h3) => (n2._OrtCreateSession = Y2.Ma)(s3, l2, h3), n2._OrtReleaseSession = (s3) => (n2._OrtReleaseSession = Y2.Na)(s3), n2._OrtGetInputOutputCount = (s3, l2, h3) => (n2._OrtGetInputOutputCount = Y2.Oa)(s3, l2, h3), n2._OrtGetInputOutputMetadata = (s3, l2, h3, y3) => (n2._OrtGetInputOutputMetadata = Y2.Pa)(s3, l2, h3, y3), n2._OrtFree = (s3) => (n2._OrtFree = Y2.Qa)(s3), n2._OrtCreateTensor = (s3, l2, h3, y3, w3, A3) => (n2._OrtCreateTensor = Y2.Ra)(s3, l2, h3, y3, w3, A3), n2._OrtGetTensorData = (s3, l2, h3, y3, w3) => (n2._OrtGetTensorData = Y2.Sa)(s3, l2, h3, y3, w3), n2._OrtReleaseTensor = (s3) => (n2._OrtReleaseTensor = Y2.Ta)(s3), n2._OrtCreateRunOptions = (s3, l2, h3, y3) => (n2._OrtCreateRunOptions = Y2.Ua)(s3, l2, h3, y3), n2._OrtAddRunConfigEntry = (s3, l2, h3) => (n2._OrtAddRunConfigEntry = Y2.Va)(s3, l2, h3), n2._OrtReleaseRunOptions = (s3) => (n2._OrtReleaseRunOptions = Y2.Wa)(s3), n2._OrtCreateBinding = (s3) => (n2._OrtCreateBinding = Y2.Xa)(s3), n2._OrtBindInput = (s3, l2, h3) => (n2._OrtBindInput = Y2.Ya)(s3, l2, h3), n2._OrtBindOutput = (s3, l2, h3, y3) => (n2._OrtBindOutput = Y2.Za)(s3, l2, h3, y3), n2._OrtClearBoundOutputs = (s3) => (n2._OrtClearBoundOutputs = Y2._a)(s3), n2._OrtReleaseBinding = (s3) => (n2._OrtReleaseBinding = Y2.$a)(s3), n2._OrtRunWithBinding = (s3, l2, h3, y3, w3) => (n2._OrtRunWithBinding = Y2.ab)(s3, l2, h3, y3, w3), n2._OrtRun = (s3, l2, h3, y3, w3, A3, B2, R2) => (n2._OrtRun = Y2.bb)(s3, l2, h3, y3, w3, A3, B2, R2), n2._OrtEndProfiling = (s3) => (n2._OrtEndProfiling = Y2.cb)(s3), n2._JsepOutput = (s3, l2, h3) => (n2._JsepOutput = Y2.db)(s3, l2, h3), n2._JsepGetNodeName = (s3) => (n2._JsepGetNodeName = Y2.eb)(s3);
-    var cr = () => (cr = Y2.fb)(), Qe = n2._free = (s3) => (Qe = n2._free = Y2.gb)(s3), pr = n2._malloc = (s3) => (pr = n2._malloc = Y2.hb)(s3), An = (s3, l2, h3, y3, w3, A3) => (An = Y2.kb)(s3, l2, h3, y3, w3, A3), Bi = () => (Bi = Y2.lb)(), Di = (s3, l2, h3, y3, w3) => (Di = Y2.mb)(s3, l2, h3, y3, w3), Mi = (s3) => (Mi = Y2.nb)(s3), En = (s3) => (En = Y2.ob)(s3), Ri = (s3, l2) => (Ri = Y2.pb)(s3, l2), Ui = () => (Ui = Y2.qb)(), Ni = (s3, l2) => (Ni = Y2.rb)(s3, l2), mr = (s3) => (mr = Y2.sb)(s3), kn = (s3) => (kn = Y2.tb)(s3), Pn = () => (Pn = Y2.ub)(), Vi = n2.dynCall_ii = (s3, l2) => (Vi = n2.dynCall_ii = Y2.vb)(s3, l2), Wi = (s3) => (Wi = Y2.wb)(s3), Li = () => (Li = Y2.xb)(), Gi = (s3) => (Gi = Y2.yb)(s3), Hi = () => (Hi = Y2.zb)();
-    return n2.stackSave = () => Pn(), n2.stackRestore = (s3) => mr(s3), n2.stackAlloc = (s3) => kn(s3), n2.setValue = function(s3, l2, h3 = "i8") {
+    var cr = () => (cr = Y2.fb)(), Qe = n2._free = (s3) => (Qe = n2._free = Y2.gb)(s3), pr = n2._malloc = (s3) => (pr = n2._malloc = Y2.hb)(s3), An = (s3, l2, h3, y3, w3, A3) => (An = Y2.kb)(s3, l2, h3, y3, w3, A3), Bi = () => (Bi = Y2.lb)(), Di = (s3, l2, h3, y3, w3) => (Di = Y2.mb)(s3, l2, h3, y3, w3), Mi = (s3) => (Mi = Y2.nb)(s3), En = (s3) => (En = Y2.ob)(s3), Ri = (s3, l2) => (Ri = Y2.pb)(s3, l2), Ui = () => (Ui = Y2.qb)(), Ni = (s3, l2) => (Ni = Y2.rb)(s3, l2), mr2 = (s3) => (mr2 = Y2.sb)(s3), kn2 = (s3) => (kn2 = Y2.tb)(s3), Pn = () => (Pn = Y2.ub)(), Vi = n2.dynCall_ii = (s3, l2) => (Vi = n2.dynCall_ii = Y2.vb)(s3, l2), Wi = (s3) => (Wi = Y2.wb)(s3), Li = () => (Li = Y2.xb)(), Gi = (s3) => (Gi = Y2.yb)(s3), Hi = () => (Hi = Y2.zb)();
+    return n2.stackSave = () => Pn(), n2.stackRestore = (s3) => mr2(s3), n2.stackAlloc = (s3) => kn2(s3), n2.setValue = function(s3, l2, h3 = "i8") {
       switch (h3.endsWith("*") && (h3 = "*"), h3) {
         case "i1":
         case "i8":
@@ -3039,7 +3039,7 @@ var Ia = U(() => {
           Z2[s3 >>> 3] = BigInt(l2);
           break;
         case "float":
-          de()[s3 >>> 2 >>> 0] = l2;
+          de2()[s3 >>> 2 >>> 0] = l2;
           break;
         case "double":
           ze()[s3 >>> 3 >>> 0] = l2;
@@ -3062,7 +3062,7 @@ var Ia = U(() => {
         case "i64":
           return Z2[s3 >>> 3];
         case "float":
-          return de()[s3 >>> 2 >>> 0];
+          return de2()[s3 >>> 2 >>> 0];
         case "double":
           return ze()[s3 >>> 3 >>> 0];
         case "*":
@@ -3074,8 +3074,8 @@ var Ia = U(() => {
       if (0 < Pt) Lt = s3;
       else if (u3) t2(n2), _t();
       else {
-        for (; 0 < mn.length; ) mn.shift()(n2);
-        0 < Pt ? Lt = s3 : (n2.calledRun = true, te2 || (_t(), t2(n2)));
+        for (; 0 < mn2.length; ) mn2.shift()(n2);
+        0 < Pt ? Lt = s3 : (n2.calledRun = true, te3 || (_t(), t2(n2)));
       }
     }(), n2.PTR_SIZE = 4, o3;
   }), Fp = Sa, qp = globalThis.self?.name?.startsWith("em-pthread");
@@ -4346,18 +4346,18 @@ var ie = U(() => {
     let I2 = a2 < 2 ? "" : `
   fn i2o_${e2}(indices: ${f3.indices}) -> u32 {
     return ${E2.join("+")};
-  }`, z2 = (C2) => (g3.indicesToOffset = true, a2 < 2 ? C2 : `i2o_${e2}(${C2})`), O2 = (...C2) => a2 === 0 ? "0u" : `${f3.indices}(${C2.map(b3).join(",")})`, D2 = (C2, V2) => a2 < 2 ? `${C2}` : `${F(C2, V2, a2)}`, L2 = (C2, V2, de) => a2 < 2 ? `${C2}=${de};` : `${F(C2, V2, a2)}=${de};`, q2 = {}, Q2 = (C2, V2) => {
+  }`, z2 = (C2) => (g3.indicesToOffset = true, a2 < 2 ? C2 : `i2o_${e2}(${C2})`), O2 = (...C2) => a2 === 0 ? "0u" : `${f3.indices}(${C2.map(b3).join(",")})`, D2 = (C2, V2) => a2 < 2 ? `${C2}` : `${F(C2, V2, a2)}`, L2 = (C2, V2, de2) => a2 < 2 ? `${C2}=${de2};` : `${F(C2, V2, a2)}=${de2};`, q2 = {}, Q2 = (C2, V2) => {
       g3.broadcastedIndicesToOffset = true;
-      let de = `${V2.name}broadcastedIndicesTo${e2}Offset`;
-      if (de in q2) return `${de}(${C2})`;
+      let de2 = `${V2.name}broadcastedIndicesTo${e2}Offset`;
+      if (de2 in q2) return `${de2}(${C2})`;
       let ze = [];
       for (let ve = a2 - 1; ve >= 0; ve--) {
         let $e = V2.indicesGet("outputIndices", ve + V2.rank - a2);
         ze.push(`${D2($4, ve)} * (${$e} % ${D2(S2, ve)})`);
       }
-      return q2[de] = `fn ${de}(outputIndices: ${V2.type.indices}) -> u32 {
+      return q2[de2] = `fn ${de2}(outputIndices: ${V2.type.indices}) -> u32 {
              return ${ze.length > 0 ? ze.join("+") : "0u"};
-           }`, `${de}(${C2})`;
+           }`, `${de2}(${C2})`;
     }, W2 = (C2, V2) => (() => {
       if (f3.storage === f3.value) return `${e2}[${C2}]=${V2};`;
       if (f3.storage === "vec2<u32>" && f3.value === "i32") return `${e2}[${C2}]=vec2<u32>(u32(${V2}), select(0u, 0xFFFFFFFFu, ${V2} < 0));`;
@@ -4374,7 +4374,7 @@ var ie = U(() => {
   fn get_${e2}ByIndices(indices: ${f3.indices}) -> ${p3} {
     return ${Z2(`i2o_${e2}(indices)`)};
   }`, H2 = a2 < 2 ? "" : (() => {
-      let C2 = u3.map((de) => `d${de}: u32`).join(", "), V2 = u3.map((de) => `d${de}`).join(", ");
+      let C2 = u3.map((de2) => `d${de2}: u32`).join(", "), V2 = u3.map((de2) => `d${de2}`).join(", ");
       return `
   fn get_${e2}(${C2}) -> ${p3} {
     return get_${e2}ByIndices(${O2(V2)});
@@ -4383,11 +4383,11 @@ var ie = U(() => {
       if (C2.length !== a2) throw new Error(`indices length must be ${a2}`);
       let V2 = C2.map(b3).join(",");
       return a2 === 0 ? Z2("0u") : a2 === 1 ? Z2(V2[0]) : (g3.get = true, g3.getByIndices = true, g3.indicesToOffset = true, `get_${e2}(${V2})`);
-    }, te2 = (C2) => a2 < 2 ? Z2(C2) : (g3.getByIndices = true, g3.indicesToOffset = true, `get_${e2}ByIndices(${C2})`), X2 = a2 < 2 ? "" : `
+    }, te3 = (C2) => a2 < 2 ? Z2(C2) : (g3.getByIndices = true, g3.indicesToOffset = true, `get_${e2}ByIndices(${C2})`), X2 = a2 < 2 ? "" : `
   fn set_${e2}ByIndices(indices: ${f3.indices}, value: ${p3}) {
     ${W2(`i2o_${e2}(indices)`, "value")}
   }`, ue = a2 < 2 ? "" : (() => {
-      let C2 = u3.map((de) => `d${de}: u32`).join(", "), V2 = u3.map((de) => `d${de}`).join(", ");
+      let C2 = u3.map((de2) => `d${de2}: u32`).join(", "), V2 = u3.map((de2) => `d${de2}`).join(", ");
       return `
   fn set_${e2}(${C2}, value: ${p3}) {
     set_${e2}ByIndices(${O2(V2)}, value);
@@ -4395,15 +4395,15 @@ var ie = U(() => {
     })();
     return { impl: () => {
       let C2 = [], V2 = false;
-      return g3.offsetToIndices && (C2.push(x2), V2 = true), g3.indicesToOffset && (C2.push(I2), V2 = true), g3.broadcastedIndicesToOffset && (Object.values(q2).forEach((de) => C2.push(de)), V2 = true), g3.set && (C2.push(ue), V2 = true), g3.setByIndices && (C2.push(X2), V2 = true), g3.get && (C2.push(H2), V2 = true), g3.getByIndices && (C2.push(we), V2 = true), !i3 && V2 && C2.unshift(`const ${S2} = ${f3.indices}(${r2.join(",")});`, `const ${$4} = ${f3.indices}(${k.computeStrides(r2).join(",")});`), C2.join(`
+      return g3.offsetToIndices && (C2.push(x2), V2 = true), g3.indicesToOffset && (C2.push(I2), V2 = true), g3.broadcastedIndicesToOffset && (Object.values(q2).forEach((de2) => C2.push(de2)), V2 = true), g3.set && (C2.push(ue), V2 = true), g3.setByIndices && (C2.push(X2), V2 = true), g3.get && (C2.push(H2), V2 = true), g3.getByIndices && (C2.push(we), V2 = true), !i3 && V2 && C2.unshift(`const ${S2} = ${f3.indices}(${r2.join(",")});`, `const ${$4} = ${f3.indices}(${k.computeStrides(r2).join(",")});`), C2.join(`
 `);
     }, type: f3, offsetToIndices: T2, indicesToOffset: z2, broadcastedIndicesToOffset: Q2, indices: O2, indicesGet: D2, indicesSet: L2, set: (...C2) => {
       if (C2.length !== a2 + 1) throw new Error(`indices length must be ${a2}`);
       let V2 = C2[a2];
       if (typeof V2 != "string") throw new Error("value must be string");
-      let de = C2.slice(0, a2).map(b3).join(",");
-      return a2 === 0 ? W2("0u", V2) : a2 === 1 ? W2(de[0], V2) : (g3.set = true, g3.setByIndices = true, g3.indicesToOffset = true, `set_${e2}(${de}, ${V2})`);
-    }, setByOffset: W2, setByIndices: (C2, V2) => a2 < 2 ? W2(C2, V2) : (g3.setByIndices = true, g3.indicesToOffset = true, `set_${e2}ByIndices(${C2}, ${V2});`), get: j2, getByOffset: Z2, getByIndices: te2, usage: n2, name: e2, strides: $4, shape: S2, rank: a2 };
+      let de2 = C2.slice(0, a2).map(b3).join(",");
+      return a2 === 0 ? W2("0u", V2) : a2 === 1 ? W2(de2[0], V2) : (g3.set = true, g3.setByIndices = true, g3.indicesToOffset = true, `set_${e2}(${de2}, ${V2})`);
+    }, setByOffset: W2, setByIndices: (C2, V2) => a2 < 2 ? W2(C2, V2) : (g3.setByIndices = true, g3.indicesToOffset = true, `set_${e2}ByIndices(${C2}, ${V2});`), get: j2, getByOffset: Z2, getByIndices: te3, usage: n2, name: e2, strides: $4, shape: S2, rank: a2 };
   }, P = (e2, t2, r2, n2 = 1) => Wr(e2, t2, r2, "input", n2), M = (e2, t2, r2, n2 = 1) => Wr(e2, t2, r2, "output", n2), es = (e2, t2, r2) => Wr(e2, t2, r2, "atomicOutput", 1), Lr = (e2, t2, r2, n2 = 1) => Wr(e2, t2, r2, "internal", n2), oo = class {
     constructor(t2, r2) {
       this.normalizedDispatchGroup = t2;
@@ -5054,13 +5054,13 @@ var Fr = U(() => {
       Z2 && Q2.push(Z2);
       let we = M("output", t2.dataType, p3), H2 = [we];
       m3 && H2.push(M("present_key", t2.dataType, b3, S2));
-      let j2 = Ae(1, S2), te2 = [{ name: "M", type: "u32" }, { name: "K", type: "u32" }, { name: "N", type: "u32" }, { name: "num_heads", type: "u32" }, { name: "head_size", type: "u32" }, { name: "alpha", type: "f32" }, { name: "past_sequence_length", type: "u32" }, { name: "kv_sequence_length", type: "u32" }, { name: "n_reps", type: "u32" }];
+      let j2 = Ae(1, S2), te3 = [{ name: "M", type: "u32" }, { name: "K", type: "u32" }, { name: "N", type: "u32" }, { name: "num_heads", type: "u32" }, { name: "head_size", type: "u32" }, { name: "alpha", type: "f32" }, { name: "past_sequence_length", type: "u32" }, { name: "kv_sequence_length", type: "u32" }, { name: "n_reps", type: "u32" }];
       return `
   const TILE_SIZE = ${v3}u;
 
   var<workgroup> tileQ: array<${L2.type.storage}, ${v3 * v3}>;
   var<workgroup> tileK: array<${L2.type.storage}, ${v3 * v3}>;
-  ${D2.registerUniforms(te2).declareVariables(...Q2, ...H2)}
+  ${D2.registerUniforms(te3).declareVariables(...Q2, ...H2)}
   ${D2.mainStart([v3, v3, 1])}
     // x holds the N and y holds the M
     let headIdx = workgroup_id.z % uniforms.num_heads;
@@ -5946,8 +5946,8 @@ var Yr = U(() => {
               let b_data${j2} = b[(b_offset + (k + ${j2}) * uniforms.N + col) / ${m3}];`;
         for (let j2 = 0; j2 < b3; j2++) {
           H2 += `a_data = a[(a_offset + (row + ${j2}) * uniforms.K + k) / ${f3}];`;
-          for (let te2 = 0; te2 < f3; te2++) H2 += `
-            values[${j2}] = fma(${O2.type.value}(a_data${f3 === 1 ? "" : `[${te2}]`}), b_data${te2}, values[${j2}]);
+          for (let te3 = 0; te3 < f3; te3++) H2 += `
+            values[${j2}] = fma(${O2.type.value}(a_data${f3 === 1 ? "" : `[${te3}]`}), b_data${te3}, values[${j2}]);
 `;
         }
         return H2;
@@ -6290,16 +6290,16 @@ fn main(@builtin(local_invocation_id) localId : vec3<u32>,
     let L2 = ["rank", "rank"], q2 = e2.length > 2;
     q2 && (D2.push(...N(e2[2].dims)), L2.push("rank")), D2.push(...N(O2));
     let Q2 = (W2) => {
-      let Z2 = p3.length, we = Lr("batchDims", e2[0].dataType, Z2, 1), H2 = be(e2[0].dataType), j2 = P("a", e2[0].dataType, E2, x2), te2 = P("b", e2[1].dataType, z2, x2), X2 = M("result", e2[0].dataType, O2.length, x2), ue = [j2, te2];
+      let Z2 = p3.length, we = Lr("batchDims", e2[0].dataType, Z2, 1), H2 = be(e2[0].dataType), j2 = P("a", e2[0].dataType, E2, x2), te3 = P("b", e2[1].dataType, z2, x2), X2 = M("result", e2[0].dataType, O2.length, x2), ue = [j2, te3];
       if (q2) {
         let V2 = o3 ? x2 : 1;
         ue.push(P("bias", e2[2].dataType, e2[2].dims.length, V2));
       }
-      let he = [{ name: "dim_a_outer", type: "i32" }, { name: "dim_b_outer", type: "i32" }, { name: "dim_inner", type: "i32" }];
-      je(t2, he);
-      let ye = be(X2.type.tensor), re2 = Fe(t2, X2.type.value, ye), C2 = cf(x2, q2, re2, [we, j2, te2, X2], o3);
+      let he2 = [{ name: "dim_a_outer", type: "i32" }, { name: "dim_b_outer", type: "i32" }, { name: "dim_inner", type: "i32" }];
+      je(t2, he2);
+      let ye = be(X2.type.tensor), re2 = Fe(t2, X2.type.value, ye), C2 = cf(x2, q2, re2, [we, j2, te3, X2], o3);
       return `
-  ${W2.registerUniforms(he).registerInternalVariables(we).declareVariables(...ue, X2)}
+  ${W2.registerUniforms(he2).registerInternalVariables(we).declareVariables(...ue, X2)}
   ${C2}
   ${_3 ? mo(S2, $4, H2, we) : fo(S2, $4, H2, we)}
                    `;
@@ -6430,16 +6430,16 @@ var Nu = U(() => {
     let we = (H2) => {
       let j2 = [{ name: "dim_a_outer", type: "i32" }, { name: "dim_b_outer", type: "i32" }, { name: "dim_inner", type: "i32" }, { name: "pad", type: "i32", length: 2 }, { name: "stride", type: "i32", length: 2 }, { name: "dilation", type: "i32", length: 2 }];
       je(t2, j2);
-      let te2 = _3 ? 4 : 1, X2 = be(e2[0].dataType), ue = `
+      let te3 = _3 ? 4 : 1, X2 = be(e2[0].dataType), ue = `
       fn setOutputAtIndex(flatIndex : i32, value : ${_3 ? `vec4<${X2}>` : X2}) {
         result[flatIndex] = ${_3 ? `vec4<${X2}>` : X2}(value);
       }
       fn setOutputAtCoords(d0 : i32, d1 : i32, d2 : i32, d3 : i32, value : ${_3 ? `vec4<${X2}>` : X2}) {
         let flatIndex = getOutputIndexFromCoords(vec4<i32>(d0, d1, d2, d3));
         setOutputAtIndex(flatIndex ${_3 ? "/ 4" : ""}, value);
-      }`, he = P("x", e2[0].dataType, e2[0].dims.length, E2 === 3 ? 1 : E2), ye = P("w", e2[1].dataType, e2[1].dims.length, te2), re2 = [he, ye], C2 = M("result", e2[0].dataType, r2.length, te2);
+      }`, he2 = P("x", e2[0].dataType, e2[0].dims.length, E2 === 3 ? 1 : E2), ye = P("w", e2[1].dataType, e2[1].dims.length, te3), re2 = [he2, ye], C2 = M("result", e2[0].dataType, r2.length, te3);
       if (a2) {
-        let V2 = P("bias", e2[2].dataType, e2[2].dims.length, te2);
+        let V2 = P("bias", e2[2].dataType, e2[2].dims.length, te3);
         re2.push(V2), ue += `
         fn getBiasByOutputCoords(coords : vec4<i32>) -> ${_3 ? `vec4<${X2}>` : X2} {
           return bias[coords.${c3 ? "w" : "y"}${_3 ? "/ 4" : ""}];
@@ -6888,8 +6888,8 @@ var Yu = U(() => {
     let v3 = ["rank", "rank"], x2 = [t2.strides[0], t2.strides[1]], T2 = [t2.kernelShape[i3 ? 1 : 2], t2.kernelShape[i3 ? 2 : 3]], E2 = [t2.dilations[0], t2.dilations[1]], I2 = [T2[0] + (t2.dilations[0] <= 1 ? 0 : (t2.kernelShape[i3 ? 1 : 2] - 1) * (t2.dilations[0] - 1)), T2[1] + (t2.dilations[1] <= 1 ? 0 : (t2.kernelShape[i3 ? 2 : 3] - 1) * (t2.dilations[1] - 1))], z2 = [I2[0] - 1 - Math.floor((t2.pads[0] + t2.pads[2]) / 2), I2[1] - 1 - Math.floor((t2.pads[1] + t2.pads[3]) / 2)], O2 = [{ type: 12, data: S2 }, { type: 12, data: x2 }, { type: 12, data: T2 }, { type: 12, data: E2 }, { type: 12, data: I2 }, { type: 6, data: z2 }, { type: 12, data: f3 }, { type: 12, data: d3 }, { type: 12, data: c3 }, ...N(e2[0].dims, e2[1].dims)];
     n2 && (O2.push(...N(e2[2].dims)), v3.push("rank")), O2.push(...N(o3));
     let D2 = (L2) => {
-      let q2 = [{ name: "output_size", type: "u32" }, { name: "strides", type: "u32", length: x2.length }, { name: "filter_dims", type: "u32", length: T2.length }, { name: "dilations", type: "u32", length: T2.length }, { name: "effective_filter_dims", type: "u32", length: I2.length }, { name: "pads", type: "i32", length: z2.length }, { name: "input_channels_per_group_int", type: "u32" }, { name: "input_channels_per_group", type: "u32" }, { name: "output_channels_per_group", type: "u32" }], Q2 = be(e2[0].dataType), W2 = i3 ? 1 : 2, Z2 = i3 ? 2 : 3, we = i3 ? 3 : 1, H2 = P("W", e2[1].dataType, e2[1].dims.length, _3), j2 = P("Dy", e2[0].dataType, e2[0].dims.length, p3), te2 = [j2, H2];
-      n2 && te2.push(P("bias", e2[2].dataType, [o3[we]].length, g3));
+      let q2 = [{ name: "output_size", type: "u32" }, { name: "strides", type: "u32", length: x2.length }, { name: "filter_dims", type: "u32", length: T2.length }, { name: "dilations", type: "u32", length: T2.length }, { name: "effective_filter_dims", type: "u32", length: I2.length }, { name: "pads", type: "i32", length: z2.length }, { name: "input_channels_per_group_int", type: "u32" }, { name: "input_channels_per_group", type: "u32" }, { name: "output_channels_per_group", type: "u32" }], Q2 = be(e2[0].dataType), W2 = i3 ? 1 : 2, Z2 = i3 ? 2 : 3, we = i3 ? 3 : 1, H2 = P("W", e2[1].dataType, e2[1].dims.length, _3), j2 = P("Dy", e2[0].dataType, e2[0].dims.length, p3), te3 = [j2, H2];
+      n2 && te3.push(P("bias", e2[2].dataType, [o3[we]].length, g3));
       let X2 = M("result", e2[0].dataType, o3.length, g3), ue = () => {
         let re2 = "";
         if (m3) p3 === 4 ? re2 += `
@@ -6914,7 +6914,7 @@ var Yu = U(() => {
             let wValue${C2} = ${H2.getByOffset(`${H2.indicesToOffset(`${H2.type.indices}(u32(wRPerm), u32(wCPerm), inputChannel + ${C2}, wOutChannel)`)} / ${_3}`)};
             dotProd = dotProd + xValue[${C2}] * wValue${C2};`;
         return re2;
-      }, he = () => {
+      }, he2 = () => {
         if (b3 === 0) return "";
         if (!m3) throw new Error(`packInputAs4 ${m3} is not true.`);
         let re2 = "";
@@ -6986,7 +6986,7 @@ var Yu = U(() => {
                   ${ue()}
                   inputChannel = inputChannel + ${m3 ? 4 : p3};
                 }
-                ${he()}
+                ${he2()}
                 wC = wC + uniforms.strides.y - 1;
               }
               wR = wR + uniforms.strides[0] - 1;
@@ -6995,7 +6995,7 @@ var Yu = U(() => {
             ${X2.setByOffset("global_idx", "value")};
           `;
       return `
-    ${L2.registerUniforms(q2).declareVariables(...te2, X2)}
+    ${L2.registerUniforms(q2).declareVariables(...te3, X2)}
       ${L2.mainStart()}
       ${L2.guardAgainstOutOfBoundsWorkgroupSizes("uniforms.output_size")};
     ${ye}}`;
@@ -8576,7 +8576,7 @@ var tl = U(() => {
     let z2 = (O2) => {
       let D2 = T2.length, L2 = P("a", e2[0].dataType, D2, f3), q2 = P("b", 12, E2.length, b3), Q2 = P("scales", e2[2].dataType, e2[2].dims.length), W2 = [L2, q2, Q2], Z2 = e2.length === 4 ? P("zero_points", 12, e2[3].dims.length) : void 0;
       Z2 && W2.push(Z2);
-      let we = I2.length, H2 = M("output", e2[0].dataType, we, g3), j2 = be(e2[0].dataType), te2 = (() => {
+      let we = I2.length, H2 = M("output", e2[0].dataType, we, g3), j2 = be(e2[0].dataType), te3 = (() => {
         switch (f3) {
           case 1:
             return `array<${j2}, 8>`;
@@ -8591,7 +8591,7 @@ var tl = U(() => {
         let ye = `
           // reuse a data
             var input_offset = ${L2.indicesToOffset(`${L2.type.indices}(batch, row, word_offset)`)};
-            var a_data: ${te2};
+            var a_data: ${te3};
             for (var j: u32 = 0; j < ${8 / f3}; j++) {
               a_data[j] = ${L2.getByOffset("input_offset")};
               input_offset++;
@@ -8601,8 +8601,8 @@ var tl = U(() => {
             b_value = ${b3 === 1 ? `b${re2}_data` : `b${re2}_data[i]`};
             b_value_lower = unpack4xU8(b_value & b_mask);
             b_value_upper = unpack4xU8((b_value >> 4) & b_mask);
-            b_quantized_values = ${te2}(${Array.from({ length: 4 }, (C2, V2) => `${j2}(b_value_lower[${V2}]), ${j2}(b_value_upper[${V2}])`).join(", ")});
-            b_dequantized_values = ${f3 === 1 ? `${te2}(${Array.from({ length: 8 }, (C2, V2) => `(b_quantized_values[${V2}] - ${Z2 ? `zero_point${re2}` : "zero_point"}) * scale${re2}`).join(", ")});` : `(b_quantized_values - ${te2}(${Array(8).fill(`${Z2 ? `zero_point${re2}` : "zero_point"}`).join(",")})) * scale${re2};`};
+            b_quantized_values = ${te3}(${Array.from({ length: 4 }, (C2, V2) => `${j2}(b_value_lower[${V2}]), ${j2}(b_value_upper[${V2}])`).join(", ")});
+            b_dequantized_values = ${f3 === 1 ? `${te3}(${Array.from({ length: 8 }, (C2, V2) => `(b_quantized_values[${V2}] - ${Z2 ? `zero_point${re2}` : "zero_point"}) * scale${re2}`).join(", ")});` : `(b_quantized_values - ${te3}(${Array(8).fill(`${Z2 ? `zero_point${re2}` : "zero_point"}`).join(",")})) * scale${re2};`};
             workgroup_shared[local_id.x * ${S2} + ${Math.floor(re2 / g3)}]${g3 > 1 ? `[${re2 % g3}]` : ""} += ${Array.from({ length: 8 / f3 }, (C2, V2) => `${f3 === 1 ? `a_data[${V2}] * b_dequantized_values[${V2}]` : `dot(a_data[${V2}], b_dequantized_values[${V2}])`}`).join(" + ")};
           `;
         return ye;
@@ -8631,7 +8631,7 @@ var tl = U(() => {
             let zero_point${re2} = ${j2}((zero_point_word) & 0xFu);` : ""}
             col_index += 1;`;
         return ye;
-      }, he = () => {
+      }, he2 = () => {
         let ye = `col_index = col * ${g3};`;
         for (let re2 = 0; re2 < g3 * S2; re2++) ye += `
             let b${re2}_data = ${q2.getByIndices(`${q2.type.indices}(col_index, block, word)`)};
@@ -8641,8 +8641,8 @@ var tl = U(() => {
             let b_mask: u32 = 0x0F0F0F0Fu;
             var b_value_lower: vec4<u32>;
             var b_value_upper: vec4<u32>;
-            var b_quantized_values: ${te2};
-            var b_dequantized_values: ${te2};`, ye;
+            var b_quantized_values: ${te3};
+            var b_dequantized_values: ${te3};`, ye;
       };
       return `
         var<workgroup> workgroup_shared: array<${H2.type.value}, ${S2 * v3}>;
@@ -8659,7 +8659,7 @@ var tl = U(() => {
             var word_offset: u32 = block * ${t2.blockSize / f3};
             ${ue()}
             for (var word: u32 = 0; word < ${p3}; word += ${b3}) {
-              ${he()}
+              ${he2()}
               for (var i: u32 = 0; i < ${b3}; i++) {
                 ${X2()}
                 word_offset += ${8 / f3};
@@ -8688,7 +8688,7 @@ var tl = U(() => {
     let L2 = (q2) => {
       let Q2 = z2.length, W2 = P("a", e2[0].dataType, Q2, f3), Z2 = P("b", 12, O2.length, b3), we = P("scales", e2[2].dataType, e2[2].dims.length), H2 = [W2, Z2, we], j2 = e2.length === 4 ? P("zero_points", 12, e2[3].dims.length) : void 0;
       j2 && H2.push(j2);
-      let te2 = D2.length, X2 = M("output", e2[0].dataType, te2), ue = be(e2[0].dataType), he = () => {
+      let te3 = D2.length, X2 = M("output", e2[0].dataType, te3), ue = be(e2[0].dataType), he2 = () => {
         switch (f3) {
           case 1:
             return `
@@ -8752,7 +8752,7 @@ var tl = U(() => {
             let b_data = ${Z2.getByIndices(`${Z2.type.indices}(b_row, block, 0)`)};
             var word_offset = local_id.x * ${t2.blockSize / f3};
             for (var i: u32 = 0; i < ${b3}; i++) {
-              ${he()}
+              ${he2()}
               let b_value = ${b3 === 1 ? "b_data" : "b_data[i]"};
               let b_value_lower = unpack4xU8(b_value & 0x0F0F0F0Fu);
               let b_value_upper = unpack4xU8((b_value >> 4) & 0x0F0F0F0Fu);
@@ -10921,48 +10921,48 @@ var Vn = U(() => {
           Q2.push(o3[W2]);
           continue;
         }
-        let we = a2.stackSave(), H2 = a2.stackAlloc(4 * u3), j2 = false, te2, X2 = 0;
+        let we = a2.stackSave(), H2 = a2.stackAlloc(4 * u3), j2 = false, te3, X2 = 0;
         try {
           a2._OrtGetTensorData(Z2, H2, H2 + u3, H2 + 2 * u3, H2 + 3 * u3) !== 0 && pe(`Can't access output tensor data on index ${W2}.`);
-          let he = u3 === 4 ? "i32" : "i64", ye = Number(a2.getValue(H2, he));
+          let he2 = u3 === 4 ? "i32" : "i64", ye = Number(a2.getValue(H2, he2));
           X2 = a2.getValue(H2 + u3, "*");
-          let re2 = a2.getValue(H2 + u3 * 2, "*"), C2 = Number(a2.getValue(H2 + u3 * 3, he)), V2 = [];
-          for (let ve = 0; ve < C2; ve++) V2.push(Number(a2.getValue(re2 + ve * u3, he)));
+          let re2 = a2.getValue(H2 + u3 * 2, "*"), C2 = Number(a2.getValue(H2 + u3 * 3, he2)), V2 = [];
+          for (let ve = 0; ve < C2; ve++) V2.push(Number(a2.getValue(re2 + ve * u3, he2)));
           a2._OrtFree(re2) !== 0 && pe("Can't free memory for tensor dims.");
-          let de = V2.reduce((ve, $e) => ve * $e, 1);
-          te2 = Ye(ye);
+          let de2 = V2.reduce((ve, $e) => ve * $e, 1);
+          te3 = Ye(ye);
           let ze = f3?.outputPreferredLocations[n2[W2]];
-          if (te2 === "string") {
+          if (te3 === "string") {
             if (ze === "gpu-buffer" || ze === "ml-tensor") throw new Error("String tensor is not supported on GPU.");
             let ve = [];
-            for (let $e = 0; $e < de; $e++) {
-              let Ce2 = a2.getValue(X2 + $e * u3, "*"), _t = a2.getValue(X2 + ($e + 1) * u3, "*"), kt = $e === de - 1 ? void 0 : _t - Ce2;
+            for (let $e = 0; $e < de2; $e++) {
+              let Ce2 = a2.getValue(X2 + $e * u3, "*"), _t = a2.getValue(X2 + ($e + 1) * u3, "*"), kt = $e === de2 - 1 ? void 0 : _t - Ce2;
               ve.push(a2.UTF8ToString(Ce2, kt));
             }
-            Q2.push([te2, V2, ve, "cpu"]);
-          } else if (ze === "gpu-buffer" && de > 0) {
+            Q2.push([te3, V2, ve, "cpu"]);
+          } else if (ze === "gpu-buffer" && de2 > 0) {
             let ve = a2.jsepGetBuffer;
             if (!ve) throw new Error('preferredLocation "gpu-buffer" is not supported without using WebGPU.');
-            let $e = ve(X2), Ce2 = gt(ye, de);
-            if (Ce2 === void 0 || !zr(te2)) throw new Error(`Unsupported data type: ${te2}`);
-            j2 = true, Q2.push([te2, V2, { gpuBuffer: $e, download: a2.jsepCreateDownloader($e, Ce2, te2), dispose: () => {
+            let $e = ve(X2), Ce2 = gt(ye, de2);
+            if (Ce2 === void 0 || !zr(te3)) throw new Error(`Unsupported data type: ${te3}`);
+            j2 = true, Q2.push([te3, V2, { gpuBuffer: $e, download: a2.jsepCreateDownloader($e, Ce2, te3), dispose: () => {
               a2._OrtReleaseTensor(Z2) !== 0 && pe("Can't release tensor.");
             } }, "gpu-buffer"]);
-          } else if (ze === "ml-tensor" && de > 0) {
+          } else if (ze === "ml-tensor" && de2 > 0) {
             let ve = a2.webnnEnsureTensor, $e = a2.webnnIsInt64Supported;
             if (!ve || !$e) throw new Error('preferredLocation "ml-tensor" is not supported without using WebNN.');
-            if (gt(ye, de) === void 0 || !Or(te2)) throw new Error(`Unsupported data type: ${te2}`);
-            if (te2 === "int64" && !$e(e2)) throw new Error('preferredLocation "ml-tensor" for int64 output is not supported by current WebNN Context.');
+            if (gt(ye, de2) === void 0 || !Or(te3)) throw new Error(`Unsupported data type: ${te3}`);
+            if (te3 === "int64" && !$e(e2)) throw new Error('preferredLocation "ml-tensor" for int64 output is not supported by current WebNN Context.');
             let _t = await ve(e2, X2, ye, V2, false);
-            j2 = true, Q2.push([te2, V2, { mlTensor: _t, download: a2.webnnCreateMLTensorDownloader(X2, te2), dispose: () => {
+            j2 = true, Q2.push([te3, V2, { mlTensor: _t, download: a2.webnnCreateMLTensorDownloader(X2, te3), dispose: () => {
               a2.webnnReleaseTensorId(X2), a2._OrtReleaseTensor(Z2);
             } }, "ml-tensor"]);
           } else {
-            let ve = Pr(te2), $e = new ve(de);
-            new Uint8Array($e.buffer, $e.byteOffset, $e.byteLength).set(a2.HEAPU8.subarray(X2, X2 + $e.byteLength)), Q2.push([te2, V2, $e, "cpu"]);
+            let ve = Pr(te3), $e = new ve(de2);
+            new Uint8Array($e.buffer, $e.byteOffset, $e.byteLength).set(a2.HEAPU8.subarray(X2, X2 + $e.byteLength)), Q2.push([te3, V2, $e, "cpu"]);
           }
         } finally {
-          a2.stackRestore(we), te2 === "string" && X2 && a2._free(X2), j2 || a2._OrtReleaseTensor(Z2), a2.webnnOnRunEnd?.(c3);
+          a2.stackRestore(we), te3 === "string" && X2 && a2._free(X2), j2 || a2._OrtReleaseTensor(Z2), a2.webnnOnRunEnd?.(c3);
         }
       }
       return f3 && !b3 && (a2._OrtClearBoundOutputs(f3.handle) !== 0 && pe("Can't clear bound outputs."), At.set(e2, [c3, p3, m3, f3, b3, false])), Q2;
@@ -11884,7 +11884,7 @@ var __webpack_modules__ = {
               throw new SyntaxError(`Unexpected token type: ${tokens[current].type}`);
           }
         }
-        function is2(...types) {
+        function is3(...types) {
           return current + types.length <= tokens.length && types.every((type, i3) => type === tokens[current + i3].type);
         }
         function isStatement(...names) {
@@ -11932,7 +11932,7 @@ var __webpack_modules__ = {
             case "call": {
               ++current;
               let callerArgs = null;
-              if (is2(TOKEN_TYPES.OpenParen)) {
+              if (is3(TOKEN_TYPES.OpenParen)) {
                 callerArgs = parseArgs();
               }
               const callee = parsePrimaryExpression();
@@ -11965,7 +11965,7 @@ var __webpack_modules__ = {
             case "filter": {
               ++current;
               let filterNode = parsePrimaryExpression();
-              if (filterNode instanceof Identifier && is2(TOKEN_TYPES.OpenParen)) {
+              if (filterNode instanceof Identifier && is3(TOKEN_TYPES.OpenParen)) {
                 filterNode = parseCallExpression(filterNode);
               }
               expect(TOKEN_TYPES.CloseStatement, "Expected closing statement token");
@@ -11994,7 +11994,7 @@ var __webpack_modules__ = {
           const left = parseExpressionSequence();
           let value = null;
           const body = [];
-          if (is2(TOKEN_TYPES.Equals)) {
+          if (is3(TOKEN_TYPES.Equals)) {
             ++current;
             value = parseExpressionSequence();
           } else {
@@ -12047,11 +12047,11 @@ var __webpack_modules__ = {
         function parseExpressionSequence(primary = false) {
           const fn = primary ? parsePrimaryExpression : parseExpression;
           const expressions = [fn()];
-          const isTuple = is2(TOKEN_TYPES.Comma);
+          const isTuple = is3(TOKEN_TYPES.Comma);
           while (isTuple) {
             ++current;
             expressions.push(fn());
-            if (!is2(TOKEN_TYPES.Comma)) {
+            if (!is3(TOKEN_TYPES.Comma)) {
               break;
             }
           }
@@ -12140,7 +12140,7 @@ var __webpack_modules__ = {
               current += 2;
             } else if (isIdentifier("in")) {
               operator = tokens[current++];
-            } else if (is2(TOKEN_TYPES.ComparisonBinaryOperator)) {
+            } else if (is3(TOKEN_TYPES.ComparisonBinaryOperator)) {
               operator = tokens[current++];
             } else {
               break;
@@ -12152,7 +12152,7 @@ var __webpack_modules__ = {
         }
         function parseAdditiveExpression() {
           let left = parseMultiplicativeExpression();
-          while (is2(TOKEN_TYPES.AdditiveBinaryOperator)) {
+          while (is3(TOKEN_TYPES.AdditiveBinaryOperator)) {
             const operator = tokens[current];
             ++current;
             const right = parseMultiplicativeExpression();
@@ -12162,7 +12162,7 @@ var __webpack_modules__ = {
         }
         function parseCallMemberExpression() {
           const member = parseMemberExpression(parsePrimaryExpression());
-          if (is2(TOKEN_TYPES.OpenParen)) {
+          if (is3(TOKEN_TYPES.OpenParen)) {
             return parseCallExpression(member);
           }
           return member;
@@ -12170,7 +12170,7 @@ var __webpack_modules__ = {
         function parseCallExpression(callee) {
           let expression = new CallExpression(callee, parseArgs());
           expression = parseMemberExpression(expression);
-          if (is2(TOKEN_TYPES.OpenParen)) {
+          if (is3(TOKEN_TYPES.OpenParen)) {
             expression = parseCallExpression(expression);
           }
           return expression;
@@ -12183,7 +12183,7 @@ var __webpack_modules__ = {
         }
         function parseArgumentsList() {
           const args = [];
-          while (!is2(TOKEN_TYPES.CloseParen)) {
+          while (!is3(TOKEN_TYPES.CloseParen)) {
             let argument;
             if (tokens[current].type === TOKEN_TYPES.MultiplicativeBinaryOperator && tokens[current].value === "*") {
               ++current;
@@ -12191,7 +12191,7 @@ var __webpack_modules__ = {
               argument = new SpreadExpression(expr);
             } else {
               argument = parseExpression();
-              if (is2(TOKEN_TYPES.Equals)) {
+              if (is3(TOKEN_TYPES.Equals)) {
                 ++current;
                 if (!(argument instanceof Identifier)) {
                   throw new SyntaxError(`Expected identifier for keyword argument`);
@@ -12201,7 +12201,7 @@ var __webpack_modules__ = {
               }
             }
             args.push(argument);
-            if (is2(TOKEN_TYPES.Comma)) {
+            if (is3(TOKEN_TYPES.Comma)) {
               ++current;
             }
           }
@@ -12210,14 +12210,14 @@ var __webpack_modules__ = {
         function parseMemberExpressionArgumentsList() {
           const slices = [];
           let isSlice = false;
-          while (!is2(TOKEN_TYPES.CloseSquareBracket)) {
-            if (is2(TOKEN_TYPES.Colon)) {
+          while (!is3(TOKEN_TYPES.CloseSquareBracket)) {
+            if (is3(TOKEN_TYPES.Colon)) {
               slices.push(void 0);
               ++current;
               isSlice = true;
             } else {
               slices.push(parseExpression());
-              if (is2(TOKEN_TYPES.Colon)) {
+              if (is3(TOKEN_TYPES.Colon)) {
                 ++current;
                 isSlice = true;
               }
@@ -12235,7 +12235,7 @@ var __webpack_modules__ = {
           return slices[0];
         }
         function parseMemberExpression(object) {
-          while (is2(TOKEN_TYPES.Dot) || is2(TOKEN_TYPES.OpenSquareBracket)) {
+          while (is3(TOKEN_TYPES.Dot) || is3(TOKEN_TYPES.OpenSquareBracket)) {
             const operator = tokens[current];
             ++current;
             let property;
@@ -12255,7 +12255,7 @@ var __webpack_modules__ = {
         }
         function parseMultiplicativeExpression() {
           let left = parseTestExpression();
-          while (is2(TOKEN_TYPES.MultiplicativeBinaryOperator)) {
+          while (is3(TOKEN_TYPES.MultiplicativeBinaryOperator)) {
             const operator = tokens[current++];
             const right = parseTestExpression();
             left = new BinaryExpression(operator, left, right);
@@ -12280,13 +12280,13 @@ var __webpack_modules__ = {
         }
         function parseFilterExpression() {
           let operand = parseCallMemberExpression();
-          while (is2(TOKEN_TYPES.Pipe)) {
+          while (is3(TOKEN_TYPES.Pipe)) {
             ++current;
             let filter = parsePrimaryExpression();
             if (!(filter instanceof Identifier)) {
               throw new SyntaxError(`Expected identifier for the filter`);
             }
-            if (is2(TOKEN_TYPES.OpenParen)) {
+            if (is3(TOKEN_TYPES.OpenParen)) {
               filter = parseCallExpression(filter);
             }
             operand = new FilterExpression(operand, filter);
@@ -12302,7 +12302,7 @@ var __webpack_modules__ = {
             }
             case TOKEN_TYPES.StringLiteral: {
               let value = token.value;
-              while (is2(TOKEN_TYPES.StringLiteral)) {
+              while (is3(TOKEN_TYPES.StringLiteral)) {
                 value += tokens[current++].value;
               }
               return new StringLiteral(value);
@@ -12316,9 +12316,9 @@ var __webpack_modules__ = {
             }
             case TOKEN_TYPES.OpenSquareBracket: {
               const values = [];
-              while (!is2(TOKEN_TYPES.CloseSquareBracket)) {
+              while (!is3(TOKEN_TYPES.CloseSquareBracket)) {
                 values.push(parseExpression());
-                if (is2(TOKEN_TYPES.Comma)) {
+                if (is3(TOKEN_TYPES.Comma)) {
                   ++current;
                 }
               }
@@ -12327,12 +12327,12 @@ var __webpack_modules__ = {
             }
             case TOKEN_TYPES.OpenCurlyBracket: {
               const values = /* @__PURE__ */ new Map();
-              while (!is2(TOKEN_TYPES.CloseCurlyBracket)) {
+              while (!is3(TOKEN_TYPES.CloseCurlyBracket)) {
                 const key = parseExpression();
                 expect(TOKEN_TYPES.Colon, "Expected colon between key and value in object literal");
                 const value = parseExpression();
                 values.set(key, value);
-                if (is2(TOKEN_TYPES.Comma)) {
+                if (is3(TOKEN_TYPES.Comma)) {
                   ++current;
                 }
               }
@@ -15442,8 +15442,8 @@ var __webpack_modules__ = {
           const batch_size = options?.batch_size ?? 1;
           for (let i3 = 0; i3 < layer_types.length; ++i3) {
             if (layer_types[i3] === "full_attention") {
-              for (const kv of ["key", "value"]) {
-                cache_values[`${pkv_prefix}.${i3}.${kv}`] = [batch_size, num_key_value_heads, 0, head_dim];
+              for (const kv2 of ["key", "value"]) {
+                cache_values[`${pkv_prefix}.${i3}.${kv2}`] = [batch_size, num_key_value_heads, 0, head_dim];
               }
             } else if (layer_types[i3] === "conv") {
               cache_values[`${conv_prefix}_conv.${i3}`] = [batch_size, hidden_size, conv_L_cache];
@@ -29741,7 +29741,7 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
             const prompt_chunks = text.map((t2, i3) => t2.split(IMAGE_TOKEN_PATTERN).join(IMAGE_TOKEN.repeat(num_img_tokens[i3])));
             text_inputs = this.tokenizer(prompt_chunks, { padding, truncation });
             const image_token_id = this.tokenizer.model.convert_tokens_to_ids([IMAGE_TOKEN])[0];
-            text_inputs.input_ids.map_((id2) => id2 == image_token_id ? -id2 : id2);
+            text_inputs.input_ids.map_((id3) => id3 == image_token_id ? -id3 : id3);
           } else {
             text_inputs = this.tokenizer(text);
           }
@@ -30196,11 +30196,11 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
             let current_speaker = -1;
             for (let i3 = 0; i3 < scores.length; ++i3) {
               const probabilities = (0, _utils_maths_js__WEBPACK_IMPORTED_MODULE_2__.softmax)(scores[i3]);
-              const [score, id2] = (0, _utils_maths_js__WEBPACK_IMPORTED_MODULE_2__.max)(probabilities);
+              const [score, id3] = (0, _utils_maths_js__WEBPACK_IMPORTED_MODULE_2__.max)(probabilities);
               const [start, end] = [i3, i3 + 1];
-              if (id2 !== current_speaker) {
-                current_speaker = id2;
-                accumulated_segments.push({ id: id2, start, end, score });
+              if (id3 !== current_speaker) {
+                current_speaker = id3;
+                accumulated_segments.push({ id: id3, start, end, score });
               } else {
                 accumulated_segments.at(-1).end = end;
                 accumulated_segments.at(-1).score += score;
@@ -30209,8 +30209,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
             results.push(accumulated_segments.map(
               // Convert frame-space to time-space
               // and compute the confidence
-              ({ id: id2, start, end, score }) => ({
-                id: id2,
+              ({ id: id3, start, end, score }) => ({
+                id: id3,
                 start: start * ratio,
                 end: end * ratio,
                 confidence: score / (end - start)
@@ -35014,22 +35014,22 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
         }
       }
       const BYTES_TO_UNICODE = (() => {
-        const bs2 = [
+        const bs3 = [
           ...Array.from({ length: "~".charCodeAt(0) - "!".charCodeAt(0) + 1 }, (_3, i3) => i3 + "!".charCodeAt(0)),
           ...Array.from({ length: "\xAC".charCodeAt(0) - "\xA1".charCodeAt(0) + 1 }, (_3, i3) => i3 + "\xA1".charCodeAt(0)),
           ...Array.from({ length: "\xFF".charCodeAt(0) - "\xAE".charCodeAt(0) + 1 }, (_3, i3) => i3 + "\xAE".charCodeAt(0))
         ];
-        const cs2 = bs2.slice();
+        const cs3 = bs3.slice();
         let n2 = 0;
         for (let b3 = 0; b3 < 256; ++b3) {
-          if (!bs2.includes(b3)) {
-            bs2.push(b3);
-            cs2.push(256 + n2);
+          if (!bs3.includes(b3)) {
+            bs3.push(b3);
+            cs3.push(256 + n2);
             n2 += 1;
           }
         }
-        const ccs = cs2.map((n3) => String.fromCharCode(n3));
-        return Object.fromEntries(bs2.map((b3, i3) => [b3, ccs[i3]]));
+        const ccs = cs3.map((n3) => String.fromCharCode(n3));
+        return Object.fromEntries(bs3.map((b3, i3) => [b3, ccs[i3]]));
       })();
       const UNICODE_TO_BYTES = (0, _utils_core_js__WEBPACK_IMPORTED_MODULE_1__.reverseDictionary)(BYTES_TO_UNICODE);
       class BPE extends TokenizerModel {
@@ -40520,7 +40520,7 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
         /* harmony export */
         min: () => (
           /* binding */
-          min
+          min2
         ),
         /* harmony export */
         permute_data: () => (
@@ -40636,19 +40636,19 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
       function magnitude(arr) {
         return Math.sqrt(arr.reduce((acc, val) => acc + val * val, 0));
       }
-      function min(arr) {
+      function min2(arr) {
         if (arr.length === 0) throw Error("Array must not be empty");
-        let min2 = arr[0];
+        let min3 = arr[0];
         let indexOfMin = 0;
         for (let i3 = 1; i3 < arr.length; ++i3) {
-          if (arr[i3] < min2) {
-            min2 = arr[i3];
+          if (arr[i3] < min3) {
+            min3 = arr[i3];
             indexOfMin = i3;
           }
         }
         return (
           /** @type {T extends bigint[]|BigTypedArray ? [bigint, number] : [number, number]} */
-          [min2, indexOfMin]
+          [min3, indexOfMin]
         );
       }
       function max(arr) {
@@ -41206,8 +41206,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
       }
       function bankers_round(x2) {
         const r2 = Math.round(x2);
-        const br2 = Math.abs(x2) % 1 === 0.5 ? r2 % 2 === 0 ? r2 : r2 - 1 : r2;
-        return br2;
+        const br3 = Math.abs(x2) % 1 === 0.5 ? r2 % 2 === 0 ? r2 : r2 - 1 : r2;
+        return br3;
       }
       function dynamic_time_warping(matrix) {
         const output_length = matrix.length;
@@ -42023,10 +42023,10 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
         /**
          * In-place version of @see {@link Tensor.clamp}
          */
-        clamp_(min, max) {
+        clamp_(min2, max) {
           const this_data = this.data;
           for (let i3 = 0; i3 < this_data.length; ++i3) {
-            this_data[i3] = Math.min(Math.max(this_data[i3], min), max);
+            this_data[i3] = Math.min(Math.max(this_data[i3], min2), max);
           }
           return this;
         }
@@ -42036,8 +42036,8 @@ ${fake_token_around_image}${global_img_token}` + image_token.repeat(image_seq_le
          * @param {number} max upper-bound of the range to be clamped to
          * @returns {Tensor} the output tensor.
          */
-        clamp(min, max) {
-          return this.clone().clamp_(min, max);
+        clamp(min2, max) {
+          return this.clone().clamp_(min2, max);
         }
         /**
          * In-place version of @see {@link Tensor.round}
@@ -48091,7 +48091,7 @@ var b = { Memory: function(A3) {
                   g: {
                     r: {
                       if (g5 = f4[33691], (C3 = f4[33285]) ? A6 = 0 : (C3 = f4[33285], A6 = f4[33283], A6 = f4[A6 >> 2] == f4[A6 + 4 >> 2]), g5 | !A6 | C3 || !(f4[32524] < 0)) {
-                        if (!mr(f4[o4 + 2156 >> 2])) {
+                        if (!mr2(f4[o4 + 2156 >> 2])) {
                           if ((C3 = (0 | (A6 = f4[49828])) > 0) & (0 | (g5 = A6)) < (0 | (A6 = f4[33284]))) break r;
                           if (!((0 | (g5 = f4[49845])) <= 0 | (0 | A6) < (0 | g5))) {
                             f4[49845] = 0, a3[134760] = 1, f4[33285] = f4[o4 + 2152 >> 2], r4 = 16384;
@@ -48134,7 +48134,7 @@ var b = { Memory: function(A3) {
                                     if (A6 = f4[33283], f4[A6 >> 2] == f4[A6 + 4 >> 2]) break I;
                                     g5 = f4[o4 + 2156 >> 2];
                                   }
-                                  if (!(!((g5 = !!(0 | mr(g5))) | 35 == (0 | (A6 = f4[o4 + 2156 >> 2]))) | k5 >>> 0 > 19)) {
+                                  if (!(!((g5 = !!(0 | mr2(g5))) | 35 == (0 | (A6 = f4[o4 + 2156 >> 2]))) | k5 >>> 0 > 19)) {
                                     a3[(o4 + 112 | 0) + k5 | 0] = A6, k5 = k5 + 1 | 0, (g5 = f4[33285]) ? (f4[33285] = 0, C3 = 0) : (f4[33284] = f4[33284] + 1, A6 = f4[33283], g5 = 0 | HC[f4[A6 + 8 >> 2]](A6), C3 = f4[33285]);
                                     continue;
                                   }
@@ -48185,7 +48185,7 @@ var b = { Memory: function(A3) {
                               for (A6 = (C3 + (Rr2(C3) << 2) | 0) - 4 | 0, 47 == (0 | (Z3 = f4[A6 >> 2])) && (f4[A6 >> 2] = 32); ; ) {
                                 if (A6 = f4[C3 + (g5 << 2) >> 2]) {
                                   if (er2(A6)) A6 = g5;
-                                  else if (a3[(N4 + 512 | 0) + g5 | 0] = ar(A6 << 24 >> 24), A6 = 39, 39 != (0 | (g5 = g5 + 1 | 0))) continue;
+                                  else if (a3[(N4 + 512 | 0) + g5 | 0] = ar2(A6 << 24 >> 24), A6 = 39, 39 != (0 | (g5 = g5 + 1 | 0))) continue;
                                 } else A6 = g5;
                                 break;
                               }
@@ -48354,7 +48354,7 @@ var b = { Memory: function(A3) {
                                             if (0 | HC[f4[34441]](1, A6 + f4[33282] | 0, P4)) break t;
                                             f4[N4 + 68 >> 2] = A6, f4[N4 + 64 >> 2] = 1, dg2(N4 + 352 | 0, 89658, N4 - -64 | 0);
                                           } else {
-                                            if (!P4 | 47 == i4[N4 + 352 | 0] ? A6 = bg2(N4 + 352 | 0) : (f4[N4 + 48 >> 2] = P4, f4[N4 + 52 >> 2] = N4 + 352, dg2(A6 = N4 + 96 | 0, 89564, N4 + 48 | 0), A6 = bg2(A6)), (0 | A6) < 0) break t;
+                                            if (!P4 | 47 == i4[N4 + 352 | 0] ? A6 = bg3(N4 + 352 | 0) : (f4[N4 + 48 >> 2] = P4, f4[N4 + 52 >> 2] = N4 + 352, dg2(A6 = N4 + 96 | 0, 89564, N4 + 48 | 0), A6 = bg3(A6)), (0 | A6) < 0) break t;
                                             f4[N4 + 36 >> 2] = A6, f4[N4 + 32 >> 2] = 1, dg2(N4 + 352 | 0, 89623, N4 + 32 | 0);
                                           }
                                           A6 = N4 + 352 | 0, rg2(f4[y4 >> 2] + 189424 | 0, A6), f4[y4 >> 2] = f4[y4 >> 2] + Lg(A6), f4[4 + (134912 + (g5 << 6) | 0) >> 2] = 1;
@@ -48542,7 +48542,7 @@ var b = { Memory: function(A3) {
                           }
                           f4[o4 + 2156 >> 2] = A6, C3 = A6;
                         }
-                        mr(C3) ? (p4 = 1, g5 = f4[o4 + 2156 >> 2]) : W3 ? (f4[33285] = f4[o4 + 2152 >> 2], g5 = 1328, f4[o4 + 2156 >> 2] = 1328, f4[o4 + 2152 >> 2] = 32, W3 = 0) : 3851 != (0 | (g5 = f4[o4 + 2156 >> 2])) ? (W3 = 0, 3405 != (0 | g5) | 8205 != f4[o4 + 2152 >> 2] || (g5 = 3406, f4[o4 + 2156 >> 2] = 3406)) : (g5 = 32, f4[o4 + 2156 >> 2] = 32, W3 = 0);
+                        mr2(C3) ? (p4 = 1, g5 = f4[o4 + 2156 >> 2]) : W3 ? (f4[33285] = f4[o4 + 2152 >> 2], g5 = 1328, f4[o4 + 2156 >> 2] = 1328, f4[o4 + 2152 >> 2] = 32, W3 = 0) : 3851 != (0 | (g5 = f4[o4 + 2156 >> 2])) ? (W3 = 0, 3405 != (0 | g5) | 8205 != f4[o4 + 2152 >> 2] || (g5 = 3406, f4[o4 + 2156 >> 2] = 3406)) : (g5 = 32, f4[o4 + 2156 >> 2] = 32, W3 = 0);
                         C: if (nr(g5)) {
                           if (f4[v4 + 8216 >> 2] = f4[v4 + 8216 >> 2] + 1, f4[33692] | 2 != f4[47200]) break C;
                           if (nr(F4)) break C;
@@ -48587,7 +48587,7 @@ var b = { Memory: function(A3) {
                           A6 = r4;
                           break g;
                         }
-                        if (kg(f4[o4 + 2156 >> 2]) && ur(f4[o4 + 2156 >> 2])) break g;
+                        if (kg(f4[o4 + 2156 >> 2]) && ur2(f4[o4 + 2156 >> 2])) break g;
                         f4[33691] = f4[o4 + 2156 >> 2], a3[0 | (A6 = q3 + 189424 | 0)] = 32, a3[A6 + 1 | 0] = 0, f4[33285] = f4[o4 + 2152 >> 2];
                         break A;
                       }
@@ -48729,7 +48729,7 @@ var b = { Memory: function(A3) {
                     r4 = 46 == (0 | (u4 = f4[o4 + 2156 >> 2])) && (0 | g5) < 2 ? 4194304 | M5 : M5;
                     g: {
                       if (!g5) {
-                        k5 = 1, 44 != (0 | u4) | 46 != (0 | F4) | 26741 != f4[v4 + 212 >> 2] | P4 - 48 >>> 0 >= 10 || w4 - 48 >>> 0 >= 10 && !ur(w4) || (f4[o4 + 2156 >> 2] = 1367, k5 = 0), 46 != (0 | (M5 = f4[o4 + 2156 >> 2])) | 39 != (0 | w4) || (u4 = k5, M5 = f4[33283], (0 | (N4 = f4[M5 >> 2])) == f4[M5 + 4 >> 2] ? k5 = 0 : (k5 = 0 | HC[f4[M5 + 8 >> 2]](M5), f4[M5 >> 2] = N4), M5 = f4[o4 + 2156 >> 2], k5 = 115 != (0 | k5) & u4);
+                        k5 = 1, 44 != (0 | u4) | 46 != (0 | F4) | 26741 != f4[v4 + 212 >> 2] | P4 - 48 >>> 0 >= 10 || w4 - 48 >>> 0 >= 10 && !ur2(w4) || (f4[o4 + 2156 >> 2] = 1367, k5 = 0), 46 != (0 | (M5 = f4[o4 + 2156 >> 2])) | 39 != (0 | w4) || (u4 = k5, M5 = f4[33283], (0 | (N4 = f4[M5 >> 2])) == f4[M5 + 4 >> 2] ? k5 = 0 : (k5 = 0 | HC[f4[M5 + 8 >> 2]](M5), f4[M5 >> 2] = N4), M5 = f4[o4 + 2156 >> 2], k5 = 115 != (0 | k5) & u4);
                         r: if (46 != (0 | M5)) k5 &= p4;
                         else {
                           C: if (1 & a3[v4 + 106 | 0]) {
@@ -48737,9 +48737,9 @@ var b = { Memory: function(A3) {
                               if ((u4 = F4 - 73 | 0) >>> 0 > 15 | !(1 << u4 & 40969)) break C;
                               if (!(1 << (u4 = P4 - 73 | 0) & 40969 && u4 >>> 0 <= 15 || er2(P4))) break C;
                             }
-                            k5 = F4 - 48 >>> 0 >= 10 ? 0 : !ur(w4) & 45 != (0 | w4) & k5;
+                            k5 = F4 - 48 >>> 0 >= 10 ? 0 : !ur2(w4) & 45 != (0 | w4) & k5;
                           }
-                          if (ur(w4) && (k5 = 0 != i4[v4 + 208 | 0] & k5), p4) {
+                          if (ur2(w4) && (k5 = 0 != i4[v4 + 208 | 0] & k5), p4) {
                             M5 = f4[o4 + 2156 >> 2];
                             break r;
                           }
@@ -49029,7 +49029,7 @@ var b = { Memory: function(A3) {
                               A6 = oA3 ? w4 : 712, r4 = oA3 ? r4 : w4, oA3 = 1;
                               break e;
                             }
-                            if (ur(f4[D3 + 6812 >> 2])) {
+                            if (ur2(f4[D3 + 6812 >> 2])) {
                               if (32 == f4[D3 + 6808 >> 2]) {
                                 A6 = w4;
                                 break e;
@@ -49055,7 +49055,7 @@ var b = { Memory: function(A3) {
                               A6 = w4;
                               break e;
                             }
-                            if (!ur(f4[D3 + 6804 >> 2])) {
+                            if (!ur2(f4[D3 + 6804 >> 2])) {
                               A6 = w4;
                               break e;
                             }
@@ -49156,7 +49156,7 @@ var b = { Memory: function(A3) {
                                 }
                                 b: {
                                   if (46 != (0 | (w4 = f4[D3 + 6812 >> 2])) || (C3 = 115, 115 != f4[D3 + 6804 >> 2])) {
-                                    if (!mr(w4)) break b;
+                                    if (!mr2(w4)) break b;
                                     C3 = f4[D3 + 6804 >> 2];
                                   }
                                   if (kg(C3)) break r;
@@ -55079,7 +55079,7 @@ var b = { Memory: function(A3) {
                       case 5:
                         if ((0 | A6) >= f4[34064]) break g;
                         if (!f4[(t3 = (C3 = A6 << 4) + 136272 | 0) + 4 >> 2]) break g;
-                        he(10, 0), A6 = 216192 + (f4[50758] << 4) | 0, f4[A6 >> 2] = 6, t3 = f4[t3 + 4 >> 2], f4[A6 + 8 >> 2] = f4[8 + (C3 + 136272 | 0) >> 2] + 44, f4[A6 + 12 >> 2] = 5376, f4[A6 + 4 >> 2] = t3;
+                        he2(10, 0), A6 = 216192 + (f4[50758] << 4) | 0, f4[A6 >> 2] = 6, t3 = f4[t3 + 4 >> 2], f4[A6 + 8 >> 2] = f4[8 + (C3 + 136272 | 0) >> 2] + 44, f4[A6 + 12 >> 2] = 5376, f4[A6 + 4 >> 2] = t3;
                         break r;
                       case 8:
                         if ((0 | ((0 | (C3 = f4[50757] - f4[50758] | 0)) <= 0 ? C3 + 170 : C3)) < 6) break g;
@@ -55092,7 +55092,7 @@ var b = { Memory: function(A3) {
                       default:
                         break C;
                     }
-                    he(10, 0), C3 = 216192 + (f4[50758] << 4) | 0, f4[C3 >> 2] = 12, f4[C3 + 8 >> 2] = A6, f4[C3 + 4 >> 2] = t3;
+                    he2(10, 0), C3 = 216192 + (f4[50758] << 4) | 0, f4[C3 >> 2] = 12, f4[C3 + 8 >> 2] = A6, f4[C3 + 4 >> 2] = t3;
                   }
                   A6 = f4[50758] + 1 | 0, f4[50758] = (0 | A6) <= 169 ? A6 : 0;
                 }
@@ -55100,7 +55100,7 @@ var b = { Memory: function(A3) {
               }
               break;
             }
-            (A6 = i4[r4 + 20 | 0]) && (1 & a3[f4[47192] + 48 | 0] & 2 == i4[r4 + 17 | 0] | 1 & a3[f4[r4 + 8 >> 2] + 7 | 0] || (f4[36426] = 0), g5 = f4[47353] + (2047 & B2[r4 + 4 >> 1]) | 0, f4[36445] = g5, 4 & A6 && ((0 | ((0 | (A6 = f4[50757] - f4[50758] | 0)) <= 0 ? A6 + 170 : A6)) < 6 || (C3 = f4[47568], A6 = 216192 + (f4[50758] << 4) | 0, f4[A6 >> 2] = 522, f4[A6 + 8 >> 2] = C3, f4[A6 + 4 >> 2] = 16777215 & g5, A6 = f4[50758] + 1 | 0, f4[50758] = (0 | A6) <= 169 ? A6 : 0)), 1 & a3[r4 + 20 | 0] && (g5 = B2[r4 + 4 >> 1], C3 = f4[36444], f4[36444] = C3 + 1, (0 | ((0 | (A6 = f4[50757] - f4[50758] | 0)) <= 0 ? A6 + 170 : A6)) < 6 || (o4 = f4[36445], t3 = f4[47355], A6 = 216192 + (f4[50758] << 4) | 0, f4[A6 >> 2] = 266, f4[A6 + 8 >> 2] = C3 + t3, f4[A6 + 4 >> 2] = 16777215 & o4 | (63488 & g5) << 13, A6 = f4[50758] + 1 | 0, f4[50758] = (0 | A6) <= 169 ? A6 : 0))), (0 | (A6 = f4[36441])) > 0 && (g5 = 216192 + (f4[36425] << 4) | 0, f4[g5 + 4 >> 2] || (f4[g5 + 4 >> 2] = A6), f4[36441] = 0), A6 = k5 + 1 << 5, g5 = k5 - 1 << 5, !(C3 = i4[r4 + 18 | 0]) | 2 & i4[f4[r4 + 8 >> 2] + 7 | 0] || he(C3, 1), t3 = A6 + 145840 | 0, b4 = g5 + 145840 | 0, o4 = 1;
+            (A6 = i4[r4 + 20 | 0]) && (1 & a3[f4[47192] + 48 | 0] & 2 == i4[r4 + 17 | 0] | 1 & a3[f4[r4 + 8 >> 2] + 7 | 0] || (f4[36426] = 0), g5 = f4[47353] + (2047 & B2[r4 + 4 >> 1]) | 0, f4[36445] = g5, 4 & A6 && ((0 | ((0 | (A6 = f4[50757] - f4[50758] | 0)) <= 0 ? A6 + 170 : A6)) < 6 || (C3 = f4[47568], A6 = 216192 + (f4[50758] << 4) | 0, f4[A6 >> 2] = 522, f4[A6 + 8 >> 2] = C3, f4[A6 + 4 >> 2] = 16777215 & g5, A6 = f4[50758] + 1 | 0, f4[50758] = (0 | A6) <= 169 ? A6 : 0)), 1 & a3[r4 + 20 | 0] && (g5 = B2[r4 + 4 >> 1], C3 = f4[36444], f4[36444] = C3 + 1, (0 | ((0 | (A6 = f4[50757] - f4[50758] | 0)) <= 0 ? A6 + 170 : A6)) < 6 || (o4 = f4[36445], t3 = f4[47355], A6 = 216192 + (f4[50758] << 4) | 0, f4[A6 >> 2] = 266, f4[A6 + 8 >> 2] = C3 + t3, f4[A6 + 4 >> 2] = 16777215 & o4 | (63488 & g5) << 13, A6 = f4[50758] + 1 | 0, f4[50758] = (0 | A6) <= 169 ? A6 : 0))), (0 | (A6 = f4[36441])) > 0 && (g5 = 216192 + (f4[36425] << 4) | 0, f4[g5 + 4 >> 2] || (f4[g5 + 4 >> 2] = A6), f4[36441] = 0), A6 = k5 + 1 << 5, g5 = k5 - 1 << 5, !(C3 = i4[r4 + 18 | 0]) | 2 & i4[f4[r4 + 8 >> 2] + 7 | 0] || he2(C3, 1), t3 = A6 + 145840 | 0, b4 = g5 + 145840 | 0, o4 = 1;
             g: {
               r: {
                 if (f4[47198] && (n3 = f4[r4 + 8 >> 2], 15 != i4[n3 + 10 | 0])) {
@@ -55115,7 +55115,7 @@ var b = { Memory: function(A3) {
                 }
                 C: switch (i4[r4 + 17 | 0]) {
                   case 0:
-                    he(f4[r4 + 12 >> 2], 0), a3[r4 + 23 | 0] = i4[f4[r4 + 8 >> 2] + 14 | 0];
+                    he2(f4[r4 + 12 >> 2], 0), a3[r4 + 23 | 0] = i4[f4[r4 + 8 >> 2] + 14 | 0];
                     break g;
                   case 4:
                     g5 = f4[r4 + 8 >> 2], 2 == (0 | (A6 = i4[t3 + 17 | 0])) | !i4[t3 + 20 | 0] & 3 == (0 | A6) || (I3[r4 >> 1] = 8192 | B2[r4 >> 1]), 2 & i4[g5 + 7 | 0] && (f4[e4 + 88 >> 2] = 0, f4[e4 + 92 >> 2] = 0, f4[e4 + 80 >> 2] = 0, f4[e4 + 84 >> 2] = 0, f4[e4 + 72 >> 2] = 0, f4[e4 + 76 >> 2] = 0, f4[Q3 >> 2] = 0, f4[Q3 + 4 >> 2] = 0, f4[e4 + 56 >> 2] = 0, f4[e4 + 60 >> 2] = 0, f4[e4 + 48 >> 2] = 0, f4[e4 + 52 >> 2] = 0, bA2(0, 1, r4, e4 + 552 | 0, 145784), f4[e4 + 56 >> 2] = f4[e4 + 620 >> 2], f4[Q3 >> 2] = f4[e4 + 640 >> 2], f4[36424] < 0 && (C3 = i4[t3 + 19 | 0], A6 = f4[50758], f4[36425] = A6, f4[36441] = 0, f4[(A6 = 216192 + (A6 << 4) | 0) + 12 >> 2] = C3, f4[A6 + 8 >> 2] = 0, f4[A6 >> 2] = 8, f4[A6 + 4 >> 2] = 0, A6 = f4[50758] + 1 | 0, f4[50758] = (0 | A6) <= 169 ? A6 : 0, o4 = i4[t3 + 22 | 0], C3 = i4[t3 + 21 | 0], t3 = f4[129280 + (i4[r4 + 16 | 0] << 2) >> 2], (0 | (A6 = f4[36424])) < 0 | (0 | (n3 = f4[36440])) <= 0 || f4[(A6 = 216192 + (A6 << 4) | 0) + 4 >> 2] || (f4[A6 + 4 >> 2] = n3), A6 = f4[50758], f4[36424] = A6, f4[36440] = 0, f4[(A6 = 216192 + (A6 << 4) | 0) >> 2] = 9, f4[A6 + 4 >> 2] = 0, o4 |= C3 << 16, C3 = 255 == (0 | C3), f4[A6 + 12 >> 2] = C3 ? 3604556 : o4, f4[A6 + 8 >> 2] = C3 ? c4 : t3, A6 = f4[50758] + 1 | 0, f4[50758] = (0 | A6) <= 169 ? A6 : 0), eA2(g5, 0, e4 + 48 | 0, r4, 0)), bA2(0, 0, r4, e4 + 552 | 0, 145784), f4[e4 + 552 >> 2] = 4 | f4[e4 + 552 >> 2], (0 | (A6 = f4[36440])) <= 0 || (0 | (g5 = f4[36424])) < 0 || (f4[(g5 = 216192 + (g5 << 4) | 0) + 4 >> 2] || (f4[g5 + 4 >> 2] = A6), f4[36440] = 0), f4[36426] = 0, f4[36439] = -1, f4[36455] = f4[50758], kA2(), f4[36427] = -1, f4[36422] = 0, (A6 = f4[e4 + 624 >> 2]) && (C3 = A6, A6 = f4[e4 + 644 >> 2], qA2(C3, 2, f4[e4 + 596 >> 2] << 1, f4[e4 + 552 >> 2], 0, A6 ? (A6 << 5) / 100 | 0 : 32)), f4[36426] = 0;
@@ -55147,18 +55147,18 @@ var b = { Memory: function(A3) {
                       }
                       G4 = f4[50758], f4[36424] = G4, f4[36440] = 0, f4[(G4 = 216192 + (G4 << 4) | 0) >> 2] = 9, f4[G4 + 4 >> 2] = 0, f4[G4 + 12 >> 2] = s4 ? 3604556 : 255 & g5 | (255 & n3) << 16, f4[G4 + 8 >> 2] = A6, A6 = f4[50758] + 1 | 0, f4[50758] = (0 | A6) <= 169 ? A6 : 0;
                     }
-                    a: if (!(2 & i4[C3 + 7 | 0]) & 2 != i4[b4 + 17 | 0]) 8 & i4[0 | r4] && he(50, 0);
+                    a: if (!(2 & i4[C3 + 7 | 0]) & 2 != i4[b4 + 17 | 0]) 8 & i4[0 | r4] && he2(50, 0);
                     else {
                       if (bA2(0, 1, r4, e4 + 552 | 0, 145784), f4[e4 + 56 >> 2] = f4[e4 + 620 >> 2], f4[e4 + 64 >> 2] = f4[e4 + 640 >> 2], eA2(C3, 0, e4 + 48 | 0, r4, 0), !(8 & i4[0 | r4])) break a;
-                      he(25, 1), eA2(C3, 0, e4 + 48 | 0, r4, 0);
+                      he2(25, 1), eA2(C3, 0, e4 + 48 | 0, r4, 0);
                     }
                     a: if (o4) {
                       if (f4[36455] != f4[36454]) break a;
                       f4[36455] = f4[50758];
                     } else I3[r4 >> 1] = 8192 | B2[r4 >> 1];
                     if (bA2(0, 0, r4, e4 + 552 | 0, 145784), f4[e4 + 56 >> 2] = f4[e4 + 620 >> 2], f4[e4 + 64 >> 2] = f4[e4 + 640 >> 2], f4[e4 + 76 >> 2] = f4[e4 + 636 >> 2], f4[e4 + 80 >> 2] = f4[e4 + 656 >> 2], eA2(C3, 0, e4 + 48 | 0, r4, 0), i4[r4 + 20 | 0] | i4[84 + (145840 + (k5 << 5) | 0) | 0]) break g;
-                    if (7 == (0 | (A6 = i4[t3 + 17 | 0])) && (he(20, 0), A6 = i4[t3 + 17 | 0]), 6 != (255 & A6)) break g;
-                    he(12, 0);
+                    if (7 == (0 | (A6 = i4[t3 + 17 | 0])) && (he2(20, 0), A6 = i4[t3 + 17 | 0]), 6 != (255 & A6)) break g;
+                    he2(12, 0);
                     break g;
                   case 7:
                     a: {
@@ -55215,7 +55215,7 @@ var b = { Memory: function(A3) {
                     f4[36426] = 0, eA2(f4[r4 + 8 >> 2], 0, e4 + 48 | 0, r4, 0), f4[36426] = 0;
                     break g;
                   case 3:
-                    f4[e4 + 88 >> 2] = 0, f4[e4 + 92 >> 2] = 0, f4[e4 + 80 >> 2] = 0, f4[e4 + 84 >> 2] = 0, f4[e4 + 72 >> 2] = 0, f4[e4 + 76 >> 2] = 0, f4[Q3 >> 2] = 0, f4[Q3 + 4 >> 2] = 0, f4[e4 + 56 >> 2] = 0, f4[e4 + 60 >> 2] = 0, f4[e4 + 48 >> 2] = 0, f4[e4 + 52 >> 2] = 0, C3 = f4[f4[r4 + 8 >> 2] + 4 >> 2], 1 & a3[0 | r4] || (g5 = i4[r4 + 19 | 0], A6 = f4[50758], f4[36425] = A6, f4[36441] = 0, f4[(A6 = 216192 + (A6 << 4) | 0) + 12 >> 2] = g5, f4[A6 + 8 >> 2] = 0, f4[A6 >> 2] = 8, f4[A6 + 4 >> 2] = 0, A6 = f4[50758] + 1 | 0, f4[50758] = (0 | A6) <= 169 ? A6 : 0, o4 = i4[r4 + 22 | 0], g5 = i4[r4 + 21 | 0], n3 = f4[129280 + (i4[r4 + 16 | 0] << 2) >> 2], (0 | (A6 = f4[36424])) < 0 | (0 | (s4 = f4[36440])) <= 0 || f4[(A6 = 216192 + (A6 << 4) | 0) + 4 >> 2] || (f4[A6 + 4 >> 2] = s4), A6 = f4[50758], f4[36424] = A6, f4[36440] = 0, f4[(A6 = 216192 + (A6 << 4) | 0) >> 2] = 9, f4[A6 + 4 >> 2] = 0, o4 |= g5 << 16, g5 = 255 == (0 | g5), f4[A6 + 12 >> 2] = g5 ? 3604556 : o4, f4[A6 + 8 >> 2] = g5 ? c4 : n3, A6 = f4[50758] + 1 | 0, f4[50758] = (0 | A6) <= 169 ? A6 : 0), 8 == i4[b4 + 17 | 0] && (f4[36426] = 0), 2 != i4[t3 + 17 | 0] | f4[36455] != f4[36454] || (f4[36455] = f4[50758]), bA2(0, 0, r4, e4 + 552 | 0, 145784), (0 | (A6 = f4[e4 + 584 >> 2] - i4[r4 + 18 | 0] | 0)) > 0 && he(A6, 1), f4[e4 + 56 >> 2] = f4[e4 + 620 >> 2], f4[e4 + 64 >> 2] = f4[e4 + 640 >> 2], f4[e4 + 76 >> 2] = f4[e4 + 636 >> 2], f4[e4 + 80 >> 2] = f4[e4 + 656 >> 2], f4[e4 + 92 >> 2] = f4[e4 + 596 >> 2] << 1, eA2(f4[r4 + 8 >> 2], 0, e4 + 48 | 0, r4, C3 << 24 >> 31 & 5);
+                    f4[e4 + 88 >> 2] = 0, f4[e4 + 92 >> 2] = 0, f4[e4 + 80 >> 2] = 0, f4[e4 + 84 >> 2] = 0, f4[e4 + 72 >> 2] = 0, f4[e4 + 76 >> 2] = 0, f4[Q3 >> 2] = 0, f4[Q3 + 4 >> 2] = 0, f4[e4 + 56 >> 2] = 0, f4[e4 + 60 >> 2] = 0, f4[e4 + 48 >> 2] = 0, f4[e4 + 52 >> 2] = 0, C3 = f4[f4[r4 + 8 >> 2] + 4 >> 2], 1 & a3[0 | r4] || (g5 = i4[r4 + 19 | 0], A6 = f4[50758], f4[36425] = A6, f4[36441] = 0, f4[(A6 = 216192 + (A6 << 4) | 0) + 12 >> 2] = g5, f4[A6 + 8 >> 2] = 0, f4[A6 >> 2] = 8, f4[A6 + 4 >> 2] = 0, A6 = f4[50758] + 1 | 0, f4[50758] = (0 | A6) <= 169 ? A6 : 0, o4 = i4[r4 + 22 | 0], g5 = i4[r4 + 21 | 0], n3 = f4[129280 + (i4[r4 + 16 | 0] << 2) >> 2], (0 | (A6 = f4[36424])) < 0 | (0 | (s4 = f4[36440])) <= 0 || f4[(A6 = 216192 + (A6 << 4) | 0) + 4 >> 2] || (f4[A6 + 4 >> 2] = s4), A6 = f4[50758], f4[36424] = A6, f4[36440] = 0, f4[(A6 = 216192 + (A6 << 4) | 0) >> 2] = 9, f4[A6 + 4 >> 2] = 0, o4 |= g5 << 16, g5 = 255 == (0 | g5), f4[A6 + 12 >> 2] = g5 ? 3604556 : o4, f4[A6 + 8 >> 2] = g5 ? c4 : n3, A6 = f4[50758] + 1 | 0, f4[50758] = (0 | A6) <= 169 ? A6 : 0), 8 == i4[b4 + 17 | 0] && (f4[36426] = 0), 2 != i4[t3 + 17 | 0] | f4[36455] != f4[36454] || (f4[36455] = f4[50758]), bA2(0, 0, r4, e4 + 552 | 0, 145784), (0 | (A6 = f4[e4 + 584 >> 2] - i4[r4 + 18 | 0] | 0)) > 0 && he2(A6, 1), f4[e4 + 56 >> 2] = f4[e4 + 620 >> 2], f4[e4 + 64 >> 2] = f4[e4 + 640 >> 2], f4[e4 + 76 >> 2] = f4[e4 + 636 >> 2], f4[e4 + 80 >> 2] = f4[e4 + 656 >> 2], f4[e4 + 92 >> 2] = f4[e4 + 596 >> 2] << 1, eA2(f4[r4 + 8 >> 2], 0, e4 + 48 | 0, r4, C3 << 24 >> 31 & 5);
                     break g;
                   case 2:
                     break C;
@@ -55270,7 +55270,7 @@ var b = { Memory: function(A3) {
         V2 = C3 = V2 - 48 | 0;
         A: {
           if (g5 >>> 0 <= 2) {
-            for (P4 = f4[(g5 <<= 2) + 124732 >> 2], F4 = f4[g5 + 124720 >> 2]; (0 | (g5 = f4[e4 + 4 >> 2])) == f4[e4 + 104 >> 2] ? g5 = ce3(e4) : (f4[e4 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5]), 32 == (0 | g5) | g5 - 9 >>> 0 < 5; ) ;
+            for (P4 = f4[(g5 <<= 2) + 124732 >> 2], F4 = f4[g5 + 124720 >> 2]; (0 | (g5 = f4[e4 + 4 >> 2])) == f4[e4 + 104 >> 2] ? g5 = ce4(e4) : (f4[e4 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5]), 32 == (0 | g5) | g5 - 9 >>> 0 < 5; ) ;
             u4 = 1;
             e: {
               g: switch (g5 - 43 | 0) {
@@ -55280,13 +55280,13 @@ var b = { Memory: function(A3) {
                 default:
                   break e;
               }
-              u4 = 45 == (0 | g5) ? -1 : 1, (0 | (g5 = f4[e4 + 4 >> 2])) == f4[e4 + 104 >> 2] ? g5 = ce3(e4) : (f4[e4 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5]);
+              u4 = 45 == (0 | g5) ? -1 : 1, (0 | (g5 = f4[e4 + 4 >> 2])) == f4[e4 + 104 >> 2] ? g5 = ce4(e4) : (f4[e4 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5]);
             }
             e: {
               g: {
                 for (; ; ) {
                   if (a3[t3 + 84056 | 0] == (32 | g5)) {
-                    if (t3 >>> 0 > 6 || ((0 | (g5 = f4[e4 + 4 >> 2])) == f4[e4 + 104 >> 2] ? g5 = ce3(e4) : (f4[e4 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5])), 8 != (0 | (t3 = t3 + 1 | 0))) continue;
+                    if (t3 >>> 0 > 6 || ((0 | (g5 = f4[e4 + 4 >> 2])) == f4[e4 + 104 >> 2] ? g5 = ce4(e4) : (f4[e4 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5])), 8 != (0 | (t3 = t3 + 1 | 0))) continue;
                     break g;
                   }
                   break;
@@ -55306,15 +55306,15 @@ var b = { Memory: function(A3) {
                 r: if (!t3) {
                   for (t3 = 0; ; ) {
                     if (a3[t3 + 84473 | 0] != (32 | g5)) break r;
-                    if (t3 >>> 0 > 1 || ((0 | (g5 = f4[e4 + 4 >> 2])) == f4[e4 + 104 >> 2] ? g5 = ce3(e4) : (f4[e4 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5])), 3 == (0 | (t3 = t3 + 1 | 0))) break;
+                    if (t3 >>> 0 > 1 || ((0 | (g5 = f4[e4 + 4 >> 2])) == f4[e4 + 104 >> 2] ? g5 = ce4(e4) : (f4[e4 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5])), 3 == (0 | (t3 = t3 + 1 | 0))) break;
                   }
                   break g;
                 }
                 r: switch (0 | t3) {
                   case 0:
                     if (48 == (0 | g5)) {
-                      if ((0 | (t3 = f4[e4 + 4 >> 2])) == f4[e4 + 104 >> 2] ? t3 = ce3(e4) : (f4[e4 + 4 >> 2] = t3 + 1, t3 = i4[0 | t3]), 88 == (-33 & t3)) {
-                        V2 = s4 = V2 - 432 | 0, (0 | (g5 = f4[e4 + 4 >> 2])) == f4[e4 + 104 >> 2] ? t3 = ce3(e4) : (f4[e4 + 4 >> 2] = g5 + 1, t3 = i4[0 | g5]);
+                      if ((0 | (t3 = f4[e4 + 4 >> 2])) == f4[e4 + 104 >> 2] ? t3 = ce4(e4) : (f4[e4 + 4 >> 2] = t3 + 1, t3 = i4[0 | t3]), 88 == (-33 & t3)) {
+                        V2 = s4 = V2 - 432 | 0, (0 | (g5 = f4[e4 + 4 >> 2])) == f4[e4 + 104 >> 2] ? t3 = ce4(e4) : (f4[e4 + 4 >> 2] = g5 + 1, t3 = i4[0 | g5]);
                         C: {
                           a: {
                             for (; ; ) {
@@ -55326,12 +55326,12 @@ var b = { Memory: function(A3) {
                                 }
                                 break;
                               }
-                              (0 | (g5 = f4[e4 + 4 >> 2])) != f4[e4 + 104 >> 2] ? (N4 = 1, f4[e4 + 4 >> 2] = g5 + 1, t3 = i4[0 | g5]) : (N4 = 1, t3 = ce3(e4));
+                              (0 | (g5 = f4[e4 + 4 >> 2])) != f4[e4 + 104 >> 2] ? (N4 = 1, f4[e4 + 4 >> 2] = g5 + 1, t3 = i4[0 | g5]) : (N4 = 1, t3 = ce4(e4));
                             }
-                            t3 = ce3(e4);
+                            t3 = ce4(e4);
                           }
                           if (d4 = 1, 48 == (0 | t3)) {
-                            for (; m4 = (g5 = m4) - 1 | 0, M5 = M5 - !g5 | 0, (0 | (g5 = f4[e4 + 4 >> 2])) == f4[e4 + 104 >> 2] ? t3 = ce3(e4) : (f4[e4 + 4 >> 2] = g5 + 1, t3 = i4[0 | g5]), 48 == (0 | t3); ) ;
+                            for (; m4 = (g5 = m4) - 1 | 0, M5 = M5 - !g5 | 0, (0 | (g5 = f4[e4 + 4 >> 2])) == f4[e4 + 104 >> 2] ? t3 = ce4(e4) : (f4[e4 + 4 >> 2] = g5 + 1, t3 = i4[0 | g5]), 48 == (0 | t3); ) ;
                             N4 = 1;
                           }
                         }
@@ -55349,7 +55349,7 @@ var b = { Memory: function(A3) {
                               }
                               g5 = (0 | t3) > 57 ? g5 - 87 | 0 : y4, (0 | k5) <= 0 & B3 >>> 0 <= 7 | (0 | k5) < 0 ? I4 = g5 + (I4 << 4) | 0 : !k5 & B3 >>> 0 <= 28 ? (Yg(s4 + 48 | 0, g5), QA2(s4 + 32 | 0, Y3, H3, n3, E3, 0, 0, 0, 1073414144), Y3 = f4[s4 + 32 >> 2], H3 = f4[s4 + 36 >> 2], n3 = f4[s4 + 40 >> 2], E3 = f4[s4 + 44 >> 2], QA2(s4 + 16 | 0, f4[s4 + 48 >> 2], f4[s4 + 52 >> 2], f4[s4 + 56 >> 2], f4[s4 + 60 >> 2], Y3, H3, n3, E3), dA2(s4, f4[s4 + 16 >> 2], f4[s4 + 20 >> 2], f4[s4 + 24 >> 2], f4[s4 + 28 >> 2], Q3, x3, h4, p4), h4 = f4[s4 + 8 >> 2], p4 = f4[s4 + 12 >> 2], Q3 = f4[s4 >> 2], x3 = f4[s4 + 4 >> 2]) : l3 | !g5 || (QA2(s4 + 80 | 0, Y3, H3, n3, E3, 0, 0, 0, 1073610752), dA2(s4 - -64 | 0, f4[s4 + 80 >> 2], f4[s4 + 84 >> 2], f4[s4 + 88 >> 2], f4[s4 + 92 >> 2], Q3, x3, h4, p4), h4 = f4[s4 + 72 >> 2], p4 = f4[s4 + 76 >> 2], l3 = 1, Q3 = f4[s4 + 64 >> 2], x3 = f4[s4 + 68 >> 2]), k5 = (B3 = B3 + 1 | 0) ? k5 : k5 + 1 | 0, N4 = 1;
                             }
-                            (0 | (g5 = f4[e4 + 4 >> 2])) != f4[e4 + 104 >> 2] ? (f4[e4 + 4 >> 2] = g5 + 1, t3 = i4[0 | g5]) : t3 = ce3(e4);
+                            (0 | (g5 = f4[e4 + 4 >> 2])) != f4[e4 + 104 >> 2] ? (f4[e4 + 4 >> 2] = g5 + 1, t3 = i4[0 | g5]) : t3 = ce4(e4);
                             continue;
                           }
                           break;
@@ -55412,12 +55412,12 @@ var b = { Memory: function(A3) {
                             }
                             break;
                           }
-                          (0 | (e4 = f4[t3 + 4 >> 2])) != f4[t3 + 104 >> 2] ? (f4[t3 + 4 >> 2] = e4 + 1, g5 = i4[0 | e4]) : g5 = ce3(t3), e4 = 1;
+                          (0 | (e4 = f4[t3 + 4 >> 2])) != f4[t3 + 104 >> 2] ? (f4[t3 + 4 >> 2] = e4 + 1, g5 = i4[0 | e4]) : g5 = ce4(t3), e4 = 1;
                         }
-                        g5 = ce3(t3);
+                        g5 = ce4(t3);
                       }
                       if (l3 = 1, 48 == (0 | g5)) {
-                        for (; B3 = (e4 = B3) - 1 | 0, k5 = k5 - !e4 | 0, (0 | (e4 = f4[t3 + 4 >> 2])) == f4[t3 + 104 >> 2] ? g5 = ce3(t3) : (f4[t3 + 4 >> 2] = e4 + 1, g5 = i4[0 | e4]), 48 == (0 | g5); ) ;
+                        for (; B3 = (e4 = B3) - 1 | 0, k5 = k5 - !e4 | 0, (0 | (e4 = f4[t3 + 4 >> 2])) == f4[t3 + 104 >> 2] ? g5 = ce4(t3) : (f4[t3 + 4 >> 2] = e4 + 1, g5 = i4[0 | e4]), 48 == (0 | g5); ) ;
                         e4 = 1;
                       }
                     }
@@ -55439,7 +55439,7 @@ var b = { Memory: function(A3) {
                                   }
                                   E3 = (n3 = n3 + 1 | 0) ? E3 : E3 + 1 | 0, (0 | u4) <= 2044 ? (N4 = 48 == (0 | g5) ? N4 : n3, e4 = (I4 + 784 | 0) + (u4 << 2) | 0, d4 && (Q3 = (G3(f4[e4 >> 2], 10) + g5 | 0) - 48 | 0), f4[e4 >> 2] = Q3, e4 = 1, d4 = (g5 = 9 == (0 | (r4 = d4 + 1 | 0))) ? 0 : r4, u4 = g5 + u4 | 0) : 48 != (0 | g5) && (f4[I4 + 8960 >> 2] = 1 | f4[I4 + 8960 >> 2], N4 = 18396);
                                 }
-                                if ((0 | (g5 = f4[t3 + 4 >> 2])) == f4[t3 + 104 >> 2] ? g5 = ce3(t3) : (f4[t3 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5]), !((r4 = 46 == (0 | g5)) | (Q3 = g5 - 48 | 0) >>> 0 < 10)) break;
+                                if ((0 | (g5 = f4[t3 + 4 >> 2])) == f4[t3 + 104 >> 2] ? g5 = ce4(t3) : (f4[t3 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5]), !((r4 = 46 == (0 | g5)) | (Q3 = g5 - 48 | 0) >>> 0 < 10)) break;
                               }
                               if (B3 = l3 ? B3 : n3, k5 = l3 ? k5 : E3, !(!e4 | 69 != (-33 & g5))) {
                                 if (Q3 = RA2(t3, s4), x3 = e4 = U3, !(Q3 | -2147483648 != (0 | e4))) {
@@ -55564,12 +55564,12 @@ var b = { Memory: function(A3) {
                 (0 | (g5 = f4[e4 + 116 >> 2])) > 0 | (0 | g5) >= 0 && (f4[e4 + 4 >> 2] = f4[e4 + 4 >> 2] - 1);
                 break e;
               }
-              if ((0 | (g5 = f4[e4 + 4 >> 2])) == f4[e4 + 104 >> 2] ? g5 = ce3(e4) : (f4[e4 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5]), 40 != (0 | g5)) {
+              if ((0 | (g5 = f4[e4 + 4 >> 2])) == f4[e4 + 104 >> 2] ? g5 = ce4(e4) : (f4[e4 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5]), 40 != (0 | g5)) {
                 if (k5 = 2147450880, f4[e4 + 116 >> 2] < 0) break A;
                 f4[e4 + 4 >> 2] = f4[e4 + 4 >> 2] - 1;
                 break A;
               }
-              for (t3 = 1; (0 | (g5 = f4[e4 + 4 >> 2])) == f4[e4 + 104 >> 2] ? g5 = ce3(e4) : (f4[e4 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5]), g5 - 48 >>> 0 < 10 | g5 - 65 >>> 0 < 26 | 95 == (0 | g5) || !(g5 - 97 >>> 0 >= 26); ) t3 = t3 + 1 | 0;
+              for (t3 = 1; (0 | (g5 = f4[e4 + 4 >> 2])) == f4[e4 + 104 >> 2] ? g5 = ce4(e4) : (f4[e4 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5]), g5 - 48 >>> 0 < 10 | g5 - 65 >>> 0 < 26 | 95 == (0 | g5) || !(g5 - 97 >>> 0 >= 26); ) t3 = t3 + 1 | 0;
               if (k5 = 2147450880, 41 == (0 | g5)) break A;
               (0 | (g5 = f4[e4 + 116 >> 2])) > 0 | (0 | g5) >= 0 && (f4[e4 + 4 >> 2] = f4[e4 + 4 >> 2] - 1);
               g: {
@@ -55642,7 +55642,7 @@ var b = { Memory: function(A3) {
                 }
                 4 & n3 && (I3[A6 >> 1] = 32 | B2[A6 >> 1]), 2 & n3 && (I3[A6 >> 1] = 16 | B2[A6 >> 1]);
               }
-              64 & n3 && he(20, 0), A6 = k5 & n3 << 27 >> 31;
+              64 & n3 && he2(20, 0), A6 = k5 & n3 << 27 >> 31;
             } else A6 = 0;
             t3 = A6 + f4[36422] | 0, f4[36422] = t3, e4 = f4[E3 + 12 >> 2];
           }
@@ -56125,10 +56125,10 @@ var b = { Memory: function(A3) {
             } else fA2(A6, r4 = C3 + 1616 | 0, C3 + 1832 | 0, -1, !!(0 | Q3) << 1), f4[C3 + 40 >> 2] = r4, f4[C3 + 36 >> 2] = C3 + 1200, f4[C3 + 32 >> 2] = C3 + 992, Gg(189088, 200, 85233, C3 + 32 | 0), a3[189287] = 0;
             i4[C3 + 784 | 0] && (r4 = Lg(189088), a3[983 + (C3 - r4 | 0) | 0] = 0, rg2(r4 + 189088 | 0, C3 + 784 | 0)), 16 & (r4 = c4 | l3) && (f4[C3 + 1832 >> 2] = -268435457 & f4[C3 + 1832 >> 2]);
             g: if (!(128 & r4) | !(16 & i4[A6 + 14 | 0])) if (3072 & r4) {
-              if (te2(A6, 6), !(2048 & r4)) break g;
+              if (te3(A6, 6), !(2048 & r4)) break g;
               f4[C3 + 1832 >> 2] = 268435456 | f4[C3 + 1832 >> 2];
-            } else 16 & i4[G3(f4[33264], 12) + g5 | 0] && (1536 & (g5 = f4[C3 + 1832 >> 2]) ? te2(A6, 4) : 2048 & g5 && te2(A6, 3));
-            else te2(A6, 3);
+            } else 16 & i4[G3(f4[33264], 12) + g5 | 0] && (1536 & (g5 = f4[C3 + 1832 >> 2]) ? te3(A6, 4) : 2048 & g5 && te3(A6, 3));
+            else te3(A6, 3);
             8192 & n3 && (f4[A6 + 8192 >> 2] = 2, f4[A6 + 8184 >> 2] = 2);
             g: {
               if (8 & (g5 = f4[C3 + 1836 >> 2])) f4[A6 + 8184 >> 2] = 0, f4[A6 + 8188 >> 2] = 3, r4 = A6 + 8196 | 0;
@@ -56879,9 +56879,9 @@ var b = { Memory: function(A3) {
             if (!(8 & e4)) break A;
           }
           if (oC(g5 + 1088 | 0, A6, 40), 16 & e4) {
-            if ((0 | fr2(rg2(g5 + 704 | 0, A6))) <= 0) break A;
+            if ((0 | fr3(rg2(g5 + 704 | 0, A6))) <= 0) break A;
             u4 = 8 & e4;
-          } else (u4 = 8 & e4) | i4[g5 + 1088 | 0] || (I3[g5 + 1088 >> 1] = i4[85055] | i4[85056] << 8, a3[g5 + 1090 | 0] = i4[85057]), f4[g5 + 496 >> 2] = 137584, f4[g5 + 500 >> 2] = 47, f4[g5 + 504 >> 2] = 47, dg2(r4 = g5 + 512 | 0, 85286, g5 + 496 | 0), f4[g5 + 484 >> 2] = g5 + 1088, f4[g5 + 480 >> 2] = r4, dg2(r4 = g5 + 704 | 0, 85425, g5 + 480 | 0), (0 | fr2(r4)) > 0 || (f4[g5 + 468 >> 2] = 47, f4[g5 + 472 >> 2] = 47, f4[g5 + 464 >> 2] = 137584, dg2(r4 = g5 + 512 | 0, 85648, g5 + 464 | 0), f4[g5 + 452 >> 2] = g5 + 1088, f4[g5 + 448 >> 2] = r4, dg2(g5 + 704 | 0, 85425, g5 + 448 | 0));
+          } else (u4 = 8 & e4) | i4[g5 + 1088 | 0] || (I3[g5 + 1088 >> 1] = i4[85055] | i4[85056] << 8, a3[g5 + 1090 | 0] = i4[85057]), f4[g5 + 496 >> 2] = 137584, f4[g5 + 500 >> 2] = 47, f4[g5 + 504 >> 2] = 47, dg2(r4 = g5 + 512 | 0, 85286, g5 + 496 | 0), f4[g5 + 484 >> 2] = g5 + 1088, f4[g5 + 480 >> 2] = r4, dg2(r4 = g5 + 704 | 0, 85425, g5 + 480 | 0), (0 | fr3(r4)) > 0 || (f4[g5 + 468 >> 2] = 47, f4[g5 + 472 >> 2] = 47, f4[g5 + 464 >> 2] = 137584, dg2(r4 = g5 + 512 | 0, 85648, g5 + 464 | 0), f4[g5 + 452 >> 2] = g5 + 1088, f4[g5 + 448 >> 2] = r4, dg2(g5 + 704 | 0, 85425, g5 + 448 | 0));
           if (C3 = u4 ? 86012 : 85055, !(l3 = Ae3(g5 + 704 | 0, 85712))) {
             if (r4 = 0, 3 & e4) break A;
             C3 = (0 | Ng(r4 = g5 + 1088 | 0)) < 0 ? C3 : r4;
@@ -56913,7 +56913,7 @@ var b = { Memory: function(A3) {
                       f4[s4 + 324 >> 2] = f4[C3 + 412 >> 2];
                       break e;
                     case 8:
-                      tg2(A6, s4 + 320 | 0, 27);
+                      tg3(A6, s4 + 320 | 0, 27);
                       break e;
                     case 2:
                       if (f4[C3 + 48 >> 2] = 188784, aA2(A6, 84249, C3 + 48 | 0), !(A6 = i4[188784])) break e;
@@ -56956,22 +56956,22 @@ var b = { Memory: function(A3) {
                       f4[C3 + 88 >> 2] = s4 + 20, f4[C3 + 84 >> 2] = s4 + 16, f4[C3 + 80 >> 2] = s4 + 8, aA2(A6, 84778, C3 + 80 | 0);
                       break e;
                     case 10:
-                      tg2(A6, s4 + 12 | 0, 29);
+                      tg3(A6, s4 + 12 | 0, 29);
                       break e;
                     case 5:
-                      if ((0 | (o4 = ug2(A6, C3 + 160 | 0))) <= 0) break e;
+                      if ((0 | (o4 = ug3(A6, C3 + 160 | 0))) <= 0) break e;
                       if (r4 = 0, A6 = 0, o4 >>> 0 >= 4) for (w4 = -4 & o4, t3 = s4 + 304 | 0; k5 = C3 + 160 | 0, I3[t3 + (A6 << 1) >> 1] = f4[k5 + (A6 << 2) >> 2], I3[t3 + ((n3 = 1 | A6) << 1) >> 1] = f4[k5 + (n3 << 2) >> 2], I3[t3 + ((n3 = 2 | A6) << 1) >> 1] = f4[k5 + (n3 << 2) >> 2], I3[t3 + ((n3 = 3 | A6) << 1) >> 1] = f4[k5 + (n3 << 2) >> 2], A6 = A6 + 4 | 0, (0 | w4) != (0 | (b4 = b4 + 4 | 0)); ) ;
                       if (!(b4 = 3 & o4)) break e;
                       for (; I3[304 + (s4 + (A6 << 1) | 0) >> 1] = f4[(C3 + 160 | 0) + (A6 << 2) >> 2], A6 = A6 + 1 | 0, (0 | b4) != (0 | (r4 = r4 + 1 | 0)); ) ;
                       break e;
                     case 6:
-                      if ((0 | (o4 = ug2(A6, C3 + 160 | 0))) <= 0) break e;
+                      if ((0 | (o4 = ug3(A6, C3 + 160 | 0))) <= 0) break e;
                       if (r4 = 0, A6 = 0, o4 >>> 0 >= 4) for (w4 = -4 & o4, t3 = s4 + 296 | 0; k5 = C3 + 160 | 0, a3[A6 + t3 | 0] = f4[k5 + (A6 << 2) >> 2], a3[(n3 = 1 | A6) + t3 | 0] = f4[k5 + (n3 << 2) >> 2], a3[(n3 = 2 | A6) + t3 | 0] = f4[k5 + (n3 << 2) >> 2], a3[(n3 = 3 | A6) + t3 | 0] = f4[k5 + (n3 << 2) >> 2], A6 = A6 + 4 | 0, (0 | w4) != (0 | (b4 = b4 + 4 | 0)); ) ;
                       if (!(b4 = 3 & o4)) break e;
                       for (; a3[296 + (A6 + s4 | 0) | 0] = f4[(C3 + 160 | 0) + (A6 << 2) >> 2], A6 = A6 + 1 | 0, (0 | b4) != (0 | (r4 = r4 + 1 | 0)); ) ;
                       break e;
                     case 7:
-                      if ((0 | (o4 = ug2(A6, C3 + 160 | 0))) <= 0) break e;
+                      if ((0 | (o4 = ug3(A6, C3 + 160 | 0))) <= 0) break e;
                       if (r4 = 0, A6 = 0, o4 >>> 0 >= 4) for (w4 = -4 & o4, t3 = s4 + 304 | 0; n3 = k5 = t3 + (A6 << 1) | 0, c4 = B2[k5 >> 1], k5 = C3 + 160 | 0, I3[n3 >> 1] = c4 + B2[k5 + (A6 << 2) >> 1], I3[(c4 = t3 + ((n3 = 1 | A6) << 1) | 0) >> 1] = B2[c4 >> 1] + B2[k5 + (n3 << 2) >> 1], I3[(c4 = t3 + ((n3 = 2 | A6) << 1) | 0) >> 1] = B2[c4 >> 1] + B2[k5 + (n3 << 2) >> 1], I3[(c4 = t3 + ((n3 = 3 | A6) << 1) | 0) >> 1] = B2[c4 >> 1] + B2[k5 + (n3 << 2) >> 1], A6 = A6 + 4 | 0, (0 | w4) != (0 | (b4 = b4 + 4 | 0)); ) ;
                       if (!(b4 = 3 & o4)) break e;
                       for (; I3[(t3 = s4 + (A6 << 1) | 0) + 304 >> 1] = B2[t3 + 304 >> 1] + B2[(C3 + 160 | 0) + (A6 << 2) >> 1], A6 = A6 + 1 | 0, (0 | b4) != (0 | (r4 = r4 + 1 | 0)); ) ;
@@ -57102,7 +57102,7 @@ var b = { Memory: function(A3) {
                 f4[g5 + 16 >> 2] = g5 + 704, eC(v4, 87359, g5 + 16 | 0);
               }
             }
-            tr2(l3);
+            tr3(l3);
           }
           e: {
             if ((A6 = f4[47192]) | D3) {
@@ -57137,7 +57137,7 @@ var b = { Memory: function(A3) {
                         f: {
                           i: if (32 == (0 | (e4 &= 255)) | e4 - 9 >>> 0 < 5) {
                             for (; e4 = s4, s4 = s4 + 1 | 0, 32 == (0 | (g5 = i4[e4 + 1 | 0])) | g5 - 9 >>> 0 < 5; ) ;
-                            for (Tg(r4, 0, 0); (0 | (g5 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? g5 = ce3(r4) : (f4[r4 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5]), 32 == (0 | g5) | g5 - 9 >>> 0 < 5; ) ;
+                            for (Tg(r4, 0, 0); (0 | (g5 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? g5 = ce4(r4) : (f4[r4 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5]), 32 == (0 | g5) | g5 - 9 >>> 0 < 5; ) ;
                             s4 = f4[r4 + 4 >> 2], (0 | (g5 = f4[r4 + 116 >> 2])) > 0 | (0 | g5) >= 0 && (s4 = s4 - 1 | 0, f4[r4 + 4 >> 2] = s4), s4 = g5 = s4 - f4[r4 + 44 >> 2] | 0, o4 = l3 + f4[r4 + 124 >> 2] | 0, o4 = (t3 = g5 >> 31) + ((g5 = E3 + f4[r4 + 120 >> 2] | 0) >>> 0 < E3 >>> 0 ? o4 + 1 | 0 : o4) | 0, l3 = (E3 = g5 + s4 | 0) >>> 0 < g5 >>> 0 ? o4 + 1 | 0 : o4;
                           } else {
                             b: {
@@ -57147,9 +57147,9 @@ var b = { Memory: function(A3) {
                                     if (42 == (0 | (e4 = i4[s4 + 1 | 0]))) break t;
                                     if (37 != (0 | e4)) break s;
                                   }
-                                  if (Tg(r4, 0, 0), 37 != i4[0 | s4]) (0 | (e4 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? e4 = ce3(r4) : (f4[r4 + 4 >> 2] = e4 + 1, e4 = i4[0 | e4]);
+                                  if (Tg(r4, 0, 0), 37 != i4[0 | s4]) (0 | (e4 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? e4 = ce4(r4) : (f4[r4 + 4 >> 2] = e4 + 1, e4 = i4[0 | e4]);
                                   else {
-                                    for (; (0 | (e4 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? e4 = ce3(r4) : (f4[r4 + 4 >> 2] = e4 + 1, e4 = i4[0 | e4]), 32 == (0 | e4) | e4 - 9 >>> 0 < 5; ) ;
+                                    for (; (0 | (e4 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? e4 = ce4(r4) : (f4[r4 + 4 >> 2] = e4 + 1, e4 = i4[0 | e4]), 32 == (0 | e4) | e4 - 9 >>> 0 < 5; ) ;
                                     s4 = s4 + 1 | 0;
                                   }
                                   if (i4[0 | s4] != (0 | e4)) {
@@ -57222,11 +57222,11 @@ var b = { Memory: function(A3) {
                                 Br2(B3, m4, E3, l3);
                                 break i;
                               }
-                              for (Tg(r4, 0, 0); (0 | (g5 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? g5 = ce3(r4) : (f4[r4 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5]), 32 == (0 | g5) | g5 - 9 >>> 0 < 5; ) ;
+                              for (Tg(r4, 0, 0); (0 | (g5 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? g5 = ce4(r4) : (f4[r4 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5]), 32 == (0 | g5) | g5 - 9 >>> 0 < 5; ) ;
                               g5 = f4[r4 + 4 >> 2], (0 | (t3 = f4[r4 + 116 >> 2])) > 0 | (0 | t3) >= 0 && (g5 = g5 - 1 | 0, f4[r4 + 4 >> 2] = g5), t3 = g5 = g5 - f4[r4 + 44 >> 2] | 0, o4 = l3 + f4[r4 + 124 >> 2] | 0, l3 = (n3 = g5 >> 31) + ((g5 = E3 + f4[r4 + 120 >> 2] | 0) >>> 0 < E3 >>> 0 ? o4 + 1 | 0 : o4) | 0, l3 = (E3 = g5 + t3 | 0) >>> 0 < g5 >>> 0 ? l3 + 1 | 0 : l3;
                             }
                             if (u4 = s4, Tg(r4, s4, x3 = s4 >> 31), (0 | (g5 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2]) {
-                              if ((0 | ce3(r4)) < 0) break C;
+                              if ((0 | ce4(r4)) < 0) break C;
                             } else f4[r4 + 4 >> 2] = g5 + 1;
                             (0 | (g5 = f4[r4 + 116 >> 2])) > 0 | (0 | g5) >= 0 && (f4[r4 + 4 >> 2] = f4[r4 + 4 >> 2] - 1), g5 = 16;
                             b: {
@@ -57317,7 +57317,7 @@ var b = { Memory: function(A3) {
                                   }
                                   k5 = 0, o4 = 0, t3 = 0, n3 = 0, D3 = 0, V2 = M5 = V2 - 16 | 0;
                                   n: if (1 != (0 | g5) & g5 >>> 0 <= 36) {
-                                    for (; (0 | (s4 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? s4 = ce3(r4) : (f4[r4 + 4 >> 2] = s4 + 1, s4 = i4[0 | s4]), 32 == (0 | s4) | s4 - 9 >>> 0 < 5; ) ;
+                                    for (; (0 | (s4 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? s4 = ce4(r4) : (f4[r4 + 4 >> 2] = s4 + 1, s4 = i4[0 | s4]), 32 == (0 | s4) | s4 - 9 >>> 0 < 5; ) ;
                                     k: {
                                       o: switch (s4 - 43 | 0) {
                                         case 0:
@@ -57326,15 +57326,15 @@ var b = { Memory: function(A3) {
                                         default:
                                           break k;
                                       }
-                                      D3 = 45 == (0 | s4) ? -1 : 0, (0 | (s4 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? s4 = ce3(r4) : (f4[r4 + 4 >> 2] = s4 + 1, s4 = i4[0 | s4]);
+                                      D3 = 45 == (0 | s4) ? -1 : 0, (0 | (s4 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? s4 = ce4(r4) : (f4[r4 + 4 >> 2] = s4 + 1, s4 = i4[0 | s4]);
                                     }
                                     k: {
                                       o: {
                                         B: {
                                           c: {
                                             if (!(!!(0 | g5) & 16 != (0 | g5) | 48 != (0 | s4))) {
-                                              if ((0 | (s4 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? s4 = ce3(r4) : (f4[r4 + 4 >> 2] = s4 + 1, s4 = i4[0 | s4]), 88 == (-33 & s4)) {
-                                                if (g5 = 16, (0 | (s4 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? s4 = ce3(r4) : (f4[r4 + 4 >> 2] = s4 + 1, s4 = i4[0 | s4]), i4[s4 + 121329 | 0] < 16) break B;
+                                              if ((0 | (s4 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? s4 = ce4(r4) : (f4[r4 + 4 >> 2] = s4 + 1, s4 = i4[0 | s4]), 88 == (-33 & s4)) {
+                                                if (g5 = 16, (0 | (s4 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? s4 = ce4(r4) : (f4[r4 + 4 >> 2] = s4 + 1, s4 = i4[0 | s4]), i4[s4 + 121329 | 0] < 16) break B;
                                                 (0 | (g5 = f4[r4 + 116 >> 2])) > 0 | (0 | g5) >= 0 && (f4[r4 + 4 >> 2] = f4[r4 + 4 >> 2] - 1), Tg(r4, 0, 0);
                                                 break n;
                                               }
@@ -57349,12 +57349,12 @@ var b = { Memory: function(A3) {
                                           }
                                           if (10 == (0 | g5)) {
                                             if ((t3 = s4 - 48 | 0) >>> 0 <= 9) {
-                                              for (g5 = 0; n3 = (g5 = G3(g5, 10) + t3 | 0) >>> 0 < 429496729, (0 | (s4 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? s4 = ce3(r4) : (f4[r4 + 4 >> 2] = s4 + 1, s4 = i4[0 | s4]), n3 & (t3 = s4 - 48 | 0) >>> 0 <= 9; ) ;
+                                              for (g5 = 0; n3 = (g5 = G3(g5, 10) + t3 | 0) >>> 0 < 429496729, (0 | (s4 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? s4 = ce4(r4) : (f4[r4 + 4 >> 2] = s4 + 1, s4 = i4[0 | s4]), n3 & (t3 = s4 - 48 | 0) >>> 0 <= 9; ) ;
                                               k5 = g5;
                                             }
                                             c: if (!(t3 >>> 0 > 9)) {
                                               for (g5 = Cr2(k5, 0, 10, 0), n3 = U3; ; ) {
-                                                if (o4 = n3, n3 = 429496729 == (0 | (o4 = (k5 = g5 + t3 | 0) >>> 0 < t3 >>> 0 ? o4 + 1 | 0 : o4)) & k5 >>> 0 >= 2576980378 | o4 >>> 0 > 429496729, (0 | (g5 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? s4 = ce3(r4) : (f4[r4 + 4 >> 2] = g5 + 1, s4 = i4[0 | g5]), n3 | (t3 = s4 - 48 | 0) >>> 0 > 9) break c;
+                                                if (o4 = n3, n3 = 429496729 == (0 | (o4 = (k5 = g5 + t3 | 0) >>> 0 < t3 >>> 0 ? o4 + 1 | 0 : o4)) & k5 >>> 0 >= 2576980378 | o4 >>> 0 > 429496729, (0 | (g5 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? s4 = ce4(r4) : (f4[r4 + 4 >> 2] = g5 + 1, s4 = i4[0 | g5]), n3 | (t3 = s4 - 48 | 0) >>> 0 > 9) break c;
                                                 if (g5 = Cr2(k5, o4, 10, 0), !(-1 == (0 | (n3 = U3)) & ~t3 >>> 0 >= g5 >>> 0 | -1 != (0 | n3))) break;
                                               }
                                               g5 = 10;
@@ -57366,28 +57366,28 @@ var b = { Memory: function(A3) {
                                         }
                                         if (g5 - 1 & g5) {
                                           if ((n3 = i4[s4 + 121329 | 0]) >>> 0 < g5 >>> 0) {
-                                            for (; k5 = (t3 = G3(g5, t3) + n3 | 0) >>> 0 < 119304647, (0 | (s4 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? s4 = ce3(r4) : (f4[r4 + 4 >> 2] = s4 + 1, s4 = i4[0 | s4]), k5 & (n3 = i4[s4 + 121329 | 0]) >>> 0 < g5 >>> 0; ) ;
+                                            for (; k5 = (t3 = G3(g5, t3) + n3 | 0) >>> 0 < 119304647, (0 | (s4 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? s4 = ce4(r4) : (f4[r4 + 4 >> 2] = s4 + 1, s4 = i4[0 | s4]), k5 & (n3 = i4[s4 + 121329 | 0]) >>> 0 < g5 >>> 0; ) ;
                                             k5 = t3;
                                           }
                                           if (g5 >>> 0 <= n3 >>> 0) break o;
                                           for (; ; ) {
                                             if (t3 = Cr2(k5, o4, g5, 0), -1 == (0 | (u4 = U3)) & ~(n3 &= 255) >>> 0 < t3 >>> 0) break o;
-                                            if (o4 = u4, o4 = (k5 = t3 + n3 | 0) >>> 0 < n3 >>> 0 ? o4 + 1 | 0 : o4, (0 | (s4 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? s4 = ce3(r4) : (f4[r4 + 4 >> 2] = s4 + 1, s4 = i4[0 | s4]), g5 >>> 0 <= (n3 = i4[s4 + 121329 | 0]) >>> 0) break o;
+                                            if (o4 = u4, o4 = (k5 = t3 + n3 | 0) >>> 0 < n3 >>> 0 ? o4 + 1 | 0 : o4, (0 | (s4 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? s4 = ce4(r4) : (f4[r4 + 4 >> 2] = s4 + 1, s4 = i4[0 | s4]), g5 >>> 0 <= (n3 = i4[s4 + 121329 | 0]) >>> 0) break o;
                                             if (gg(M5, g5, 0, 0, 0, k5, o4, 0, 0), f4[M5 + 8 >> 2] | f4[M5 + 12 >> 2]) break;
                                           }
                                         } else {
                                           if (u4 = a3[84400 + (G3(g5, 23) >>> 5 & 7) | 0], (t3 = i4[s4 + 121329 | 0]) >>> 0 < g5 >>> 0) {
-                                            for (; k5 = (n3 = n3 << u4 | t3) >>> 0 < 134217728, (0 | (s4 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? s4 = ce3(r4) : (f4[r4 + 4 >> 2] = s4 + 1, s4 = i4[0 | s4]), k5 & (t3 = i4[s4 + 121329 | 0]) >>> 0 < g5 >>> 0; ) ;
+                                            for (; k5 = (n3 = n3 << u4 | t3) >>> 0 < 134217728, (0 | (s4 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? s4 = ce4(r4) : (f4[r4 + 4 >> 2] = s4 + 1, s4 = i4[0 | s4]), k5 & (t3 = i4[s4 + 121329 | 0]) >>> 0 < g5 >>> 0; ) ;
                                             k5 = n3;
                                           }
                                           if (!(g5 >>> 0 <= t3 >>> 0 || (x3 = 31 & u4, (63 & u4) >>> 0 >= 32 ? (n3 = 0, x3 = -1 >>> x3 | 0) : x3 = (n3 = -1 >>> x3 | 0) | (1 << x3) - 1 << 32 - x3, !n3 & k5 >>> 0 > x3 >>> 0))) for (; ; ) {
-                                            if (p4 = 255 & t3, t3 = k5, s4 = 31 & u4, (63 & u4) >>> 0 >= 32 ? (o4 = t3 << s4, s4 = 0) : (o4 = (1 << s4) - 1 & t3 >>> 32 - s4 | o4 << s4, s4 = t3 << s4), k5 = p4 | s4, (0 | (s4 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? s4 = ce3(r4) : (f4[r4 + 4 >> 2] = s4 + 1, s4 = i4[0 | s4]), g5 >>> 0 <= (t3 = i4[s4 + 121329 | 0]) >>> 0) break o;
+                                            if (p4 = 255 & t3, t3 = k5, s4 = 31 & u4, (63 & u4) >>> 0 >= 32 ? (o4 = t3 << s4, s4 = 0) : (o4 = (1 << s4) - 1 & t3 >>> 32 - s4 | o4 << s4, s4 = t3 << s4), k5 = p4 | s4, (0 | (s4 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? s4 = ce4(r4) : (f4[r4 + 4 >> 2] = s4 + 1, s4 = i4[0 | s4]), g5 >>> 0 <= (t3 = i4[s4 + 121329 | 0]) >>> 0) break o;
                                             if (!((0 | n3) == (0 | o4) & k5 >>> 0 <= x3 >>> 0 | n3 >>> 0 > o4 >>> 0)) break;
                                           }
                                         }
                                       }
                                       if (!(i4[s4 + 121329 | 0] >= g5 >>> 0)) {
-                                        for (; (0 | (s4 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? s4 = ce3(r4) : (f4[r4 + 4 >> 2] = s4 + 1, s4 = i4[0 | s4]), i4[s4 + 121329 | 0] < g5 >>> 0; ) ;
+                                        for (; (0 | (s4 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? s4 = ce4(r4) : (f4[r4 + 4 >> 2] = s4 + 1, s4 = i4[0 | s4]), i4[s4 + 121329 | 0] < g5 >>> 0; ) ;
                                         f4[56798] = 68, D3 = 0, k5 = -1, o4 = -1;
                                       }
                                     }
@@ -57433,7 +57433,7 @@ var b = { Memory: function(A3) {
                                   if (s4 = 0, !(g5 = IA2(t3))) break I;
                                   for (; ; ) {
                                     for (A6 = g5; ; ) {
-                                      if ((0 | (g5 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? g5 = ce3(r4) : (f4[r4 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5]), !i4[33 + (g5 + C3 | 0) | 0]) {
+                                      if ((0 | (g5 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? g5 = ce4(r4) : (f4[r4 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5]), !i4[33 + (g5 + C3 | 0) | 0]) {
                                         t3 = 0, w4 = A6;
                                         break s;
                                       }
@@ -57445,13 +57445,13 @@ var b = { Memory: function(A3) {
                                   break r;
                                 }
                                 if (s4 = 0, B3) for (; ; ) {
-                                  if ((0 | (A6 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? A6 = ce3(r4) : (f4[r4 + 4 >> 2] = A6 + 1, A6 = i4[0 | A6]), !i4[33 + (A6 + C3 | 0) | 0]) {
+                                  if ((0 | (A6 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? A6 = ce4(r4) : (f4[r4 + 4 >> 2] = A6 + 1, A6 = i4[0 | A6]), !i4[33 + (A6 + C3 | 0) | 0]) {
                                     t3 = 0, w4 = A6 = B3;
                                     break s;
                                   }
                                   a3[s4 + B3 | 0] = A6, s4 = s4 + 1 | 0;
                                 }
-                                for (; (0 | (A6 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? A6 = ce3(r4) : (f4[r4 + 4 >> 2] = A6 + 1, A6 = i4[0 | A6]), i4[33 + (A6 + C3 | 0) | 0]; ) ;
+                                for (; (0 | (A6 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? A6 = ce4(r4) : (f4[r4 + 4 >> 2] = A6 + 1, A6 = i4[0 | A6]), i4[33 + (A6 + C3 | 0) | 0]; ) ;
                                 A6 = 0, w4 = 0, t3 = 0;
                               } else {
                                 if (g5 = B3, c4 && !(g5 = IA2(t3 << 2))) break I;
@@ -57459,7 +57459,7 @@ var b = { Memory: function(A3) {
                                   A6 = g5;
                                   t: {
                                     for (; ; ) {
-                                      if ((0 | (g5 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? g5 = ce3(r4) : (f4[r4 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5]), !i4[33 + (g5 + C3 | 0) | 0]) break t;
+                                      if ((0 | (g5 = f4[r4 + 4 >> 2])) == f4[r4 + 104 >> 2] ? g5 = ce4(r4) : (f4[r4 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5]), !i4[33 + (g5 + C3 | 0) | 0]) break t;
                                       a3[C3 + 27 | 0] = g5, k5 = C3 + 28 | 0, g5 = f4[(n3 = (g5 = C3 + 296 | 0) || 228604) >> 2];
                                       n: {
                                         k: {
@@ -58892,7 +58892,7 @@ var b = { Memory: function(A3) {
                 }
                 r: if (pg2(e4, 87276, 3)) JA2(e4, 189088, C3 + 240 | 0);
                 else {
-                  if (c4 = 0, 223 & (s4 = i4[0 | (w4 = e4 + 3 | 0)])) for (; a3[(C3 + 240 | 0) + c4 | 0] = ar(s4 << 24 >> 24), c4 = c4 + 1 | 0, 223 & (s4 = i4[0 | (w4 = w4 + 1 | 0)]); ) ;
+                  if (c4 = 0, 223 & (s4 = i4[0 | (w4 = e4 + 3 | 0)])) for (; a3[(C3 + 240 | 0) + c4 | 0] = ar2(s4 << 24 >> 24), c4 = c4 + 1 | 0, 223 & (s4 = i4[0 | (w4 = w4 + 1 | 0)]); ) ;
                   a3[(r4 = C3 + 240 | 0) + c4 | 0] = 0, s4 = 0;
                   C: if (!((0 | (g5 = f4[34461])) <= 0)) {
                     for (; ; ) {
@@ -59557,7 +59557,7 @@ var b = { Memory: function(A3) {
                                         B3 = f4[t3 + 64 >> 2];
                                         break n;
                                       }
-                                      o4 = 0, br2(A6, 32, d4, 0, D3);
+                                      o4 = 0, br3(A6, 32, d4, 0, D3);
                                       break t;
                                     }
                                     f4[t3 + 12 >> 2] = 0, f4[t3 + 8 >> 2] = f4[t3 + 64 >> 2], B3 = t3 + 8 | 0, f4[t3 + 64 >> 2] = B3, w4 = -1;
@@ -59575,14 +59575,14 @@ var b = { Memory: function(A3) {
                                     if (c4) break e;
                                   }
                                   if (u4 = 61, (0 | o4) < 0) break g;
-                                  if (br2(A6, 32, d4, o4, D3), o4) for (u4 = 0, B3 = f4[t3 + 64 >> 2]; ; ) {
+                                  if (br3(A6, 32, d4, o4, D3), o4) for (u4 = 0, B3 = f4[t3 + 64 >> 2]; ; ) {
                                     if (!(c4 = f4[B3 >> 2])) break t;
                                     if ((u4 = (c4 = je2(t3 + 4 | 0, c4)) + u4 | 0) >>> 0 > o4 >>> 0) break t;
                                     if (kC(A6, t3 + 4 | 0, c4), B3 = B3 + 4 | 0, !(o4 >>> 0 > u4 >>> 0)) break;
                                   }
                                   else o4 = 0;
                                 }
-                                br2(A6, 32, d4, o4, 8192 ^ D3), o4 = (0 | o4) < (0 | d4) ? d4 : o4;
+                                br3(A6, 32, d4, o4, 8192 ^ D3), o4 = (0 | o4) < (0 | d4) ? d4 : o4;
                                 continue C;
                               }
                               if ((0 | w4) < 0 && h4) break r;
@@ -59615,7 +59615,7 @@ var b = { Memory: function(A3) {
                     }
                     if ((0 | (B3 = (0 | w4) > (0 | (E3 = u4 - c4 | 0)) ? w4 : E3)) > (2147483647 ^ x3)) break r;
                     if (u4 = 61, (0 | p4) < (0 | (o4 = (0 | (w4 = B3 + x3 | 0)) < (0 | d4) ? d4 : w4))) break g;
-                    br2(A6, 32, o4, w4, D3), kC(A6, v4, x3), br2(A6, 48, o4, w4, 65536 ^ D3), br2(A6, 48, B3, E3, 0), kC(A6, c4, E3), br2(A6, 32, o4, w4, 8192 ^ D3);
+                    br3(A6, 32, o4, w4, D3), kC(A6, v4, x3), br3(A6, 48, o4, w4, 65536 ^ D3), br3(A6, 48, B3, E3, 0), kC(A6, c4, E3), br3(A6, 32, o4, w4, 8192 ^ D3);
                     continue;
                   }
                   break;
@@ -59794,7 +59794,7 @@ var b = { Memory: function(A3) {
           E3 = g5 + 1536 | 0, V2 = Q3 = V2 - 336 | 0;
           e: if (!(!(A6 = f4[(w4 = g5 + 2944 | 0) + 4 >> 2]) | !i4[0 | A6])) {
             if ((0 | (D3 = Lg(A6))) >= 0) {
-              for (r4 = D3 >>> 0 >= 79 ? 79 : D3, k5 = 1; A6 = ar(a3[f4[w4 + 4 >> 2] + C3 | 0]), a3[(Q3 + 256 | 0) + C3 | 0] = A6, k5 = (45 == (255 & A6)) + k5 | 0, A6 = (0 | r4) != (0 | C3), C3 = C3 + 1 | 0, A6; ) ;
+              for (r4 = D3 >>> 0 >= 79 ? 79 : D3, k5 = 1; A6 = ar2(a3[f4[w4 + 4 >> 2] + C3 | 0]), a3[(Q3 + 256 | 0) + C3 | 0] = A6, k5 = (45 == (255 & A6)) + k5 | 0, A6 = (0 | r4) != (0 | C3), C3 = C3 + 1 | 0, A6; ) ;
               if (1 != (0 | k5)) break e;
             }
             k5 = 1;
@@ -60992,8 +60992,8 @@ var b = { Memory: function(A3) {
       }
       function HA2(A6, e4, g5) {
         var r4, C3 = 0, I4 = 0, b4 = 0, s4 = 0, t3 = 0, n3 = 0, k5 = 0, o4 = 0;
-        V2 = r4 = V2 - 288 | 0, 132848 != (0 | e4) && Pe2(132848, e4, 40), (0 | (C3 = A6 + 228 | 0)) != (0 | e4) && Pe2(C3, e4, 40), f4[r4 + 88 >> 2] = e4, f4[r4 + 84 >> 2] = 47, f4[r4 + 80 >> 2] = 137584, dg2(C3 = r4 + 96 | 0, 84089, r4 + 80 | 0), I4 = fr2(C3), (C3 = f4[A6 + 688 >> 2]) && (mA2(C3), f4[A6 + 688 >> 2] = 0), C3 = Ae3(r4 + 96 | 0, 84577);
-        A: if ((0 | I4) > 0 && C3) if (g5 = IA2(I4), f4[A6 + 688 >> 2] = g5, g5) if (n3 = Eg(g5, I4, C3), tr2(C3), n3 >>> 0 <= 1032) f4[r4 + 16 >> 2] = r4 + 96, eC(f4[30450], 85164, r4 + 16 | 0), g5 = 2;
+        V2 = r4 = V2 - 288 | 0, 132848 != (0 | e4) && Pe2(132848, e4, 40), (0 | (C3 = A6 + 228 | 0)) != (0 | e4) && Pe2(C3, e4, 40), f4[r4 + 88 >> 2] = e4, f4[r4 + 84 >> 2] = 47, f4[r4 + 80 >> 2] = 137584, dg2(C3 = r4 + 96 | 0, 84089, r4 + 80 | 0), I4 = fr3(C3), (C3 = f4[A6 + 688 >> 2]) && (mA2(C3), f4[A6 + 688 >> 2] = 0), C3 = Ae3(r4 + 96 | 0, 84577);
+        A: if ((0 | I4) > 0 && C3) if (g5 = IA2(I4), f4[A6 + 688 >> 2] = g5, g5) if (n3 = Eg(g5, I4, C3), tr3(C3), n3 >>> 0 <= 1032) f4[r4 + 16 >> 2] = r4 + 96, eC(f4[30450], 85164, r4 + 16 | 0), g5 = 2;
         else if (C3 = f4[A6 + 688 >> 2], g5 = f4[C3 + 4 >> 2], !(1024 != (0 | (I4 = f4[C3 >> 2])) | (0 | g5) <= 0) & (0 | g5) < 134217729) {
           C3 = g5 + C3 | 0, f4[A6 + 684 >> 2] = C3, o4 = ue(A6 + 5168 | 0, 0, 1024), ue(A6 + 7664 | 0, 0, 260), ue(A6 + 7924 | 0, 255, 256), ue(A6 + 4788 | 0, 0, 380), ue(A6 + 6192 | 0, 0, 512);
           e: if (7 != (0 | (g5 = i4[0 | C3]))) for (; ; ) {
@@ -61046,10 +61046,10 @@ var b = { Memory: function(A3) {
           }
           g5 = 0, (0 | (A6 = f4[A6 + 324 >> 2])) <= 0 | A6 >>> 0 <= n3 >>> 0 || (f4[r4 + 48 >> 2] = e4, eC(f4[30450], 85519, r4 + 48 | 0));
         } else f4[r4 + 40 >> 2] = g5, f4[r4 + 36 >> 2] = I4, f4[r4 + 32 >> 2] = r4 + 96, eC(f4[30450], 85349, r4 + 32 | 0), g5 = 2;
-        else tr2(C3), g5 = 3;
+        else tr3(C3), g5 = 3;
         else {
           if (g5 || (f4[r4 >> 2] = r4 + 96, eC(f4[30450], 84963, r4)), g5 = 1, !C3) break A;
-          tr2(C3);
+          tr3(C3);
         }
         return V2 = r4 + 288 | 0, g5;
       }
@@ -61111,13 +61111,13 @@ var b = { Memory: function(A3) {
       }
       function FA2(A6, e4, g5) {
         var r4, C3, I4 = 0, b4 = 0, s4 = 0, t3 = 0, n3 = 0, k5 = 0, o4 = 0, B3 = 0, c4 = 0;
-        if (V2 = r4 = V2 - 1040 | 0, (0 | (b4 = Sg(A6, 589824, 0))) >= 0 && ((I4 = hr2(1, 2072)) ? f4[I4 + 8 >> 2] = b4 : (d3(0 | b4), I4 = 0)), C3 = I4, I4) {
+        if (V2 = r4 = V2 - 1040 | 0, (0 | (b4 = Sg(A6, 589824, 0))) >= 0 && ((I4 = hr3(1, 2072)) ? f4[I4 + 8 >> 2] = b4 : (d3(0 | b4), I4 = 0)), C3 = I4, I4) {
           A: if (I4 = yg2(C3)) for (c4 = f4[30450], B3 = (r4 + 96 | 0) + e4 | 0; ; ) {
             if ((0 | (b4 = f4[50303])) >= 348) {
               f4[r4 + 4 >> 2] = 350, f4[r4 >> 2] = b4 + 1, eC(c4, 91860, r4);
               break A;
             }
-            if (46 != i4[I4 + 19 | 0]) if (f4[r4 + 88 >> 2] = I4 + 19, f4[r4 + 84 >> 2] = 47, f4[r4 + 80 >> 2] = A6, dg2(I4 = r4 + 96 | 0, 91924, r4 + 80 | 0), -31 != (0 | (I4 = fr2(I4)))) {
+            if (46 != i4[I4 + 19 | 0]) if (f4[r4 + 88 >> 2] = I4 + 19, f4[r4 + 84 >> 2] = 47, f4[r4 + 80 >> 2] = A6, dg2(I4 = r4 + 96 | 0, 91924, r4 + 80 | 0), -31 != (0 | (I4 = fr3(I4)))) {
               if (!((0 | I4) <= 0) && (o4 = Ae3(r4 + 96 | 0, 85712))) {
                 s4 = 0, a3[r4 + 832 | 0] = 0, a3[r4 + 752 | 0] = 0, f4[r4 + 360 >> 2] = 0, f4[r4 + 356 >> 2] = 4, n3 = 0;
                 e: for (; ; ) {
@@ -61163,7 +61163,7 @@ var b = { Memory: function(A3) {
                   }
                   break;
                 }
-                a3[(r4 + 368 | 0) + n3 | 0] = 0, b4 = Hr2(132112, r4 + 752 | 0), s4 ? (t3 = Lg(B3) + n3 | 0, k5 = _A2((s4 = hr2(28 + (Lg(r4 + 832 | 0) + t3 | 0) | 0, 1)) + 24 | 0, r4 + 368 | 0, I4 = n3 + 1 | 0), f4[s4 + 4 >> 2] = k5, I4 = rg2(I4 + k5 | 0, B3), f4[s4 >> 2] = I4, f4[s4 + 8 >> 2] = I4, i4[r4 + 832 | 0] && (f4[s4 >> 2] = rg2(2 + (t3 + k5 | 0) | 0, r4 + 832 | 0)), I4 = f4[r4 + 360 >> 2], a3[s4 + 14 | 0] = 0, a3[s4 + 12 | 0] = b4, a3[s4 + 13 | 0] = I4, a3[s4 + 15 | 0] = f4[r4 + 356 >> 2], tr2(o4), I4 = f4[50303], f4[50303] = I4 + 1, f4[201216 + (I4 << 2) >> 2] = s4) : tr2(o4);
+                a3[(r4 + 368 | 0) + n3 | 0] = 0, b4 = Hr2(132112, r4 + 752 | 0), s4 ? (t3 = Lg(B3) + n3 | 0, k5 = _A2((s4 = hr3(28 + (Lg(r4 + 832 | 0) + t3 | 0) | 0, 1)) + 24 | 0, r4 + 368 | 0, I4 = n3 + 1 | 0), f4[s4 + 4 >> 2] = k5, I4 = rg2(I4 + k5 | 0, B3), f4[s4 >> 2] = I4, f4[s4 + 8 >> 2] = I4, i4[r4 + 832 | 0] && (f4[s4 >> 2] = rg2(2 + (t3 + k5 | 0) | 0, r4 + 832 | 0)), I4 = f4[r4 + 360 >> 2], a3[s4 + 14 | 0] = 0, a3[s4 + 12 | 0] = b4, a3[s4 + 13 | 0] = I4, a3[s4 + 15 | 0] = f4[r4 + 356 >> 2], tr3(o4), I4 = f4[50303], f4[50303] = I4 + 1, f4[201216 + (I4 << 2) >> 2] = s4) : tr3(o4);
               }
             } else FA2(r4 + 96 | 0, e4, g5);
             if (!(I4 = yg2(C3))) break;
@@ -61182,7 +61182,7 @@ var b = { Memory: function(A3) {
               if (r4 = Ae3(A6, 84577)) {
                 if (-1 == (0 | Jr2(r4, 20))) break e;
                 if (b4 = Tr2(r4), C3 = Tr2(r4), t3 = Tr2(r4), !(65537 != (0 | b4) | (0 | C3) != f4[50754]) & (0 | t3) == C3 << 1) break g;
-                tr2(r4), I3[g5 + 256 >> 1] = i4[84864] | i4[84865] << 8, A6 = i4[84852] | i4[84853] << 8 | i4[84854] << 16 | i4[84855] << 24, f4[g5 + 240 >> 2] = i4[84848] | i4[84849] << 8 | i4[84850] << 16 | i4[84851] << 24, f4[g5 + 244 >> 2] = A6, A6 = i4[84860] | i4[84861] << 8 | i4[84862] << 16 | i4[84863] << 24, f4[g5 + 248 >> 2] = i4[84856] | i4[84857] << 8 | i4[84858] << 16 | i4[84859] << 24, f4[g5 + 252 >> 2] = A6, V2 = b4 = V2 - 16 | 0;
+                tr3(r4), I3[g5 + 256 >> 1] = i4[84864] | i4[84865] << 8, A6 = i4[84852] | i4[84853] << 8 | i4[84854] << 16 | i4[84855] << 24, f4[g5 + 240 >> 2] = i4[84848] | i4[84849] << 8 | i4[84850] << 16 | i4[84851] << 24, f4[g5 + 244 >> 2] = A6, A6 = i4[84860] | i4[84861] << 8 | i4[84862] << 16 | i4[84863] << 24, f4[g5 + 248 >> 2] = i4[84856] | i4[84857] << 8 | i4[84858] << 16 | i4[84859] << 24, f4[g5 + 252 >> 2] = A6, V2 = b4 = V2 - 16 | 0;
                 r: {
                   if ((r4 = Lg(A6 = g5 + 240 | 0)) >>> 0 >= 6 && !pg2(t3 = (A6 + r4 | 0) - 6 | 0, 84274, 6)) {
                     for (k5 = 100; ; ) {
@@ -61197,30 +61197,30 @@ var b = { Memory: function(A3) {
                 V2 = b4 + 16 | 0, (0 | r4) < 0 || iC(r4);
               }
               if (!(r4 = Ae3(A6, 84577))) {
-                A6 = sr(0, f4[56798], A6);
+                A6 = sr2(0, f4[56798], A6);
                 break A;
               }
             }
-            if ((0 | (b4 = fr2(A6))) < 0) {
-              tr2(r4), A6 = sr(0, 0 - b4 | 0, A6);
+            if ((0 | (b4 = fr3(A6))) < 0) {
+              tr3(r4), A6 = sr2(0, 0 - b4 | 0, A6);
               break A;
             }
             if (-1 == (0 | Jr2(r4, 0))) {
-              e4 = f4[56798], tr2(r4), A6 = sr(0, e4, A6);
+              e4 = f4[56798], tr3(r4), A6 = sr2(0, e4, A6);
               break A;
             }
             if (!(C3 = OA2(f4[(t3 = 136280 + (e4 << 4) | 0) >> 2], b4))) {
-              tr2(r4), A6 = 48;
+              tr3(r4), A6 = 48;
               break A;
             }
             if ((0 | Eg(C3, b4, r4)) != (0 | b4)) {
-              e4 = f4[56798], tr2(r4), i4[g5 + 240 | 0] && Xr2(g5 + 240 | 0), mA2(C3), A6 = sr(0, e4, A6);
+              e4 = f4[56798], tr3(r4), i4[g5 + 240 | 0] && Xr2(g5 + 240 | 0), mA2(C3), A6 = sr2(0, e4, A6);
               break A;
             }
-            tr2(r4), i4[g5 + 240 | 0] && Xr2(g5 + 240 | 0), f4[136276 + (e4 << 4) >> 2] = (i4[C3 + 40 | 0] | i4[C3 + 41 | 0] << 8 | i4[C3 + 42 | 0] << 16 | i4[C3 + 43 | 0] << 24) / 2, f4[t3 >> 2] = C3, A6 = 0;
+            tr3(r4), i4[g5 + 240 | 0] && Xr2(g5 + 240 | 0), f4[136276 + (e4 << 4) >> 2] = (i4[C3 + 40 | 0] | i4[C3 + 41 | 0] << 8 | i4[C3 + 42 | 0] << 16 | i4[C3 + 43 | 0] << 24) / 2, f4[t3 >> 2] = C3, A6 = 0;
             break A;
           }
-          e4 = f4[56798], tr2(r4), A6 = sr(0, e4, A6);
+          e4 = f4[56798], tr3(r4), A6 = sr2(0, e4, A6);
         } else A6 = 28;
         return V2 = g5 + 352 | 0, A6;
       }
@@ -61611,7 +61611,7 @@ var b = { Memory: function(A3) {
               e: if (21 == (0 | n3)) {
                 g: if (32 == (0 | (C3 = i4[0 | A6])) | C3 - 9 >>> 0 < 5) r4 = I4;
                 else if (r4 = I4, C3) for (; ; ) {
-                  if (a3[0 | r4] = ar(C3), r4 = r4 + 1 | 0, 32 == (0 | (C3 = i4[0 | (A6 = A6 + 1 | 0)])) | C3 - 9 >>> 0 < 5) break g;
+                  if (a3[0 | r4] = ar2(C3), r4 = r4 + 1 | 0, 32 == (0 | (C3 = i4[0 | (A6 = A6 + 1 | 0)])) | C3 - 9 >>> 0 < 5) break g;
                   if (!C3) break;
                 }
                 if (a3[0 | r4] = 0, !C3) {
@@ -61633,14 +61633,14 @@ var b = { Memory: function(A3) {
           e: {
             g: {
               r: {
-                C: switch ((0 | (g5 = f4[A6 + 4 >> 2])) == f4[A6 + 104 >> 2] ? g5 = ce3(A6) : (f4[A6 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5]), g5 - 43 | 0) {
+                C: switch ((0 | (g5 = f4[A6 + 4 >> 2])) == f4[A6 + 104 >> 2] ? g5 = ce4(A6) : (f4[A6 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5]), g5 - 43 | 0) {
                   case 0:
                   case 2:
                     break C;
                   default:
                     break r;
                 }
-                if (a4 = 45 == (0 | g5), I4 = !e4, (0 | (g5 = f4[A6 + 4 >> 2])) == f4[A6 + 104 >> 2] ? g5 = ce3(A6) : (f4[A6 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5]), I4 | (e4 = g5 - 58 | 0) >>> 0 > 4294967285) break g;
+                if (a4 = 45 == (0 | g5), I4 = !e4, (0 | (g5 = f4[A6 + 4 >> 2])) == f4[A6 + 104 >> 2] ? g5 = ce4(A6) : (f4[A6 + 4 >> 2] = g5 + 1, g5 = i4[0 | g5]), I4 | (e4 = g5 - 58 | 0) >>> 0 > 4294967285) break g;
                 if (f4[A6 + 116 >> 2] < 0) break e;
                 f4[A6 + 4 >> 2] = f4[A6 + 4 >> 2] - 1;
                 break e;
@@ -61649,14 +61649,14 @@ var b = { Memory: function(A3) {
             }
             if (!(e4 >>> 0 < 4294967286)) {
               if ((e4 = g5 - 48 | 0) >>> 0 < 10) {
-                for (; C3 = (0 | (r4 = (r4 = G3(r4, 10) + g5 | 0) - 48 | 0)) < 214748364, (0 | (e4 = f4[A6 + 4 >> 2])) == f4[A6 + 104 >> 2] ? g5 = ce3(A6) : (f4[A6 + 4 >> 2] = e4 + 1, g5 = i4[0 | e4]), C3 & (e4 = g5 - 48 | 0) >>> 0 <= 9; ) ;
+                for (; C3 = (0 | (r4 = (r4 = G3(r4, 10) + g5 | 0) - 48 | 0)) < 214748364, (0 | (e4 = f4[A6 + 4 >> 2])) == f4[A6 + 104 >> 2] ? g5 = ce4(A6) : (f4[A6 + 4 >> 2] = e4 + 1, g5 = i4[0 | e4]), C3 & (e4 = g5 - 48 | 0) >>> 0 <= 9; ) ;
                 C3 = r4 >> 31;
               }
               g: if (!(e4 >>> 0 >= 10)) for (; ; ) {
-                if (e4 = (r4 = Cr2(r4, C3, 10, 0)) + g5 | 0, g5 = U3, g5 = e4 >>> 0 < r4 >>> 0 ? g5 + 1 | 0 : g5, r4 = e4 - 48 | 0, C3 = g5 - (e4 >>> 0 < 48) | 0, (0 | (e4 = f4[A6 + 4 >> 2])) == f4[A6 + 104 >> 2] ? g5 = ce3(A6) : (f4[A6 + 4 >> 2] = e4 + 1, g5 = i4[0 | e4]), (e4 = g5 - 48 | 0) >>> 0 > 9) break g;
+                if (e4 = (r4 = Cr2(r4, C3, 10, 0)) + g5 | 0, g5 = U3, g5 = e4 >>> 0 < r4 >>> 0 ? g5 + 1 | 0 : g5, r4 = e4 - 48 | 0, C3 = g5 - (e4 >>> 0 < 48) | 0, (0 | (e4 = f4[A6 + 4 >> 2])) == f4[A6 + 104 >> 2] ? g5 = ce4(A6) : (f4[A6 + 4 >> 2] = e4 + 1, g5 = i4[0 | e4]), (e4 = g5 - 48 | 0) >>> 0 > 9) break g;
                 if (!(r4 >>> 0 < 2061584302 & (0 | C3) <= 21474836 | (0 | C3) < 21474836)) break;
               }
-              if (e4 >>> 0 < 10) for (; (0 | (e4 = f4[A6 + 4 >> 2])) == f4[A6 + 104 >> 2] ? e4 = ce3(A6) : (f4[A6 + 4 >> 2] = e4 + 1, e4 = i4[0 | e4]), e4 - 48 >>> 0 < 10; ) ;
+              if (e4 >>> 0 < 10) for (; (0 | (e4 = f4[A6 + 4 >> 2])) == f4[A6 + 104 >> 2] ? e4 = ce4(A6) : (f4[A6 + 4 >> 2] = e4 + 1, e4 = i4[0 | e4]), e4 - 48 >>> 0 < 10; ) ;
               (0 | (e4 = f4[A6 + 116 >> 2])) > 0 | (0 | e4) >= 0 && (f4[A6 + 4 >> 2] = f4[A6 + 4 >> 2] - 1), A6 = r4, r4 = a4 ? 0 - A6 | 0 : A6, C3 = a4 ? 0 - (!!(0 | A6) + C3 | 0) | 0 : C3;
               break A;
             }
@@ -62014,7 +62014,7 @@ var b = { Memory: function(A3) {
       function fe3() {
         vr2(), f4[55928] = 0, f4[55926] = 0, f4[55927] = 0, f4[55924] = 0, f4[56244] = 0, f4[56245] = 0, f4[56246] = 0, f4[56247] = 0, f4[56260] = 0, f4[56261] = 0, f4[56262] = 0, f4[56263] = 0, f4[56276] = 0, f4[56277] = 0, f4[56278] = 0, f4[56279] = 0, f4[55974] = 0, f4[55975] = 0, f4[55972] = 0, f4[55973] = 0, f4[55988] = 0, f4[55989] = 0, f4[55990] = 0, f4[55991] = 0, f4[56004] = 0, f4[56005] = 0, f4[56006] = 0, f4[56007] = 0, f4[56020] = 0, f4[56021] = 0, f4[56022] = 0, f4[56023] = 0, f4[56036] = 0, f4[56037] = 0, f4[56038] = 0, f4[56039] = 0, f4[56052] = 0, f4[56053] = 0, f4[56054] = 0, f4[56055] = 0, f4[56068] = 0, f4[56069] = 0, f4[56070] = 0, f4[56071] = 0, f4[56086] = 0, f4[56087] = 0, f4[56084] = 0, f4[56085] = 0, f4[56102] = 0, f4[56103] = 0, f4[56100] = 0, f4[56101] = 0, f4[56118] = 0, f4[56119] = 0, f4[56116] = 0, f4[56117] = 0, f4[56134] = 0, f4[56135] = 0, f4[56132] = 0, f4[56133] = 0, f4[56150] = 0, f4[56151] = 0, f4[56148] = 0, f4[56149] = 0, f4[56166] = 0, f4[56167] = 0, f4[56164] = 0, f4[56165] = 0, f4[56182] = 0, f4[56183] = 0, f4[56180] = 0, f4[56181] = 0, f4[56198] = 0, f4[56199] = 0, f4[56196] = 0, f4[56197] = 0, f4[56214] = 0, f4[56215] = 0, f4[56212] = 0, f4[56213] = 0, f4[56230] = 0, f4[56231] = 0, f4[56228] = 0, f4[56229] = 0;
       }
-      function ie3(A6, e4) {
+      function ie4(A6, e4) {
         var g5 = 0, r4 = 0, C3 = 0, a4 = 0, I4 = 0, i5 = 0, b4 = 0, s4 = 0, t3 = 0, n3 = 0;
         A: {
           if ((0 | (a4 = f4[A6 + 4 >> 2])) == f4[A6 >> 2]) if ((I4 = f4[A6 + 8 >> 2]) >>> 0 < (g5 = f4[A6 + 12 >> 2]) >>> 0) g5 = (C3 = (1 + (g5 - I4 >> 2) | 0) / 2 << 2) + I4 | 0, (0 | a4) != (0 | I4) && (Qe(g5 = g5 - (r4 = I4 - a4 | 0) | 0, a4, r4), a4 = f4[A6 + 8 >> 2]), f4[A6 + 4 >> 2] = g5, f4[A6 + 8 >> 2] = C3 + a4;
@@ -62031,7 +62031,7 @@ var b = { Memory: function(A3) {
         }
         Lr2(), k4();
       }
-      function be3(A6, e4, g5) {
+      function be4(A6, e4, g5) {
         var r4 = 0, C3 = 0, a4 = 0, I4 = 0, f5 = 0, i5 = 0, b4 = 0, s4 = 0, t3 = 0;
         A: {
           e: {
@@ -62090,7 +62090,7 @@ var b = { Memory: function(A3) {
         }
         Lr2(), k4();
       }
-      function te2(A6, e4) {
+      function te3(A6, e4) {
         var g5, r4 = 0, C3 = 0, I4 = 0, b4 = 0, s4 = 0;
         C3 = 189088, V2 = g5 = V2 - 320 | 0, f4[g5 + 312 >> 2] = 0, I4 = zA2(A6, b4 = rg2(g5 + 112 | 0, 189088), g5, g5 + 316 | 0, g5 + 312 | 0, 0), r4 = f4[g5 + 316 >> 2];
         A: if ((0 | e4) <= 3) {
@@ -62111,7 +62111,7 @@ var b = { Memory: function(A3) {
         if (A6 = i4[0 | b4]) for (e4 = 1; r4 = f4[144464 + ((255 & A6) << 2) >> 2], 2 != i4[r4 + 11 | 0] | 16 & i4[r4 + 6 | 0] || (I4 = 255 & (r4 = a3[e4 + g5 | 0]), (0 | r4) < 2 && I4 || (a3[0 | C3] = i4[I4 + 94151 | 0], C3 = C3 + 1 | 0, A6 = i4[0 | b4]), e4 = e4 + 1 | 0), a3[0 | C3] = A6, C3 = C3 + 1 | 0, A6 = i4[0 | (b4 = b4 + 1 | 0)]; ) ;
         a3[0 | C3] = 0, V2 = g5 + 320 | 0;
       }
-      function ne3(A6) {
+      function ne4(A6) {
         var e4 = 0, g5 = 0, r4 = 0, C3 = 0, a4 = 0, I4 = 0;
         g5 = e4 = f4[(A6 |= 0) >> 2], f4[A6 >> 2] = e4 + 1;
         A: {
@@ -62168,7 +62168,7 @@ var b = { Memory: function(A3) {
         var C3, b4, s4 = 0, t3 = 0, n3 = 0, k5 = 0, o4 = 0, B3 = 0;
         if (V2 = C3 = V2 - 432 | 0, !(!r4 | !(536870912 & (b4 = gA2(A6, e4, g5, r4)))) && (I3[C3 + 48 >> 1] = 8192, r4 = rg2(C3 + 48 | 2, r4), i4[0 | r4])) {
           for (n3 = C3 + 224 | 0, s4 = 1, k5 = 200; ; ) {
-            if (Te(C3 + 44 | 0, r4), e4 = nr(f4[C3 + 44 >> 2]), t3 = f4[g5 >> 2], e4 ? (f4[g5 >> 2] = 2 | t3, Fg(ar(f4[C3 + 44 >> 2]), r4)) : f4[g5 >> 2] = -3 & t3, B3 = f4[33264], gA2(A6, r4, g5, 0), 1 & s4 ? (f4[C3 + 16 >> 2] = 189088, t3 = Gg(n3, k5, 84130, C3 + 16 | 0)) : (f4[C3 + 32 >> 2] = 15, f4[C3 + 36 >> 2] = 189088, t3 = Gg(n3, k5, 84434, C3 + 32 | 0)), s4 = (e4 = f4[33264]) + 1 | 0, f4[33264] = s4, e4 >>> 0 <= 2147483646) {
+            if (Te(C3 + 44 | 0, r4), e4 = nr(f4[C3 + 44 >> 2]), t3 = f4[g5 >> 2], e4 ? (f4[g5 >> 2] = 2 | t3, Fg(ar2(f4[C3 + 44 >> 2]), r4)) : f4[g5 >> 2] = -3 & t3, B3 = f4[33264], gA2(A6, r4, g5, 0), 1 & s4 ? (f4[C3 + 16 >> 2] = 189088, t3 = Gg(n3, k5, 84130, C3 + 16 | 0)) : (f4[C3 + 32 >> 2] = 15, f4[C3 + 36 >> 2] = 189088, t3 = Gg(n3, k5, 84434, C3 + 32 | 0)), s4 = (e4 = f4[33264]) + 1 | 0, f4[33264] = s4, e4 >>> 0 <= 2147483646) {
               for (; ; ) if (e4 = r4, r4 = r4 + 1 | 0, 32 == (0 | (o4 = a3[0 | e4])) | o4 - 9 >>> 0 < 5) {
                 for (; e4 = (r4 = e4) + 1 | 0, 32 == (0 | (o4 = a3[0 | r4])) | o4 - 9 >>> 0 < 5; ) ;
                 if (s4 = s4 - 1 | 0, f4[33264] = s4, !((0 | s4) > 0)) break;
@@ -62239,7 +62239,7 @@ var b = { Memory: function(A3) {
         }
         return V2 = e4 + 48 | 0, I4;
       }
-      function ce3(A6) {
+      function ce4(A6) {
         var e4 = 0, g5 = 0, r4 = 0, C3 = 0, I4 = 0, i5 = 0, b4 = 0, s4 = 0, t3 = 0;
         s4 = !!((e4 = f4[A6 + 112 >> 2]) | (r4 = f4[A6 + 116 >> 2])), C3 = e4, i5 = e4 = (I4 = f4[A6 + 4 >> 2]) - (b4 = f4[A6 + 44 >> 2]) | 0, g5 = e4 + f4[A6 + 120 >> 2] | 0, e4 = f4[A6 + 124 >> 2] + (e4 >> 31) | 0;
         A: {
@@ -62402,9 +62402,9 @@ var b = { Memory: function(A3) {
         } else if (e4 = f4[g5 + 72 >> 2], f4[g5 + 72 >> 2] = e4 - 1 | e4, !I4) return a3[0 | A6] = 0, A6;
         return r4;
       }
-      function de(A6) {
+      function de2(A6) {
         var e4 = 0, g5 = 0, r4 = 0, C3 = 0, a4 = 0, I4 = 0, b4 = 0, s4 = 0;
-        if (e4 = G3(A6, 44), (0 | (A6 = f4[e4 + 137896 >> 2])) > 0 && de(A6 - 1 | 0), A6 = f4[36115], !((0 | (e4 = f4[(g5 = e4 + 137856 | 0) + 36 >> 2])) <= 0)) {
+        if (e4 = G3(A6, 44), (0 | (A6 = f4[e4 + 137896 >> 2])) > 0 && de2(A6 - 1 | 0), A6 = f4[36115], !((0 | (e4 = f4[(g5 = e4 + 137856 | 0) + 36 >> 2])) <= 0)) {
           if (C3 = f4[g5 + 32 >> 2], b4 = 1 & e4, 1 != (0 | e4)) for (s4 = -2 & e4, g5 = 0; e4 = i4[(a4 = (r4 = g5 << 4) + C3 | 0) + 10 | 0], f4[144464 + (e4 << 2) >> 2] = a4, (0 | A6) >= (0 | e4) ? e4 = A6 : ue(144464 + ((A6 = A6 + 1 | 0) << 2) | 0, 0, e4 - A6 << 2), A6 = i4[(r4 = (16 | r4) + C3 | 0) + 10 | 0], f4[144464 + (A6 << 2) >> 2] = r4, (0 | A6) <= (0 | e4) ? A6 = e4 : ue(144464 + ((e4 = e4 + 1 | 0) << 2) | 0, 0, A6 - e4 << 2), g5 = g5 + 2 | 0, (0 | s4) != (0 | (I4 = I4 + 2 | 0)); ) ;
           else g5 = 0;
           b4 && (e4 = i4[(g5 = (g5 << 4) + C3 | 0) + 10 | 0], f4[144464 + (e4 << 2) >> 2] = g5, (0 | A6) >= (0 | e4) || (ue(144464 + ((A6 = A6 + 1 | 0) << 2) | 0, 0, e4 - A6 << 2), A6 = e4));
@@ -62433,7 +62433,7 @@ var b = { Memory: function(A3) {
               if (f4[A6 + 48 >> 2]) {
                 if (f4[A6 + 16 >> 2]) break e;
               } else f4[A6 + 48 >> 2] = 80, f4[A6 + 28 >> 2] = 0, f4[A6 + 16 >> 2] = 0, f4[A6 + 20 >> 2] = 0, i5 = f4[A6 + 44 >> 2], f4[A6 + 44 >> 2] = a4;
-              if (g5 = -1, or(A6)) break A;
+              if (g5 = -1, or2(A6)) break A;
             }
             g5 = cA2(A6, e4, a4 + 200 | 0, a4 + 80 | 0, a4 + 160 | 0, r4, C3);
           }
@@ -62466,7 +62466,7 @@ var b = { Memory: function(A3) {
         }
         (0 | g5) >= 2 && (a3[0 | e4] = 11, e4 = e4 + 1 | 0), a3[0 | e4] = 0, V2 = C3 + 208 | 0;
       }
-      function he(A6, e4) {
+      function he2(A6, e4) {
         var g5 = 0;
         g5 = 0, A6 && (g5 = f4[50754], g5 = (A6 = (A6 = (0 | G3(f4[145712 + (e4 ? 12 : ((0 | A6) > 199) << 2) >> 2], A6)) / 256 | 0) >>> 0 > (e4 = f4[36430]) >>> 0 ? A6 : e4) >>> 0 <= 89999 ? (G3(A6, g5) >>> 0) / 1e3 | 0 : (G3(A6, (0 | g5) / 25 | 0) >>> 0) / 40 | 0), (0 | (A6 = f4[36440])) <= 0 || (0 | (e4 = f4[36424])) < 0 || (f4[(e4 = 216192 + (e4 << 4) | 0) + 4 >> 2] || (f4[e4 + 4 >> 2] = A6), f4[36440] = 0), f4[36426] = 0, f4[36439] = -1, f4[36455] = f4[50758], kA2(), f4[36427] = -1, A6 = 216192 + (f4[50758] << 4) | 0, f4[A6 >> 2] = 5, f4[A6 + 4 >> 2] = g5, A6 = f4[50758] + 1 | 0, f4[50758] = (0 | A6) <= 169 ? A6 : 0, f4[36426] = 0, f4[36438] && (f4[36438] = 0, A6 = 216192 + (f4[50758] << 4) | 0, f4[A6 >> 2] = 14, f4[A6 + 4 >> 2] = 0, A6 = f4[50758] + 1 | 0, f4[50758] = (0 | A6) <= 169 ? A6 : 0);
       }
@@ -62593,7 +62593,7 @@ var b = { Memory: function(A3) {
             }
             if (C3) break A;
           }
-          mg2(I4, s4), xg(g5, e4, r4, a4);
+          mg3(I4, s4), xg(g5, e4, r4, a4);
         }
         V2 = I4 + 240 | 0;
       }
@@ -62695,7 +62695,7 @@ var b = { Memory: function(A3) {
       }
       function Le2(A6, e4, g5, r4) {
         var C3, a4 = 0, I4 = 0;
-        return V2 = C3 = V2 - 224 | 0, A6 ? (f4[C3 >> 2] = 137584, f4[C3 + 4 >> 2] = 47, f4[C3 + 8 >> 2] = e4, dg2(e4 = C3 + 16 | 0, 85430, C3), (0 | (a4 = fr2(e4))) < 0 ? e4 = sr(r4, 0 - a4 | 0, C3 + 16 | 0) : (e4 = Ae3(C3 + 16 | 0, 85659)) ? ((I4 = f4[A6 >> 2]) && mA2(I4), a4 ? (I4 = IA2(a4), f4[A6 >> 2] = I4, I4 ? (0 | Eg(I4, a4, e4)) == (0 | a4) ? (tr2(e4), e4 = 0, g5 && (f4[g5 >> 2] = a4)) : (g5 = f4[56798], tr2(e4), mA2(f4[A6 >> 2]), f4[A6 >> 2] = 0, e4 = sr(r4, g5, C3 + 16 | 0)) : (tr2(e4), e4 = 48)) : (e4 = 0, f4[A6 >> 2] = 0)) : e4 = sr(r4, f4[56798], C3 + 16 | 0)) : e4 = 28, V2 = C3 + 224 | 0, e4;
+        return V2 = C3 = V2 - 224 | 0, A6 ? (f4[C3 >> 2] = 137584, f4[C3 + 4 >> 2] = 47, f4[C3 + 8 >> 2] = e4, dg2(e4 = C3 + 16 | 0, 85430, C3), (0 | (a4 = fr3(e4))) < 0 ? e4 = sr2(r4, 0 - a4 | 0, C3 + 16 | 0) : (e4 = Ae3(C3 + 16 | 0, 85659)) ? ((I4 = f4[A6 >> 2]) && mA2(I4), a4 ? (I4 = IA2(a4), f4[A6 >> 2] = I4, I4 ? (0 | Eg(I4, a4, e4)) == (0 | a4) ? (tr3(e4), e4 = 0, g5 && (f4[g5 >> 2] = a4)) : (g5 = f4[56798], tr3(e4), mA2(f4[A6 >> 2]), f4[A6 >> 2] = 0, e4 = sr2(r4, g5, C3 + 16 | 0)) : (tr3(e4), e4 = 48)) : (e4 = 0, f4[A6 >> 2] = 0)) : e4 = sr2(r4, f4[56798], C3 + 16 | 0)) : e4 = 28, V2 = C3 + 224 | 0, e4;
       }
       function Te(A6, e4) {
         var g5 = 0, r4 = 0, C3 = 0, a4 = 0, I4 = 0;
@@ -62730,7 +62730,7 @@ var b = { Memory: function(A3) {
       }
       function Ue2(A6) {
         var e4, g5 = 0, r4 = 0, C3 = 0;
-        for (V2 = e4 = V2 - 96 | 0, oC(e4, A6, 60), Ag(e4, 1); C3 = ar(a3[0 | (r4 = e4 + g5 | 0)]), a3[0 | r4] = C3, g5 = g5 + 1 | 0, 255 & C3; ) ;
+        for (V2 = e4 = V2 - 96 | 0, oC(e4, A6, 60), Ag(e4, 1); C3 = ar2(a3[0 | (r4 = e4 + g5 | 0)]), a3[0 | r4] = C3, g5 = g5 + 1 | 0, 255 & C3; ) ;
         f4[e4 + 92 >> 2] = 0, f4[e4 + 84 >> 2] = 0, f4[e4 + 88 >> 2] = 0, f4[e4 + 76 >> 2] = 0, f4[e4 + 80 >> 2] = 0, f4[e4 + 72 >> 2] = A6;
         A: {
           e: {
@@ -62994,7 +62994,7 @@ var b = { Memory: function(A3) {
         var r4 = 0, C3 = 0, a4 = 0;
         A: {
           if (!(r4 = f4[g5 + 16 >> 2])) {
-            if (or(g5)) break A;
+            if (or2(g5)) break A;
             r4 = f4[g5 + 16 >> 2];
           }
           if (r4 - (a4 = f4[g5 + 20 >> 2]) >>> 0 < e4 >>> 0) return 0 | HC[f4[g5 + 36 >> 2]](g5, A6, e4);
@@ -63014,7 +63014,7 @@ var b = { Memory: function(A3) {
         }
         return C3;
       }
-      function bg2(A6) {
+      function bg3(A6) {
         var e4, g5 = 0, r4 = 0;
         A: {
           if ((0 | (e4 = f4[34064])) > 0) for (; ; ) {
@@ -63046,7 +63046,7 @@ var b = { Memory: function(A3) {
         }
         V2 = g5 + 16 | 0;
       }
-      function tg2(A6, e4, g5) {
+      function tg3(A6, e4, g5) {
         var r4, C3 = 0, I4 = 0, b4 = 0;
         if (V2 = r4 = V2 - 16 | 0, i4[0 | A6]) {
           for (b4 = f4[30450]; ; ) if (I4 = A6, A6 = A6 + 1 | 0, !(32 == (0 | (C3 = a3[0 | I4])) | C3 - 9 >>> 0 < 5)) {
@@ -63189,7 +63189,7 @@ var b = { Memory: function(A3) {
         if (g5 - 48 >>> 0 < 10) for (; r4 = 48 + (G3(r4, 10) - a3[0 | e4] | 0) | 0, A6 = a3[e4 + 1 | 0], e4 = e4 + 1 | 0, A6 - 48 >>> 0 < 10; ) ;
         return C3 ? r4 : 0 - r4 | 0;
       }
-      function ug2(A6, e4) {
+      function ug3(A6, e4) {
         var g5, r4, C3, a4 = 0;
         return V2 = g5 = V2 - 32 | 0, f4[e4 >> 2] = 0, f4[e4 + 4 >> 2] = 0, f4[(a4 = r4 = e4 + 24 | 0) >> 2] = 0, f4[a4 + 4 >> 2] = 0, f4[(a4 = C3 = e4 + 16 | 0) >> 2] = 0, f4[a4 + 4 >> 2] = 0, f4[(a4 = e4 + 8 | 0) >> 2] = 0, f4[a4 + 4 >> 2] = 0, f4[g5 + 28 >> 2] = e4 + 28, f4[g5 + 24 >> 2] = r4, f4[g5 + 20 >> 2] = e4 + 20, f4[g5 + 16 >> 2] = C3, f4[g5 + 12 >> 2] = e4 + 12, f4[g5 + 8 >> 2] = a4, f4[g5 + 4 >> 2] = e4 + 4, f4[g5 >> 2] = e4, A6 = aA2(A6, 84553, g5), V2 = g5 + 32 | 0, A6;
       }
@@ -63208,13 +63208,13 @@ var b = { Memory: function(A3) {
           if ((0 | bC(A6, I4 = (a4 = a4 - 4 | 0) - f4[((b4 = g5 - 2 | 0) << 2) + r4 >> 2] | 0, e4)) >= 0 && (0 | bC(A6, a4, e4)) >= 0) break A;
           if (s4 = I4, a4 = (I4 = (0 | bC(I4, a4, e4)) >= 0) ? s4 : a4, f4[(i5 << 2) + C3 >> 2] = a4, i5 = i5 + 1 | 0, !((0 | (g5 = I4 ? g5 - 1 | 0 : b4)) > 1)) break;
         }
-        mg2(C3, i5), V2 = C3 + 240 | 0;
+        mg3(C3, i5), V2 = C3 + 240 | 0;
       }
       function dg2(A6, e4, g5) {
         var r4, C3, I4, i5 = 0;
         return V2 = C3 = V2 - 16 | 0, f4[C3 + 12 >> 2] = g5, V2 = r4 = V2 - 160 | 0, _A2(I4 = r4 + 8 | 0, 124528, 144), f4[r4 + 52 >> 2] = A6, f4[r4 + 28 >> 2] = A6, i5 = (i5 = -2 - A6 | 0) >>> 0 > 2147483647 ? 2147483647 : i5, f4[r4 + 56 >> 2] = i5, A6 = A6 + i5 | 0, f4[r4 + 36 >> 2] = A6, f4[r4 + 24 >> 2] = A6, A6 = QC(I4, e4, g5), i5 && (e4 = f4[r4 + 28 >> 2], a3[e4 - ((0 | e4) == f4[r4 + 24 >> 2]) | 0] = 0), V2 = r4 + 160 | 0, V2 = C3 + 16 | 0, A6;
       }
-      function mg2(A6, e4) {
+      function mg3(A6, e4) {
         var g5, r4 = 0, C3 = 0, a4 = 0, I4 = 0, i5 = 0;
         if (r4 = 4, V2 = g5 = V2 - 256 | 0, (0 | e4) >= 2) for (f4[(i5 = (e4 << 2) + A6 | 0) >> 2] = g5; ; ) {
           for (a4 = r4 >>> 0 >= 256 ? 256 : r4, _A2(f4[i5 >> 2], f4[A6 >> 2], a4), C3 = 0; I4 = (C3 << 2) + A6 | 0, C3 = C3 + 1 | 0, _A2(f4[I4 >> 2], f4[(C3 << 2) + A6 >> 2], a4), f4[I4 >> 2] = f4[I4 >> 2] + a4, (0 | e4) != (0 | C3); ) ;
@@ -63300,7 +63300,7 @@ var b = { Memory: function(A3) {
           }
           return -1;
         }
-        return (A6 = (0 | e4) == (0 | g5)) ? -1 : ((0 | (A6 = A6 ? -1 : e4)) != f4[36114] && (f4[36115] = 0, de(A6), f4[36114] = A6, f4[36115] = f4[36115] + 1), e4);
+        return (A6 = (0 | e4) == (0 | g5)) ? -1 : ((0 | (A6 = A6 ? -1 : e4)) != f4[36114] && (f4[36115] = 0, de2(A6), f4[36114] = A6, f4[36115] = f4[36115] + 1), e4);
       }
       function Pg(A6, e4, g5, r4) {
         var C3 = 0, a4 = 0;
@@ -63363,7 +63363,7 @@ var b = { Memory: function(A3) {
         V2 = e4 = V2 - 16 | 0, a3[e4 + 15 | 0] = 10;
         A: {
           if (!(g5 = f4[A6 + 16 >> 2])) {
-            if (or(A6)) break A;
+            if (or2(A6)) break A;
             g5 = f4[A6 + 16 >> 2];
           }
           (0 | g5) == (0 | (g5 = f4[A6 + 20 >> 2])) | 10 == f4[A6 + 80 >> 2] ? HC[f4[A6 + 36 >> 2]](A6, e4 + 15 | 0, 1) : (f4[A6 + 20 >> 2] = g5 + 1, a3[0 | g5] = 10);
@@ -63482,7 +63482,7 @@ var b = { Memory: function(A3) {
         var g5 = 0;
         if (!(!A6 | f4[A6 >> 2] - 48 >>> 0 >= 10)) {
           if (f4[A6 >> 2] - 48 >>> 0 < 10) for (; g5 = (f4[A6 >> 2] + G3(g5, 10) | 0) - 48 | 0, f4[(A6 = A6 + 4 | 0) >> 2] - 48 >>> 0 < 10; ) ;
-          1 == (0 | e4) && (g5 = 115 == (0 | ar(f4[A6 >> 2])) ? G3(g5, 1e3) : g5);
+          1 == (0 | e4) && (g5 = 115 == (0 | ar2(f4[A6 >> 2])) ? G3(g5, 1e3) : g5);
         }
         return g5;
       }
@@ -63526,7 +63526,7 @@ var b = { Memory: function(A3) {
         var C3, a4, I4, f5, i5 = 0, b4 = 0;
         return f5 = G3(i5 = g5 >>> 16 | 0, b4 = A6 >>> 16 | 0), i5 = (65535 & (b4 = ((I4 = G3(C3 = 65535 & g5, a4 = 65535 & A6)) >>> 16 | 0) + G3(b4, C3) | 0)) + G3(i5, a4) | 0, U3 = (G3(e4, g5) + f5 | 0) + G3(A6, r4) + (b4 >>> 16) + (i5 >>> 16) | 0, 65535 & I4 | i5 << 16;
       }
-      function ar(A6) {
+      function ar2(A6) {
         var e4 = 0, g5 = 0, r4 = 0, C3 = 0;
         for (e4 = 2778; ; ) {
           if ((0 | (g5 = f4[1040 + ((r4 = (e4 + C3 | 0) / 2 | 0) << 4) >> 2])) == (0 | A6)) return (e4 = f4[1048 + (r4 << 4) >> 2]) || A6;
@@ -63542,7 +63542,7 @@ var b = { Memory: function(A3) {
         }
         return A6;
       }
-      function fr2(A6) {
+      function fr3(A6) {
         var e4, g5 = 0;
         return V2 = e4 = V2 - 112 | 0, (A6 = 0 | z2(0 | A6, 0 | e4)) >>> 0 >= 4294963201 && (f4[56798] = 0 - A6, A6 = -1), g5 = 0 - f4[56798] | 0, A6 || (g5 = -31, 16384 != (61440 & f4[e4 + 12 >> 2]) && (g5 = f4[e4 + 40 >> 2])), V2 = e4 + 112 | 0, A6 = g5;
       }
@@ -63557,7 +63557,7 @@ var b = { Memory: function(A3) {
           a3[A6 + 54 | 0] = 1, f4[A6 + 24 >> 2] = 2, f4[A6 + 36 >> 2] = f4[A6 + 36 >> 2] + 1;
         }
       }
-      function br2(A6, e4, g5, r4, C3) {
+      function br3(A6, e4, g5, r4, C3) {
         var a4;
         if (V2 = a4 = V2 - 256 | 0, !(73728 & C3 | (0 | g5) <= (0 | r4))) {
           if (ue(a4, 255 & e4, (g5 = (r4 = g5 - r4 | 0) >>> 0 < 256) ? r4 : 256), !g5) for (; kC(A6, a4, 256), (r4 = r4 - 256 | 0) >>> 0 > 255; ) ;
@@ -63565,7 +63565,7 @@ var b = { Memory: function(A3) {
         }
         V2 = a4 + 256 | 0;
       }
-      function sr(A6, e4, g5) {
+      function sr2(A6, e4, g5) {
         var r4 = 0;
         A: {
           if (A6) {
@@ -63580,7 +63580,7 @@ var b = { Memory: function(A3) {
         }
         return f4[r4 >> 2] = 0, f4[r4 + 4 >> 2] = $r2(g5), A6 = f4[A6 >> 2], f4[A6 + 8 >> 2] = 0, f4[A6 + 12 >> 2] = 0, e4;
       }
-      function tr2(A6) {
+      function tr3(A6) {
         var e4 = 0, g5 = 0;
         We2(A6), HC[f4[A6 + 12 >> 2]](A6), 1 & a3[0 | A6] || ((e4 = f4[A6 + 52 >> 2]) && (f4[e4 + 56 >> 2] = f4[A6 + 56 >> 2]), (g5 = f4[A6 + 56 >> 2]) && (f4[g5 + 52 >> 2] = e4), f4[56816] == (0 | A6) && (f4[56816] = g5), mA2(f4[A6 + 96 >> 2]), mA2(A6));
       }
@@ -63601,7 +63601,7 @@ var b = { Memory: function(A3) {
                 default:
                   break e;
               }
-              return (0 | ar(A6)) != (0 | A6);
+              return (0 | ar2(A6)) != (0 | A6);
             }
             return S2(A6, g5) >>> 15 & 1;
           }
@@ -63617,7 +63617,7 @@ var b = { Memory: function(A3) {
         }
         return _A2(C3 + e4 | 0, A6, r4), f4[33287] = g5, e4;
       }
-      function or(A6) {
+      function or2(A6) {
         var e4 = 0;
         return e4 = f4[A6 + 72 >> 2], f4[A6 + 72 >> 2] = e4 - 1 | e4, 8 & (e4 = f4[A6 >> 2]) ? (f4[A6 >> 2] = 32 | e4, -1) : (f4[A6 + 4 >> 2] = 0, f4[A6 + 8 >> 2] = 0, e4 = f4[A6 + 44 >> 2], f4[A6 + 28 >> 2] = e4, f4[A6 + 20 >> 2] = e4, f4[A6 + 16 >> 2] = e4 + f4[A6 + 48 >> 2], 0);
       }
@@ -63686,7 +63686,7 @@ var b = { Memory: function(A3) {
         var e4, g5;
         return (A6 = (e4 = f4[33175]) + (g5 = A6 + 7 & -8) | 0) >>> 0 <= e4 >>> 0 && g5 || A6 >>> 0 > r3.byteLength / 65536 << 16 >>> 0 && !(0 | y3(0 | A6)) ? (f4[56798] = 48, -1) : (f4[33175] = A6, e4);
       }
-      function ur(A6) {
+      function ur2(A6) {
         var e4 = 0;
         A: if (!((e4 = Je2(A6)) >>> 0 > 27)) {
           if (!(1 << e4 & 134259072)) {
@@ -63712,7 +63712,7 @@ var b = { Memory: function(A3) {
         var e4 = 0;
         return e4 = f4[A6 >> 2] - 1 | 0, (e4 = a3[121600 + (G3(0 - e4 & e4, 124511785) >>> 27 | 0) | 0]) || (A6 = f4[A6 + 4 >> 2], e4 = (A6 = a3[121600 + (G3(0 - A6 & A6, 124511785) >>> 27 | 0) | 0]) ? A6 + 32 | 0 : 0), e4;
       }
-      function mr(A6) {
+      function mr2(A6) {
         var e4 = 0, g5 = 0, r4 = 0;
         A: {
           if (!((e4 = Je2(A6)) >>> 0 > 27)) {
@@ -63738,7 +63738,7 @@ var b = { Memory: function(A3) {
         var A6, e4 = 0;
         (A6 = f4[56797]) && ((e4 = f4[A6 + 8 >> 2]) && HC[f4[f4[e4 >> 2] + 12 >> 2]](e4), (e4 = f4[A6 + 4 >> 2]) && HC[f4[f4[e4 >> 2] + 16 >> 2]](e4), mA2(A6)), f4[56797] = 0, f4[56797] = ZA2();
       }
-      function hr2(A6, e4) {
+      function hr3(A6, e4) {
         var g5 = 0;
         return A6 && (g5 = Cr2(A6, 0, e4, 0), (A6 | e4) >>> 0 < 65536 || (g5 = U3 ? -1 : g5)), !(A6 = IA2(g5)) | !(3 & i4[A6 - 4 | 0]) || ue(A6, 0, g5), A6;
       }
@@ -63842,10 +63842,10 @@ var b = { Memory: function(A3) {
       }
       function Sr2(A6, e4) {
         var g5 = 0;
-        return 73 == (0 | A6) && (g5 = 305, i4[e4 + 173 | 0]) || (g5 = ar(A6)), g5;
+        return 73 == (0 | A6) && (g5 = 305, i4[e4 + 173 | 0]) || (g5 = ar2(A6)), g5;
       }
       function qr2(A6) {
-        f4[36114] != (0 | A6) && (f4[36115] = 0, de(A6), f4[36114] = A6, f4[36115] = f4[36115] + 1);
+        f4[36114] != (0 | A6) && (f4[36115] = 0, de2(A6), f4[36114] = A6, f4[36115] = f4[36115] + 1);
       }
       function _r2(A6) {
         return A6 ? f4[34460] + A6 | 0 : (gC(85328, 20, f4[30450]), f4[32320]);
@@ -63891,7 +63891,7 @@ var b = { Memory: function(A3) {
         return A6 = _e(A6, e4), i4[0 | A6] == (255 & e4) ? A6 : 0;
       }
       function tC(A6, e4) {
-        return be3(A6, e4, 2147483647), U3 = R2, J3;
+        return be4(A6, e4, 2147483647), U3 = R2, J3;
       }
       function nC(A6) {
         return A6 ? 31 - D2(A6 - 1 ^ A6) | 0 : 32;
@@ -63930,7 +63930,7 @@ var b = { Memory: function(A3) {
         return f4[(A6 |= 0) >> 2];
       }
       function xC(A6, e4, g5) {
-        return be3(A6, e4, g5);
+        return be4(A6, e4, g5);
       }
       function dC(A6) {
         (A6 |= 0) && mA2(A6);
@@ -63958,8 +63958,8 @@ var b = { Memory: function(A3) {
         return e4 = f4[(A6 |= 0) >> 2], g5 = f4[e4 >> 2], f4[A6 >> 2] = e4 + 4, 0 | g5;
       }, function(A6) {
         var e4 = 0, g5 = 0;
-        return e4 = f4[(A6 |= 0) >> 2], 65533 == (0 | (g5 = ne3(A6))) && (f4[A6 >> 2] = e4 + 1, f4[A6 + 8 >> 2] = 1, g5 = 255 & (e4 = a3[0 | e4]), (0 | e4) >= 0 || (g5 = B2[(f4[A6 + 12 >> 2] + (g5 << 1) | 0) - 256 >> 1])), 0 | g5;
-      }, ne3, function(A6) {
+        return e4 = f4[(A6 |= 0) >> 2], 65533 == (0 | (g5 = ne4(A6))) && (f4[A6 >> 2] = e4 + 1, f4[A6 + 8 >> 2] = 1, g5 = 255 & (e4 = a3[0 | e4]), (0 | e4) >= 0 || (g5 = B2[(f4[A6 + 12 >> 2] + (g5 << 1) | 0) - 256 >> 1])), 0 | g5;
+      }, ne4, function(A6) {
         var e4, g5, r4 = 0;
         return (r4 = f4[4 + (A6 |= 0) >> 2]) >>> 0 <= (g5 = (e4 = f4[A6 >> 2]) + 1 | 0) >>> 0 ? (f4[A6 >> 2] = r4, 65533) : (f4[A6 >> 2] = g5, r4 = i4[0 | e4], f4[A6 >> 2] = e4 + 2, r4 | i4[e4 + 1 | 0] << 8);
       }, function(A6, e4) {
@@ -64080,7 +64080,7 @@ var b = { Memory: function(A3) {
               t3 = (0 | r4) > 0 ? r4 : 0;
             }
             if ((0 | (r4 = t3 + u4 | 0)) > (2147483647 ^ d4)) break A;
-            br2(A6, 32, g5, u4 = r4 + d4 | 0, C3), kC(A6, p4, d4), br2(A6, 48, g5, u4, 65536 ^ C3);
+            br3(A6, 32, g5, u4 = r4 + d4 | 0, C3), kC(A6, p4, d4), br3(A6, 48, g5, u4, 65536 ^ C3);
             g: {
               r: {
                 C: {
@@ -64112,14 +64112,14 @@ var b = { Memory: function(A3) {
                     if (kC(A6, t3, (0 | (I4 = B3 - t3 | 0)) > (0 | Q3) ? Q3 : I4), Q3 = Q3 - I4 | 0, l3 >>> 0 <= (k5 = k5 + 4 | 0) >>> 0) break a;
                     if (!((0 | Q3) >= 0)) break;
                   }
-                  br2(A6, 48, Q3 + 18 | 0, 18, 0), kC(A6, m4, M5 - m4 | 0);
+                  br3(A6, 48, Q3 + 18 | 0, 18, 0), kC(A6, m4, M5 - m4 | 0);
                   break g;
                 }
                 t3 = Q3;
               }
-              br2(A6, 48, t3 + 9 | 0, 9, 0);
+              br3(A6, 48, t3 + 9 | 0, 9, 0);
             }
-            br2(A6, 32, g5, u4, 8192 ^ C3), w4 = (0 | g5) < (0 | u4) ? u4 : g5;
+            br3(A6, 32, g5, u4, 8192 ^ C3), w4 = (0 | g5) < (0 | u4) ? u4 : g5;
             break A;
           }
           if (c4 = (I4 << 26 >> 31 & 9) + p4 | 0, !(r4 >>> 0 > 11)) {
@@ -64127,8 +64127,8 @@ var b = { Memory: function(A3) {
             e4 = 45 != i4[0 | c4] ? e4 + x3 - x3 : -(x3 + (-e4 - x3));
           }
           for ((0 | M5) == (0 | (t3 = Ug(((t3 = f4[s4 + 44 >> 2]) ^ (k5 = t3 >> 31)) - k5 | 0, 0, M5))) && (a3[s4 + 15 | 0] = 48, t3 = s4 + 15 | 0), l3 = 2 | d4, o4 = 32 & I4, k5 = f4[s4 + 44 >> 2], a3[0 | (Q3 = t3 - 2 | 0)] = I4 + 15, a3[t3 - 1 | 0] = (0 | k5) < 0 ? 45 : 43, t3 = 8 & C3, k5 = s4 + 16 | 0; I4 = k5, B3 = E2(e4) < 2147483648 ? ~~e4 : -2147483648, a3[0 | k5] = o4 | i4[B3 + 124512 | 0], !((0 | r4) > 0 | t3) & 0 == (e4 = 16 * (e4 - +(0 | B3))) | 1 != ((k5 = I4 + 1 | 0) - (s4 + 16 | 0) | 0) || (a3[I4 + 1 | 0] = 46, k5 = I4 + 2 | 0), 0 != e4; ) ;
-          w4 = -1, (2147483645 - (I4 = (t3 = M5 - Q3 | 0) + l3 | 0) | 0) < (0 | r4) || (br2(A6, 32, g5, I4 = (r4 = !r4 || ((o4 = k5 - (s4 + 16 | 0) | 0) - 2 | 0) >= (0 | r4) ? o4 = k5 - (s4 + 16 | 0) | 0 : r4 + 2 | 0) + I4 | 0, C3), kC(A6, c4, l3), br2(A6, 48, g5, I4, 65536 ^ C3), kC(A6, s4 + 16 | 0, o4), br2(A6, 48, r4 - o4 | 0, 0, 0), kC(A6, Q3, t3), br2(A6, 32, g5, I4, 8192 ^ C3), w4 = (0 | g5) < (0 | I4) ? I4 : g5);
-        } else br2(A6, 32, g5, t3 = d4 + 3 | 0, -65537 & C3), kC(A6, p4, d4), r4 = 32 & I4, kC(A6, e4 != e4 ? r4 ? 85596 : 85774 : r4 ? 85247 : 85460, 3), br2(A6, 32, g5, t3, 8192 ^ C3), w4 = (0 | g5) < (0 | t3) ? t3 : g5;
+          w4 = -1, (2147483645 - (I4 = (t3 = M5 - Q3 | 0) + l3 | 0) | 0) < (0 | r4) || (br3(A6, 32, g5, I4 = (r4 = !r4 || ((o4 = k5 - (s4 + 16 | 0) | 0) - 2 | 0) >= (0 | r4) ? o4 = k5 - (s4 + 16 | 0) | 0 : r4 + 2 | 0) + I4 | 0, C3), kC(A6, c4, l3), br3(A6, 48, g5, I4, 65536 ^ C3), kC(A6, s4 + 16 | 0, o4), br3(A6, 48, r4 - o4 | 0, 0, 0), kC(A6, Q3, t3), br3(A6, 32, g5, I4, 8192 ^ C3), w4 = (0 | g5) < (0 | I4) ? I4 : g5);
+        } else br3(A6, 32, g5, t3 = d4 + 3 | 0, -65537 & C3), kC(A6, p4, d4), r4 = 32 & I4, kC(A6, e4 != e4 ? r4 ? 85596 : 85774 : r4 ? 85247 : 85460, 3), br3(A6, 32, g5, t3, 8192 ^ C3), w4 = (0 | g5) < (0 | t3) ? t3 : g5;
         return V2 = s4 + 560 | 0, 0 | w4;
       }, function(A6, e4) {
         var g5;
@@ -64234,7 +64234,7 @@ var b = { Memory: function(A3) {
                       f4[s4 + 8 >> 2] = Or2(4096), se3(I4, s4 + 8 | 0);
                       break A;
                     }
-                    if (f4[s4 + 8 >> 2] = Or2(4096), ie3(I4, s4 + 8 | 0), e4 = f4[I4 + 4 >> 2], c4 = f4[e4 >> 2], C3 = e4 + 4 | 0, f4[I4 + 4 >> 2] = C3, (0 | (e4 = f4[I4 + 8 >> 2])) == f4[I4 + 12 >> 2]) if ((t3 = f4[I4 >> 2]) >>> 0 < C3 >>> 0) g5 = Qe((r4 = (1 + (C3 - t3 >> 2) | 0) / -2 << 2) + C3 | 0, C3, e4 = e4 - C3 | 0) + e4 | 0, f4[I4 + 8 >> 2] = g5, f4[I4 + 4 >> 2] = r4 + f4[I4 + 4 >> 2];
+                    if (f4[s4 + 8 >> 2] = Or2(4096), ie4(I4, s4 + 8 | 0), e4 = f4[I4 + 4 >> 2], c4 = f4[e4 >> 2], C3 = e4 + 4 | 0, f4[I4 + 4 >> 2] = C3, (0 | (e4 = f4[I4 + 8 >> 2])) == f4[I4 + 12 >> 2]) if ((t3 = f4[I4 >> 2]) >>> 0 < C3 >>> 0) g5 = Qe((r4 = (1 + (C3 - t3 >> 2) | 0) / -2 << 2) + C3 | 0, C3, e4 = e4 - C3 | 0) + e4 | 0, f4[I4 + 8 >> 2] = g5, f4[I4 + 4 >> 2] = r4 + f4[I4 + 4 >> 2];
                     else {
                       if ((g5 = (0 | e4) == (0 | t3) ? 1 : e4 - t3 >> 1) >>> 0 >= 1073741824) break r;
                       if (G4 = (r4 = g5 << 2) + (n3 = Or2(r4)) | 0, g5 = r4 = n3 + (-4 & g5) | 0, (0 | e4) != (0 | C3)) {
@@ -64253,7 +64253,7 @@ var b = { Memory: function(A3) {
                       e4 = C3;
                       break e;
                     }
-                    for (; ie3(s4 + 8 | 0, C3 = C3 - 4 | 0), f4[I4 + 4 >> 2] != (0 | C3); ) ;
+                    for (; ie4(s4 + 8 | 0, C3 = C3 - 4 | 0), f4[I4 + 4 >> 2] != (0 | C3); ) ;
                     break g;
                   }
                 }
@@ -64358,10 +64358,10 @@ var b = { Memory: function(A3) {
           V2 = e4 = (V2 = v4 = V2 - 16 | 0) - 80 | 0;
           A: {
             if (g5 = Hg(84292)) {
-              if (f4[e4 + 32 >> 2] = g5, Gg(137584, 160, 85959, e4 + 32 | 0), -31 == (0 | fr2(137584))) break A;
-              if (f4[e4 + 16 >> 2] = g5, Gg(137584, 160, 86031, e4 + 16 | 0), -31 == (0 | fr2(137584))) break A;
+              if (f4[e4 + 32 >> 2] = g5, Gg(137584, 160, 85959, e4 + 32 | 0), -31 == (0 | fr3(137584))) break A;
+              if (f4[e4 + 16 >> 2] = g5, Gg(137584, 160, 86031, e4 + 16 | 0), -31 == (0 | fr3(137584))) break A;
             }
-            (g5 = Hg(84619)) && (f4[e4 >> 2] = g5, Gg(137584, 160, 85959, e4), -31 == (0 | fr2(137584))) || (g5 = i4[84826] | i4[84827] << 8 | i4[84828] << 16 | i4[84829] << 24, f4[34396] = i4[84822] | i4[84823] << 8 | i4[84824] << 16 | i4[84825] << 24, f4[34397] = g5, I3[68804] = i4[84846] | i4[84847] << 8, g5 = i4[84842] | i4[84843] << 8 | i4[84844] << 16 | i4[84845] << 24, f4[34400] = i4[84838] | i4[84839] << 8 | i4[84840] << 16 | i4[84841] << 24, f4[34401] = g5, g5 = i4[84834] | i4[84835] << 8 | i4[84836] << 16 | i4[84837] << 24, f4[34398] = i4[84830] | i4[84831] << 8 | i4[84832] << 16 | i4[84833] << 24, f4[34399] = g5);
+            (g5 = Hg(84619)) && (f4[e4 >> 2] = g5, Gg(137584, 160, 85959, e4), -31 == (0 | fr3(137584))) || (g5 = i4[84826] | i4[84827] << 8 | i4[84828] << 16 | i4[84829] << 24, f4[34396] = i4[84822] | i4[84823] << 8 | i4[84824] << 16 | i4[84825] << 24, f4[34397] = g5, I3[68804] = i4[84846] | i4[84847] << 8, g5 = i4[84842] | i4[84843] << 8 | i4[84844] << 16 | i4[84845] << 24, f4[34400] = i4[84838] | i4[84839] << 8 | i4[84840] << 16 | i4[84841] << 24, f4[34401] = g5, g5 = i4[84834] | i4[84835] << 8 | i4[84836] << 16 | i4[84837] << 24, f4[34398] = i4[84830] | i4[84831] << 8 | i4[84832] << 16 | i4[84833] << 24, f4[34399] = g5);
           }
           if (V2 = e4 + 80 | 0, f4[v4 + 12 >> 2] = 0, C3 = v4 + 12 | 0, V2 = t3 = V2 - 16 | 0, f4[t3 + 12 >> 2] = 22050, Be2(85144) || Be2(85315) || Be2(85473) || Be2(85698), w4 = t3 + 12 | 0, V2 = b4 = V2 - 16 | 0, f4[b4 + 12 >> 2] = 0, !((e4 = Le2(137832, 84262, 0, C3)) || (e4 = Le2(137836, 84420, 0, C3)) || (e4 = Le2(137840, 84813, 0, C3)) || (e4 = Le2(137820, 85016, b4 + 12 | 0, C3)))) if (f4[34454] = c3[b4 + 12 >> 2] / 68, g5 = f4[34460], f4[34456] = g5, g5 && 83969 == (0 | (k5 = i4[0 | g5] | i4[g5 + 1 | 0] << 8 | i4[g5 + 2 | 0] << 16 | i4[g5 + 3 | 0] << 24))) {
             if (D3 = i4[g5 + 4 | 0] | i4[g5 + 5 | 0] << 8 | i4[g5 + 6 | 0] << 16 | i4[g5 + 7 | 0] << 24, g5 = f4[34458], l3 = i4[0 | g5], f4[34461] = l3, l3) for (e4 = g5 + 4 | 0, k5 = 0; r4 = G3(k5, 44) + 137856 | 0, C3 = i4[0 | e4], f4[r4 + 36 >> 2] = C3, f4[r4 + 40 >> 2] = i4[e4 + 1 | 0], s4 = i4[e4 + 8 | 0] | i4[e4 + 9 | 0] << 8 | i4[e4 + 10 | 0] << 16 | i4[e4 + 11 | 0] << 24, g5 = i4[e4 + 4 | 0] | i4[e4 + 5 | 0] << 8 | i4[e4 + 6 | 0] << 16 | i4[e4 + 7 | 0] << 24, a3[0 | r4] = g5, a3[r4 + 1 | 0] = g5 >>> 8, a3[r4 + 2 | 0] = g5 >>> 16, a3[r4 + 3 | 0] = g5 >>> 24, a3[r4 + 4 | 0] = s4, a3[r4 + 5 | 0] = s4 >>> 8, a3[r4 + 6 | 0] = s4 >>> 16, a3[r4 + 7 | 0] = s4 >>> 24, s4 = i4[e4 + 16 | 0] | i4[e4 + 17 | 0] << 8 | i4[e4 + 18 | 0] << 16 | i4[e4 + 19 | 0] << 24, g5 = i4[e4 + 12 | 0] | i4[e4 + 13 | 0] << 8 | i4[e4 + 14 | 0] << 16 | i4[e4 + 15 | 0] << 24, a3[r4 + 8 | 0] = g5, a3[r4 + 9 | 0] = g5 >>> 8, a3[r4 + 10 | 0] = g5 >>> 16, a3[r4 + 11 | 0] = g5 >>> 24, a3[r4 + 12 | 0] = s4, a3[r4 + 13 | 0] = s4 >>> 8, a3[r4 + 14 | 0] = s4 >>> 16, a3[r4 + 15 | 0] = s4 >>> 24, s4 = i4[e4 + 24 | 0] | i4[e4 + 25 | 0] << 8 | i4[e4 + 26 | 0] << 16 | i4[e4 + 27 | 0] << 24, g5 = i4[e4 + 20 | 0] | i4[e4 + 21 | 0] << 8 | i4[e4 + 22 | 0] << 16 | i4[e4 + 23 | 0] << 24, a3[r4 + 16 | 0] = g5, a3[r4 + 17 | 0] = g5 >>> 8, a3[r4 + 18 | 0] = g5 >>> 16, a3[r4 + 19 | 0] = g5 >>> 24, a3[r4 + 20 | 0] = s4, a3[r4 + 21 | 0] = s4 >>> 8, a3[r4 + 22 | 0] = s4 >>> 16, a3[r4 + 23 | 0] = s4 >>> 24, s4 = i4[e4 + 32 | 0] | i4[e4 + 33 | 0] << 8 | i4[e4 + 34 | 0] << 16 | i4[e4 + 35 | 0] << 24, g5 = i4[e4 + 28 | 0] | i4[e4 + 29 | 0] << 8 | i4[e4 + 30 | 0] << 16 | i4[e4 + 31 | 0] << 24, a3[r4 + 24 | 0] = g5, a3[r4 + 25 | 0] = g5 >>> 8, a3[r4 + 26 | 0] = g5 >>> 16, a3[r4 + 27 | 0] = g5 >>> 24, a3[r4 + 28 | 0] = s4, a3[r4 + 29 | 0] = s4 >>> 8, a3[r4 + 30 | 0] = s4 >>> 16, a3[r4 + 31 | 0] = s4 >>> 24, g5 = e4 + 36 | 0, f4[r4 + 32 >> 2] = g5, e4 = g5 + (C3 << 4) | 0, (0 | l3) != (0 | (k5 = k5 + 1 | 0)); ) ;
@@ -64387,7 +64387,7 @@ var b = { Memory: function(A3) {
             }
             if (f4[50801] = 105792, f4[56797] = ZA2(), f4[55964] = 38, f4[55921] = 1, f4[55918] = 22050, f4[56606] = 0, f4[55960] = 110928, f4[55958] = 0, f4[55959] = 1074266112, f4[55956] = 100, f4[55922] = 20, f4[55923] = 220, f4[55916] = 1, f4[55917] = 0, vr2(), f4[56244] = 0, f4[56245] = 0, f4[55928] = 0, f4[55926] = 0, f4[55927] = 0, f4[55924] = 0, f4[56246] = 0, f4[56247] = 0, f4[56260] = 0, f4[56261] = 0, f4[56262] = 0, f4[56263] = 0, f4[56276] = 0, f4[56277] = 0, f4[56278] = 0, f4[56279] = 0, f4[55974] = 0, f4[55975] = 0, f4[55972] = 0, f4[55973] = 0, m4 = -3.141592653589793 / +(0 | (e4 = f4[55918])), Q2[27967] = m4, C3 = (0 | G3(e4, 630)) / 1e4 | 0, f4[55920] = C3, e4 = (0 | G3(e4, 950)) / 1e4 | 0, f4[55919] = e4, n3 = -2 * m4, Q2[27968] = n3, m4 = (H3 = $A2(m4 * +(0 | C3))) * -H3, Q2[28129] = m4, n3 = H3 * Cg(n3 * +(0 | e4)), n3 += n3, Q2[28128] = n3, Q2[28127] = 1 - n3 - m4, f4[55990] = 0, f4[55991] = 0, f4[55988] = 0, f4[55989] = 0, f4[56006] = 0, f4[56007] = 0, f4[56004] = 0, f4[56005] = 0, f4[56022] = 0, f4[56023] = 0, f4[56020] = 0, f4[56021] = 0, f4[56038] = 0, f4[56039] = 0, f4[56036] = 0, f4[56037] = 0, f4[56054] = 0, f4[56055] = 0, f4[56052] = 0, f4[56053] = 0, f4[56070] = 0, f4[56071] = 0, f4[56068] = 0, f4[56069] = 0, f4[56086] = 0, f4[56087] = 0, f4[56084] = 0, f4[56085] = 0, f4[56102] = 0, f4[56103] = 0, f4[56100] = 0, f4[56101] = 0, f4[56118] = 0, f4[56119] = 0, f4[56116] = 0, f4[56117] = 0, f4[56134] = 0, f4[56135] = 0, f4[56132] = 0, f4[56133] = 0, f4[56150] = 0, f4[56151] = 0, f4[56148] = 0, f4[56149] = 0, f4[56166] = 0, f4[56167] = 0, f4[56164] = 0, f4[56165] = 0, f4[56182] = 0, f4[56183] = 0, f4[56180] = 0, f4[56181] = 0, f4[56198] = 0, f4[56199] = 0, f4[56196] = 0, f4[56197] = 0, f4[56214] = 0, f4[56215] = 0, f4[56212] = 0, f4[56213] = 0, f4[56230] = 0, f4[56231] = 0, f4[56228] = 0, f4[56229] = 0, f4[56639] = 59, f4[56640] = 59, f4[56629] = 0, f4[56630] = 59, f4[56619] = 89, f4[56620] = 160, f4[56609] = 280, f4[56610] = 688, f4[56611] = 1064, f4[56621] = 70, f4[56631] = 59, f4[56612] = 2806, f4[56613] = 3260, f4[56622] = 160, f4[56623] = 200, f4[56632] = 59, f4[56633] = 59, f4[56641] = 89, f4[56642] = 149, f4[56643] = 200, f4[56644] = 200, f4[56634] = 59, f4[56635] = 59, f4[56624] = 200, f4[56625] = 500, f4[56614] = 3700, f4[56615] = 6500, f4[56645] = 500, f4[56646] = 0, f4[56616] = 7e3, f4[56626] = 500, f4[56636] = 0, f4[56647] = 0, f4[56637] = 0, f4[56627] = 500, f4[56617] = 8e3, f4[56669] = 89, f4[56648] = 0, f4[56638] = 0, f4[56628] = 89, f4[56618] = 280, f4[56657] = 62, f4[56655] = 0, f4[56656] = 0, f4[56653] = 50, f4[56654] = 0, f4[56651] = 0, f4[56652] = 0, f4[56649] = 0, f4[56650] = 40, f4[56607] = 1e3, f4[56608] = 59, V2 = b4 = V2 - 416 | 0, f4[b4 + 16 >> 2] = 137584, f4[b4 + 20 >> 2] = 47, f4[b4 + 24 >> 2] = 85952, dg2(e4 = b4 + 240 | 0, 85699, b4 + 16 | 0), s4 = Ae3(e4, 86034)) {
               if (xe(b4 + 240 | 0, 170, s4)) for (w4 = 5 | (e4 = b4 + 240 | 0), D3 = 10 | e4; 47 != i4[b4 + 240 | 0] && (1701736308 != f4[b4 + 240 >> 2] ? pg2(b4 + 240 | 0, 86614, 9) || (f4[b4 + 4 >> 2] = b4 + 32, f4[b4 >> 2] = b4 + 239, 2 == (0 | aA2(D3, 86829, b4)) && (C3 = f4[34064], f4[(l3 = 136272 + (C3 << 4) | 0) >> 2] = a3[b4 + 239 | 0], e4 = $r2(b4 + 32 | 0), f4[34064] = C3 + 1, f4[l3 + 12 >> 2] = e4, f4[l3 + 4 >> 2] = 0)) : (V2 = e4 = V2 - 48 | 0, f4[32960] = -1, f4[32961] = -1, f4[32970] = -1, f4[32971] = -1, f4[32968] = -1, f4[32969] = -1, f4[32966] = -1, f4[32967] = -1, f4[32964] = -1, f4[32965] = -1, f4[32962] = -1, f4[32963] = -1, f4[e4 + 36 >> 2] = 131876, f4[e4 + 32 >> 2] = 131872, f4[e4 + 28 >> 2] = 131868, f4[e4 + 24 >> 2] = 131864, f4[e4 + 20 >> 2] = 131860, f4[e4 + 16 >> 2] = 131856, f4[e4 + 12 >> 2] = 131852, f4[e4 + 8 >> 2] = 131848, f4[e4 + 4 >> 2] = 131844, f4[e4 >> 2] = 131840, aA2(w4, 84222, e4), V2 = e4 + 48 | 0)), xe(b4 + 240 | 0, 170, s4); ) ;
-              tr2(s4);
+              tr3(s4);
             }
             V2 = b4 + 416 | 0, f4[50297] = 0, f4[50298] = 0, f4[50301] = 0, f4[50302] = 0, f4[50299] = 0, f4[50300] = 0, og2(0, 85698), f4[36425] = 0, f4[36424] = 0, f4[36426] = 0, f4[36427] = -1, AC2(), YA2(0), r4 = f4[25690], f4[34062] = r4, o4 = f4[25689], b4 = f4[25688], f4[34060] = b4, f4[34061] = o4, d4 = f4[25687], s4 = f4[25686], f4[34058] = s4, f4[34059] = d4, M5 = f4[25685], l3 = f4[25684], f4[34056] = l3, f4[34057] = M5, p4 = f4[25683], w4 = f4[25682], f4[34054] = w4, f4[34055] = p4, Y3 = f4[25681], D3 = f4[25680], f4[34052] = D3, f4[34053] = Y3, u4 = f4[25679], C3 = f4[25678], f4[34050] = C3, f4[34051] = u4, x3 = f4[25677], e4 = f4[25676], f4[34048] = e4, f4[34049] = x3, f4[33729] = e4, f4[33730] = x3, f4[33731] = C3, f4[33732] = u4, f4[33733] = D3, f4[33734] = Y3, f4[33735] = w4, f4[33736] = p4, f4[33737] = l3, f4[33738] = M5, f4[33739] = s4, f4[33740] = d4, f4[33741] = b4, f4[33742] = o4, f4[33743] = r4, ye(1, 175), ye(2, 100), ye(6, f4[47200]), ye(5, f4[47201]), ye(7, 0), f4[47198] = 0, f4[47197] = 0, n3 = +h3() / 1e3, C3 = Cr2(e4 = E2(n3) < 9223372036854776e3 ? ~~n3 >>> 0 : 0, 0, 1103515245, 0), e4 = U3, e4 = (C3 = C3 + 12345 | 0) >>> 0 < 12345 ? e4 + 1 | 0 : e4, f4[33209] = tC(C3, e4);
           }
@@ -64486,7 +64486,7 @@ var b = { Memory: function(A3) {
       }, Y: function(A6, e4, g5) {
         A6 |= 0, e4 |= 0, g5 |= 0, f4[34440] = g5, xr2(3, f4[A6 + 12 >> 2]), xr2(1, f4[A6 + 8 >> 2]), (A6 = f4[A6 + 16 >> 2]) ? eg2(A6) : Xg(1024), _3(e4), f4[34440] = 0;
       }, Z: function(A6, e4, g5) {
-        return A6 |= 0, e4 |= 0, g5 |= 0, f4[34440] = 0, (A6 = Ae3(g5, 1032)) ? (f4[47195] = A6, f4[47197] = 130, A6 || (f4[47195] = f4[30450]), _3(e4), f4[47195] = 0, f4[47197] = 0, f4[47195] = f4[30450], tr2(A6), 0) : -1;
+        return A6 |= 0, e4 |= 0, g5 |= 0, f4[34440] = 0, (A6 = Ae3(g5, 1032)) ? (f4[47195] = A6, f4[47197] = 130, A6 || (f4[47195] = f4[30450]), _3(e4), f4[47195] = 0, f4[47197] = 0, f4[47195] = f4[30450], tr3(A6), 0) : -1;
       }, _: function(A6) {
         return 36;
       }, $: function(A6, e4, g5) {
@@ -66539,8 +66539,8 @@ var LANG_VOICES = {
   ]
 };
 var SAMPLE_TEXT = "Hello. This is how I sound when I read to you. This edition covers the period from Tuesday, September twenty-second to Saturday morning, starting with the week in immigration law.";
-function parseVoice(id2) {
-  const parts = String(id2 || "bm_fable").split("+").map((p3) => {
+function parseVoice(id3) {
+  const parts = String(id3 || "bm_fable").split("+").map((p3) => {
     const [name, w3] = p3.trim().split("*");
     return { name: name.trim(), w: w3 == null ? 1 : Number(w3) };
   }).filter((p3) => /^[a-z][fm]_[a-z]+$/.test(p3.name) && p3.w > 0);
@@ -66548,18 +66548,1094 @@ function parseVoice(id2) {
   const sum = parts.reduce((a2, p3) => a2 + p3.w, 0);
   return parts.map((p3) => ({ name: p3.name, w: p3.w / sum }));
 }
-function baseVoice(id2) {
-  return parseVoice(id2)[0].name;
+function baseVoice(id3) {
+  return parseVoice(id3)[0].name;
 }
-var safeId = (id2) => String(id2).replace(/\*/g, "-").replace(/\+/g, "_").replace(/\./g, "").replace(/:/g, "-");
-function sampleFile(id2) {
-  return "samples/" + safeId(id2) + ".mp3";
+var safeId = (id3) => String(id3).replace(/\*/g, "-").replace(/\+/g, "_").replace(/\./g, "").replace(/:/g, "-");
+function sampleFile(id3) {
+  return "samples/" + safeId(id3) + ".mp3";
 }
-function langSampleFile(lang, id2) {
-  return `samples/lang-${lang}-${safeId(id2)}.mp3`;
+function langSampleFile(lang, id3) {
+  return `samples/lang-${lang}-${safeId(id3)}.mp3`;
 }
 
-// src/lang.js
+// node_modules/fasttext.wasm.js/dist/constants.mjs
+var IS_BROWSER = typeof window !== "undefined" && !!window.document && !!window.document.createElement;
+var IS_WORKER = (
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-expect-error
+  "importScripts" in globalThis && typeof globalThis.importScripts == "function"
+);
+
+// node_modules/fasttext.wasm.js/dist/models/language-identification/assets/languages.json.mjs
+var af2 = {
+  alpha3: "afr",
+  alpha2: "af",
+  refName: "Afrikaans"
+};
+var als = {
+  alpha3: "gsw",
+  alpha2: null,
+  refName: "Swiss German"
+};
+var am2 = {
+  alpha3: "amh",
+  alpha2: "am",
+  refName: "Amharic"
+};
+var an2 = {
+  alpha3: "arg",
+  alpha2: "an",
+  refName: "Aragonese"
+};
+var ar = {
+  alpha3: "ara",
+  alpha2: "ar",
+  refName: "Arabic"
+};
+var arz = {
+  alpha3: "arz",
+  alpha2: null,
+  refName: "Egyptian Arabic"
+};
+var as2 = {
+  alpha3: "asm",
+  alpha2: "as",
+  refName: "Assamese"
+};
+var ast = {
+  alpha3: "ast",
+  alpha2: null,
+  refName: "Asturian"
+};
+var av = {
+  alpha3: "ava",
+  alpha2: "av",
+  refName: "Avaric"
+};
+var az = {
+  alpha3: "aze",
+  alpha2: "az",
+  refName: "Azerbaijani"
+};
+var azb = {
+  alpha3: "azb",
+  alpha2: null,
+  refName: "South Azerbaijani"
+};
+var ba2 = {
+  alpha3: "bak",
+  alpha2: "ba",
+  refName: "Bashkir"
+};
+var bar = {
+  alpha3: "bar",
+  alpha2: null,
+  refName: "Bavarian"
+};
+var bcl = {
+  alpha3: "bcl",
+  alpha2: null,
+  refName: "Central Bikol"
+};
+var be3 = {
+  alpha3: "bel",
+  alpha2: "be",
+  refName: "Belarusian"
+};
+var bg2 = {
+  alpha3: "bul",
+  alpha2: "bg",
+  refName: "Bulgarian"
+};
+var bh2 = {
+  alpha3: "bih",
+  alpha2: "bh",
+  refName: "Bihari languages"
+};
+var bn = {
+  alpha3: "ben",
+  alpha2: "bn",
+  refName: "Bengali"
+};
+var bo2 = {
+  alpha3: "bod",
+  alpha2: "bo",
+  refName: "Tibetan"
+};
+var bpy = {
+  alpha3: "bpy",
+  alpha2: null,
+  refName: "Bishnupriya"
+};
+var br2 = {
+  alpha3: "bre",
+  alpha2: "br",
+  refName: "Breton"
+};
+var bs2 = {
+  alpha3: "bos",
+  alpha2: "bs",
+  refName: "Bosnian"
+};
+var bxr = {
+  alpha3: "bxr",
+  alpha2: null,
+  refName: "Russia Buriat"
+};
+var ca2 = {
+  alpha3: "cat",
+  alpha2: "ca",
+  refName: "Catalan"
+};
+var cbk = {
+  alpha3: "cbk",
+  alpha2: null,
+  refName: "Chavacano"
+};
+var ce3 = {
+  alpha3: "che",
+  alpha2: "ce",
+  refName: "Chechen"
+};
+var ceb = {
+  alpha3: "ceb",
+  alpha2: null,
+  refName: "Cebuano"
+};
+var ckb = {
+  alpha3: "kur",
+  alpha2: "ku",
+  refName: "Kurdish"
+};
+var co2 = {
+  alpha3: "cos",
+  alpha2: "co",
+  refName: "Corsican"
+};
+var cs2 = {
+  alpha3: "ces",
+  alpha2: "cs",
+  refName: "Czech"
+};
+var cv = {
+  alpha3: "chv",
+  alpha2: "cv",
+  refName: "Chuvash"
+};
+var cy = {
+  alpha3: "cym",
+  alpha2: "cy",
+  refName: "Welsh"
+};
+var da2 = {
+  alpha3: "dan",
+  alpha2: "da",
+  refName: "Danish"
+};
+var de = {
+  alpha3: "deu",
+  alpha2: "de",
+  refName: "German"
+};
+var diq = {
+  alpha3: "zza",
+  alpha2: null,
+  refName: "Zaza"
+};
+var dsb = {
+  alpha3: "dsb",
+  alpha2: null,
+  refName: "Lower Sorbian"
+};
+var dty = {
+  alpha3: "dty",
+  alpha2: null,
+  refName: "Dotyali"
+};
+var dv = {
+  alpha3: "div",
+  alpha2: "dv",
+  refName: "Dhivehi"
+};
+var el2 = {
+  alpha3: "ell",
+  alpha2: "el",
+  refName: "Modern Greek (1453-)"
+};
+var eml = {
+  alpha3: "eml",
+  alpha2: null,
+  refName: "Emiliano-Romagnolo"
+};
+var en2 = {
+  alpha3: "eng",
+  alpha2: "en",
+  refName: "English"
+};
+var eo2 = {
+  alpha3: "epo",
+  alpha2: "eo",
+  refName: "Esperanto"
+};
+var es2 = {
+  alpha3: "spa",
+  alpha2: "es",
+  refName: "Spanish"
+};
+var et2 = {
+  alpha3: "est",
+  alpha2: "et",
+  refName: "Estonian"
+};
+var eu2 = {
+  alpha3: "eus",
+  alpha2: "eu",
+  refName: "Basque"
+};
+var fa2 = {
+  alpha3: "fas",
+  alpha2: "fa",
+  refName: "Persian"
+};
+var fi = {
+  alpha3: "fin",
+  alpha2: "fi",
+  refName: "Finnish"
+};
+var fr2 = {
+  alpha3: "fra",
+  alpha2: "fr",
+  refName: "French"
+};
+var frr = {
+  alpha3: "frr",
+  alpha2: null,
+  refName: "Northern Frisian"
+};
+var fy = {
+  alpha3: "fry",
+  alpha2: "fy",
+  refName: "Western Frisian"
+};
+var ga2 = {
+  alpha3: "gle",
+  alpha2: "ga",
+  refName: "Irish"
+};
+var gd2 = {
+  alpha3: "gla",
+  alpha2: "gd",
+  refName: "Scottish Gaelic"
+};
+var gl2 = {
+  alpha3: "glg",
+  alpha2: "gl",
+  refName: "Galician"
+};
+var gn = {
+  alpha3: "grn",
+  alpha2: "gn",
+  refName: "Guarani"
+};
+var gom = {
+  alpha3: "gom",
+  alpha2: null,
+  refName: "Goan Konkani"
+};
+var gu2 = {
+  alpha3: "guj",
+  alpha2: "gu",
+  refName: "Gujarati"
+};
+var gv = {
+  alpha3: "glv",
+  alpha2: "gv",
+  refName: "Manx"
+};
+var he = {
+  alpha3: "heb",
+  alpha2: "he",
+  refName: "Hebrew"
+};
+var hi = {
+  alpha3: "hin",
+  alpha2: "hi",
+  refName: "Hindi"
+};
+var hif = {
+  alpha3: "hif",
+  alpha2: null,
+  refName: "Fiji Hindi"
+};
+var hr2 = {
+  alpha3: "hrv",
+  alpha2: "hr",
+  refName: "Croatian"
+};
+var hsb = {
+  alpha3: "hsb",
+  alpha2: null,
+  refName: "Upper Sorbian"
+};
+var ht2 = {
+  alpha3: "hat",
+  alpha2: "ht",
+  refName: "Haitian"
+};
+var hu2 = {
+  alpha3: "hun",
+  alpha2: "hu",
+  refName: "Hungarian"
+};
+var hy = {
+  alpha3: "hye",
+  alpha2: "hy",
+  refName: "Armenian"
+};
+var ia2 = {
+  alpha3: "ina",
+  alpha2: "ia",
+  refName: "Interlingua (International Auxiliary Language Association)"
+};
+var id2 = {
+  alpha3: "ind",
+  alpha2: "id",
+  refName: "Indonesian"
+};
+var ie3 = {
+  alpha3: "ile",
+  alpha2: "ie",
+  refName: "Interlingue"
+};
+var ilo = {
+  alpha3: "ilo",
+  alpha2: null,
+  refName: "Iloko"
+};
+var io2 = {
+  alpha3: "ido",
+  alpha2: "io",
+  refName: "Ido"
+};
+var is2 = {
+  alpha3: "isl",
+  alpha2: "is",
+  refName: "Icelandic"
+};
+var it = {
+  alpha3: "ita",
+  alpha2: "it",
+  refName: "Italian"
+};
+var ja2 = {
+  alpha3: "jpn",
+  alpha2: "ja",
+  refName: "Japanese"
+};
+var jbo = {
+  alpha3: "jbo",
+  alpha2: null,
+  refName: "Lojban"
+};
+var jv = {
+  alpha3: "jav",
+  alpha2: "jv",
+  refName: "Javanese"
+};
+var ka2 = {
+  alpha3: "kat",
+  alpha2: "ka",
+  refName: "Georgian"
+};
+var kk = {
+  alpha3: "kaz",
+  alpha2: "kk",
+  refName: "Kazakh"
+};
+var km2 = {
+  alpha3: "khm",
+  alpha2: "km",
+  refName: "Khmer"
+};
+var kn = {
+  alpha3: "kan",
+  alpha2: "kn",
+  refName: "Kannada"
+};
+var ko2 = {
+  alpha3: "kor",
+  alpha2: "ko",
+  refName: "Korean"
+};
+var krc = {
+  alpha3: "krc",
+  alpha2: null,
+  refName: "Karachay-Balkar"
+};
+var ku2 = {
+  alpha3: "kmr",
+  alpha2: null,
+  refName: "Northern Kurdish"
+};
+var kv = {
+  alpha3: "kom",
+  alpha2: "kv",
+  refName: "Komi"
+};
+var kw = {
+  alpha3: "cor",
+  alpha2: "kw",
+  refName: "Cornish"
+};
+var ky = {
+  alpha3: "kir",
+  alpha2: "ky",
+  refName: "Kirghiz"
+};
+var la2 = {
+  alpha3: "lat",
+  alpha2: "la",
+  refName: "Latin"
+};
+var lb = {
+  alpha3: "ltz",
+  alpha2: "lb",
+  refName: "Luxembourgish"
+};
+var lez = {
+  alpha3: "lez",
+  alpha2: null,
+  refName: "Lezghian"
+};
+var li = {
+  alpha3: "lim",
+  alpha2: "li",
+  refName: "Limburgan"
+};
+var lmo = {
+  alpha3: "lmo",
+  alpha2: null,
+  refName: "Lombard"
+};
+var lo2 = {
+  alpha3: "lao",
+  alpha2: "lo",
+  refName: "Lao"
+};
+var lrc = {
+  alpha3: "lrc",
+  alpha2: null,
+  refName: "Northern Luri"
+};
+var lt = {
+  alpha3: "lit",
+  alpha2: "lt",
+  refName: "Lithuanian"
+};
+var lv = {
+  alpha3: "lav",
+  alpha2: "lv",
+  refName: "Latvian"
+};
+var mai = {
+  alpha3: "mai",
+  alpha2: null,
+  refName: "Maithili"
+};
+var mg2 = {
+  alpha3: "mlg",
+  alpha2: "mg",
+  refName: "Malagasy"
+};
+var mhr = {
+  alpha3: "mhr",
+  alpha2: null,
+  refName: "Eastern Mari"
+};
+var min = {
+  alpha3: "min",
+  alpha2: null,
+  refName: "Minangkabau"
+};
+var mk = {
+  alpha3: "mkd",
+  alpha2: "mk",
+  refName: "Macedonian"
+};
+var ml2 = {
+  alpha3: "mal",
+  alpha2: "ml",
+  refName: "Malayalam"
+};
+var mn = {
+  alpha3: "mon",
+  alpha2: "mn",
+  refName: "Mongolian"
+};
+var mr = {
+  alpha3: "mar",
+  alpha2: "mr",
+  refName: "Marathi"
+};
+var mrj = {
+  alpha3: "mrj",
+  alpha2: null,
+  refName: "Western Mari"
+};
+var ms2 = {
+  alpha3: "msa",
+  alpha2: "ms",
+  refName: "Malay (macrolanguage)"
+};
+var mt = {
+  alpha3: "mlt",
+  alpha2: "mt",
+  refName: "Maltese"
+};
+var mwl = {
+  alpha3: "mwl",
+  alpha2: null,
+  refName: "Mirandese"
+};
+var my = {
+  alpha3: "mya",
+  alpha2: "my",
+  refName: "Burmese"
+};
+var myv = {
+  alpha3: "myv",
+  alpha2: null,
+  refName: "Erzya"
+};
+var mzn = {
+  alpha3: "mzn",
+  alpha2: null,
+  refName: "Mazanderani"
+};
+var nah = {
+  alpha3: "nah",
+  alpha2: null,
+  refName: "Nahuatl languages"
+};
+var nap = {
+  alpha3: "nap",
+  alpha2: null,
+  refName: "Neapolitan"
+};
+var nds = {
+  alpha3: "nds",
+  alpha2: null,
+  refName: "Low German"
+};
+var ne3 = {
+  alpha3: "nep",
+  alpha2: "ne",
+  refName: "Nepali (macrolanguage)"
+};
+var nl2 = {
+  alpha3: "nld",
+  alpha2: "nl",
+  refName: "Dutch"
+};
+var nn2 = {
+  alpha3: "nor",
+  alpha2: "no",
+  refName: "Norwegian"
+};
+var no2 = {
+  alpha3: "nor",
+  alpha2: "no",
+  refName: "Norwegian"
+};
+var oc2 = {
+  alpha3: "oci",
+  alpha2: "oc",
+  refName: "Occitan (post 1500)"
+};
+var or = {
+  alpha3: "ory",
+  alpha2: null,
+  refName: "Odia"
+};
+var os2 = {
+  alpha3: "oss",
+  alpha2: "os",
+  refName: "Ossetian"
+};
+var pa2 = {
+  alpha3: "pan",
+  alpha2: "pa",
+  refName: "Panjabi"
+};
+var pam = {
+  alpha3: "pam",
+  alpha2: null,
+  refName: "Pampanga"
+};
+var pfl = {
+  alpha3: "pfl",
+  alpha2: null,
+  refName: "Pfaelzisch"
+};
+var pl2 = {
+  alpha3: "pol",
+  alpha2: "pl",
+  refName: "Polish"
+};
+var pms = {
+  alpha3: "pms",
+  alpha2: null,
+  refName: "Piemontese"
+};
+var pnb = {
+  alpha3: "pnb",
+  alpha2: null,
+  refName: "Western Panjabi"
+};
+var ps2 = {
+  alpha3: "pus",
+  alpha2: "ps",
+  refName: "Pushto"
+};
+var pt = {
+  alpha3: "por",
+  alpha2: "pt",
+  refName: "Portuguese"
+};
+var qu2 = {
+  alpha3: "que",
+  alpha2: "qu",
+  refName: "Quechua"
+};
+var rm2 = {
+  alpha3: "roh",
+  alpha2: "rm",
+  refName: "Romansh"
+};
+var ro2 = {
+  alpha3: "ron",
+  alpha2: "ro",
+  refName: "Romanian"
+};
+var ru2 = {
+  alpha3: "rus",
+  alpha2: "ru",
+  refName: "Russian"
+};
+var rue = {
+  alpha3: "rue",
+  alpha2: null,
+  refName: "Rusyn"
+};
+var sa2 = {
+  alpha3: "san",
+  alpha2: "sa",
+  refName: "Sanskrit"
+};
+var sah = {
+  alpha3: "sah",
+  alpha2: null,
+  refName: "Yakut"
+};
+var sc2 = {
+  alpha3: "srd",
+  alpha2: "sc",
+  refName: "Sardinian"
+};
+var scn = {
+  alpha3: "scn",
+  alpha2: null,
+  refName: "Sicilian"
+};
+var sco = {
+  alpha3: "sco",
+  alpha2: null,
+  refName: "Scots"
+};
+var sd2 = {
+  alpha3: "snd",
+  alpha2: "sd",
+  refName: "Sindhi"
+};
+var sh2 = {
+  alpha3: "hbs",
+  alpha2: "sh",
+  refName: "Serbo-Croatian"
+};
+var si = {
+  alpha3: "sin",
+  alpha2: "si",
+  refName: "Sinhala"
+};
+var sk = {
+  alpha3: "slk",
+  alpha2: "sk",
+  refName: "Slovak"
+};
+var sl2 = {
+  alpha3: "slv",
+  alpha2: "sl",
+  refName: "Slovenian"
+};
+var so2 = {
+  alpha3: "som",
+  alpha2: "so",
+  refName: "Somali"
+};
+var sq = {
+  alpha3: "sqi",
+  alpha2: "sq",
+  refName: "Albanian"
+};
+var sr = {
+  alpha3: "srp",
+  alpha2: "sr",
+  refName: "Serbian"
+};
+var su2 = {
+  alpha3: "sun",
+  alpha2: "su",
+  refName: "Sundanese"
+};
+var sv = {
+  alpha3: "swe",
+  alpha2: "sv",
+  refName: "Swedish"
+};
+var sw = {
+  alpha3: "swa",
+  alpha2: "sw",
+  refName: "Swahili (macrolanguage)"
+};
+var ta2 = {
+  alpha3: "tam",
+  alpha2: "ta",
+  refName: "Tamil"
+};
+var te2 = {
+  alpha3: "tel",
+  alpha2: "te",
+  refName: "Telugu"
+};
+var tg2 = {
+  alpha3: "tgk",
+  alpha2: "tg",
+  refName: "Tajik"
+};
+var th2 = {
+  alpha3: "tha",
+  alpha2: "th",
+  refName: "Thai"
+};
+var tk = {
+  alpha3: "tuk",
+  alpha2: "tk",
+  refName: "Turkmen"
+};
+var tl2 = {
+  alpha3: "tgl",
+  alpha2: "tl",
+  refName: "Tagalog"
+};
+var tr2 = {
+  alpha3: "tur",
+  alpha2: "tr",
+  refName: "Turkish"
+};
+var tt2 = {
+  alpha3: "tat",
+  alpha2: "tt",
+  refName: "Tatar"
+};
+var tyv = {
+  alpha3: "tyv",
+  alpha2: null,
+  refName: "Tuvinian"
+};
+var ug2 = {
+  alpha3: "uig",
+  alpha2: "ug",
+  refName: "Uighur"
+};
+var uk = {
+  alpha3: "ukr",
+  alpha2: "uk",
+  refName: "Ukrainian"
+};
+var ur = {
+  alpha3: "urd",
+  alpha2: "ur",
+  refName: "Urdu"
+};
+var uz = {
+  alpha3: "uzb",
+  alpha2: "uz",
+  refName: "Uzbek"
+};
+var vec = {
+  alpha3: "vec",
+  alpha2: null,
+  refName: "Venetian"
+};
+var vep = {
+  alpha3: "vep",
+  alpha2: null,
+  refName: "Veps"
+};
+var vi = {
+  alpha3: "vie",
+  alpha2: "vi",
+  refName: "Vietnamese"
+};
+var vls = {
+  alpha3: "vls",
+  alpha2: null,
+  refName: "Vlaams"
+};
+var vo2 = {
+  alpha3: "vol",
+  alpha2: "vo",
+  refName: "Volap\xFCk"
+};
+var wa2 = {
+  alpha3: "wln",
+  alpha2: "wa",
+  refName: "Walloon"
+};
+var war = {
+  alpha3: "war",
+  alpha2: null,
+  refName: "Waray (Philippines)"
+};
+var wuu = {
+  alpha3: "wuu",
+  alpha2: null,
+  refName: "Wu Chinese"
+};
+var xal = {
+  alpha3: "xal",
+  alpha2: null,
+  refName: "Kalmyk"
+};
+var xmf = {
+  alpha3: "xmf",
+  alpha2: null,
+  refName: "Mingrelian"
+};
+var yi = {
+  alpha3: "yid",
+  alpha2: "yi",
+  refName: "Yiddish"
+};
+var yo2 = {
+  alpha3: "yor",
+  alpha2: "yo",
+  refName: "Yoruba"
+};
+var yue = {
+  alpha3: "yue",
+  alpha2: null,
+  refName: "Yue Chinese"
+};
+var zh2 = {
+  alpha3: "zho",
+  alpha2: "zh",
+  refName: "Chinese"
+};
+var languages = {
+  af: af2,
+  als,
+  am: am2,
+  an: an2,
+  ar,
+  arz,
+  as: as2,
+  ast,
+  av,
+  az,
+  azb,
+  ba: ba2,
+  bar,
+  bcl,
+  be: be3,
+  bg: bg2,
+  bh: bh2,
+  bn,
+  bo: bo2,
+  bpy,
+  br: br2,
+  bs: bs2,
+  bxr,
+  ca: ca2,
+  cbk,
+  ce: ce3,
+  ceb,
+  ckb,
+  co: co2,
+  cs: cs2,
+  cv,
+  cy,
+  da: da2,
+  de,
+  diq,
+  dsb,
+  dty,
+  dv,
+  el: el2,
+  eml,
+  en: en2,
+  eo: eo2,
+  es: es2,
+  et: et2,
+  eu: eu2,
+  fa: fa2,
+  fi,
+  fr: fr2,
+  frr,
+  fy,
+  ga: ga2,
+  gd: gd2,
+  gl: gl2,
+  gn,
+  gom,
+  gu: gu2,
+  gv,
+  he,
+  hi,
+  hif,
+  hr: hr2,
+  hsb,
+  ht: ht2,
+  hu: hu2,
+  hy,
+  ia: ia2,
+  id: id2,
+  ie: ie3,
+  ilo,
+  io: io2,
+  is: is2,
+  it,
+  ja: ja2,
+  jbo,
+  jv,
+  ka: ka2,
+  kk,
+  km: km2,
+  kn,
+  ko: ko2,
+  krc,
+  ku: ku2,
+  kv,
+  kw,
+  ky,
+  la: la2,
+  lb,
+  lez,
+  li,
+  lmo,
+  lo: lo2,
+  lrc,
+  lt,
+  lv,
+  mai,
+  mg: mg2,
+  mhr,
+  min,
+  mk,
+  ml: ml2,
+  mn,
+  mr,
+  mrj,
+  ms: ms2,
+  mt,
+  mwl,
+  my,
+  myv,
+  mzn,
+  nah,
+  nap,
+  nds,
+  ne: ne3,
+  "new": {
+    alpha3: "new",
+    alpha2: null,
+    refName: "Newari"
+  },
+  nl: nl2,
+  nn: nn2,
+  no: no2,
+  oc: oc2,
+  or,
+  os: os2,
+  pa: pa2,
+  pam,
+  pfl,
+  pl: pl2,
+  pms,
+  pnb,
+  ps: ps2,
+  pt,
+  qu: qu2,
+  rm: rm2,
+  ro: ro2,
+  ru: ru2,
+  rue,
+  sa: sa2,
+  sah,
+  sc: sc2,
+  scn,
+  sco,
+  sd: sd2,
+  sh: sh2,
+  si,
+  sk,
+  sl: sl2,
+  so: so2,
+  sq,
+  sr,
+  su: su2,
+  sv,
+  sw,
+  ta: ta2,
+  te: te2,
+  tg: tg2,
+  th: th2,
+  tk,
+  tl: tl2,
+  tr: tr2,
+  tt: tt2,
+  tyv,
+  ug: ug2,
+  uk,
+  ur,
+  uz,
+  vec,
+  vep,
+  vi,
+  vls,
+  vo: vo2,
+  wa: wa2,
+  war,
+  wuu,
+  xal,
+  xmf,
+  yi,
+  yo: yo2,
+  yue,
+  zh: zh2
+};
+
+// node_modules/fasttext.wasm.js/dist/models/language-identification/base.mjs
+var LANGUAGES_LIMIT = Object.keys(languages).length;
+
+// src/langid.js
+var paths = null;
+function configureLangId(p3) {
+  paths = p3;
+}
+
+// src/lang-lite.js
 var LANGS = {
   en: { name: "English", espeak: "en-gb" },
   es: { name: "Spanish", espeak: ["es-419", "es"] },
@@ -66650,30 +67726,7 @@ var EVERYDAY = {
   pt: [...HINTS.pt, "muito", "mas", "mais", "est\xE1", "obrigado", "obrigada", "boa", "bom", "sim", "ao", "na", "no", "isso", "tudo", "bem"],
   de: ["der", "das", "und", "ist", "nicht", "ich", "ein", "eine", "mit", "f\xFCr", "auf", "zu", "den", "dem", "sie", "wir", "sehr", "aber", "auch", "gut", "guten", "danke", "viel"]
 };
-var ALSO_ENGLISH = /* @__PURE__ */ new Set(["a", "as", "do", "no", "me", "he", "i", "in", "on", "or", "an", "so", "die", "den", "is", "us", "at", "am", "be", "we", "pour", "son", "come", "sure", "mi", "ma", "ho", "bon", "al", "lo", "tout", "chez", "per", "con", "non", "des", "du", "se", "les", "mon", "par", "e", "o", "y", "bien", "gut", "sie", "au", "ce", "le", "la", "de", "un", "il", "elle", "su", "si", "mas", "na", "ao"]);
 var ENGLISH_EVERYDAY = /* @__PURE__ */ new Set([...HINTS.en, "i", "i'll", "i'm", "it's", "a", "an", "on", "be", "at", "have", "has", "not", "we", "will", "your", "my", "by", "what", "when", "then", "from", "but", "or", "if", "so", "he", "she", "they", "as", "do", "can", "there", "here", "about", "more", "just", "all", "one", "would", "which", "their", "had", "been", "were"]);
-function everydayCounts(text) {
-  const words = (text.toLowerCase().match(/[\p{L}'’]+/gu) || []).map((w3) => w3.replace(/’/g, "'"));
-  const score = {};
-  for (const [lang, list] of Object.entries(EVERYDAY)) {
-    const set = new Set(list);
-    const sure = words.filter((w3) => set.has(w3) && !ALSO_ENGLISH.has(w3)).length;
-    const shared = words.filter((w3) => set.has(w3) && ALSO_ENGLISH.has(w3) && !ENGLISH_EVERYDAY.has(w3)).length;
-    score[lang] = { sure, all: sure + shared };
-  }
-  const english = words.filter((w3) => ENGLISH_EVERYDAY.has(w3)).length;
-  return { words, score, english };
-}
-function sentenceLanguage(text) {
-  const { words, score, english } = everydayCounts(text || "");
-  if (words.length < 3 || english > 0) return null;
-  const ranked = Object.entries(score).sort((a2, b3) => b3[1].all - a2[1].all || b3[1].sure - a2[1].sure);
-  const [lang, top] = ranked[0];
-  const next = ranked[1][1];
-  if (top.sure < 1 || top.all < 2 || top.all / words.length < 0.25) return null;
-  if (top.all === next.all && top.sure === next.sure) return null;
-  return lang;
-}
 
 // src/lexicon.js
 var VOWELS = new Set("AIOQWYaiu\xE6\u0251\u0252\u0254\u0259\u025B\u025C\u026A\u028A\u028C\u1D7B");
@@ -66692,8 +67745,8 @@ function getLexicon(accent = "b") {
       (async () => {
         if (!loader) throw new Error("lexicon loader not configured");
         const p3 = key === "b" ? "gb" : "us";
-        const [gold, silver] = await Promise.all([loader(`${p3}_gold.json`), loader(`${p3}_silver.json`)]);
-        return new Lexicon(gold, silver, key === "b");
+        const [gold, silver, names] = await Promise.all([loader(`${p3}_gold.json`), loader(`${p3}_silver.json`), Promise.resolve(loader(`names_${p3}.json`)).catch(() => null)]);
+        return new Lexicon(gold, silver, key === "b", names);
       })()
     );
   }
@@ -66701,10 +67754,11 @@ function getLexicon(accent = "b") {
 }
 var cap = (w3) => w3[0].toUpperCase() + w3.slice(1);
 var Lexicon = class {
-  constructor(gold, silver, british) {
+  constructor(gold, silver, british, names = null) {
     this.gold = gold;
     this.silver = silver;
     this.british = british;
+    this.names = names;
   }
   // Raw dictionary value for a word, also trying the other capitalisation
   // (misaki "grows" its dictionary the same way).
@@ -66718,6 +67772,7 @@ var Lexicon = class {
       const c3 = cap(word);
       v3 = g3[c3] ?? s3[c3];
     }
+    if (v3 === void 0 && this.names && /^[A-Z][a-z]{2,}$/.test(word)) v3 = this.names[lower];
     return v3;
   }
   has(word) {
@@ -66739,9 +67794,9 @@ var Lexicon = class {
       parts.push(typeof p3 === "string" ? p3 : p3.DEFAULT);
     }
     if (!parts.length) return null;
-    const ps2 = parts.map((p3) => p3.replace(/[ˈˌ]/g, "")).map((p3) => "\u02CC" + p3);
-    ps2[ps2.length - 1] = ps2[ps2.length - 1].replace("\u02CC", "\u02C8");
-    return ps2.join("");
+    const ps3 = parts.map((p3) => p3.replace(/[ˈˌ]/g, "")).map((p3) => "\u02CC" + p3);
+    ps3[ps3.length - 1] = ps3[ps3.length - 1].replace("\u02CC", "\u02C8");
+    return ps3.join("");
   }
   lookup(word) {
     let v3 = this.raw(word);
@@ -66826,9 +67881,9 @@ var Lexicon = class {
     return null;
   }
 };
-function startsWithVowel(ps2) {
-  if (!ps2) return null;
-  for (const c3 of ps2) {
+function startsWithVowel(ps3) {
+  if (!ps3) return null;
+  for (const c3 of ps3) {
     if (c3 === "\u02C8" || c3 === "\u02CC") continue;
     return VOWELS.has(c3);
   }
@@ -91215,13 +92270,13 @@ var applyThirdToneSandhi = (list) => {
   }
 };
 var middlewareToneSandhi = (list, toneSandhi) => {
-  const { yi, bu, thirdTone } = resolveToneSandhi(toneSandhi);
+  const { yi: yi2, bu, thirdTone } = resolveToneSandhi(toneSandhi);
   if (thirdTone) {
     applyThirdToneSandhi(list);
   }
-  if (!yi || !bu) {
+  if (!yi2 || !bu) {
     list.forEach((item) => {
-      if (!yi && item.origin === "\u4E00") {
+      if (!yi2 && item.origin === "\u4E00") {
         item.result = item.originPinyin = "y\u012B";
       } else if (!bu && item.origin === "\u4E0D") {
         item.result = item.originPinyin = "b\xF9";
@@ -91508,7 +92563,7 @@ async function phonemizeEnglish(text, accent) {
     }
     const lead = /^\s*/.exec(raw)[0];
     const trail = /\s*$/.exec(raw)[0];
-    out += lead + await m2(raw.trim(), accent) + trail;
+    out += lead + await m2(raw.trim().replace(/\bTch(?=[aeiouy])/g, "Ch"), accent) + trail;
     raw = "";
   };
   const ABBREV_DOT = /^(Dr|Mr|Mrs|Ms|Prof|St|Jr|Sr|Mt|Ft|vs|etc|Inc|Ltd|Co|Corp|Capt|Sgt|Lt|Col|Gen|Rev|Hon|Dept|Univ|approx|fig|figs|vol|ch|pp|ed|eds|al|cf|e\.g\.|i\.e\.)$/;
@@ -91542,10 +92597,10 @@ async function phonemizeFor(text, lang = "en", accent = "b") {
   if (lang === "zh" || lang === "zh-latn") return phonemizeChinese(text, lang === "zh-latn");
   const { e: e2, byLang } = await getEspeak();
   const wanted = [].concat(LANGS[lang].espeak);
-  const id2 = wanted.map((w3) => byLang.get(w3)).find(Boolean) || wanted[0];
-  if (currentVoice !== id2) {
-    e2.set_voice(id2);
-    currentVoice = id2;
+  const id3 = wanted.map((w3) => byLang.get(w3)).find(Boolean) || wanted[0];
+  if (currentVoice !== id3) {
+    e2.set_voice(id3);
+    currentVoice = id3;
   }
   const parts = text.split(PUNCT);
   let out = "";
@@ -91569,8 +92624,8 @@ async function phonemizeFor(text, lang = "en", accent = "b") {
 
 // src/speech.js
 var mixCache = /* @__PURE__ */ new Map();
-async function loadVoiceMix(id2) {
-  const parts = parseVoice(id2);
+async function loadVoiceMix(id3) {
+  const parts = parseVoice(id3);
   if (parts.length === 1) return k3(parts[0].name);
   const key = parts.map((p3) => `${p3.name}*${p3.w.toFixed(4)}`).join("+");
   if (mixCache.has(key)) return mixCache.get(key);
@@ -91629,10 +92684,10 @@ async function synthesize({ model, vocab, text, voice = "bm_fable", speed = 1, l
   const ids = [0];
   const tokOfChar = new Int32Array(phon.length).fill(-1);
   for (let p3 = 0; p3 < phon.length && ids.length <= MAX_TOKENS; p3++) {
-    const id2 = vocab.get(phon[p3]);
-    if (id2 === void 0) continue;
+    const id3 = vocab.get(phon[p3]);
+    if (id3 === void 0) continue;
     tokOfChar[p3] = ids.length;
-    ids.push(id2);
+    ids.push(id3);
   }
   ids.push(0);
   const groups = [...phon.matchAll(/\S+/g)].map((m3) => [m3.index, m3.index + m3[0].length]);
@@ -91664,9 +92719,9 @@ async function synthesize({ model, vocab, text, voice = "bm_fable", speed = 1, l
   const starts = new Array(words.length);
   const ends = new Array(words.length);
   for (let w3 = 0; w3 < words.length; w3++) {
-    const [ga2, gb] = wordGroups[w3];
+    const [ga3, gb] = wordGroups[w3];
     let first = -1, last = -1;
-    for (let g3 = ga2; g3 < gb; g3++) {
+    for (let g3 = ga3; g3 < gb; g3++) {
       const r2 = groupTokens(groups[g3]);
       if (!r2) continue;
       if (first < 0) first = r2[0];
@@ -91748,21 +92803,21 @@ function coeffs(type, fs2, f0, gainDb, q2) {
     a1 = -2 * cos;
     a2 = 1 - alpha / A3;
   } else {
-    const sq = 2 * Math.sqrt(A3) * alpha;
+    const sq2 = 2 * Math.sqrt(A3) * alpha;
     if (type === "lowshelf") {
-      b0 = A3 * (A3 + 1 - (A3 - 1) * cos + sq);
+      b0 = A3 * (A3 + 1 - (A3 - 1) * cos + sq2);
       b1 = 2 * A3 * (A3 - 1 - (A3 + 1) * cos);
-      b22 = A3 * (A3 + 1 - (A3 - 1) * cos - sq);
-      a0 = A3 + 1 + (A3 - 1) * cos + sq;
+      b22 = A3 * (A3 + 1 - (A3 - 1) * cos - sq2);
+      a0 = A3 + 1 + (A3 - 1) * cos + sq2;
       a1 = -2 * (A3 - 1 + (A3 + 1) * cos);
-      a2 = A3 + 1 + (A3 - 1) * cos - sq;
+      a2 = A3 + 1 + (A3 - 1) * cos - sq2;
     } else {
-      b0 = A3 * (A3 + 1 + (A3 - 1) * cos + sq);
+      b0 = A3 * (A3 + 1 + (A3 - 1) * cos + sq2);
       b1 = -2 * A3 * (A3 - 1 + (A3 + 1) * cos);
-      b22 = A3 * (A3 + 1 + (A3 - 1) * cos - sq);
-      a0 = A3 + 1 - (A3 - 1) * cos + sq;
+      b22 = A3 * (A3 + 1 + (A3 - 1) * cos - sq2);
+      a0 = A3 + 1 - (A3 - 1) * cos + sq2;
       a1 = 2 * (A3 - 1 - (A3 + 1) * cos);
-      a2 = A3 + 1 - (A3 - 1) * cos - sq;
+      a2 = A3 + 1 - (A3 - 1) * cos - sq2;
     }
   }
   return [b0 / a0, b1 / a0, b22 / a0, a1 / a0, a2 / a0];
@@ -91938,10 +92993,10 @@ function timeStretch(x2, factor, rate = 24e3) {
     let best = nominal;
     if (prev >= 0) {
       const target = Math.min(prev + Ha2, x2.length - N3);
-      const lo2 = Math.max(0, nominal - tol);
-      const hi = Math.min(x2.length - N3, nominal + tol);
+      const lo3 = Math.max(0, nominal - tol);
+      const hi2 = Math.min(x2.length - N3, nominal + tol);
       let bestC = -Infinity;
-      for (let c3 = lo2; c3 <= hi; c3 += 2) {
+      for (let c3 = lo3; c3 <= hi2; c3 += 2) {
         let s3 = 0, e2 = 1e-9;
         for (let i3 = 0; i3 < N3; i3 += 2) {
           s3 += x2[c3 + i3] * x2[target + i3];
@@ -92415,12 +93470,12 @@ function phonemesToIds(phonemes, idMap, missing) {
   if (bos !== void 0) ids.push(bos);
   if (pad !== void 0) ids.push(pad);
   for (const ch2 of phonemes) {
-    const id2 = idMap.get(ch2);
-    if (id2 === void 0) {
+    const id3 = idMap.get(ch2);
+    if (id3 === void 0) {
       missing.add(ch2);
       continue;
     }
-    ids.push(id2);
+    ids.push(id3);
     if (pad !== void 0) ids.push(pad);
   }
   if (eos !== void 0) ids.push(eos);
@@ -92587,10 +93642,10 @@ function wavToFloat(bytes) {
   let off = 12;
   let rate = 24e3;
   while (off + 8 <= bytes.length) {
-    const id2 = String.fromCharCode(bytes[off], bytes[off + 1], bytes[off + 2], bytes[off + 3]);
+    const id3 = String.fromCharCode(bytes[off], bytes[off + 1], bytes[off + 2], bytes[off + 3]);
     const size = v3.getUint32(off + 4, true);
-    if (id2 === "fmt ") rate = v3.getUint32(off + 12, true);
-    if (id2 === "data") {
+    if (id3 === "fmt ") rate = v3.getUint32(off + 12, true);
+    if (id3 === "data") {
       const n3 = Math.floor(Math.min(size, bytes.length - off - 8) / 2);
       const out2 = new Float32Array(n3);
       for (let i3 = 0; i3 < n3; i3++) out2[i3] = v3.getInt16(off + 8 + i3 * 2, true) / 32768;
@@ -92673,18 +93728,18 @@ var SAMPLE_RATE2 = 24e3;
 function spreadWords(text, audio2) {
   const F3 = 240;
   let max = 0;
-  const lv = [];
+  const lv2 = [];
   for (let s3 = 0; s3 + F3 <= audio2.length; s3 += F3) {
     let e2 = 0;
     for (let i3 = 0; i3 < F3; i3++) e2 = Math.max(e2, Math.abs(audio2[s3 + i3]));
-    lv.push(e2);
+    lv2.push(e2);
     if (e2 > max) max = e2;
   }
-  let a2 = lv.findIndex((e2) => e2 > max * 0.08);
-  let b3 = lv.length - 1 - [...lv].reverse().findIndex((e2) => e2 > max * 0.08);
+  let a2 = lv2.findIndex((e2) => e2 > max * 0.08);
+  let b3 = lv2.length - 1 - [...lv2].reverse().findIndex((e2) => e2 > max * 0.08);
   if (a2 < 0) {
     a2 = 0;
-    b3 = lv.length - 1;
+    b3 = lv2.length - 1;
   }
   const t0 = a2 * F3 / SAMPLE_RATE2, t1 = (b3 + 1) * F3 / SAMPLE_RATE2;
   const words = text.split(" ").filter(Boolean);
@@ -92722,8 +93777,11 @@ function createEngine({ wasmPaths, onEvent }) {
     __webpack_exports__env.backends.onnx.wasm.wasmPaths = wasmPaths;
     configureEspeak(wasmPaths + "espeak-ng.js");
     configureLexicon((f3) => fetch(wasmPaths + "lexicon/" + f3).then((r2) => r2.json()));
+    configureLangId({ wasmPath: wasmPaths + "fasttext/fastText.common.wasm", modelPath: wasmPaths + "fasttext/lid.176.ftz" });
   }
-  configurePiper({ wasmPaths: wasmPaths || void 0, onProgress: (msg) => setStatus("loading", msg) });
+  configurePiper({ wasmPaths: wasmPaths || void 0, onProgress: (msg) => {
+    if (st2.status === "loading" || st2.status === "buffering" || st2.status === "idle") setStatus(st2.status === "idle" ? "loading" : st2.status, msg);
+  } });
   const st2 = {
     timed: null,
     // { model, vocab } timestamped model
@@ -92930,9 +93988,8 @@ function createEngine({ wasmPaths, onEvent }) {
     return r2;
   }
   async function speak(text, settings2, breakKind = "sentence", lang = "en") {
-    let main = (typeof lang === "object" ? lang?.main : lang) || "en";
+    const main = (typeof lang === "object" ? lang?.main : lang) || "en";
     const hints = typeof lang === "object" ? lang?.words : null;
-    if (main === "en" && !hints && settings2.autoLanguage !== false) main = sentenceLanguage(text) || main;
     const runs = settings2.autoLanguage === false ? [{ text, lang: main, words: text.split(" ").filter(Boolean).length }] : splitByLanguage(text, main, hints);
     const parts = [];
     for (const run2 of runs) {
@@ -92993,8 +94050,8 @@ function createEngine({ wasmPaths, onEvent }) {
       if (v3 !== st2.genVersion) return null;
       r2 = await speak(text, st2.settings, st2.breaks[i3], st2.langs[i3]);
     }
-    const ms2 = Math.round(performance.now() - t0);
-    emit("perf", { index: i3, ms: ms2, audioMs: Math.round((r2.audio?.length || 0) / SAMPLE_RATE2 * 1e3) });
+    const ms3 = Math.round(performance.now() - t0);
+    emit("perf", { index: i3, ms: ms3, audioMs: Math.round((r2.audio?.length || 0) / SAMPLE_RATE2 * 1e3) });
     return { buf: toBuffer(r2.audio), starts: r2.starts, ends: r2.ends };
   }
   function getItem(i3) {
@@ -93089,9 +94146,12 @@ function createEngine({ wasmPaths, onEvent }) {
     } catch (e2) {
       if (token !== st2.playToken) return;
       console.error("[murmur]", e2);
+      st2.failRun = (st2.failRun || 0) + 1;
+      if (st2.failRun < 3 && i3 + 1 < st2.sentences.length && !isGpuError(e2)) return playFrom(i3 + 1);
       setStatus("error", String(e2?.message || e2));
       return;
     }
+    st2.failRun = 0;
     if (token !== st2.playToken || !item) return;
     const ctx = getCtx();
     if (ctx.state !== "running") await ctx.resume();
@@ -93324,7 +94384,7 @@ var ONE2 = `(?:see |see also |e\\.g\\.,? |cf\\. )?${NAME},? \\d{4}[a-z]?(?:, pp?
 var PAREN = new RegExp(`\\s?\\((?:${ONE2})(?:; ?(?:${ONE2}))*\\)`, "gu");
 
 // src/welcome.js
-var $3 = (id2) => document.getElementById(id2);
+var $3 = (id3) => document.getElementById(id3);
 var isExt = typeof chrome !== "undefined" && !!chrome.storage?.sync;
 var BASE = isExt ? chrome.runtime.getURL("") : new URL("./", location.href).href;
 var settings = { ...DEFAULTS };
@@ -93332,14 +94392,14 @@ async function loadSettings() {
   if (isExt) return withFixed({ ...DEFAULTS, ...await chrome.storage.sync.get(DEFAULTS) });
   return { ...DEFAULTS };
 }
-async function chooseVoice(id2) {
-  settings.voice = id2;
+async function chooseVoice(id3) {
+  settings.voice = id3;
   if (isExt) {
-    await chrome.storage.sync.set({ voice: id2 });
+    await chrome.storage.sync.set({ voice: id3 });
     chrome.runtime.sendMessage({ type: "settings-changed", settings }).catch(() => {
     });
   }
-  engine.setSettings({ voice: id2 });
+  engine.setSettings({ voice: id3 });
   renderVoices();
 }
 var audio = $3("sample");
@@ -93395,19 +94455,19 @@ function renderVoices() {
     })
   );
 }
-function listen(id2) {
-  if (playingId === id2) {
+function listen(id3) {
+  if (playingId === id3) {
     audio.pause();
     playingId = null;
     renderVoices();
     return;
   }
-  playingId = id2;
-  audio.src = BASE + sampleFile(id2);
+  playingId = id3;
+  audio.src = BASE + sampleFile(id3);
   audio.play().catch(() => {
     playingId = null;
     renderVoices();
-    readLive([SAMPLE_TEXT], id2);
+    readLive([SAMPLE_TEXT], id3);
   });
   renderVoices();
 }
