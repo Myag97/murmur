@@ -105609,6 +105609,10 @@ function tokens(text) {
       lower: core.toLowerCase().replace(/’/g, "'"),
       start: segStart || opens,
       end: closes,
+      opens,
+      label: /^:/.test(trail),
+      // "French:" — what follows is in that language
+      hard: /[.!?…]/.test(trail),
       upper: new RegExp("^\\p{Lu}", "u").test(core),
       letters: (core.match(new RegExp("\\p{L}", "gu")) || []).length
     };
@@ -105699,7 +105703,41 @@ function runsFor(toks, lang, main, d3) {
   }
   return runs;
 }
-async function tagPhrases(texts, bases) {
+var NAMES = /* @__PURE__ */ new Map([["mandarin", "zh"], ["farsi", "fa"], ["castilian", "es"]]);
+for (const [code, v3] of Object.entries(LANGS)) if (!v3.hidden) NAMES.set(v3.name.toLowerCase(), code);
+function hasLanguageLabel(text) {
+  const m3 = new RegExp("^[^\\p{L}]*(\\p{L}+):\\s", "u").exec(text);
+  return !!m3 && NAMES.has(m3[1].toLowerCase());
+}
+function labelled(toks, main, d3) {
+  const E2 = d3.freq[main];
+  const out = [];
+  for (let i3 = 0; i3 + 1 < toks.length; i3++) {
+    const lang = toks[i3].label ? NAMES.get(toks[i3].lower) : null;
+    if (!lang || lang === main) continue;
+    const X2 = d3.freq[lang];
+    const fM = (t2) => freqOf(E2, t2.lower, main);
+    const fX = (t2) => X2 ? freqOf(X2, t2.lower, lang) : 0;
+    const foreign = (t2) => !!t2.core && (X2 ? fX(t2) > 0 && fX(t2) >= RATIO * fM(t2) : fM(t2) === 0);
+    const a2 = i3 + 1;
+    if (!toks[a2].core || toks[a2].opens) continue;
+    let b3 = a2;
+    let proof = foreign(toks[a2]);
+    for (; ; ) {
+      const t2 = toks[b3];
+      const next = toks[b3 + 1];
+      if (!next || !next.core || next.opens || next.label) break;
+      if (t2.end && (t2.hard || t2.label || !foreign(next))) break;
+      b3++;
+      if (foreign(next)) proof = true;
+    }
+    if (!proof) continue;
+    out.push({ lang, a: a2, b: b3 });
+    i3 = b3;
+  }
+  return out;
+}
+async function tagPhrases(texts, bases, docMain = null) {
   let d3;
   try {
     d3 = await data();
@@ -105708,26 +105746,38 @@ async function tagPhrases(texts, bases) {
     return bases.slice();
   }
   const found = texts.map((text, i3) => {
-    const main = bases[i3];
-    if (!PHRASE_LANGS.includes(main) || !d3.freq[main]) return null;
+    let main = bases[i3];
     const toks = tokens(text);
+    const labels = docMain && d3.freq[docMain] ? labelled(toks, docMain, d3) : [];
+    if (labels.length) main = docMain;
+    if (!PHRASE_LANGS.includes(main) || !d3.freq[main]) return null;
     let all = [];
     for (const lang of main === "en" ? PHRASE_LANGS : ["en"]) if (lang !== main && d3.freq[lang]) all = all.concat(runsFor(toks, lang, main, d3));
-    return all.length ? { toks, runs: all } : null;
+    return all.length || labels.length ? { toks, runs: all, labels, main } : null;
   });
   const lean = {};
   for (const f3 of found) {
-    if (!f3) continue;
+    if (!f3 || !f3.runs.length) continue;
     const best = Math.max(...f3.runs.map((r2) => r2.strong));
     const tops = f3.runs.filter((r2) => r2.strong === best);
     if (new Set(tops.map((r2) => r2.lang)).size === 1) lean[tops[0].lang] = (lean[tops[0].lang] || 0) + best;
   }
   return texts.map((text, i3) => {
     const f3 = found[i3];
-    const main = bases[i3];
-    if (!f3) return main;
+    if (!f3) return bases[i3];
+    const main = f3.main;
     const order = f3.runs.slice().sort((x2, y3) => y3.strong - x2.strong || (lean[y3.lang] || 0) - (lean[x2.lang] || 0) || y3.score - x2.score || PHRASE_LANGS.indexOf(x2.lang) - PHRASE_LANGS.indexOf(y3.lang));
     const words = new Array(f3.toks.length).fill(null);
+    for (const r2 of f3.labels) for (let k4 = r2.a; k4 <= r2.b; k4++) words[k4] = r2.lang;
+    for (const r2 of f3.labels) {
+      const X2 = d3.freq[r2.lang];
+      const seen = /* @__PURE__ */ new Set();
+      for (let k4 = r2.a; k4 <= r2.b; k4++) if (f3.toks[k4].letters >= 4) seen.add(f3.toks[k4].lower);
+      f3.toks.forEach((t2, k4) => {
+        if (words[k4] || t2.letters < 4 || freqOf(d3.freq[main], t2.lower, main)) return;
+        if (seen.has(t2.lower) || X2 && freqOf(X2, t2.lower, r2.lang)) words[k4] = r2.lang;
+      });
+    }
     for (const r2 of order) {
       let free = true;
       for (let k4 = r2.a; k4 <= r2.b; k4++) if (words[k4]) free = false;
@@ -105786,6 +105836,10 @@ async function mainLanguage(texts, pageLang) {
     const n2 = letterCount(t2);
     if (n2 < 20) continue;
     seen += n2;
+    if (hasLanguageLabel(t2)) {
+      votes.en = (votes.en || 0) + Math.min(n2, 400);
+      continue;
+    }
     const script = scriptLanguage(t2);
     const rows = await identify(t2.slice(0, 1200), 3).catch(() => []);
     for (const r2 of rows) if (r2.p >= 0.1) votes[r2.lang] = (votes[r2.lang] || 0) + r2.p * Math.min(n2, 400);
@@ -105810,7 +105864,7 @@ async function tagSentences(items, { pageLang = null, phrases = true } = {}) {
     b3.text += (b3.text ? " " : "") + it2.text;
     b3.items.push(i3);
   }
-  const main = await mainLanguage(blocks.map((b3) => b3.text), pageLang);
+  const main = await mainLanguage(blocks.length < 4 ? items.map((it2) => it2.text) : blocks.map((b3) => b3.text), pageLang);
   const langs = new Array(items.length).fill(main);
   let prevBlock = main;
   for (const b3 of blocks) {
@@ -105828,7 +105882,7 @@ async function tagSentences(items, { pageLang = null, phrases = true } = {}) {
       prev = langs[i3];
     }
   }
-  if (phrases) return { main, langs: await tagPhrases(items.map((it2) => it2.text), langs) };
+  if (phrases) return { main, langs: await tagPhrases(items.map((it2) => it2.text), langs, main) };
   return { main, langs };
 }
 
