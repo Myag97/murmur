@@ -91,6 +91,43 @@ async function ensureOffscreen() {
   }
   await creatingOffscreen;
 }
+var lastRead = null;
+var restarts = [];
+var VOICE_BROKEN = /Could not load the voice|GPUDevice|createBuffer|device ?lost|^\d{6,}$|memory/i;
+async function restartVoice(why) {
+  const now = Date.now();
+  if (restarts.length && now - restarts[restarts.length - 1] < 4e3) return true;
+  restarts = restarts.filter((t) => now - t < 5 * 60 * 1e3);
+  if (restarts.length >= 2 || !lastRead) return false;
+  restarts.push(now);
+  diag(`voice broke (${String(why).slice(0, 120)}); starting a fresh voice`);
+  session.state = "loading";
+  session.detail = "Restarting the voice\u2026";
+  await broadcastState();
+  try {
+    if (await chrome.offscreen.hasDocument()) await chrome.offscreen.closeDocument();
+  } catch {
+  }
+  if (restarts.length > 1 || /GPU|webgpu|createBuffer|device ?lost|initWasm|backend|memory|allocate|^Could not load the voice: \d+$/i.test(String(why))) {
+    await chrome.storage.session.set({ voiceOnProcessorUntil: Date.now() + 30 * 60 * 1e3 }).catch(() => {
+    });
+  }
+  const settings = await readSettings();
+  const startIndex = session.index >= 0 ? session.index : lastRead.startIndex;
+  try {
+    await toOffscreen({ ...lastRead, startIndex, startWord: 0, settings });
+    return true;
+  } catch (e) {
+    diag("fresh voice failed: " + (e?.message || e));
+    return false;
+  }
+}
+async function readSettings() {
+  const settings = await getSettings();
+  const { voiceOnProcessorUntil } = await chrome.storage.session.get("voiceOnProcessorUntil").catch(() => ({}));
+  if (voiceOnProcessorUntil > Date.now()) settings.engine = "wasm";
+  return settings;
+}
 async function toOffscreen(msg) {
   await ensureOffscreen();
   return chrome.runtime.sendMessage({ ...msg, target: "offscreen" });
@@ -301,14 +338,8 @@ async function handle(msg, sender) {
       session = { tabId, frameId, count: msg.sentences.length, index: msg.startIndex, state: "loading", detail: "Starting\u2026" };
       diag(`page handed over ${msg.sentences.length} sentence(s) from frame #${frameId}, starting at ${msg.startIndex}`);
       await saveSession();
-      await toOffscreen({
-        type: "read",
-        sentences: msg.sentences,
-        breaks: msg.breaks || [],
-        langs: msg.langs || [],
-        startIndex: msg.startIndex,
-        settings: await getSettings()
-      });
+      lastRead = { type: "read", sentences: msg.sentences, breaks: msg.breaks || [], langs: msg.langs || [], startIndex: msg.startIndex };
+      await toOffscreen({ ...lastRead, settings: await readSettings() });
       return { ok: true };
     }
     case "content:diag":
@@ -345,6 +376,10 @@ async function handle(msg, sender) {
       toTabQuiet(session.tabId, { type: "word", index: msg.index, word: msg.word });
       return;
     case "offscreen:state":
+      if (msg.state === "error" && session.tabId != null && VOICE_BROKEN.test(String(msg.detail || "").replace(/^Could not load the voice: (?=\d)/, ""))) {
+        if (session.state !== "error") diag(`voice: error ${msg.detail || ""}`);
+        if (await restartVoice(msg.detail)) return;
+      }
       if (session.state !== msg.state) diag(`voice: ${msg.state}${msg.state === "error" ? " " + (msg.detail || "") : ""}`);
       session.state = msg.state;
       session.detail = msg.detail || "";
@@ -411,7 +446,9 @@ async function handle(msg, sender) {
       return stopAll();
     case "settings-changed": {
       if (await offscreenExists()) {
-        chrome.runtime.sendMessage({ target: "offscreen", type: "settings", settings: msg.settings }).catch(() => {
+        const { voiceOnProcessorUntil } = await chrome.storage.session.get("voiceOnProcessorUntil").catch(() => ({}));
+        const settings = voiceOnProcessorUntil > Date.now() && msg.settings ? { ...msg.settings, engine: "wasm" } : msg.settings;
+        chrome.runtime.sendMessage({ target: "offscreen", type: "settings", settings }).catch(() => {
         });
       }
       toTabQuiet(session.tabId, { type: "settings", settings: msg.settings });

@@ -94036,11 +94036,21 @@ function createEngine({ wasmPaths, onEvent }) {
   let gpuFailures = 0;
   let forcedDevice = null;
   const isGpuError = (e2) => /GPUDevice|device ?lost|createBuffer|WebGPU|webgpu|GPUBuffer|Device is lost/i.test(String(e2?.message || e2));
+  function dropModel() {
+    for (const m3 of [st2.timed?.model, st2.tts?.model]) {
+      try {
+        m3?.dispose?.()?.catch?.(() => {
+        });
+      } catch {
+      }
+    }
+    st2.timed = null;
+    st2.tts = null;
+  }
   async function recover(e2) {
     gpuFailures++;
     console.warn(`[murmur] GPU trouble (${gpuFailures}):`, e2?.message || e2);
-    st2.timed = null;
-    st2.tts = null;
+    dropModel();
     if (gpuFailures >= 2) forcedDevice = "wasm";
     setStatus("loading", forcedDevice ? "Graphics chip is busy, switching the voice to the processor\u2026" : "Restarting the voice\u2026");
     await ensureModel();
@@ -94280,8 +94290,7 @@ function createEngine({ wasmPaths, onEvent }) {
         if (st2.status === "playing" || st2.status === "buffering") playFrom(st2.index, Math.max(0, st2.word));
       }
       if (before.engine !== st2.settings.engine) {
-        st2.timed = null;
-        st2.tts = null;
+        dropModel();
         st2.engine = null;
       }
     },
