@@ -92,6 +92,17 @@ async function ensureOffscreen() {
   await creatingOffscreen;
 }
 var lastRead = null;
+var stuckTimer = 0;
+function watchStuck(state2) {
+  clearTimeout(stuckTimer);
+  if (state2 !== "buffering") return;
+  stuckTimer = setTimeout(async () => {
+    if (session.state !== "buffering" || session.tabId == null) return;
+    diag("voice: no sound for 25 s; starting a fresh voice on the processor");
+    await restartVoice("GPU stuck: no sound for 25 s").catch(() => {
+    });
+  }, 25e3);
+}
 var readSending = false;
 var pauseNext = false;
 var restarts = [];
@@ -395,6 +406,7 @@ async function handle(msg, sender) {
       if (session.state !== msg.state) diag(`voice: ${msg.state}${msg.state === "error" ? " " + (msg.detail || "") : ""}`);
       session.state = msg.state;
       session.detail = msg.detail || "";
+      watchStuck(msg.state);
       await broadcastState();
       return;
     case "offscreen:online-usage":
@@ -457,10 +469,6 @@ async function handle(msg, sender) {
     case "popup:stop":
       return stopAll();
     case "reader:voice-on":
-      if (!["playing", "paused", "buffering", "loading"].includes(session.state) && await offscreenExists()) {
-        chrome.runtime.sendMessage({ type: "release", target: "offscreen" }).catch(() => {
-        });
-      }
       return { ok: true };
     case "settings-changed": {
       if (await offscreenExists()) {

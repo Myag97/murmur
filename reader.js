@@ -161930,14 +161930,6 @@ var engine = createEngine({
 });
 var appLink = watchApp(engine);
 var toldVoiceOn = false;
-var releaseTimer = 0;
-document.addEventListener("visibilitychange", () => {
-  clearTimeout(releaseTimer);
-  if (document.visibilityState !== "hidden") return;
-  releaseTimer = setTimeout(() => {
-    if (engine.release()) toldVoiceOn = false;
-  }, 18e4);
-});
 var eta = makeEta();
 function timeLeft() {
   if (current < 0) return "";
