@@ -74,6 +74,30 @@
   var NAME = "[A-Z][\\p{L}'\u2019-]+(?: (?:and|&|y|et) [A-Z][\\p{L}'\u2019-]+)?(?: et al\\.?)?";
   var ONE = `(?:see |see also |e\\.g\\.,? |cf\\. )?${NAME},? \\d{4}[a-z]?(?:, pp?\\. ?\\d+(?:[-\u2013]\\d+)?)?`;
   var PAREN = new RegExp(`\\s?\\((?:${ONE})(?:; ?(?:${ONE}))*\\)`, "gu");
+  function alignWords(raw, spoken) {
+    const rawW = raw.match(/\S+/g) || [];
+    const spW = spoken.split(" ").filter(Boolean);
+    const norm = (w) => w.normalize("NFKC").toLowerCase().replace(/[^\p{L}\p{N}]/gu, "");
+    const rawN = rawW.map(norm);
+    const spN = spW.map(norm);
+    if (rawN.join("") !== spN.join("")) {
+      return rawW.map((_, k) => rawW.length === spW.length ? k : -1);
+    }
+    const owner = [];
+    spN.forEach((w, k) => {
+      for (let c = 0; c < w.length; c++) owner.push(k);
+    });
+    const emptyRaw = rawN.flatMap((w, k) => w ? [] : [k]);
+    const emptySp = spN.flatMap((w, k) => w ? [] : [k]);
+    const out = new Array(rawW.length).fill(-1);
+    let pos = 0;
+    rawN.forEach((w, k) => {
+      if (w) out[k] = owner[pos];
+      pos += w.length;
+    });
+    if (emptyRaw.length === emptySp.length) emptyRaw.forEach((k, n) => out[k] = emptySp[n]);
+    return out;
+  }
 
   // src/settings.js
   var DEFAULTS = {
@@ -114,6 +138,65 @@
     const out = { ...s };
     for (const k of FIXED) out[k] = DEFAULTS[k];
     return out;
+  }
+
+  // src/speed-buttons.js
+  var SPEED_MIN = 0.7;
+  var SPEED_MAX = 3.5;
+  var SPEED_STEP = 0.05;
+  var speedText = (v) => Math.round(v * 100) / 100 + "\xD7";
+  var tidy = (v) => Math.min(SPEED_MAX, Math.max(SPEED_MIN, Math.round(v * 20) / 20));
+  function speedButtons({ minus, plus, label, get, set, wait = 500 }) {
+    let v = tidy(get() || 1);
+    let saveTimer = null;
+    let holdTimer = null;
+    const show = () => {
+      label.textContent = speedText(v);
+      minus.disabled = v <= SPEED_MIN;
+      plus.disabled = v >= SPEED_MAX;
+    };
+    const step = (d) => {
+      const next = tidy(v + d);
+      if (next === v) return;
+      v = next;
+      show();
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(() => set(v), wait);
+    };
+    const stopHold = () => clearTimeout(holdTimer);
+    for (const [btn, d] of [
+      [minus, -SPEED_STEP],
+      [plus, SPEED_STEP]
+    ]) {
+      btn.addEventListener("pointerdown", (e) => {
+        if (e.button !== 0) return;
+        e.preventDefault();
+        e.stopPropagation();
+        step(d);
+        const again = () => {
+          step(d);
+          holdTimer = setTimeout(again, 110);
+        };
+        stopHold();
+        holdTimer = setTimeout(again, 450);
+      });
+      for (const t of ["pointerup", "pointerleave", "pointercancel"]) btn.addEventListener(t, stopHold);
+      btn.addEventListener("click", (e) => e.stopPropagation());
+      btn.addEventListener("keydown", (e) => {
+        if (e.key !== "Enter" && e.key !== " ") return;
+        e.preventDefault();
+        step(d);
+      });
+    }
+    show();
+    return {
+      // The speed was changed somewhere else (another window): show it here.
+      refresh() {
+        clearTimeout(saveTimer);
+        v = tidy(get() || 1);
+        show();
+      }
+    };
   }
 
   // src/lang-lite.js
@@ -326,9 +409,9 @@
       () => {
         retired = true;
         console.log("[murmur] a newer Murmur arrived on this page; this copy steps aside");
-        for (const tidy of [stopWordClock, clearHighlight, removeCaption, hidePill, hideBar]) {
+        for (const tidy2 of [stopWordClock, clearHighlight, removeCaption, hidePill, hideBar]) {
           try {
-            tidy();
+            tidy2();
           } catch {
           }
         }
@@ -642,10 +725,20 @@
       if (!s) return [];
       if (s.words) return s.words;
       const raw = s.block.text.slice(s.s, s.e);
-      const out = [];
+      const own = alignWords(raw, s.text);
+      const span = [];
       const re = /\S+/g;
       let m;
-      while (m = re.exec(raw)) out.push(makeRange(s.block, s.s + m.index, s.s + m.index + m[0].length));
+      for (let k = 0; m = re.exec(raw); k++) {
+        const w = own[k];
+        if (w < 0) continue;
+        const a = s.s + m.index;
+        const b = a + m[0].length;
+        if (span[w]) span[w][1] = b;
+        else span[w] = [a, b];
+      }
+      const out = [];
+      for (let w = 0; w < span.length; w++) out.push(span[w] ? makeRange(s.block, span[w][0], span[w][1]) : null);
       s.words = out;
       return out;
     }
@@ -680,7 +773,7 @@
       const el = root.querySelector(".t");
       let capDragged = false;
       box.addEventListener("click", () => {
-        if (!capDragged) toBg({ type: "content:toggle" });
+        if (!capDragged) togglePlay();
       });
       {
         const place = (p) => {
@@ -919,6 +1012,14 @@
       }
       beginReading(sentences, startIndex);
     }
+    function togglePlay() {
+      if (S.starting && S.sent !== S.starting) {
+        S.wantPaused = !S.wantPaused;
+        setState(S.wantPaused ? "paused" : "loading", S.wantPaused ? "" : "Starting\u2026");
+        return;
+      }
+      toBg({ type: "content:toggle" });
+    }
     function beginReading(sentences, startIndex = 0) {
       if (!alive()) {
         showBar();
@@ -932,6 +1033,7 @@
         return;
       }
       S.sentences = sentences;
+      S.wantPaused = false;
       eta.pause();
       clearHighlight();
       showBar();
@@ -945,8 +1047,13 @@
       );
       languagesFor(sentences).then((langs) => {
         if (S.sentences !== sentences) return;
-        toBg({ type: "content:read", sentences: sentences.map((s) => s.text), breaks, langs, startIndex }, (res) => {
-          if (S.starting === sentences) S.starting = null;
+        S.sent = sentences;
+        toBg({ type: "content:read", sentences: sentences.map((s) => s.text), breaks, langs, startIndex, paused: !!S.wantPaused }, (res) => {
+          if (S.starting === sentences) {
+            S.starting = null;
+            if (S.wantPaused) setState("paused", "");
+            S.wantPaused = false;
+          }
           if (chrome.runtime.lastError) setState("error", chrome.runtime.lastError.message);
           else if (res?.error) setState("error", res.error);
         });
@@ -1254,8 +1361,10 @@
     select { all: unset; cursor: pointer; padding: 6px 8px; border-radius: 8px; background: rgba(255,255,255,.12); font-size: 13px; }
     select option { color: #111; }
     .spd { display: flex; align-items: center; gap: 4px; cursor: default; }
-    .spd input { width: 72px; accent-color: #6d5dfc; cursor: pointer; margin: 0; }
-    .spd .sv { min-width: 36px; font-size: 12px; font-variant-numeric: tabular-nums; opacity: .9; }
+    .spd { gap: 0; background: rgba(255,255,255,.08); border-radius: 999px; padding: 0 2px; }
+    .spd button { font-size: 17px; font-weight: 600; width: 30px; height: 30px; }
+    .spd button:disabled { opacity: .3; cursor: default; background: none; }
+    .spd .sv { min-width: 42px; text-align: center; font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
     .x { opacity: .75; }
     .gear { opacity: .8; font-size: 14px; }
     button.cc { width: auto; padding: 0 9px; border-radius: 8px; font: 700 12px/1 system-ui, sans-serif; letter-spacing: .5px; border: 1.5px solid rgba(255,255,255,.35); height: 22px; }
@@ -1287,7 +1396,7 @@
         <span class="status"></span>
         <button class="cc" title="Big text: show the sentence being read large on the screen">CC</button>
         ${isClaudeChat() ? '<button class="auto" title="Read each new reply from Claude out loud as soon as it arrives. Click to turn this off or on.">Auto-read</button>' : ""}
-        <label class="spd" title="Speed: slide left for slower, right for faster"><input class="speed" type="range" min="0.7" max="3.5" step="0.05" /><span class="sv"></span></label>
+        <span class="spd" title="Speed: tap \u2212 for slower, + for faster (hold to keep going)"><button class="sm" aria-label="Slower">\u2212</button><span class="sv"></span><button class="sp" aria-label="Faster">+</button></span>
         <button class="gear" title="Voice and settings">&#9881;</button>
         <button class="x" title="Stop and close">&#10005;</button>
       </div>`;
@@ -1298,7 +1407,7 @@
         if (S.state === "idle" && S.current < 0 && S.sentences.length) return continueIfPageGrew();
         toBg({ type: "content:next" });
       };
-      $(".play").onclick = () => toBg({ type: "content:toggle" });
+      $(".play").onclick = () => togglePlay();
       $(".loc").onclick = () => {
         follow.set(true);
         scrollToCurrent();
@@ -1322,20 +1431,21 @@
           updateBar();
         };
       }
-      const speed = $(".speed");
-      const showSpeed = () => {
-        $(".sv").textContent = Math.round(parseFloat(speed.value) * 100) / 100 + "\xD7";
-      };
-      speed.value = String(S.settings.speed || 1);
-      showSpeed();
-      speed.oninput = showSpeed;
-      speed.onchange = () => {
-        const s = { ...S.settings, speed: parseFloat(speed.value) };
-        chrome.storage.sync.set({ speed: s.speed });
-        toBg({ type: "settings-changed", settings: s });
-      };
+      const speed = speedButtons({
+        minus: $(".sm"),
+        plus: $(".sp"),
+        label: $(".sv"),
+        get: () => S.settings.speed || 1,
+        set: (v) => {
+          S.settings.speed = v;
+          const s = { ...S.settings, speed: v };
+          chrome.storage.sync.set({ speed: v });
+          toBg({ type: "settings-changed", settings: s });
+          updateBar();
+        }
+      });
       (document.body || document.documentElement).appendChild(host);
-      S.bar = { host, root, $ };
+      S.bar = { host, root, $, speed };
       makeDraggable($(".bar"));
       updateBar();
     }
@@ -1519,7 +1629,8 @@
     chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
       switch (msg?.type) {
         case "start":
-          start(msg.mode || "page");
+          if (S.starting && (msg.mode || "page") === "page") togglePlay();
+          else start(msg.mode || "page");
           sendResponse({ ok: true });
           break;
         case "extract":
@@ -1544,6 +1655,7 @@
         case "state":
           if (msg.state === "idle" && !S.bar) break;
           if (S.starting && msg.state !== "loading" && msg.state !== "error") break;
+          if (S.starting && S.wantPaused && msg.state === "loading") break;
           if (msg.state !== "playing") {
             stopWordClock();
             eta.pause();
@@ -1562,8 +1674,7 @@
         case "settings":
           Object.assign(S.settings, msg.settings);
           if (S.bar) {
-            S.bar.$(".speed").value = String(S.settings.speed || 1);
-            S.bar.$(".sv").textContent = Math.round((S.settings.speed || 1) * 100) / 100 + "\xD7";
+            S.bar.speed.refresh();
           }
           break;
       }

@@ -29,8 +29,9 @@
       button.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 600; }
       button:disabled { opacity: .5; cursor: default; }
       .spd { display: inline-flex; align-items: center; gap: 6px; }
-      .spd input { width: 120px; accent-color: #6d5dfc; cursor: pointer; }
-      .spd b { min-width: 42px; font-variant-numeric: tabular-nums; }
+      .spd { gap: 2px; }
+      .spd button { width: 40px; height: 40px; padding: 0; font-size: 20px; font-weight: 600; line-height: 1; border-radius: 50%; }
+      .spd b { min-width: 50px; text-align: center; font-variant-numeric: tabular-nums; }
       select { font: inherit; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--card); color: var(--fg); }
       #docTitle { color: var(--muted); margin-left: auto; max-width: 40%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
       main { flex: 1; overflow: auto; padding: 24px 16px 120px; }
@@ -71,7 +72,6 @@
         footer #status { min-width: 0; flex: 1 1 60px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         footer #bar { flex: 1 1 100%; order: -1; min-width: 0; }
         footer #voice { flex: 1 1 0; min-width: 0; max-width: 100%; }
-        .spd input { width: 90px; }
         main { padding: 12px 10px 190px; }
       }
       #status.err { color: #c0392b; }
@@ -159,7 +159,7 @@
       <div id="bar" title="Jump"><div></div></div>
       <button id="ccBtn" class="cc" title="Big text: show the sentence being read large on the screen">CC</button>
       <select id="voice" title="Voice"></select>
-      <label class="spd" title="Speed: slide left for slower, right for faster"><input id="speed" type="range" min="0.7" max="3.5" step="0.05" /><b id="speedVal">1×</b></label>
+      <span class="spd" title="Speed: tap − for slower, + for faster (hold to keep going)"><button id="speedDown" aria-label="Slower">−</button><b id="speedVal">1×</b><button id="speedUp" aria-label="Faster">+</button></span>
       <button id="onlineBtn" title="Google's voices when online">Google</button>
     </footer>
 

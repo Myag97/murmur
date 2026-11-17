@@ -132070,6 +132070,10 @@ function createEngine({ wasmPaths, onEvent }) {
   };
   const emit = (type, data2 = {}) => onEvent({ type, ...data2 });
   const setStatus2 = (status2, detail = "") => {
+    if (st2.wantPaused && (status2 === "loading" || status2 === "buffering")) {
+      status2 = "paused";
+      detail = "";
+    }
     st2.status = status2;
     emit("state", { state: status2, detail });
   };
@@ -132390,6 +132394,7 @@ function createEngine({ wasmPaths, onEvent }) {
     if (i3 >= st2.sentences.length) {
       st2.index = -1;
       st2.word = -1;
+      st2.wantPaused = false;
       setStatus2("idle", "Finished");
       emit("ended");
       return;
@@ -132414,7 +132419,9 @@ function createEngine({ wasmPaths, onEvent }) {
     st2.failRun = 0;
     if (token2 !== st2.playToken || !item) return;
     const ctx = getCtx();
-    if (ctx.state !== "running") await ctx.resume();
+    if (st2.wantPaused) {
+      if (ctx.state === "running") await ctx.suspend();
+    } else if (ctx.state !== "running") await ctx.resume();
     if (token2 !== st2.playToken) return;
     let offset = 0;
     if (fromWord > 0 && item.starts && item.starts[fromWord] != null) {
@@ -132433,7 +132440,10 @@ function createEngine({ wasmPaths, onEvent }) {
     src.start(0, offset);
     st2.t0 = ctx.currentTime - offset;
     emit("sentence", { index: i3, starts: item.starts, offset, sentAt: Date.now() });
-    setStatus2("playing");
+    if (st2.wantPaused) {
+      st2.wantPaused = false;
+      setStatus2("paused");
+    } else setStatus2("playing");
     if (item.starts) startTicker(token2, i3, item);
     prefetch(i3);
   }
@@ -132456,6 +132466,7 @@ function createEngine({ wasmPaths, onEvent }) {
     async read(sentences2, startIndex = 0, settings2, startWord = 0, breaks = [], langs = []) {
       if (settings2) this.setSettings(settings2, true);
       ++st2.playToken;
+      st2.wantPaused = false;
       stopSource();
       st2.sentences = sentences2;
       st2.breaks = breaks || [];
@@ -132489,25 +132500,42 @@ function createEngine({ wasmPaths, onEvent }) {
       playFrom(startIndex, startWord);
     },
     pause() {
+      if (st2.status === "loading" || st2.status === "buffering") {
+        if (!st2.sentences.length) return;
+        st2.wantPaused = true;
+        if (st2.ctx?.state === "running") st2.ctx.suspend();
+        setStatus2("paused");
+        return;
+      }
       if (st2.status !== "playing") return;
       st2.ctx?.suspend();
       setStatus2("paused");
     },
     async resume() {
       if (st2.status !== "paused") return;
+      if (st2.wantPaused) {
+        st2.wantPaused = false;
+        if (!st2.source) {
+          setStatus2(st2.timed || st2.tts ? "buffering" : "loading", "Starting\u2026");
+          return;
+        }
+      }
       await st2.ctx?.resume();
       setStatus2("playing");
       emit("sync", { index: st2.index, elapsed: st2.ctx ? st2.ctx.currentTime - st2.t0 : 0, sentAt: Date.now() });
     },
     seek({ index, delta, word = 0 }) {
-      if (!st2.sentences.length) return;
+      if (!st2.sentences.length) return false;
       let i3 = index != null ? index : st2.index + (delta || 0);
       i3 = Math.max(0, Math.min(st2.sentences.length - 1, i3));
+      st2.wantPaused = false;
       if (st2.ctx?.state === "suspended") st2.ctx.resume();
       playFrom(i3, word);
+      return true;
     },
     stop() {
       ++st2.playToken;
+      st2.wantPaused = false;
       stopSource();
       st2.ctx?.suspend();
       st2.sentences = [];
@@ -132532,6 +132560,18 @@ function createEngine({ wasmPaths, onEvent }) {
         dropModel();
         st2.engine = null;
       }
+    },
+    // Let go of the loaded voice (a few hundred MB) while nothing is being read.
+    // It loads again, from the copy on disk, the next time something is read.
+    release() {
+      if (st2.loading || !(st2.status === "idle" || st2.status === "error")) return false;
+      dropModel();
+      st2.sentences = [];
+      st2.buffers.clear();
+      st2.pending.clear();
+      st2.genVersion++;
+      st2.engine = null;
+      return true;
     },
     get state() {
       return { status: st2.status, index: st2.index, word: st2.word, count: st2.sentences.length, engine: st2.engine, wordTiming: !!st2.timed };
@@ -132648,6 +132688,30 @@ function stripCitations(text) {
   return text.replace(BRACKET, "").replace(PAREN, "").replace(SUPERSCRIPT, "").replace(/\s+([,.;:!?])/g, "$1").replace(/ {2,}/g, " ");
 }
 var REFERENCES_HEADING = /^(references|bibliography|works cited|literature cited|reference list|notes and references|sources|endnotes|footnotes)\.?$/i;
+function alignWords(raw, spoken) {
+  const rawW = raw.match(/\S+/g) || [];
+  const spW = spoken.split(" ").filter(Boolean);
+  const norm = (w3) => w3.normalize("NFKC").toLowerCase().replace(/[^\p{L}\p{N}]/gu, "");
+  const rawN = rawW.map(norm);
+  const spN = spW.map(norm);
+  if (rawN.join("") !== spN.join("")) {
+    return rawW.map((_3, k4) => rawW.length === spW.length ? k4 : -1);
+  }
+  const owner = [];
+  spN.forEach((w3, k4) => {
+    for (let c3 = 0; c3 < w3.length; c3++) owner.push(k4);
+  });
+  const emptyRaw = rawN.flatMap((w3, k4) => w3 ? [] : [k4]);
+  const emptySp = spN.flatMap((w3, k4) => w3 ? [] : [k4]);
+  const out = new Array(rawW.length).fill(-1);
+  let pos = 0;
+  rawN.forEach((w3, k4) => {
+    if (w3) out[k4] = owner[pos];
+    pos += w3.length;
+  });
+  if (emptyRaw.length === emptySp.length) emptyRaw.forEach((k4, n2) => out[k4] = emptySp[n2]);
+  return out;
+}
 
 // src/eta.js
 var TYPICAL_CPS = 14;
@@ -161391,6 +161455,65 @@ var import_MPEGMode = __toESM(require_MPEGMode(), 1);
 var import_Lame = __toESM(require_Lame(), 1);
 var import_BitStream = __toESM(require_BitStream(), 1);
 
+// src/speed-buttons.js
+var SPEED_MIN = 0.7;
+var SPEED_MAX = 3.5;
+var SPEED_STEP = 0.05;
+var speedText = (v3) => Math.round(v3 * 100) / 100 + "\xD7";
+var tidy2 = (v3) => Math.min(SPEED_MAX, Math.max(SPEED_MIN, Math.round(v3 * 20) / 20));
+function speedButtons({ minus, plus, label, get, set, wait = 500 }) {
+  let v3 = tidy2(get() || 1);
+  let saveTimer = null;
+  let holdTimer = null;
+  const show = () => {
+    label.textContent = speedText(v3);
+    minus.disabled = v3 <= SPEED_MIN;
+    plus.disabled = v3 >= SPEED_MAX;
+  };
+  const step = (d3) => {
+    const next = tidy2(v3 + d3);
+    if (next === v3) return;
+    v3 = next;
+    show();
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => set(v3), wait);
+  };
+  const stopHold = () => clearTimeout(holdTimer);
+  for (const [btn, d3] of [
+    [minus, -SPEED_STEP],
+    [plus, SPEED_STEP]
+  ]) {
+    btn.addEventListener("pointerdown", (e2) => {
+      if (e2.button !== 0) return;
+      e2.preventDefault();
+      e2.stopPropagation();
+      step(d3);
+      const again = () => {
+        step(d3);
+        holdTimer = setTimeout(again, 110);
+      };
+      stopHold();
+      holdTimer = setTimeout(again, 450);
+    });
+    for (const t2 of ["pointerup", "pointerleave", "pointercancel"]) btn.addEventListener(t2, stopHold);
+    btn.addEventListener("click", (e2) => e2.stopPropagation());
+    btn.addEventListener("keydown", (e2) => {
+      if (e2.key !== "Enter" && e2.key !== " ") return;
+      e2.preventDefault();
+      step(d3);
+    });
+  }
+  show();
+  return {
+    // The speed was changed somewhere else (another window): show it here.
+    refresh() {
+      clearTimeout(saveTimer);
+      v3 = tidy2(get() || 1);
+      show();
+    }
+  };
+}
+
 // src/drive.js
 var DRIVE_CLIENT_ID = "994864521807-e2l6vkinu5n6sh8sblc2msqt38jlhk7d.apps.googleusercontent.com";
 var SCOPE = "https://www.googleapis.com/auth/drive.file";
@@ -161554,10 +161677,12 @@ async function sync({ local, removed = [], ask = false, onStatus = () => {
     files = files.filter((f3) => f3 !== hit);
   }
   let uploaded = 0;
-  const missing = local.filter((d3) => d3.blob && !files.some((f3) => sameFile(f3, d3.name, d3.size)));
+  const missing = local.filter((d3) => (d3.blob || d3.getBlob) && !files.some((f3) => sameFile(f3, d3.name, d3.size)));
   for (const [i3, d3] of missing.entries()) {
+    const blob = d3.blob || await d3.getBlob();
+    if (!blob) continue;
     onStatus(`Sending \u201C${d3.name}\u201D to your Drive (${i3 + 1} of ${missing.length})\u2026`);
-    const id3 = await upload(tok, dir, d3.name, d3.type, d3.blob);
+    const id3 = await upload(tok, dir, d3.name, d3.type, blob);
     files.push({ id: id3, name: d3.name, size: String(d3.size), mimeType: d3.type, modifiedTime: (/* @__PURE__ */ new Date()).toISOString() });
     uploaded++;
   }
@@ -161703,6 +161828,7 @@ function makeFollow(onChange) {
 Object.assign(globalThis, { MPEGMode: import_MPEGMode.default, Lame: import_Lame.default, BitStream: import_BitStream.default });
 var isExt2 = typeof chrome !== "undefined" && !!chrome.runtime?.getURL;
 var BASE = isExt2 ? chrome.runtime.getURL("") : new URL("./", location.href).href;
+var PDF_OPTS = { wasmUrl: BASE + "wasm/", cMapUrl: BASE + "cmaps/", cMapPacked: true, standardFontDataUrl: BASE + "standard_fonts/" };
 GlobalWorkerOptions.workerSrc = BASE + "pdf.worker.js";
 var $3 = (id3) => document.getElementById(id3);
 var docEl = $3("doc");
@@ -161789,6 +161915,11 @@ var engine = createEngine({
     else if (ev2.type === "state") {
       setStatus(ev2.state, ev2.detail);
       if (ev2.state === "playing" && isExt2) appLink.wake();
+      if (ev2.state === "playing" && isExt2 && !toldVoiceOn) {
+        toldVoiceOn = true;
+        chrome.runtime.sendMessage({ type: "reader:voice-on" }).catch(() => {
+        });
+      }
     } else if (ev2.type === "online-usage") saveUsage(ev2.usage);
     else if (ev2.type === "ended") {
       setStatus("idle", "Finished");
@@ -161798,6 +161929,15 @@ var engine = createEngine({
   }
 });
 var appLink = watchApp(engine);
+var toldVoiceOn = false;
+var releaseTimer = 0;
+document.addEventListener("visibilitychange", () => {
+  clearTimeout(releaseTimer);
+  if (document.visibilityState !== "hidden") return;
+  releaseTimer = setTimeout(() => {
+    if (engine.release()) toldVoiceOn = false;
+  }, 18e4);
+});
 var eta = makeEta();
 function timeLeft() {
   if (current < 0) return "";
@@ -161843,8 +161983,7 @@ function setWord(i3, w3) {
   const s3 = sentences[i3];
   if (!s3) return;
   s3.el.querySelectorAll(".w.cur").forEach((x2) => x2.classList.remove("cur"));
-  const el3 = s3.el.querySelector(`.w[data-w="${w3}"]`);
-  if (el3) el3.classList.add("cur");
+  s3.el.querySelectorAll(`.w[data-w="${w3}"]`).forEach((el3) => el3.classList.add("cur"));
   const cap2 = $3("caption");
   if (!cap2.hidden) {
     cap2.querySelectorAll(".w.cur").forEach((x2) => x2.classList.remove("cur"));
@@ -161946,12 +162085,28 @@ $3("caption").onclick = () => {
   $3("caption").addEventListener("pointercancel", end);
 }
 var DB_NAME = "murmur-library";
+var HEAVY = ["blob", "blocks", "pdfSizes"];
 var dbOpen = null;
 function openDb() {
   if (!dbOpen) {
     dbOpen = new Promise((res, rej) => {
-      const req = indexedDB.open(DB_NAME, 1);
-      req.onupgradeneeded = () => req.result.createObjectStore("docs", { keyPath: "key" });
+      const req = indexedDB.open(DB_NAME, 2);
+      req.onupgradeneeded = (ev2) => {
+        const db = req.result;
+        const docs = db.objectStoreNames.contains("docs") ? req.transaction.objectStore("docs") : db.createObjectStore("docs", { keyPath: "key" });
+        if (!docs.indexNames.contains("fileKey")) docs.createIndex("fileKey", "fileKey");
+        const files = db.objectStoreNames.contains("files") ? req.transaction.objectStore("files") : db.createObjectStore("files", { keyPath: "key" });
+        if (ev2.oldVersion >= 1 && ev2.oldVersion < 2) {
+          docs.openCursor().onsuccess = (e2) => {
+            const c3 = e2.target.result;
+            if (!c3) return;
+            const { card, heavy } = splitDoc(c3.value);
+            if (heavy) files.put(heavy);
+            c3.update(card);
+            c3.continue();
+          };
+        }
+      };
       req.onsuccess = () => res(req.result);
       req.onerror = () => rej(req.error);
     }).catch((e2) => {
@@ -161961,19 +162116,47 @@ function openDb() {
   }
   return dbOpen;
 }
+function splitDoc(doc) {
+  const card = { ...doc };
+  let heavy = null;
+  for (const k4 of HEAVY) {
+    if (!(k4 in card)) continue;
+    heavy = heavy || { key: doc.key };
+    heavy[k4] = card[k4];
+    delete card[k4];
+  }
+  if (heavy?.blob) card.size = heavy.blob.size;
+  if (heavy?.blocks) card.hasText = true;
+  if (heavy && !heavy.blob) heavy = null;
+  return { card, heavy };
+}
+var req2p = (r2) => new Promise((res, rej) => {
+  r2.onsuccess = () => res(r2.result);
+  r2.onerror = () => rej(r2.error);
+});
 async function dbAll() {
   const db = await openDb();
-  return new Promise((res, rej) => {
-    const r2 = db.transaction("docs").objectStore("docs").getAll();
-    r2.onsuccess = () => res(r2.result || []);
-    r2.onerror = () => rej(r2.error);
-  });
+  return await req2p(db.transaction("docs").objectStore("docs").getAll()) || [];
+}
+async function dbGet(key) {
+  const db = await openDb();
+  return req2p(db.transaction("docs").objectStore("docs").get(key));
+}
+async function dbByFile(fileKey) {
+  const db = await openDb();
+  return await req2p(db.transaction("docs").objectStore("docs").index("fileKey").getAll(fileKey)) || [];
+}
+async function dbHeavy(key) {
+  const db = await openDb();
+  return await req2p(db.transaction("files").objectStore("files").get(key)) || null;
 }
 async function dbPut(doc) {
   const db = await openDb();
+  const { card, heavy } = splitDoc(doc);
   return new Promise((res, rej) => {
-    const tx = db.transaction("docs", "readwrite");
-    tx.objectStore("docs").put(doc);
+    const tx = db.transaction(["docs", "files"], "readwrite");
+    tx.objectStore("docs").put(card);
+    if (heavy) tx.objectStore("files").put(heavy);
     tx.oncomplete = res;
     tx.onerror = () => rej(tx.error);
   });
@@ -161981,8 +162164,9 @@ async function dbPut(doc) {
 async function dbDelete(key) {
   const db = await openDb();
   return new Promise((res, rej) => {
-    const tx = db.transaction("docs", "readwrite");
+    const tx = db.transaction(["docs", "files"], "readwrite");
     tx.objectStore("docs").delete(key);
+    tx.objectStore("files").delete(key);
     tx.oncomplete = res;
     tx.onerror = () => rej(tx.error);
   });
@@ -161993,14 +162177,20 @@ var carryPlace = null;
 async function rememberDoc(file, blocks = null) {
   if (!docKey || !file || file.size > 80 * 1024 * 1024) return;
   try {
-    const rec = { key: docKey, fileKey: fileKeyOf(file), title: docTitle, name: file.name, type: file.type, blob: file, count: sentences.length, lastOpened: Date.now() };
-    if (blocks) {
-      rec.blocks = blocks;
-      rec.pdfSizes = pdfSizes;
-      rec.v = BLOCKS_VERSION;
+    const fileKey = fileKeyOf(file);
+    const old = await dbGet(docKey);
+    if (old && old.fileKey === fileKey && old.size && (!blocks || old.v === BLOCKS_VERSION)) {
+      await dbPut({ ...old, title: docTitle, count: sentences.length, lastOpened: Date.now() });
+    } else {
+      const rec = { key: docKey, fileKey, title: docTitle, name: file.name, type: file.type, blob: file, count: sentences.length, lastOpened: Date.now() };
+      if (blocks) {
+        rec.blocks = blocks;
+        rec.pdfSizes = pdfSizes;
+        rec.v = BLOCKS_VERSION;
+      }
+      await dbPut(rec);
     }
-    await dbPut(rec);
-    for (const d3 of await dbAll()) if (d3.remoteId && d3.fileKey === rec.fileKey) await dbDelete(d3.key);
+    for (const d3 of await dbByFile(fileKey)) if (d3.remoteId) await dbDelete(d3.key);
     if (signedIn()) setTimeout(() => syncLibrary(false), 3e3);
   } catch (e2) {
     console.warn("[murmur] could not remember document", e2);
@@ -162008,8 +162198,10 @@ async function rememberDoc(file, blocks = null) {
 }
 async function cachedBlocksFor(file) {
   try {
-    const k4 = fileKeyOf(file);
-    return (await dbAll()).find((d3) => d3.fileKey === k4 && Array.isArray(d3.blocks) && d3.blocks.length) || null;
+    const card = (await dbByFile(fileKeyOf(file))).find((d3) => d3.hasText);
+    if (!card) return null;
+    const heavy = await dbHeavy(card.key);
+    return heavy && Array.isArray(heavy.blocks) && heavy.blocks.length ? { ...card, blocks: heavy.blocks, pdfSizes: heavy.pdfSizes } : null;
   } catch {
     return null;
   }
@@ -162051,7 +162243,12 @@ async function renderLibrary(asked = false) {
         }
         return;
       }
-      loadFile(new File([d3.blob], d3.name, { type: d3.type }));
+      const heavy = await dbHeavy(d3.key).catch(() => null);
+      if (!heavy?.blob) {
+        setStatus("error", `Could not open ${d3.name}: it is no longer kept on this device. Open the file again.`);
+        return;
+      }
+      loadFile(new File([heavy.blob], d3.name, { type: d3.type }));
     };
     item.querySelector(".rm").onclick = async (e2) => {
       e2.stopPropagation();
@@ -162080,7 +162277,7 @@ function removedList() {
 function noteRemoved(d3) {
   if (!everSignedIn()) return;
   try {
-    localStorage.setItem("murmur:drive:removed", JSON.stringify([...removedList(), { name: d3.name, size: d3.blob ? d3.blob.size : d3.size }]));
+    localStorage.setItem("murmur:drive:removed", JSON.stringify([...removedList(), { name: d3.name, size: d3.size }]));
   } catch {
   }
 }
@@ -162108,7 +162305,7 @@ async function syncLibrary(ask = false) {
   syncing = (async () => {
     try {
       const docs = await dbAll();
-      const local = docs.filter((d3) => d3.blob).map((d3) => ({ name: d3.name, type: d3.type, size: d3.blob.size, blob: d3.blob, fileKey: d3.fileKey, place: localPlace(d3) }));
+      const local = docs.filter((d3) => !d3.remoteId && d3.size).map((d3) => ({ name: d3.name, type: d3.type, size: d3.size, getBlob: async () => (await dbHeavy(d3.key))?.blob || null, fileKey: d3.fileKey, place: localPlace(d3) }));
       const r2 = await sync({ local, removed: removedList(), ask, onStatus: driveNote });
       if (!r2) return null;
       localStorage.removeItem("murmur:drive:removed");
@@ -162193,7 +162390,7 @@ function togglePlay() {
   const st2 = engine.state.status;
   if (st2 === "playing") engine.pause();
   else if (st2 === "paused") engine.resume();
-  else if (st2 === "loading" || st2 === "buffering") return;
+  else if (st2 === "loading" || st2 === "buffering") engine.pause();
   else startFrom(current >= 0 ? current : savedPosition());
 }
 function seek(i3) {
@@ -162213,7 +162410,7 @@ docEl.addEventListener("click", (e2) => {
   const s3 = e2.target.closest(".s");
   if (!s3 || s3.dataset.i == null) return;
   const i3 = Number(s3.dataset.i);
-  const w3 = e2.altKey ? e2.target.closest(".w") : null;
+  const w3 = e2.altKey ? e2.target.closest(".w[data-w]") : null;
   if (w3) {
     e2.preventDefault();
     const st2 = engine.state.status;
@@ -162360,7 +162557,7 @@ function forgetPdf() {
 }
 async function pdfToBlocks(data2, onProgress) {
   closePdf(pdfDoc);
-  const pdf = await getDocument({ data: data2, wasmUrl: BASE + "wasm/" }).promise;
+  const pdf = await getDocument({ data: data2, ...PDF_OPTS }).promise;
   pdfDoc = pdf;
   pdfSizes = [];
   const pages = [];
@@ -162371,7 +162568,7 @@ async function pdfToBlocks(data2, onProgress) {
     const tc2 = await page.getTextContent();
     const vh2 = page.view[3] - page.view[1];
     pdfSizes.push({ w: page.view[2] - page.view[0], h: vh2 });
-    const typed = tc2.items.reduce((n2, it2) => n2 + (it2.str ? it2.str.trim().length : 0), 0);
+    const typed = tc2.items.reduce((n2, it2) => n2 + (it2.str ? it2.str.trim().length + (it2.str.match(/[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}]/gu) || []).length : 0), 0);
     if (typed < 20 && !ocrFailed) {
       onProgress?.(`Page ${p3} of ${pdf.numPages} is a picture of text. Recognising the words\u2026 (slower, first time loads the reader)`);
       try {
@@ -162724,6 +162921,7 @@ async function render(blocks, title) {
       span.className = "s";
       if (speak) {
         span.dataset.i = String(sentences.length);
+        const own = alignWords(raw, speak);
         let wi = 0;
         for (const part of raw.split(/(\s+)/)) {
           if (!part) continue;
@@ -162731,7 +162929,8 @@ async function render(blocks, title) {
           else {
             const w3 = document.createElement("span");
             w3.className = "w";
-            w3.dataset.w = String(wi++);
+            const k4 = own[wi++];
+            if (k4 >= 0) w3.dataset.w = String(k4);
             w3.textContent = part;
             span.appendChild(w3);
           }
@@ -162814,7 +163013,7 @@ async function loadFile(file) {
       blocks = cached.blocks;
       if (ext === "pdf" || type === "application/pdf") {
         closePdf(pdfDoc);
-        pdfDoc = await getDocument({ data: new Uint8Array(await file.arrayBuffer()), wasmUrl: BASE + "wasm/" }).promise;
+        pdfDoc = await getDocument({ data: new Uint8Array(await file.arrayBuffer()), ...PDF_OPTS }).promise;
         pdfSizes = cached.pdfSizes || [];
       } else {
         pdfDoc = null;
@@ -162846,7 +163045,35 @@ async function loadFile(file) {
     if (my2 === loadSeq) setStatus("error", `Could not open ${name}: ${e2.message || e2}`);
   }
 }
+function loadLocalUrl(src) {
+  setStatus("loading", "Opening the file from your computer");
+  const name = decodeURIComponent(src.split(/[?#]/)[0].split("/").pop() || "document");
+  const failed = () => {
+    const allowed = isExt2 && chrome.extension?.isAllowedFileSchemeAccess;
+    const say = (ok) => setStatus(
+      "error",
+      ok ? `I couldn't open ${name} from your computer. Drag the file onto this page instead.` : "To open files from your computer like this, Chrome needs a yes: on the Extensions page click Details under Murmur, turn on \u201CAllow access to file URLs\u201D, then press F5 here. Or just drag the file onto this page."
+    );
+    if (allowed) chrome.extension.isAllowedFileSchemeAccess(say);
+    else say(false);
+  };
+  const x2 = new XMLHttpRequest();
+  x2.open("GET", src);
+  x2.responseType = "blob";
+  x2.onload = () => {
+    if (!x2.response || !x2.response.size) return failed();
+    const type = /\.pdf$/i.test(name) ? "application/pdf" : x2.response.type || "";
+    loadFile(new File([x2.response], name, { type }));
+  };
+  x2.onerror = failed;
+  try {
+    x2.send();
+  } catch {
+    failed();
+  }
+}
 async function loadUrl(src) {
+  if (/^file:/i.test(src)) return loadLocalUrl(src);
   setStatus("loading", "Fetching file");
   try {
     const res = await fetch(src, { credentials: "include", signal: AbortSignal.timeout(9e4) });
@@ -163015,10 +163242,7 @@ async function init() {
   showSpeed();
   initOnline();
   $3("voice").onchange = () => saveSettings({ voice: $3("voice").value });
-  $3("speed").oninput = () => {
-    $3("speedVal").textContent = speedLabel(parseFloat($3("speed").value));
-  };
-  $3("speed").onchange = () => saveSettings({ speed: parseFloat($3("speed").value) });
+  speedCtl = speedButtons({ minus: $3("speedDown"), plus: $3("speedUp"), label: $3("speedVal"), get: () => settings.speed || 1, set: (v3) => saveSettings({ speed: v3 }) });
   engine.setSettings(settings, true);
   const params = new URLSearchParams(location.search);
   const wantSave = params.get("save") === "1";
@@ -163048,10 +163272,11 @@ async function init() {
   } else {
     const back = backFromGoogle();
     const docs = await renderLibrary(params.has("library") || back);
-    const last = back ? null : docs.find((d3) => d3.blob);
+    const last = back ? null : docs.find((d3) => !d3.remoteId && d3.size);
     if (back) syncLibrary(false);
     else if (signedIn()) setTimeout(() => syncLibrary(false), 4e3);
-    if (last && !params.has("library")) await loadFile(new File([last.blob], last.name, { type: last.type }));
+    const lastFile = last && !params.has("library") ? (await dbHeavy(last.key).catch(() => null))?.blob : null;
+    if (lastFile) await loadFile(new File([lastFile], last.name, { type: last.type }));
   }
   if (wantSave && sentences.length) $3("saveBtn").click();
 }
@@ -163067,12 +163292,10 @@ if (isExt2) {
 window.murmurReader = { engine, get sentences() {
   return sentences;
 }, loadFile, render, textToBlocks, htmlToBlocks, pdfToBlocks, toMp3, toWav };
-function speedLabel(v3) {
-  return Math.round(v3 * 100) / 100 + "\xD7";
-}
+var speedCtl = null;
 function showSpeed() {
-  $3("speed").value = String(settings.speed || 1);
-  $3("speedVal").textContent = speedLabel(settings.speed || 1);
+  if (speedCtl) speedCtl.refresh();
+  else $3("speedVal").textContent = speedText(settings.speed || 1);
 }
 function renderOnline(problem) {
   $3("onlineVoices").checked = settings.onlineVoices !== false;

@@ -98067,6 +98067,10 @@ function createEngine({ wasmPaths, onEvent }) {
   };
   const emit = (type, data2 = {}) => onEvent({ type, ...data2 });
   const setStatus = (status, detail = "") => {
+    if (st2.wantPaused && (status === "loading" || status === "buffering")) {
+      status = "paused";
+      detail = "";
+    }
     st2.status = status;
     emit("state", { state: status, detail });
   };
@@ -98387,6 +98391,7 @@ function createEngine({ wasmPaths, onEvent }) {
     if (i3 >= st2.sentences.length) {
       st2.index = -1;
       st2.word = -1;
+      st2.wantPaused = false;
       setStatus("idle", "Finished");
       emit("ended");
       return;
@@ -98411,7 +98416,9 @@ function createEngine({ wasmPaths, onEvent }) {
     st2.failRun = 0;
     if (token !== st2.playToken || !item) return;
     const ctx = getCtx();
-    if (ctx.state !== "running") await ctx.resume();
+    if (st2.wantPaused) {
+      if (ctx.state === "running") await ctx.suspend();
+    } else if (ctx.state !== "running") await ctx.resume();
     if (token !== st2.playToken) return;
     let offset = 0;
     if (fromWord > 0 && item.starts && item.starts[fromWord] != null) {
@@ -98430,7 +98437,10 @@ function createEngine({ wasmPaths, onEvent }) {
     src.start(0, offset);
     st2.t0 = ctx.currentTime - offset;
     emit("sentence", { index: i3, starts: item.starts, offset, sentAt: Date.now() });
-    setStatus("playing");
+    if (st2.wantPaused) {
+      st2.wantPaused = false;
+      setStatus("paused");
+    } else setStatus("playing");
     if (item.starts) startTicker(token, i3, item);
     prefetch(i3);
   }
@@ -98453,6 +98463,7 @@ function createEngine({ wasmPaths, onEvent }) {
     async read(sentences, startIndex = 0, settings, startWord = 0, breaks = [], langs = []) {
       if (settings) this.setSettings(settings, true);
       ++st2.playToken;
+      st2.wantPaused = false;
       stopSource();
       st2.sentences = sentences;
       st2.breaks = breaks || [];
@@ -98486,25 +98497,42 @@ function createEngine({ wasmPaths, onEvent }) {
       playFrom(startIndex, startWord);
     },
     pause() {
+      if (st2.status === "loading" || st2.status === "buffering") {
+        if (!st2.sentences.length) return;
+        st2.wantPaused = true;
+        if (st2.ctx?.state === "running") st2.ctx.suspend();
+        setStatus("paused");
+        return;
+      }
       if (st2.status !== "playing") return;
       st2.ctx?.suspend();
       setStatus("paused");
     },
     async resume() {
       if (st2.status !== "paused") return;
+      if (st2.wantPaused) {
+        st2.wantPaused = false;
+        if (!st2.source) {
+          setStatus(st2.timed || st2.tts ? "buffering" : "loading", "Starting\u2026");
+          return;
+        }
+      }
       await st2.ctx?.resume();
       setStatus("playing");
       emit("sync", { index: st2.index, elapsed: st2.ctx ? st2.ctx.currentTime - st2.t0 : 0, sentAt: Date.now() });
     },
     seek({ index, delta, word = 0 }) {
-      if (!st2.sentences.length) return;
+      if (!st2.sentences.length) return false;
       let i3 = index != null ? index : st2.index + (delta || 0);
       i3 = Math.max(0, Math.min(st2.sentences.length - 1, i3));
+      st2.wantPaused = false;
       if (st2.ctx?.state === "suspended") st2.ctx.resume();
       playFrom(i3, word);
+      return true;
     },
     stop() {
       ++st2.playToken;
+      st2.wantPaused = false;
       stopSource();
       st2.ctx?.suspend();
       st2.sentences = [];
@@ -98529,6 +98557,18 @@ function createEngine({ wasmPaths, onEvent }) {
         dropModel();
         st2.engine = null;
       }
+    },
+    // Let go of the loaded voice (a few hundred MB) while nothing is being read.
+    // It loads again, from the copy on disk, the next time something is read.
+    release() {
+      if (st2.loading || !(st2.status === "idle" || st2.status === "error")) return false;
+      dropModel();
+      st2.sentences = [];
+      st2.buffers.clear();
+      st2.pending.clear();
+      st2.genVersion++;
+      st2.engine = null;
+      return true;
     },
     get state() {
       return { status: st2.status, index: st2.index, word: st2.word, count: st2.sentences.length, engine: st2.engine, wordTiming: !!st2.timed };
@@ -98653,6 +98693,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   switch (msg.type) {
     case "read":
       engine.read(msg.sentences, msg.startIndex || 0, msg.settings, msg.startWord || 0, msg.breaks || [], msg.langs || []);
+      if (msg.paused) engine.pause();
       break;
     case "pause":
       engine.pause();
@@ -98661,10 +98702,13 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
       engine.resume();
       break;
     case "seek":
-      engine.seek({ index: msg.index, delta: msg.delta, word: msg.word });
-      break;
+      sendResponse(engine.seek({ index: msg.index, delta: msg.delta, word: msg.word }) ? { ok: true } : { ok: false, notReading: true });
+      return false;
     case "stop":
       engine.stop();
+      break;
+    case "release":
+      if (engine.release()) console.log("[murmur] voice let go here (the reader has its own)");
       break;
     case "prepare":
       engine.prepare().then((ok) => sendResponse({ ok }));

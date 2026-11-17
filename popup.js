@@ -140,6 +140,65 @@
     langVoices: { es: "piper:es_MX-claude-high", fr: "ff_siwis", it: "im_nicola*0.7+bm_fable*0.3", pt: "piper:pt_BR-cadu-medium", hi: "piper:hi_IN-pratham-medium", zh: "zm_yunyang", la: "im_nicola" }
   };
 
+  // src/speed-buttons.js
+  var SPEED_MIN = 0.7;
+  var SPEED_MAX = 3.5;
+  var SPEED_STEP = 0.05;
+  var speedText = (v) => Math.round(v * 100) / 100 + "\xD7";
+  var tidy = (v) => Math.min(SPEED_MAX, Math.max(SPEED_MIN, Math.round(v * 20) / 20));
+  function speedButtons({ minus, plus, label, get, set, wait = 500 }) {
+    let v = tidy(get() || 1);
+    let saveTimer = null;
+    let holdTimer = null;
+    const show = () => {
+      label.textContent = speedText(v);
+      minus.disabled = v <= SPEED_MIN;
+      plus.disabled = v >= SPEED_MAX;
+    };
+    const step = (d) => {
+      const next = tidy(v + d);
+      if (next === v) return;
+      v = next;
+      show();
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(() => set(v), wait);
+    };
+    const stopHold = () => clearTimeout(holdTimer);
+    for (const [btn, d] of [
+      [minus, -SPEED_STEP],
+      [plus, SPEED_STEP]
+    ]) {
+      btn.addEventListener("pointerdown", (e) => {
+        if (e.button !== 0) return;
+        e.preventDefault();
+        e.stopPropagation();
+        step(d);
+        const again = () => {
+          step(d);
+          holdTimer = setTimeout(again, 110);
+        };
+        stopHold();
+        holdTimer = setTimeout(again, 450);
+      });
+      for (const t of ["pointerup", "pointerleave", "pointercancel"]) btn.addEventListener(t, stopHold);
+      btn.addEventListener("click", (e) => e.stopPropagation());
+      btn.addEventListener("keydown", (e) => {
+        if (e.key !== "Enter" && e.key !== " ") return;
+        e.preventDefault();
+        step(d);
+      });
+    }
+    show();
+    return {
+      // The speed was changed somewhere else (another window): show it here.
+      refresh() {
+        clearTimeout(saveTimer);
+        v = tidy(get() || 1);
+        show();
+      }
+    };
+  }
+
   // node_modules/fasttext.wasm.js/dist/constants.mjs
   var IS_BROWSER = typeof window !== "undefined" && !!window.document && !!window.document.createElement;
   var IS_WORKER = (
@@ -1517,6 +1576,7 @@
   }
 
   // src/popup.js
+  var speedCtl = null;
   var $ = (id2) => document.getElementById(id2);
   var send = (msg) => new Promise((res) => chrome.runtime.sendMessage(msg, res));
   var settings = { ...DEFAULTS };
@@ -1592,8 +1652,8 @@
   }
   function renderSettings() {
     $("voice").value = settings.voice;
-    $("speed").value = settings.speed;
-    $("speedVal").textContent = Math.round(Number(settings.speed) * 100) / 100 + "\xD7";
+    if (speedCtl) speedCtl.refresh();
+    else speedCtl = speedButtons({ minus: $("speedDown"), plus: $("speedUp"), label: $("speedVal"), get: () => Number(settings.speed) || 1, set: (v) => saveSettings({ speed: v }) });
     $("skipCitations").checked = settings.skipCitations !== false;
     $("selectButton").checked = !!settings.selectButton;
     renderOnline();
@@ -1753,8 +1813,6 @@
       $("listen").innerHTML = "&#10074;&#10074; Stop";
     };
     $("sample").onended = () => $("listen").innerHTML = "&#9654; Listen";
-    $("speed").oninput = () => $("speedVal").textContent = Math.round(Number($("speed").value) * 100) / 100 + "\xD7";
-    $("speed").onchange = () => saveSettings({ speed: parseFloat($("speed").value) });
     $("skipCitations").onchange = () => saveSettings({ skipCitations: $("skipCitations").checked });
     $("selectButton").onchange = () => saveSettings({ selectButton: $("selectButton").checked });
     $("shortcuts").onclick = () => chrome.tabs.create({ url: "chrome://extensions/shortcuts" });

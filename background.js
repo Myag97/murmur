@@ -92,6 +92,8 @@ async function ensureOffscreen() {
   await creatingOffscreen;
 }
 var lastRead = null;
+var readSending = false;
+var pauseNext = false;
 var restarts = [];
 var VOICE_BROKEN = /Could not load the voice|GPUDevice|createBuffer|device ?lost|^\d{6,}$|memory/i;
 async function restartVoice(why) {
@@ -325,7 +327,13 @@ async function togglePlay(tab) {
   diag(`play/pause key on ${hostOf(tab.url)}; reading is ${session.tabId === tabId ? session.state : "not in this tab"}`);
   if (session.tabId === tabId && session.state === "playing") return toOffscreen({ type: "pause" });
   if (session.tabId === tabId && session.state === "paused") return toOffscreen({ type: "resume" });
-  if (session.tabId === tabId && (session.state === "loading" || session.state === "buffering")) return;
+  if (session.tabId === tabId && (session.state === "loading" || session.state === "buffering")) {
+    if (readSending) {
+      pauseNext = !pauseNext;
+      return;
+    }
+    return toOffscreen({ type: "pause" });
+  }
   return readTab(tab, "page");
 }
 async function handle(msg, sender) {
@@ -336,10 +344,14 @@ async function handle(msg, sender) {
       const frameId = sender.frameId || 0;
       if (session.tabId != null && (session.tabId !== tabId || (session.frameId || 0) !== frameId)) toTabQuiet(session.tabId, { type: "state", state: "idle", detail: "" }, session.frameId || 0);
       session = { tabId, frameId, count: msg.sentences.length, index: msg.startIndex, state: "loading", detail: "Starting\u2026" };
+      readSending = true;
+      pauseNext = !!msg.paused;
       diag(`page handed over ${msg.sentences.length} sentence(s) from frame #${frameId}, starting at ${msg.startIndex}`);
       await saveSession();
       lastRead = { type: "read", sentences: msg.sentences, breaks: msg.breaks || [], langs: msg.langs || [], startIndex: msg.startIndex };
-      await toOffscreen({ ...lastRead, settings: await readSettings() });
+      const settings = await readSettings();
+      readSending = false;
+      await toOffscreen({ ...lastRead, settings, paused: pauseNext });
       return { ok: true };
     }
     case "content:diag":
@@ -444,6 +456,12 @@ async function handle(msg, sender) {
       return toOffscreen({ type: "seek", delta: -1 });
     case "popup:stop":
       return stopAll();
+    case "reader:voice-on":
+      if (!["playing", "paused", "buffering", "loading"].includes(session.state) && await offscreenExists()) {
+        chrome.runtime.sendMessage({ type: "release", target: "offscreen" }).catch(() => {
+        });
+      }
+      return { ok: true };
     case "settings-changed": {
       if (await offscreenExists()) {
         const { voiceOnProcessorUntil } = await chrome.storage.session.get("voiceOnProcessorUntil").catch(() => ({}));
