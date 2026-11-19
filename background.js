@@ -468,6 +468,36 @@ async function handle(msg, sender) {
       return toOffscreen({ type: "seek", delta: -1 });
     case "popup:stop":
       return stopAll();
+    case "reader:voice": {
+      const tabId = sender.tab?.id;
+      if (tabId == null) return { ok: false };
+      if (msg.cmd === "read") {
+        if (session.tabId != null && session.tabId !== tabId) toTabQuiet(session.tabId, { type: "state", state: "idle", detail: "" }, session.frameId || 0);
+        session = { tabId, frameId: 0, count: msg.sentences.length, index: msg.startIndex, state: "loading", detail: "Starting\u2026" };
+        readSending = true;
+        pauseNext = false;
+        diag(`reader handed over ${msg.sentences.length} sentence(s), starting at ${msg.startIndex}`);
+        await saveSession();
+        lastRead = { type: "read", sentences: msg.sentences, breaks: msg.breaks || [], langs: msg.langs || [], startIndex: msg.startIndex };
+        const settings = await readSettings();
+        readSending = false;
+        await toOffscreen({ ...lastRead, startWord: msg.startWord || 0, settings, paused: pauseNext });
+        return { ok: true };
+      }
+      if (session.tabId !== tabId) return { ok: false, notReading: true };
+      diag(`reader: ${msg.cmd} (reading is ${session.state})`);
+      if (msg.cmd === "pause") {
+        if (readSending) return void (pauseNext = true);
+        return toOffscreen({ type: "pause" });
+      }
+      if (msg.cmd === "resume") {
+        if (readSending) return void (pauseNext = false);
+        return toOffscreen({ type: "resume" });
+      }
+      if (msg.cmd === "seek") return toOffscreen({ type: "seek", index: msg.index, word: msg.word || 0 });
+      if (msg.cmd === "stop") return stopAll();
+      return { ok: false };
+    }
     case "reader:voice-on":
       return { ok: true };
     case "settings-changed": {

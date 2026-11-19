@@ -161907,29 +161907,96 @@ if ($3("locate")) {
     followEl?.scrollIntoView({ block: "center", behavior: "smooth" });
   };
 }
-var engine = createEngine({
+function onVoiceEvent(ev2) {
+  if (ev2.type === "sentence") setCurrent(ev2.index);
+  else if (ev2.type === "word") setWord(ev2.index, ev2.word);
+  else if (ev2.type === "state") {
+    setStatus(ev2.state, ev2.detail);
+  } else if (ev2.type === "online-usage") saveUsage(ev2.usage);
+  else if (ev2.type === "ended") {
+    setStatus("idle", "Finished");
+    savePosition(0);
+    clearCurrent();
+  }
+}
+var localEngine = createEngine({
   wasmPaths: BASE + "lib/",
   onEvent(ev2) {
-    if (ev2.type === "sentence") setCurrent(ev2.index);
-    else if (ev2.type === "word") setWord(ev2.index, ev2.word);
-    else if (ev2.type === "state") {
-      setStatus(ev2.state, ev2.detail);
-      if (ev2.state === "playing" && isExt2) appLink.wake();
-      if (ev2.state === "playing" && isExt2 && !toldVoiceOn) {
-        toldVoiceOn = true;
-        chrome.runtime.sendMessage({ type: "reader:voice-on" }).catch(() => {
-        });
-      }
-    } else if (ev2.type === "online-usage") saveUsage(ev2.usage);
-    else if (ev2.type === "ended") {
-      setStatus("idle", "Finished");
-      savePosition(0);
-      clearCurrent();
-    }
+    if (ev2.type === "online-usage") saveUsage(ev2.usage);
+    else if (!isExt2) onVoiceEvent(ev2);
   }
 });
-var appLink = watchApp(engine);
-var toldVoiceOn = false;
+var engine = isExt2 ? backgroundVoice(onVoiceEvent) : localEngine;
+function backgroundVoice(onEvent) {
+  const st2 = { status: "idle", index: -1, word: -1, count: 0 };
+  let mine = false;
+  const send = (m3) => chrome.runtime.sendMessage({ type: "reader:voice", ...m3 }).catch(() => null);
+  chrome.runtime.onMessage.addListener((msg) => {
+    if (!msg || !mine) return;
+    if (msg.type === "state") {
+      st2.status = msg.state;
+      if (msg.state === "idle") mine = false;
+      onEvent({ type: "state", state: msg.state, detail: msg.detail });
+    } else if (msg.type === "sentence") {
+      st2.index = msg.index;
+      st2.word = -1;
+      onEvent({ type: "sentence", index: msg.index });
+    } else if (msg.type === "word") {
+      st2.word = msg.word;
+      onEvent({ type: "word", index: msg.index, word: msg.word });
+    } else if (msg.type === "ended") {
+      st2.status = "idle";
+      st2.index = -1;
+      mine = false;
+      onEvent({ type: "ended" });
+    }
+  });
+  window.addEventListener("pagehide", () => {
+    if (mine) send({ cmd: "stop" });
+  });
+  return {
+    read(list, startIndex = 0, _settings, startWord = 0, breaks = [], langs = []) {
+      mine = true;
+      st2.count = list.length;
+      st2.index = startIndex;
+      st2.status = "loading";
+      onEvent({ type: "state", state: "loading", detail: "Starting\u2026" });
+      send({ cmd: "read", sentences: list, startIndex, startWord, breaks, langs });
+    },
+    pause() {
+      if (mine) send({ cmd: "pause" });
+    },
+    resume() {
+      if (mine) send({ cmd: "resume" });
+    },
+    seek({ index, delta, word = 0 }) {
+      if (!mine) return false;
+      send({ cmd: "seek", index: index != null ? index : Math.max(0, st2.index + (delta || 0)), word });
+      return true;
+    },
+    stop() {
+      if (mine) send({ cmd: "stop" });
+      mine = false;
+      st2.status = "idle";
+      st2.index = -1;
+      onEvent({ type: "state", state: "idle", detail: "" });
+    },
+    // Speed, voice and the rest changed here: the background voice hears it (same as from a web page's bar).
+    setSettings(_patch, quiet = false) {
+      if (quiet) return;
+      chrome.runtime.sendMessage({ type: "settings-changed", settings: withFixed({ ...settings }) }).catch(() => {
+      });
+    },
+    prepare: () => Promise.resolve(true),
+    release: () => false,
+    renderAll: (...a2) => localEngine.renderAll(...a2),
+    get state() {
+      return { status: st2.status, index: st2.index, word: st2.word, count: st2.count };
+    }
+  };
+}
+var appLink = isExt2 ? { wake() {
+} } : watchApp(localEngine);
 var eta = makeEta();
 function timeLeft() {
   if (current < 0) return "";
