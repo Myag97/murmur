@@ -162834,6 +162834,9 @@ async function pdfToBlocks(data2, onProgress) {
     if (pages.length > 1) blocks.push({ kind: "page", page: i3 + 1 });
     const lefts = lines.filter((q3) => q3.box && !isBoiler(q3)).map((q3) => q3.box.x0).sort((a2, b3) => a2 - b3);
     const leftEdge = lefts[Math.floor(lefts.length * 0.2)] ?? 0;
+    const body = lines.filter((q3) => !isBoiler(q3) && q3.h <= medianH * 1.25);
+    const gaps = body.slice(1).map((q3, k4) => body[k4].y - q3.y).filter((g3) => g3 > 0).sort((a2, b3) => a2 - b3);
+    const usual = gaps[Math.floor(gaps.length / 2)] || 0;
     let para = "";
     let box = null;
     let prev = null;
@@ -162859,8 +162862,8 @@ async function pdfToBlocks(data2, onProgress) {
       }
       const gap = prev ? prev.y - l2.y : 0;
       if (l2.newPara && para) flush();
-      else if (prev && gap > prev.h * 1.9) flush();
-      else if (prev && /[.!?]["')]?$/.test(para) && /^[A-Z]/.test(l2.text) && gap > prev.h * 1.35) flush();
+      else if (prev && gap > Math.max(prev.h * 1.9, usual * 1.5)) flush();
+      else if (prev && /[.!?]["')]?$/.test(para) && /^[A-Z]/.test(l2.text) && gap > Math.max(prev.h * 1.35, usual * 1.25)) flush();
       else if (prev && l2.box && l2.box.x0 - leftEdge > l2.h * 1.2 && /[.!?:]["'’”)]*$/.test(para) && new RegExp(`^["'\u2018\u201C(]*\\p{Lu}`, "u").test(l2.text)) flush();
       if (para.endsWith("-") && /^[a-z]/.test(l2.text)) para = para.slice(0, -1) + l2.text;
       else para += (para ? " " : "") + l2.text;
@@ -163064,6 +163067,41 @@ function withoutCitations(blocks) {
   }
   return out.map((b3) => b3.kind === "pre" || b3.kind === "page" || b3.note ? b3 : { ...b3, text: stripCitations(b3.text) }).filter((b3) => b3.kind === "page" || b3.kind === "pre" || /[\p{L}\p{N}]/u.test(b3.text));
 }
+var ENDS_SENTENCE = /[.!?…:;。！？]["'’”)\]」』）]*$/u;
+function carriesOn(a2, b3) {
+  a2 = a2.trim();
+  b3 = b3.trim();
+  if (!a2 || !b3) return false;
+  if (/^[\p{Ll},;)\]’”]/u.test(b3)) return true;
+  if (ENDS_SENTENCE.test(a2)) return false;
+  if (new RegExp(`^["'\u2018\u201C(]*\\p{Lu}`, "u").test(b3) && a2.length < 60 && !/[,\-–—]$/.test(a2)) return false;
+  return true;
+}
+var unionBox = (a2, b3) => !a2 ? { ...b3 } : !b3 ? a2 : { x0: Math.min(a2.x0, b3.x0), x1: Math.max(a2.x1, b3.x1), top: Math.max(a2.top, b3.top), bottom: Math.min(a2.bottom, b3.bottom) };
+function joinBrokenParagraphs(blocks) {
+  const out = [];
+  let lastP = -1;
+  for (const b3 of blocks) {
+    if (b3.kind === "page") {
+      out.push(b3);
+      continue;
+    }
+    const prev = lastP >= 0 ? out[lastP] : null;
+    if (b3.kind === "p" && !b3.note && prev && carriesOn(prev.text, b3.text)) {
+      const j2 = { ...prev };
+      j2.text = new RegExp("\\p{Ll}-$", "u").test(prev.text) && new RegExp("^\\p{Ll}", "u").test(b3.text) ? prev.text.slice(0, -1) + b3.text : prev.text + " " + b3.text;
+      if (prev.page === b3.page && b3.box) {
+        j2.box = unionBox(prev.box, b3.box);
+        j2.lines = [...prev.lines || [], ...b3.lines || []];
+      }
+      out[lastP] = j2;
+      continue;
+    }
+    out.push(b3);
+    lastP = b3.kind === "p" && !b3.note ? out.length - 1 : -1;
+  }
+  return out;
+}
 async function render(blocks, title) {
   docTitle = title || "Murmur";
   docLang = "en";
@@ -163078,6 +163116,7 @@ async function render(blocks, title) {
   }
   current = -1;
   if (settings.skipCitations !== false) blocks = withoutCitations(blocks);
+  blocks = joinBrokenParagraphs(blocks);
   for (const b3 of blocks) {
     if (b3.kind === "page") {
       const d3 = document.createElement("div");
@@ -163156,7 +163195,10 @@ async function render(blocks, title) {
   if (carryPlace && carryPlace.key !== docKey && carryPlace.count) {
     try {
       const old = parseInt(localStorage.getItem("murmur:pos:" + carryPlace.key) || "0", 10);
-      if (old > 0) localStorage.setItem("murmur:pos:" + docKey, String(Math.round(old / carryPlace.count * sentences.length)));
+      if (old > 0) {
+        localStorage.setItem("murmur:pos:" + docKey, String(Math.min(sentences.length - 1, Math.round(old / carryPlace.count * sentences.length))));
+        localStorage.setItem("murmur:posAt:" + docKey, localStorage.getItem("murmur:posAt:" + carryPlace.key) || String(Date.now()));
+      }
     } catch {
     }
     dbDelete(carryPlace.key).catch(() => {
@@ -163187,7 +163229,7 @@ async function loadFile(file) {
     let blocks;
     const saved = await cachedBlocksFor(file);
     const cached = saved && saved.v === BLOCKS_VERSION ? saved : null;
-    carryPlace = saved && !cached ? { key: saved.key, count: saved.count } : null;
+    carryPlace = saved ? { key: saved.key, count: saved.count } : null;
     if (cached) {
       blocks = cached.blocks;
       if (ext === "pdf" || type === "application/pdf") {
