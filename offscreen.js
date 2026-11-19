@@ -98000,7 +98000,7 @@ function spreadWords(text, audio) {
   }
   return { starts, ends };
 }
-function createEngine({ wasmPaths, onEvent }) {
+function createEngine({ wasmPaths, onEvent, maker = null }) {
   try {
     const gpu = typeof navigator !== "undefined" ? navigator.gpu : null;
     if (gpu?.requestAdapter && !gpu.murmurQuiet) {
@@ -98121,9 +98121,16 @@ function createEngine({ wasmPaths, onEvent }) {
     for (let i3 = 0; i3 < Math.min(a2.length, 4e3); i3++) if (!Number.isFinite(a2[i3])) return false;
     return true;
   };
+  function useHelper(device) {
+    try {
+      if (__webpack_exports__env.backends?.onnx?.wasm) __webpack_exports__env.backends.onnx.wasm.proxy = device === "wasm" && typeof document !== "undefined";
+    } catch {
+    }
+  }
   async function loadTimed(device, dtype) {
     files.clear();
     fromDisk = await modelCached(MODEL_ID, dtype);
+    useHelper(device);
     setStatus("loading", "Getting the voice ready\u2026");
     const model2 = await __webpack_exports__StyleTextToSpeech2Model.from_pretrained(MODEL_ID, { dtype, device, progress_callback: onProgress, session_options: { logSeverityLevel: 3 } });
     const tok = await __webpack_exports__AutoTokenizer.from_pretrained(MODEL_ID);
@@ -98136,6 +98143,7 @@ function createEngine({ wasmPaths, onEvent }) {
   async function loadPlain(device, dtype) {
     files.clear();
     fromDisk = await modelCached(PLAIN_MODEL_ID, dtype);
+    useHelper(device);
     setStatus("loading", "Getting the voice ready\u2026");
     const tts = await M3.from_pretrained(PLAIN_MODEL_ID, { dtype, device, progress_callback: onProgress, session_options: { logSeverityLevel: 3 } });
     setStatus("loading", "Warming up voice");
@@ -98165,7 +98173,17 @@ function createEngine({ wasmPaths, onEvent }) {
     }
     throw lastErr || new Error("Could not load the voice");
   }
+  const modelReady = () => maker ? !!st2.makerReady : !!(st2.timed || st2.tts);
   function ensureModel() {
+    if (maker) {
+      if (st2.makerReady) return Promise.resolve();
+      if (!st2.loading) {
+        st2.loading = maker.ready({ ...st2.settings }).then(() => {
+          st2.makerReady = true;
+        }).finally(() => st2.loading = null);
+      }
+      return st2.loading;
+    }
     if (st2.timed || st2.tts) return Promise.resolve();
     if (!st2.loading) st2.loading = loadModel().finally(() => st2.loading = null);
     return st2.loading;
@@ -98277,6 +98295,13 @@ function createEngine({ wasmPaths, onEvent }) {
   let forcedDevice = null;
   const isGpuError = (e2) => /GPUDevice|device ?lost|createBuffer|WebGPU|webgpu|GPUBuffer|Device is lost/i.test(String(e2?.message || e2));
   function dropModel() {
+    if (maker) {
+      st2.makerReady = false;
+      try {
+        maker.release();
+      } catch {
+      }
+    }
     for (const m3 of [st2.timed?.model, st2.tts?.model]) {
       try {
         m3?.dispose?.()?.catch?.(() => {
@@ -98295,6 +98320,28 @@ function createEngine({ wasmPaths, onEvent }) {
     setStatus("loading", forcedDevice ? "Graphics chip is busy, switching the voice to the processor\u2026" : "Restarting the voice\u2026");
     await ensureModel();
   }
+  function helperSettings(settings) {
+    if (!settings) return;
+    if (settings.engine && settings.engine !== st2.settings.engine) {
+      dropModel();
+      st2.engine = null;
+    }
+    st2.settings = { ...st2.settings, ...settings };
+  }
+  if (maker) {
+    maker.onEvent = (ev2) => {
+      if (ev2.type === "state") {
+        if (ev2.state === "loading" && ["idle", "loading", "buffering"].includes(st2.status)) setStatus(st2.status === "buffering" ? "buffering" : "loading", ev2.detail);
+        return;
+      }
+      if (ev2.type === "engine") {
+        st2.engine = ev2.engine;
+        st2.wordTiming = !!ev2.wordTiming;
+      }
+      const { type, ...data2 } = ev2;
+      emit(type, data2);
+    };
+  }
   const nearPlaying = (i3) => i3 >= st2.index - KEEP_BEHIND && i3 <= st2.index + LOOKAHEAD;
   async function generate(i3, v3) {
     if (v3 !== st2.genVersion || !nearPlaying(i3)) return null;
@@ -98303,13 +98350,17 @@ function createEngine({ wasmPaths, onEvent }) {
     if (v3 !== st2.genVersion) return null;
     const t0 = performance.now();
     let r2;
-    try {
-      r2 = await speak(text, st2.settings, st2.breaks[i3], st2.langs[i3]);
-    } catch (e2) {
-      if (!isGpuError(e2)) throw e2;
-      await recover(e2);
-      if (v3 !== st2.genVersion) return null;
-      r2 = await speak(text, st2.settings, st2.breaks[i3], st2.langs[i3]);
+    if (maker) {
+      r2 = await maker.make(text, { ...st2.settings }, st2.breaks[i3], st2.langs[i3]);
+    } else {
+      try {
+        r2 = await speak(text, st2.settings, st2.breaks[i3], st2.langs[i3]);
+      } catch (e2) {
+        if (!isGpuError(e2)) throw e2;
+        await recover(e2);
+        if (v3 !== st2.genVersion) return null;
+        r2 = await speak(text, st2.settings, st2.breaks[i3], st2.langs[i3]);
+      }
     }
     const ms3 = Math.round(performance.now() - t0);
     emit("perf", { index: i3, ms: ms3, audioMs: Math.round((r2.audio?.length || 0) / SAMPLE_RATE2 * 1e3) });
@@ -98400,7 +98451,7 @@ function createEngine({ wasmPaths, onEvent }) {
     st2.word = -1;
     trimBuffers();
     if (!st2.buffers.has(i3) || st2.buffers.get(i3).v !== st2.genVersion) {
-      if (st2.timed || st2.tts) setStatus("buffering", "Starting\u2026");
+      if (modelReady()) setStatus("buffering", "Starting\u2026");
     }
     let item;
     try {
@@ -98484,7 +98535,7 @@ function createEngine({ wasmPaths, onEvent }) {
       st2.genVersion++;
       st2.index = startIndex;
       st2.word = -1;
-      const ready = st2.timed || st2.tts;
+      const ready = modelReady();
       setStatus(ready ? "buffering" : "loading", ready ? "Starting\u2026" : "Getting the voice ready\u2026");
       const token = st2.playToken;
       try {
@@ -98513,7 +98564,7 @@ function createEngine({ wasmPaths, onEvent }) {
       if (st2.wantPaused) {
         st2.wantPaused = false;
         if (!st2.source) {
-          setStatus(st2.timed || st2.tts ? "buffering" : "loading", "Starting\u2026");
+          setStatus(modelReady() ? "buffering" : "loading", "Starting\u2026");
           return;
         }
       }
@@ -98571,7 +98622,28 @@ function createEngine({ wasmPaths, onEvent }) {
       return true;
     },
     get state() {
-      return { status: st2.status, index: st2.index, word: st2.word, count: st2.sentences.length, engine: st2.engine, wordTiming: !!st2.timed };
+      return { status: st2.status, index: st2.index, word: st2.word, count: st2.sentences.length, engine: st2.engine, wordTiming: maker ? !!st2.wordTiming : !!st2.timed };
+    },
+    // ---- used inside the helper (voice-worker.js) ----
+    async makeReady(settings) {
+      helperSettings(settings);
+      await ensureModel();
+      return { engine: st2.engine };
+    },
+    async makeOne(text, settings, breakKind, lang) {
+      helperSettings(settings);
+      await ensureModel();
+      try {
+        return await speak(text, st2.settings, breakKind, lang);
+      } catch (e2) {
+        if (!isGpuError(e2)) throw e2;
+        await recover(e2);
+        return await speak(text, st2.settings, breakKind, lang);
+      }
+    },
+    dropVoice() {
+      dropModel();
+      st2.engine = null;
     },
     // Renders a whole list of sentences to one Float32Array (24 kHz mono), for
     // saving as an audio file. onProgress(done, total) is called per sentence.
@@ -98583,7 +98655,7 @@ function createEngine({ wasmPaths, onEvent }) {
       let total = 0;
       for (let i3 = 0; i3 < sentences.length; i3++) {
         if (isCancelled()) return null;
-        const work = st2.chain.then(() => speak(sentences[i3], s3, breaks[i3], langs[i3]));
+        const work = st2.chain.then(() => maker ? maker.make(sentences[i3], s3, breaks[i3], langs[i3]) : speak(sentences[i3], s3, breaks[i3], langs[i3]));
         st2.chain = work.catch(() => {
         });
         const r2 = await work;
@@ -98601,6 +98673,51 @@ function createEngine({ wasmPaths, onEvent }) {
       return { samples: out, sampleRate: SAMPLE_RATE2 };
     }
   };
+}
+
+// src/voice-maker.js
+function startVoiceHelper(workerUrl, wasmPaths) {
+  let worker;
+  try {
+    worker = new Worker(workerUrl, { type: "module" });
+  } catch (e2) {
+    console.warn("[murmur] voice helper could not start; making sentences on this page", e2);
+    return null;
+  }
+  let n2 = 0;
+  const waiting = /* @__PURE__ */ new Map();
+  const helper = {
+    onEvent: () => {
+    },
+    // set by the engine
+    ready: (settings) => ask({ type: "ready", settings }),
+    make: (text, settings, breakKind, lang) => ask({ type: "make", text, settings, breakKind, lang }).then((m3) => ({ audio: m3.audio, starts: m3.starts, ends: m3.ends })),
+    release: () => worker.postMessage({ type: "release" })
+  };
+  function ask(msg) {
+    return new Promise((res, rej) => {
+      const id3 = ++n2;
+      waiting.set(id3, { res, rej });
+      worker.postMessage({ ...msg, id: id3 });
+    });
+  }
+  worker.onmessage = (e2) => {
+    const m3 = e2.data || {};
+    if (m3.type === "event") return helper.onEvent(m3.ev);
+    if (m3.type !== "done") return;
+    const w3 = waiting.get(m3.id);
+    if (!w3) return;
+    waiting.delete(m3.id);
+    if (m3.error) w3.rej(new Error(m3.error));
+    else w3.res(m3);
+  };
+  worker.onerror = (e2) => {
+    console.error("[murmur] voice helper stopped", e2?.message || e2);
+    for (const w3 of waiting.values()) w3.rej(new Error("Could not load the voice: the helper stopped"));
+    waiting.clear();
+  };
+  worker.postMessage({ type: "init", wasmPaths });
+  return helper;
 }
 
 // src/applink.js
@@ -98673,6 +98790,8 @@ var send = (msg) => chrome.runtime.sendMessage(msg).catch(() => {
 });
 var engine = createEngine({
   wasmPaths: chrome.runtime.getURL("lib/"),
+  // Sentences are made by a helper, so this page always answers pause at once.
+  maker: startVoiceHelper(chrome.runtime.getURL("voice-worker.js"), chrome.runtime.getURL("lib/")),
   onEvent: (ev2) => {
     if (ev2.type === "sentence") send({ type: "offscreen:sentence", index: ev2.index, starts: ev2.starts, offset: ev2.offset, sentAt: ev2.sentAt });
     else if (ev2.type === "sync") send({ type: "offscreen:sync", index: ev2.index, elapsed: ev2.elapsed, sentAt: ev2.sentAt });
@@ -98682,11 +98801,28 @@ var engine = createEngine({
       if (ev2.state === "playing") appLink.wake();
     } else if (ev2.type === "ended") send({ type: "offscreen:ended" });
     else if (ev2.type === "online-usage") send({ type: "offscreen:online-usage", usage: ev2.usage });
-    else if (ev2.type === "engine") console.log("[murmur] voice engine:", ev2.engine, ev2.dtype, ev2.wordTiming ? "with word timing" : "without word timing");
-    else if (ev2.type === "perf") console.log(`[murmur] sentence ${ev2.index}: ${ev2.audioMs} ms of audio made in ${ev2.ms} ms`);
+    else if (ev2.type === "engine") {
+      console.log("[murmur] voice engine:", ev2.engine, ev2.dtype, ev2.wordTiming ? "with word timing" : "without word timing");
+      send({ type: "offscreen:diag", text: "voice runs on the " + (ev2.engine === "webgpu" ? "graphics chip" : "processor") });
+    } else if (ev2.type === "perf") console.log(`[murmur] sentence ${ev2.index}: ${ev2.audioMs} ms of audio made in ${ev2.ms} ms`);
   }
 });
 var appLink = watchApp(engine);
+{
+  let last = performance.now();
+  let worst = 0;
+  let toldAt = 0;
+  setInterval(() => {
+    const now = performance.now();
+    worst = Math.max(worst, now - last - 100);
+    last = now;
+    if (worst > 350 && now - toldAt > 1e4) {
+      send({ type: "offscreen:diag", text: `voice page was busy for ${Math.round(worst)} ms (a press would have waited that long)` });
+      toldAt = now;
+      worst = 0;
+    }
+  }, 100);
+}
 setInterval(() => send({ type: "offscreen:alive" }), 2e4);
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (!msg || msg.target !== "offscreen") return false;

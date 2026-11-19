@@ -388,6 +388,9 @@ async function handle(msg, sender) {
       return { ok: true };
     case "content:open-gdoc":
       return openGoogleDoc(msg.url, msg.title);
+    case "offscreen:diag":
+      diag(String(msg.text || "").slice(0, 200));
+      return;
     case "offscreen:sentence":
       session.index = msg.index;
       toTabQuiet(session.tabId, { type: "sentence", index: msg.index, starts: msg.starts, offset: msg.offset, sentAt: msg.sentAt });

@@ -93764,7 +93764,7 @@ function spreadWords(text, audio2) {
   }
   return { starts, ends };
 }
-function createEngine({ wasmPaths, onEvent }) {
+function createEngine({ wasmPaths, onEvent, maker = null }) {
   try {
     const gpu = typeof navigator !== "undefined" ? navigator.gpu : null;
     if (gpu?.requestAdapter && !gpu.murmurQuiet) {
@@ -93885,9 +93885,16 @@ function createEngine({ wasmPaths, onEvent }) {
     for (let i3 = 0; i3 < Math.min(a2.length, 4e3); i3++) if (!Number.isFinite(a2[i3])) return false;
     return true;
   };
+  function useHelper(device) {
+    try {
+      if (__webpack_exports__env.backends?.onnx?.wasm) __webpack_exports__env.backends.onnx.wasm.proxy = device === "wasm" && typeof document !== "undefined";
+    } catch {
+    }
+  }
   async function loadTimed(device, dtype) {
     files.clear();
     fromDisk = await modelCached(MODEL_ID, dtype);
+    useHelper(device);
     setStatus("loading", "Getting the voice ready\u2026");
     const model = await __webpack_exports__StyleTextToSpeech2Model.from_pretrained(MODEL_ID, { dtype, device, progress_callback: onProgress, session_options: { logSeverityLevel: 3 } });
     const tok = await __webpack_exports__AutoTokenizer.from_pretrained(MODEL_ID);
@@ -93900,6 +93907,7 @@ function createEngine({ wasmPaths, onEvent }) {
   async function loadPlain(device, dtype) {
     files.clear();
     fromDisk = await modelCached(PLAIN_MODEL_ID, dtype);
+    useHelper(device);
     setStatus("loading", "Getting the voice ready\u2026");
     const tts = await M3.from_pretrained(PLAIN_MODEL_ID, { dtype, device, progress_callback: onProgress, session_options: { logSeverityLevel: 3 } });
     setStatus("loading", "Warming up voice");
@@ -93929,7 +93937,17 @@ function createEngine({ wasmPaths, onEvent }) {
     }
     throw lastErr || new Error("Could not load the voice");
   }
+  const modelReady = () => maker ? !!st2.makerReady : !!(st2.timed || st2.tts);
   function ensureModel() {
+    if (maker) {
+      if (st2.makerReady) return Promise.resolve();
+      if (!st2.loading) {
+        st2.loading = maker.ready({ ...st2.settings }).then(() => {
+          st2.makerReady = true;
+        }).finally(() => st2.loading = null);
+      }
+      return st2.loading;
+    }
     if (st2.timed || st2.tts) return Promise.resolve();
     if (!st2.loading) st2.loading = loadModel().finally(() => st2.loading = null);
     return st2.loading;
@@ -94041,6 +94059,13 @@ function createEngine({ wasmPaths, onEvent }) {
   let forcedDevice = null;
   const isGpuError = (e2) => /GPUDevice|device ?lost|createBuffer|WebGPU|webgpu|GPUBuffer|Device is lost/i.test(String(e2?.message || e2));
   function dropModel() {
+    if (maker) {
+      st2.makerReady = false;
+      try {
+        maker.release();
+      } catch {
+      }
+    }
     for (const m3 of [st2.timed?.model, st2.tts?.model]) {
       try {
         m3?.dispose?.()?.catch?.(() => {
@@ -94059,6 +94084,28 @@ function createEngine({ wasmPaths, onEvent }) {
     setStatus("loading", forcedDevice ? "Graphics chip is busy, switching the voice to the processor\u2026" : "Restarting the voice\u2026");
     await ensureModel();
   }
+  function helperSettings(settings2) {
+    if (!settings2) return;
+    if (settings2.engine && settings2.engine !== st2.settings.engine) {
+      dropModel();
+      st2.engine = null;
+    }
+    st2.settings = { ...st2.settings, ...settings2 };
+  }
+  if (maker) {
+    maker.onEvent = (ev2) => {
+      if (ev2.type === "state") {
+        if (ev2.state === "loading" && ["idle", "loading", "buffering"].includes(st2.status)) setStatus(st2.status === "buffering" ? "buffering" : "loading", ev2.detail);
+        return;
+      }
+      if (ev2.type === "engine") {
+        st2.engine = ev2.engine;
+        st2.wordTiming = !!ev2.wordTiming;
+      }
+      const { type, ...data } = ev2;
+      emit(type, data);
+    };
+  }
   const nearPlaying = (i3) => i3 >= st2.index - KEEP_BEHIND && i3 <= st2.index + LOOKAHEAD;
   async function generate(i3, v3) {
     if (v3 !== st2.genVersion || !nearPlaying(i3)) return null;
@@ -94067,13 +94114,17 @@ function createEngine({ wasmPaths, onEvent }) {
     if (v3 !== st2.genVersion) return null;
     const t0 = performance.now();
     let r2;
-    try {
-      r2 = await speak(text, st2.settings, st2.breaks[i3], st2.langs[i3]);
-    } catch (e2) {
-      if (!isGpuError(e2)) throw e2;
-      await recover(e2);
-      if (v3 !== st2.genVersion) return null;
-      r2 = await speak(text, st2.settings, st2.breaks[i3], st2.langs[i3]);
+    if (maker) {
+      r2 = await maker.make(text, { ...st2.settings }, st2.breaks[i3], st2.langs[i3]);
+    } else {
+      try {
+        r2 = await speak(text, st2.settings, st2.breaks[i3], st2.langs[i3]);
+      } catch (e2) {
+        if (!isGpuError(e2)) throw e2;
+        await recover(e2);
+        if (v3 !== st2.genVersion) return null;
+        r2 = await speak(text, st2.settings, st2.breaks[i3], st2.langs[i3]);
+      }
     }
     const ms3 = Math.round(performance.now() - t0);
     emit("perf", { index: i3, ms: ms3, audioMs: Math.round((r2.audio?.length || 0) / SAMPLE_RATE2 * 1e3) });
@@ -94164,7 +94215,7 @@ function createEngine({ wasmPaths, onEvent }) {
     st2.word = -1;
     trimBuffers();
     if (!st2.buffers.has(i3) || st2.buffers.get(i3).v !== st2.genVersion) {
-      if (st2.timed || st2.tts) setStatus("buffering", "Starting\u2026");
+      if (modelReady()) setStatus("buffering", "Starting\u2026");
     }
     let item;
     try {
@@ -94248,7 +94299,7 @@ function createEngine({ wasmPaths, onEvent }) {
       st2.genVersion++;
       st2.index = startIndex;
       st2.word = -1;
-      const ready = st2.timed || st2.tts;
+      const ready = modelReady();
       setStatus(ready ? "buffering" : "loading", ready ? "Starting\u2026" : "Getting the voice ready\u2026");
       const token = st2.playToken;
       try {
@@ -94277,7 +94328,7 @@ function createEngine({ wasmPaths, onEvent }) {
       if (st2.wantPaused) {
         st2.wantPaused = false;
         if (!st2.source) {
-          setStatus(st2.timed || st2.tts ? "buffering" : "loading", "Starting\u2026");
+          setStatus(modelReady() ? "buffering" : "loading", "Starting\u2026");
           return;
         }
       }
@@ -94335,7 +94386,28 @@ function createEngine({ wasmPaths, onEvent }) {
       return true;
     },
     get state() {
-      return { status: st2.status, index: st2.index, word: st2.word, count: st2.sentences.length, engine: st2.engine, wordTiming: !!st2.timed };
+      return { status: st2.status, index: st2.index, word: st2.word, count: st2.sentences.length, engine: st2.engine, wordTiming: maker ? !!st2.wordTiming : !!st2.timed };
+    },
+    // ---- used inside the helper (voice-worker.js) ----
+    async makeReady(settings2) {
+      helperSettings(settings2);
+      await ensureModel();
+      return { engine: st2.engine };
+    },
+    async makeOne(text, settings2, breakKind, lang) {
+      helperSettings(settings2);
+      await ensureModel();
+      try {
+        return await speak(text, st2.settings, breakKind, lang);
+      } catch (e2) {
+        if (!isGpuError(e2)) throw e2;
+        await recover(e2);
+        return await speak(text, st2.settings, breakKind, lang);
+      }
+    },
+    dropVoice() {
+      dropModel();
+      st2.engine = null;
     },
     // Renders a whole list of sentences to one Float32Array (24 kHz mono), for
     // saving as an audio file. onProgress(done, total) is called per sentence.
@@ -94347,7 +94419,7 @@ function createEngine({ wasmPaths, onEvent }) {
       let total = 0;
       for (let i3 = 0; i3 < sentences.length; i3++) {
         if (isCancelled()) return null;
-        const work = st2.chain.then(() => speak(sentences[i3], s3, breaks[i3], langs[i3]));
+        const work = st2.chain.then(() => maker ? maker.make(sentences[i3], s3, breaks[i3], langs[i3]) : speak(sentences[i3], s3, breaks[i3], langs[i3]));
         st2.chain = work.catch(() => {
         });
         const r2 = await work;
