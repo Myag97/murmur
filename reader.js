@@ -162596,8 +162596,35 @@ function hash(str) {
 function savePosition(i3) {
   if (!docKey) return;
   try {
+    const now = Date.now();
     localStorage.setItem("murmur:pos:" + docKey, String(i3));
-    localStorage.setItem("murmur:posAt:" + docKey, String(Date.now()));
+    localStorage.setItem("murmur:posAt:" + docKey, String(now));
+    if (openFileKey && sentences[i3]) localStorage.setItem("murmur:place:" + openFileKey, JSON.stringify({ f: i3 / sentences.length, t: sentences[i3].text.slice(0, 60), at: now }));
+  } catch {
+  }
+}
+var openFileKey = null;
+function restoreBookPlace() {
+  if (!openFileKey || !sentences.length) return;
+  try {
+    const p3 = JSON.parse(localStorage.getItem("murmur:place:" + openFileKey) || "null");
+    const at = parseInt(localStorage.getItem("murmur:posAt:" + docKey) || "0", 10);
+    if (!p3 || p3.at < at) return;
+    const n2 = sentences.length;
+    const guess = Math.min(n2 - 1, Math.round(p3.f * n2));
+    const want = String(p3.t || "").slice(0, 40);
+    let i3 = guess;
+    if (want) {
+      for (let d3 = 0; d3 < n2; d3++) {
+        const j2 = [guess - d3, guess + d3].find((k4) => k4 >= 0 && k4 < n2 && sentences[k4].text.startsWith(want));
+        if (j2 != null) {
+          i3 = j2;
+          break;
+        }
+      }
+    }
+    localStorage.setItem("murmur:pos:" + docKey, String(i3));
+    localStorage.setItem("murmur:posAt:" + docKey, String(p3.at));
   } catch {
   }
 }
@@ -163175,6 +163202,28 @@ function setPagesMode(on2) {
   if (pagesMode && current >= 0) setTimeout(() => markOnPage(sentences[current]), 50);
 }
 $3("pagesBtn").onclick = () => setPagesMode(!pagesMode);
+function barSpot(e2) {
+  const r2 = $3("bar").getBoundingClientRect();
+  const f3 = Math.max(0, Math.min(1, (e2.clientX - r2.left) / Math.max(1, r2.width)));
+  return { f: f3, i: Math.min(sentences.length - 1, Math.floor(f3 * sentences.length)) };
+}
+$3("bar").addEventListener("mousemove", (e2) => {
+  if (!sentences.length) return;
+  const { f: f3, i: i3 } = barSpot(e2);
+  $3("bar").title = `Jump to ${Math.round(f3 * 100)}% (sentence ${i3 + 1} of ${sentences.length})`;
+});
+$3("bar").addEventListener("click", (e2) => {
+  if (!sentences.length) return;
+  const { i: i3 } = barSpot(e2);
+  const st2 = engine.state.status;
+  if (st2 === "playing" || st2 === "buffering" || st2 === "loading") startFrom(i3);
+  else {
+    if (st2 === "paused") engine.stop();
+    setCurrent(i3);
+    current = i3;
+    setStatus("idle", `Press play to read from here (sentence ${i3 + 1} of ${sentences.length})`);
+  }
+});
 var optsBox = $3("opts");
 function showOpts(open) {
   optsBox.hidden = !open;
@@ -163202,7 +163251,12 @@ function applyOptions() {
     const frac = at / sentences.length;
     engine.stop();
     carryPlace = null;
-    await render(lastRender.blocks, lastRender.title);
+    currentFileKey = openFileKey;
+    try {
+      await render(lastRender.blocks, lastRender.title);
+    } finally {
+      currentFileKey = null;
+    }
     if (!sentences.length) return;
     let i3 = Math.min(sentences.length - 1, Math.round(frac * sentences.length));
     if (anchor) {
@@ -163289,6 +163343,7 @@ function joinBrokenParagraphs(blocks) {
 var lastRender = null;
 async function render(blocks, title) {
   lastRender = { blocks: blocks.map((b3) => ({ ...b3 })), title };
+  openFileKey = currentFileKey || null;
   docTitle = title || "Murmur";
   docLang = "en";
   $3("docTitle").textContent = title || "";
@@ -163411,6 +163466,7 @@ async function render(blocks, title) {
   }
   carryPlace = null;
   applyDrivePlace();
+  restoreBookPlace();
   const resume = savedPosition();
   setStatus(
     "idle",
