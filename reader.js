@@ -132876,17 +132876,19 @@ var TYPICAL_CPS = 14;
 function makeEta() {
   let lastAt = 0;
   let lastChars = 0;
-  let rate = 0;
+  let lastSpeed = 1;
+  let rate1 = 0;
   return {
-    // Call when sentence `chars` long starts playing.
-    tick(chars) {
+    // Call when a sentence `chars` long starts playing, at this speed.
+    tick(chars, speed = 1) {
       const now = performance.now();
       if (lastAt && lastChars > 0) {
-        const r2 = lastChars / ((now - lastAt) / 1e3);
-        if (r2 > 2 && r2 < 120) rate = rate ? rate * 0.7 + r2 * 0.3 : r2;
+        const r2 = lastChars / ((now - lastAt) / 1e3) / lastSpeed;
+        if (r2 > TYPICAL_CPS * 0.6 && r2 < TYPICAL_CPS * 1.8) rate1 = rate1 ? rate1 * 0.85 + r2 * 0.15 : r2;
       }
       lastAt = now;
       lastChars = chars;
+      lastSpeed = speed || 1;
     },
     // Call on pause, stop or a jump, so a gap is not counted as slow reading.
     pause() {
@@ -132894,15 +132896,16 @@ function makeEta() {
       lastChars = 0;
     },
     secondsLeft(remainingChars, speed = 1) {
-      return remainingChars / (rate || TYPICAL_CPS * speed);
+      return remainingChars / ((rate1 || TYPICAL_CPS) * (speed || 1));
     }
   };
 }
 function formatLeft(seconds) {
   if (!(seconds > 0)) return "";
   if (seconds < 50) return "under a minute left";
-  const m3 = Math.round(seconds / 60);
+  let m3 = Math.round(seconds / 60);
   if (m3 < 60) return `${m3} min left`;
+  m3 = Math.round(m3 / 5) * 5;
   const h3 = Math.floor(m3 / 60);
   const mm2 = m3 % 60;
   return mm2 ? `${h3} h ${mm2} min left` : `${h3} h left`;
@@ -162190,12 +162193,13 @@ function setStatus(state2, detail = "") {
   const el3 = $3("status");
   el3.classList.toggle("err", state2 === "error");
   const left = timeLeft();
+  const done = current >= 0 && sentences.length ? `${Math.floor((current + 1) / sentences.length * 100)}% done` : "";
   const map2 = {
     idle: detail || "Ready",
     loading: detail || "Getting the voice ready\u2026",
     buffering: "Starting\u2026",
-    playing: left || "Reading",
-    paused: "Paused" + (left ? " \xB7 " + left : ""),
+    playing: [done, left].filter(Boolean).join(" \xB7 ") || "Reading",
+    paused: ["Paused", done, left].filter(Boolean).join(" \xB7 "),
     error: detail || "Something went wrong"
   };
   el3.textContent = map2[state2] ?? state2;
@@ -162205,7 +162209,7 @@ function setStatus(state2, detail = "") {
 function setCurrent(i3) {
   if (current >= 0 && sentences[current]) sentences[current].el.classList.remove("cur");
   if (i3 !== current + 1) eta.pause();
-  if (status === "playing") eta.tick(sentences[i3]?.text.length || 0);
+  if (status === "playing") eta.tick(sentences[i3]?.text.length || 0, settings.speed || 1);
   current = i3;
   const s3 = sentences[i3];
   if (!s3) return;

@@ -323,17 +323,19 @@
   function makeEta() {
     let lastAt = 0;
     let lastChars = 0;
-    let rate = 0;
+    let lastSpeed = 1;
+    let rate1 = 0;
     return {
-      // Call when sentence `chars` long starts playing.
-      tick(chars) {
+      // Call when a sentence `chars` long starts playing, at this speed.
+      tick(chars, speed = 1) {
         const now = performance.now();
         if (lastAt && lastChars > 0) {
-          const r = lastChars / ((now - lastAt) / 1e3);
-          if (r > 2 && r < 120) rate = rate ? rate * 0.7 + r * 0.3 : r;
+          const r = lastChars / ((now - lastAt) / 1e3) / lastSpeed;
+          if (r > TYPICAL_CPS * 0.6 && r < TYPICAL_CPS * 1.8) rate1 = rate1 ? rate1 * 0.85 + r * 0.15 : r;
         }
         lastAt = now;
         lastChars = chars;
+        lastSpeed = speed || 1;
       },
       // Call on pause, stop or a jump, so a gap is not counted as slow reading.
       pause() {
@@ -341,15 +343,16 @@
         lastChars = 0;
       },
       secondsLeft(remainingChars, speed = 1) {
-        return remainingChars / (rate || TYPICAL_CPS * speed);
+        return remainingChars / ((rate1 || TYPICAL_CPS) * (speed || 1));
       }
     };
   }
   function formatLeft(seconds) {
     if (!(seconds > 0)) return "";
     if (seconds < 50) return "under a minute left";
-    const m = Math.round(seconds / 60);
+    let m = Math.round(seconds / 60);
     if (m < 60) return `${m} min left`;
+    m = Math.round(m / 5) * 5;
     const h = Math.floor(m / 60);
     const mm = m % 60;
     return mm ? `${h} h ${mm} min left` : `${h} h left`;
@@ -1652,7 +1655,7 @@
         case "sentence":
           if (!S.bar || S.starting) break;
           if (msg.index !== S.current + 1) eta.pause();
-          eta.tick(S.sentences[msg.index]?.text.length || 0);
+          eta.tick(S.sentences[msg.index]?.text.length || 0, S.settings.speed || 1);
           setCurrent(msg.index);
           if (S.sentences[msg.index]) {
             S.sentences[msg.index].starts = msg.starts || null;
