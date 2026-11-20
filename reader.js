@@ -162351,7 +162351,7 @@ async function dbDelete(key) {
   });
 }
 var fileKeyOf = (file) => hash(`${file.name}|${file.size}`);
-var BLOCKS_VERSION = 2;
+var BLOCKS_VERSION = 3;
 var carryPlace = null;
 async function rememberDoc(file, blocks = null) {
   if (!docKey || !file || file.size > 80 * 1024 * 1024) return;
@@ -162662,7 +162662,8 @@ function htmlToBlocks(html) {
     const tag = el3.tagName;
     const text = tag === "PRE" ? el3.textContent : (el3.textContent || "").replace(/\s+/g, " ").trim();
     if (!text) continue;
-    if (/^H[1-6]$/.test(tag)) blocks.push({ kind: "h", level: Number(tag[1]), text });
+    if (el3.closest('[id^="footnote-"],[id^="endnote-"]')) blocks.push({ kind: "note", text: text.replace(/\s*↑\s*$/, "") });
+    else if (/^H[1-6]$/.test(tag)) blocks.push({ kind: "h", level: Number(tag[1]), text });
     else if (tag === "LI") blocks.push({ kind: "li", text });
     else if (tag === "PRE") blocks.push({ kind: "pre", text });
     else blocks.push({ kind: "p", text });
@@ -162734,7 +162735,7 @@ function forgetPdf() {
   pdfDoc = null;
   pdfSizes = [];
 }
-async function pdfToBlocks(data2, onProgress) {
+async function pdfToBlocks(data2, onProgress, reuse = null) {
   closePdf(pdfDoc);
   const pdf = await getDocument({ data: data2, ...PDF_OPTS }).promise;
   pdfDoc = pdf;
@@ -162748,6 +162749,13 @@ async function pdfToBlocks(data2, onProgress) {
     const vh2 = page.view[3] - page.view[1];
     pdfSizes.push({ w: page.view[2] - page.view[0], h: vh2 });
     const typed = tc2.items.reduce((n2, it2) => n2 + (it2.str ? it2.str.trim().length + (it2.str.match(/[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}]/gu) || []).length : 0), 0);
+    const before = reuse?.filter((b3) => b3.page === p3 && b3.kind !== "page");
+    if (typed < 20 && before?.length) {
+      const none = [];
+      none.prebuilt = before;
+      pages.push(none);
+      continue;
+    }
     if (typed < 20 && !ocrFailed) {
       onProgress?.(`Page ${p3} of ${pdf.numPages} is a picture of text. Recognising the words\u2026 (slower, first time loads the reader)`);
       try {
@@ -162776,16 +162784,25 @@ async function pdfToBlocks(data2, onProgress) {
         lines.push(line);
       }
       line.h = Math.max(line.h, h3);
-      line.parts.push({ x: x2, end: x2 + (it2.width || 0), str: it2.str, cw: it2.width && it2.str.length ? it2.width / it2.str.length : h3 * 0.5 });
+      line.parts.push({ x: x2, y: y3, h: h3, end: x2 + (it2.width || 0), str: it2.str, cw: it2.width && it2.str.length ? it2.width / it2.str.length : h3 * 0.5 });
     }
     for (const l2 of lines) {
       l2.parts.sort((a2, b3) => a2.x - b3.x);
+      const main = l2.parts.reduce((a2, b3) => b3.h > a2.h ? b3 : a2);
+      for (const pt2 of l2.parts) {
+        if (pt2 !== main && pt2.h < main.h * 0.8 && pt2.y - main.y > main.h * 0.15 && /^\s*[\d*†‡]{1,3}\s*$/.test(pt2.str)) {
+          pt2.str = pt2.str.trim().replace(/\d/g, (d3) => "\u2070\xB9\xB2\xB3\u2074\u2075\u2076\u2077\u2078\u2079"[d3]);
+          pt2.sup = true;
+        }
+      }
+      const body = l2.parts.filter((pt2) => !pt2.sup);
+      if (body.length) l2.h = Math.max(...body.map((pt2) => pt2.h));
       let text = "";
       let prevEnd = null;
       let prevCw = null;
       for (const pt2 of l2.parts) {
         const cw = Math.min(pt2.cw, prevCw ?? pt2.cw);
-        if (prevEnd != null && pt2.x - prevEnd > Math.max(cw * 0.35, l2.h * 0.12) && !text.endsWith(" ") && !pt2.str.startsWith(" ")) text += " ";
+        if (prevEnd != null && !pt2.sup && pt2.x - prevEnd > Math.max(cw * 0.35, l2.h * 0.12) && !text.endsWith(" ") && !pt2.str.startsWith(" ")) text += " ";
         text += pt2.str;
         prevEnd = pt2.end;
         prevCw = pt2.cw;
@@ -162830,13 +162847,30 @@ async function pdfToBlocks(data2, onProgress) {
   };
   const union = (a2, b3) => !a2 ? { ...b3 } : { x0: Math.min(a2.x0, b3.x0), x1: Math.max(a2.x1, b3.x1), top: Math.max(a2.top, b3.top), bottom: Math.min(a2.bottom, b3.bottom) };
   const blocks = [];
+  let hadNotes = false;
   for (const [i3, lines] of pages.entries()) {
     if (pages.length > 1) blocks.push({ kind: "page", page: i3 + 1 });
+    if (lines.prebuilt) {
+      blocks.push(...lines.prebuilt);
+      continue;
+    }
     const lefts = lines.filter((q3) => q3.box && !isBoiler(q3)).map((q3) => q3.box.x0).sort((a2, b3) => a2 - b3);
     const leftEdge = lefts[Math.floor(lefts.length * 0.2)] ?? 0;
     const body = lines.filter((q3) => !isBoiler(q3) && q3.h <= medianH * 1.25);
     const gaps = body.slice(1).map((q3, k4) => body[k4].y - q3.y).filter((g3) => g3 > 0).sort((a2, b3) => a2 - b3);
     const usual = gaps[Math.floor(gaps.length / 2)] || 0;
+    let runTop = lines.length;
+    let numbered = false;
+    for (let k4 = lines.length - 1; k4 >= 0; k4--) {
+      const q3 = lines[k4];
+      if (isBoiler(q3)) continue;
+      if (q3.h > medianH * 0.9 || q3.rel > 0.5) break;
+      runTop = k4;
+      if (/^[⁰¹²³⁴⁵⁶⁷⁸⁹*†‡]|^\d{1,3}[.)]?\s/.test(q3.text)) numbered = true;
+    }
+    const noteFrom = runTop < lines.length && (numbered || hadNotes) ? runTop : lines.length;
+    hadNotes = noteFrom < lines.length;
+    const notes = [];
     let para = "";
     let box = null;
     let prev = null;
@@ -162847,8 +162881,17 @@ async function pdfToBlocks(data2, onProgress) {
       box = null;
       plines = [];
     };
-    for (const l2 of lines) {
+    for (const [k4, l2] of lines.entries()) {
       if (isBoiler(l2)) continue;
+      if (k4 >= noteFrom) {
+        const last = notes[notes.length - 1];
+        if (last && !/^[⁰¹²³⁴⁵⁶⁷⁸⁹*†‡]|^\d{1,3}[.)]?\s/.test(l2.text)) {
+          last.text = last.text.endsWith("-") && /^[a-z]/.test(l2.text) ? last.text.slice(0, -1) + l2.text : last.text + " " + l2.text;
+          last.box = unionBox(last.box, l2.box);
+          last.lines.push({ t: l2.text, box: l2.box, page: i3 + 1 });
+        } else notes.push({ kind: "note", text: l2.text, page: i3 + 1, box: l2.box && { ...l2.box }, lines: [{ t: l2.text, box: l2.box, page: i3 + 1 }] });
+        continue;
+      }
       const heading = l2.h > medianH * 1.25 && l2.text.length < 120;
       if (heading) {
         flush();
@@ -162874,6 +162917,7 @@ async function pdfToBlocks(data2, onProgress) {
       prev = l2;
     }
     flush();
+    blocks.push(...notes);
   }
   return blocks;
 }
@@ -163077,7 +163121,7 @@ function withoutCitations(blocks) {
     }
     out = [...blocks.slice(0, cut), { kind: "p", text: "(Reference list skipped.)", note: true }, ...blocks.slice(end)];
   }
-  return out.map((b3) => b3.kind === "pre" || b3.kind === "page" || b3.note ? b3 : { ...b3, text: stripCitations(b3.text) }).filter((b3) => b3.kind === "page" || b3.kind === "pre" || /[\p{L}\p{N}]/u.test(b3.text));
+  return out.map((b3) => b3.kind === "pre" || b3.kind === "page" || b3.note ? b3 : { ...b3, text: stripCitations(b3.text) }).filter((b3) => b3.kind !== "note").filter((b3) => b3.kind === "page" || b3.kind === "pre" || /[\p{L}\p{N}]/u.test(b3.text));
 }
 var ENDS_SENTENCE = /[.!?…:;。！？]["'’”)\]」』）]*$/u;
 function carriesOn(a2, b3) {
@@ -163140,6 +163184,7 @@ async function render(blocks, title) {
     const text = b3.kind === "pre" ? b3.text : b3.text.replace(/\s+/g, " ").trim();
     if (!text) continue;
     if (b3.kind === "li") el3.appendChild(document.createTextNode("\u2022 "));
+    if (b3.kind === "note") el3.className = "note";
     let last = 0;
     for (const [s3, e2] of splitSentences2(text)) {
       if (s3 > last) el3.appendChild(document.createTextNode(text.slice(last, s3)));
@@ -163252,7 +163297,7 @@ async function loadFile(file) {
         pdfSizes = [];
       }
     } else if (ext === "pdf" || type === "application/pdf") {
-      blocks = await pdfToBlocks(new Uint8Array(await file.arrayBuffer()), (m3) => setStatus("loading", m3));
+      blocks = await pdfToBlocks(new Uint8Array(await file.arrayBuffer()), (m3) => setStatus("loading", m3), saved?.blocks || null);
     } else if (ext === "docx" || type.includes("wordprocessingml")) {
       const r2 = await import_mammoth.default.convertToHtml({ arrayBuffer: await file.arrayBuffer() });
       blocks = htmlToBlocks(r2.value);
