@@ -162088,10 +162088,19 @@ var localEngine = createEngine({
   }
 });
 var engine = isExt2 ? backgroundVoice(onVoiceEvent) : localEngine;
+var STRETCH = 300;
 function backgroundVoice(onEvent) {
   const st2 = { status: "idle", index: -1, word: -1, count: 0 };
   let mine = false;
+  let book = null;
+  let base = 0;
+  let end = 0;
   const send = (m3) => chrome.runtime.sendMessage({ type: "reader:voice", ...m3 }).catch(() => null);
+  function handOver(from, word) {
+    base = Math.max(0, from - 3);
+    end = Math.min(book.list.length, from + STRETCH);
+    send({ cmd: "read", sentences: book.list.slice(base, end), startIndex: from - base, startWord: word, breaks: book.breaks.slice(base, end), langs: book.langs.slice(base, end) });
+  }
   chrome.runtime.onMessage.addListener((msg) => {
     if (!msg || !mine) return;
     if (msg.type === "state") {
@@ -162099,13 +162108,18 @@ function backgroundVoice(onEvent) {
       if (msg.state === "idle") mine = false;
       onEvent({ type: "state", state: msg.state, detail: msg.detail });
     } else if (msg.type === "sentence") {
-      st2.index = msg.index;
+      st2.index = base + msg.index;
       st2.word = -1;
-      onEvent({ type: "sentence", index: msg.index });
+      onEvent({ type: "sentence", index: st2.index });
     } else if (msg.type === "word") {
       st2.word = msg.word;
-      onEvent({ type: "word", index: msg.index, word: msg.word });
+      onEvent({ type: "word", index: base + msg.index, word: msg.word });
     } else if (msg.type === "ended") {
+      if (book && end < book.list.length) {
+        st2.index = end;
+        handOver(end, 0);
+        return;
+      }
       st2.status = "idle";
       st2.index = -1;
       mine = false;
@@ -162118,11 +162132,12 @@ function backgroundVoice(onEvent) {
   return {
     read(list, startIndex = 0, _settings, startWord = 0, breaks = [], langs = []) {
       mine = true;
+      book = { list, breaks, langs };
       st2.count = list.length;
       st2.index = startIndex;
       st2.status = "loading";
       onEvent({ type: "state", state: "loading", detail: "Starting\u2026" });
-      send({ cmd: "read", sentences: list, startIndex, startWord, breaks, langs });
+      handOver(startIndex, startWord);
     },
     pause() {
       if (mine) send({ cmd: "pause" });
@@ -162131,8 +162146,12 @@ function backgroundVoice(onEvent) {
       if (mine) send({ cmd: "resume" });
     },
     seek({ index, delta, word = 0 }) {
-      if (!mine) return false;
-      send({ cmd: "seek", index: index != null ? index : Math.max(0, st2.index + (delta || 0)), word });
+      if (!mine || !book) return false;
+      const to2 = Math.max(0, Math.min(book.list.length - 1, index != null ? index : st2.index + (delta || 0)));
+      if (to2 < base || to2 >= end) {
+        st2.index = to2;
+        handOver(to2, word);
+      } else send({ cmd: "seek", index: to2 - base, word });
       return true;
     },
     stop() {
@@ -163029,19 +163048,27 @@ document.querySelector("main").addEventListener(
   },
   { passive: true }
 );
-async function drawPage(n2) {
-  if (renderedPages.has(n2) || !pdfDoc) return;
+var drawQueue = Promise.resolve();
+function drawPage(n2) {
+  if (renderedPages.has(n2) || !pdfDoc) return drawQueue;
   renderedPages.add(n2);
+  drawQueue = drawQueue.then(() => drawOnePage(n2));
+  return drawQueue;
+}
+async function drawOnePage(n2) {
   const pg2 = pageEls[n2 - 1];
+  if (!pg2 || !pdfDoc) return;
   const canvas = pg2.querySelector("canvas");
   try {
     const page = await pdfDoc.getPage(n2);
     const cssWidth = pg2.querySelector(".in").clientWidth || 800;
-    const scale = cssWidth * Math.min(2, devicePixelRatio || 1) / (page.view[2] - page.view[0]);
+    const px = Math.min(2400, cssWidth * Math.min(1.5, devicePixelRatio || 1));
+    const scale = px / (page.view[2] - page.view[0]);
     const viewport = page.getViewport({ scale });
     canvas.width = Math.ceil(viewport.width);
     canvas.height = Math.ceil(viewport.height);
-    await page.render({ canvasContext: canvas.getContext("2d"), viewport, intent: "print" }).promise;
+    const intent = document.visibilityState === "visible" ? "display" : "print";
+    await page.render({ canvasContext: canvas.getContext("2d"), viewport, intent }).promise;
   } catch (e2) {
     console.warn("[murmur] could not draw page", n2, e2);
     renderedPages.delete(n2);

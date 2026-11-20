@@ -344,19 +344,58 @@ async function stopAll() {
   await saveSession();
   return { ok: true };
 }
+async function pauseSurely() {
+  const asked = Date.now();
+  toOffscreen({ type: "pause" }).catch(() => {
+  });
+  while (Date.now() - asked < 1200) {
+    await new Promise((r) => setTimeout(r, 40));
+    if (session.state === "paused" || session.state === "idle") return;
+  }
+  diag(`voice did not answer pause within 1.2 s; stopped it (place kept: sentence ${session.index})`);
+  try {
+    if (await chrome.offscreen.hasDocument()) await chrome.offscreen.closeDocument();
+  } catch {
+  }
+  session.state = "paused";
+  session.detail = "";
+  session.dropped = true;
+  await chrome.storage.session.set({ droppedRead: lastRead }).catch(() => {
+  });
+  await saveSession();
+  await broadcastState();
+}
+async function resumeSurely() {
+  if (session.dropped && !lastRead) lastRead = (await chrome.storage.session.get("droppedRead").catch(() => ({}))).droppedRead || null;
+  if (session.dropped && lastRead) {
+    session.dropped = false;
+    session.state = "loading";
+    session.detail = "Starting\u2026";
+    await broadcastState();
+    const startIndex = session.index >= 0 ? session.index : lastRead.startIndex;
+    return toOffscreen({ ...lastRead, startIndex, startWord: 0, settings: await readSettings() });
+  }
+  return toOffscreen({ type: "resume" });
+}
 async function togglePlay(tab) {
   if (!tab) return;
-  if (isReaderTab(tab)) return toReaderTab(tab);
+  if (isReaderTab(tab)) {
+    if (session.tabId === tab.id && !readSending) {
+      if (["playing", "loading", "buffering"].includes(session.state)) return pauseSurely();
+      if (session.state === "paused") return resumeSurely();
+    }
+    return toReaderTab(tab);
+  }
   const tabId = tab.id;
   diag(`play/pause key on ${hostOf(tab.url)}; reading is ${session.tabId === tabId ? session.state : "not in this tab"}`);
-  if (session.tabId === tabId && session.state === "playing") return toOffscreen({ type: "pause" });
-  if (session.tabId === tabId && session.state === "paused") return toOffscreen({ type: "resume" });
+  if (session.tabId === tabId && session.state === "playing") return pauseSurely();
+  if (session.tabId === tabId && session.state === "paused") return resumeSurely();
   if (session.tabId === tabId && (session.state === "loading" || session.state === "buffering")) {
     if (readSending) {
       pauseNext = !pauseNext;
       return;
     }
-    return toOffscreen({ type: "pause" });
+    return pauseSurely();
   }
   return readTab(tab, "page");
 }
@@ -504,13 +543,19 @@ async function handle(msg, sender) {
       diag(`reader: ${msg.cmd} (reading is ${session.state})`);
       if (msg.cmd === "pause") {
         if (readSending) return void (pauseNext = true);
-        return toOffscreen({ type: "pause" });
+        return pauseSurely();
       }
       if (msg.cmd === "resume") {
         if (readSending) return void (pauseNext = false);
-        return toOffscreen({ type: "resume" });
+        return resumeSurely();
       }
-      if (msg.cmd === "seek") return toOffscreen({ type: "seek", index: msg.index, word: msg.word || 0 });
+      if (msg.cmd === "seek") {
+        if (session.dropped) {
+          session.index = msg.index;
+          return resumeSurely();
+        }
+        return toOffscreen({ type: "seek", index: msg.index, word: msg.word || 0 });
+      }
       if (msg.cmd === "stop") return stopAll();
       return { ok: false };
     }
@@ -552,6 +597,7 @@ async function onActionClick(tab) {
 }
 chrome.action.onClicked.addListener((tab) => onActionClick(tab));
 globalThis.murmurActionClick = onActionClick;
+globalThis.murmurTogglePlay = togglePlay;
 async function openSettingsWindow() {
   const url = chrome.runtime.getURL("popup.html");
   const existing = (await chrome.tabs.query({ url })).find((t) => t.windowId);
