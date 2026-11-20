@@ -92761,8 +92761,21 @@ var DEFAULTS = {
   speed: 1,
   engine: "auto",
   // 'auto' (GPU, then CPU), 'webgpu' or 'wasm'
+  // What the reader skips (Reading options in the reader). Skipped words stay on the page, in grey.
   skipCitations: true,
-  // leave out [12], (Smith, 2020), footnote marks and reference lists
+  // [12], (Smith, 2020) (on web pages also footnote marks and reference sections)
+  skipFootnotes: false,
+  // footnote numbers and the footnotes at the bottom of PDF pages, Word footnotes
+  skipReferences: true,
+  // the reference list at the end of a paper
+  skipHeaders: true,
+  // running headers, footers and page numbers of PDFs
+  skipBrackets: false,
+  // anything in [square brackets]
+  skipParens: false,
+  // anything in (round brackets)
+  skipUrls: false,
+  // web addresses and email addresses
   caption: true,
   // big text of the current sentence in the middle of the screen
   selectButton: true,
@@ -94477,7 +94490,7 @@ function splitSentences2(text) {
     while (e2 > s3 && /\s/.test(text[e2 - 1])) e2--;
     if (e2 > s3) splitLong(text, s3, e2, out);
   };
-  const re2 = /([.!?…]+)(["'”’)\]]*)(\s+|$)|\n+/g;
+  const re2 = /([.!?…]+)(["'”’)\]⁰¹²³⁴⁵⁶⁷⁸⁹]*(?:\[[\d,–\- ]{1,12}\])?)(\s+|$)|\n+/g;
   let start = 0;
   let m3;
   while (m3 = re2.exec(text)) {

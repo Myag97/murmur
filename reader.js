@@ -130909,8 +130909,21 @@ var DEFAULTS = {
   speed: 1,
   engine: "auto",
   // 'auto' (GPU, then CPU), 'webgpu' or 'wasm'
+  // What the reader skips (Reading options in the reader). Skipped words stay on the page, in grey.
   skipCitations: true,
-  // leave out [12], (Smith, 2020), footnote marks and reference lists
+  // [12], (Smith, 2020) (on web pages also footnote marks and reference sections)
+  skipFootnotes: false,
+  // footnote numbers and the footnotes at the bottom of PDF pages, Word footnotes
+  skipReferences: true,
+  // the reference list at the end of a paper
+  skipHeaders: true,
+  // running headers, footers and page numbers of PDFs
+  skipBrackets: false,
+  // anything in [square brackets]
+  skipParens: false,
+  // anything in (round brackets)
+  skipUrls: false,
+  // web addresses and email addresses
   caption: true,
   // big text of the current sentence in the middle of the screen
   selectButton: true,
@@ -132761,7 +132774,7 @@ function splitSentences2(text) {
     while (e2 > s3 && /\s/.test(text[e2 - 1])) e2--;
     if (e2 > s3) splitLong(text, s3, e2, out);
   };
-  const re2 = /([.!?…]+)(["'”’)\]]*)(\s+|$)|\n+/g;
+  const re2 = /([.!?…]+)(["'”’)\]⁰¹²³⁴⁵⁶⁷⁸⁹]*(?:\[[\d,–\- ]{1,12}\])?)(\s+|$)|\n+/g;
   let start = 0;
   let m3;
   while (m3 = re2.exec(text)) {
@@ -132800,9 +132813,37 @@ var NAME = "[A-Z][\\p{L}'\u2019-]+(?: (?:and|&|y|et) [A-Z][\\p{L}'\u2019-]+)?(?:
 var ONE2 = `(?:see |see also |e\\.g\\.,? |cf\\. )?${NAME},? \\d{4}[a-z]?(?:, pp?\\. ?\\d+(?:[-\u2013]\\d+)?)?`;
 var PAREN = new RegExp(`\\s?\\((?:${ONE2})(?:; ?(?:${ONE2}))*\\)`, "gu");
 var SUPERSCRIPT = /[⁰¹²³⁴⁵⁶⁷⁸⁹]+(?:[,⁻–][⁰¹²³⁴⁵⁶⁷⁸⁹]+)*/g;
-function stripCitations(text) {
-  if (!text) return text;
-  return text.replace(BRACKET, "").replace(PAREN, "").replace(SUPERSCRIPT, "").replace(/\s+([,.;:!?])/g, "$1").replace(/ {2,}/g, " ");
+var URLS = /\b(?:https?:\/\/|www\.)[^\s<>"]*[^\s<>".,;:!?)\]'’”]|\b[\w.+-]+@[\w-]+(?:\.[\w-]+)+\b/gi;
+function skipRanges(text, o3 = {}) {
+  const res = [];
+  const add = (re2) => {
+    for (const m3 of text.matchAll(re2)) if (m3[0]) res.push([m3.index, m3.index + m3[0].length]);
+  };
+  if (o3.skipCitations) {
+    add(BRACKET);
+    add(PAREN);
+  }
+  if (o3.skipFootnotes) add(SUPERSCRIPT);
+  if (o3.skipBrackets) add(/\s?\[[^\]\n]{0,400}\]/g);
+  if (o3.skipParens) add(/\s?\([^)\n]{0,400}\)/g);
+  if (o3.skipUrls) add(URLS);
+  res.sort((a2, b3) => a2[0] - b3[0]);
+  const out = [];
+  for (const r2 of res) {
+    const last = out[out.length - 1];
+    if (last && r2[0] <= last[1]) last[1] = Math.max(last[1], r2[1]);
+    else out.push([...r2]);
+  }
+  return out;
+}
+function withoutRanges(text, ranges) {
+  let out = "";
+  let at = 0;
+  for (const [s3, e2] of ranges) {
+    out += text.slice(at, s3) + " ";
+    at = e2;
+  }
+  return (out + text.slice(at)).replace(/\s+([,.;:!?])/g, "$1").replace(/\s{2,}/g, " ").trim();
 }
 var REFERENCES_HEADING = /^(references|bibliography|works cited|literature cited|reference list|notes and references|sources|endnotes|footnotes)\.?$/i;
 function alignWords(raw, spoken) {
@@ -162351,7 +162392,7 @@ async function dbDelete(key) {
   });
 }
 var fileKeyOf = (file) => hash(`${file.name}|${file.size}`);
-var BLOCKS_VERSION = 3;
+var BLOCKS_VERSION = 4;
 var carryPlace = null;
 async function rememberDoc(file, blocks = null) {
   if (!docKey || !file || file.size > 80 * 1024 * 1024) return;
@@ -162802,6 +162843,7 @@ async function pdfToBlocks(data2, onProgress, reuse = null) {
       let prevCw = null;
       for (const pt2 of l2.parts) {
         const cw = Math.min(pt2.cw, prevCw ?? pt2.cw);
+        if (pt2.sup) text = text.replace(/\s+$/, "");
         if (prevEnd != null && !pt2.sup && pt2.x - prevEnd > Math.max(cw * 0.35, l2.h * 0.12) && !text.endsWith(" ") && !pt2.str.startsWith(" ")) text += " ";
         text += pt2.str;
         prevEnd = pt2.end;
@@ -162881,8 +162923,16 @@ async function pdfToBlocks(data2, onProgress, reuse = null) {
       box = null;
       plines = [];
     };
+    const foot = [];
     for (const [k4, l2] of lines.entries()) {
-      if (isBoiler(l2)) continue;
+      if (isBoiler(l2)) {
+        const blk = { kind: "boiler", text: l2.text, page: i3 + 1, box: l2.box && { ...l2.box }, lines: [{ t: l2.text, box: l2.box, page: i3 + 1 }] };
+        if (l2.rel > 0.5) {
+          flush();
+          blocks.push(blk);
+        } else foot.push(blk);
+        continue;
+      }
       if (k4 >= noteFrom) {
         const last = notes[notes.length - 1];
         if (last && !/^[⁰¹²³⁴⁵⁶⁷⁸⁹*†‡]|^\d{1,3}[.)]?\s/.test(l2.text)) {
@@ -162917,7 +162967,7 @@ async function pdfToBlocks(data2, onProgress, reuse = null) {
       prev = l2;
     }
     flush();
-    blocks.push(...notes);
+    blocks.push(...notes, ...foot);
   }
   return blocks;
 }
@@ -163098,8 +163148,60 @@ function setPagesMode(on2) {
   if (pagesMode && current >= 0) setTimeout(() => markOnPage(sentences[current]), 50);
 }
 $3("pagesBtn").onclick = () => setPagesMode(!pagesMode);
+var optsBox = $3("opts");
+function showOpts(open) {
+  optsBox.hidden = !open;
+  $3("optsBtn").classList.toggle("on", open);
+  $3("optsBtn").setAttribute("aria-expanded", String(open));
+  if (open) for (const c3 of optsBox.querySelectorAll("input[data-k]")) c3.checked = !!settings[c3.dataset.k];
+}
+$3("optsBtn").onclick = () => showOpts(optsBox.hidden);
+$3("optsDone").onclick = () => showOpts(false);
+document.addEventListener("keydown", (e2) => e2.key === "Escape" && !optsBox.hidden && showOpts(false));
+for (const c3 of optsBox.querySelectorAll("input[data-k]")) {
+  c3.onchange = () => {
+    saveSettings({ [c3.dataset.k]: c3.checked });
+    applyOptions();
+  };
+}
+var applying = Promise.resolve();
+function applyOptions() {
+  applying = applying.then(async () => {
+    if (!lastRender || !sentences.length) return;
+    const st2 = engine.state.status;
+    const wasReading = st2 === "playing" || st2 === "buffering" || st2 === "loading";
+    const at = Math.max(0, current >= 0 ? current : savedPosition());
+    const anchor = (sentences[at]?.text || "").slice(0, 25);
+    const frac = at / sentences.length;
+    engine.stop();
+    carryPlace = null;
+    await render(lastRender.blocks, lastRender.title);
+    if (!sentences.length) return;
+    let i3 = Math.min(sentences.length - 1, Math.round(frac * sentences.length));
+    if (anchor) {
+      for (let d3 = 0; d3 < 300; d3++) {
+        const j2 = [i3 - d3, i3 + d3].find((n2) => sentences[n2]?.text.startsWith(anchor));
+        if (j2 != null) {
+          i3 = j2;
+          break;
+        }
+      }
+    }
+    savePosition(i3);
+    setCurrent(i3);
+    current = i3;
+    if (wasReading) startFrom(i3);
+  });
+  return applying;
+}
 window.murmurPages = { draw: (n2) => drawPage(n2), rendered: renderedPages, count: () => pageEls.length };
-function withoutCitations(blocks) {
+function withOptions(blocks) {
+  if (settings.skipFootnotes) blocks = blocks.filter((b3) => b3.kind !== "note");
+  if (settings.skipHeaders !== false) blocks = blocks.filter((b3) => b3.kind !== "boiler");
+  if (settings.skipReferences !== false) blocks = withoutReferences(blocks);
+  return blocks.filter((b3) => b3.kind === "page" || b3.kind === "pre" || /[\p{L}\p{N}]/u.test(b3.text));
+}
+function withoutReferences(blocks) {
   const textBlocks = blocks.filter((b3) => b3.kind !== "page");
   let cut = -1;
   for (let i3 = Math.floor(blocks.length * 0.4); i3 < blocks.length; i3++) {
@@ -163121,7 +163223,7 @@ function withoutCitations(blocks) {
     }
     out = [...blocks.slice(0, cut), { kind: "p", text: "(Reference list skipped.)", note: true }, ...blocks.slice(end)];
   }
-  return out.map((b3) => b3.kind === "pre" || b3.kind === "page" || b3.note ? b3 : { ...b3, text: stripCitations(b3.text) }).filter((b3) => b3.kind !== "note").filter((b3) => b3.kind === "page" || b3.kind === "pre" || /[\p{L}\p{N}]/u.test(b3.text));
+  return out;
 }
 var ENDS_SENTENCE = /[.!?…:;。！？]["'’”)\]」』）]*$/u;
 function carriesOn(a2, b3) {
@@ -163157,7 +163259,9 @@ function joinBrokenParagraphs(blocks) {
   }
   return out;
 }
+var lastRender = null;
 async function render(blocks, title) {
+  lastRender = { blocks: blocks.map((b3) => ({ ...b3 })), title };
   docTitle = title || "Murmur";
   docLang = "en";
   $3("docTitle").textContent = title || "";
@@ -163165,13 +163269,12 @@ async function render(blocks, title) {
   sentences = [];
   pageCrop = /* @__PURE__ */ new Map();
   for (const b3 of blocks) {
-    if (!b3.page || !b3.box || b3.kind === "page") continue;
+    if (!b3.page || !b3.box || b3.kind === "page" || b3.kind === "boiler") continue;
     const c3 = pageCrop.get(b3.page);
     pageCrop.set(b3.page, c3 ? { x0: Math.min(c3.x0, b3.box.x0), x1: Math.max(c3.x1, b3.box.x1) } : { x0: b3.box.x0, x1: b3.box.x1 });
   }
   current = -1;
-  if (settings.skipCitations !== false) blocks = withoutCitations(blocks);
-  blocks = joinBrokenParagraphs(blocks);
+  blocks = joinBrokenParagraphs(withOptions(blocks));
   for (const b3 of blocks) {
     if (b3.kind === "page") {
       const d3 = document.createElement("div");
@@ -163184,33 +163287,50 @@ async function render(blocks, title) {
     const text = b3.kind === "pre" ? b3.text : b3.text.replace(/\s+/g, " ").trim();
     if (!text) continue;
     if (b3.kind === "li") el3.appendChild(document.createTextNode("\u2022 "));
-    if (b3.kind === "note") el3.className = "note";
+    if (b3.kind === "note" || b3.kind === "boiler") el3.className = "note";
     let last = 0;
     for (const [s3, e2] of splitSentences2(text)) {
       if (s3 > last) el3.appendChild(document.createTextNode(text.slice(last, s3)));
       last = e2;
       const raw = text.slice(s3, e2);
-      const speak = speakable(raw, { heading: b3.kind === "h" });
+      const cut = b3.kind === "pre" ? [] : skipRanges(raw, settings);
+      const speak = speakable(cut.length ? withoutRanges(raw, cut) : raw, { heading: b3.kind === "h" });
       const span = document.createElement("span");
       span.className = "s";
       if (speak) {
         span.dataset.i = String(sentences.length);
-        const own = alignWords(raw, speak);
-        let wi = 0;
+        const words = [];
+        let pos = 0;
         for (const part of raw.split(/(\s+)/)) {
           if (!part) continue;
-          if (/^\s+$/.test(part)) span.appendChild(document.createTextNode(part));
+          if (/^\s+$/.test(part)) words.push({ space: part });
           else {
-            const w3 = document.createElement("span");
-            w3.className = "w";
-            const k4 = own[wi++];
-            if (k4 >= 0) w3.dataset.w = String(k4);
-            w3.textContent = part;
-            span.appendChild(w3);
+            let inCut = 0;
+            for (const [a2, z2] of cut) inCut += Math.max(0, Math.min(z2, pos + part.length) - Math.max(a2, pos));
+            words.push({ part, skip: inCut * 2 > part.length });
           }
+          pos += part.length;
+        }
+        const said = words.filter((w3) => w3.part && !w3.skip).map((w3) => w3.part);
+        const own = alignWords(said.join(" "), speak);
+        let wi = 0;
+        for (const wd2 of words) {
+          if (wd2.space) {
+            span.appendChild(document.createTextNode(wd2.space));
+            continue;
+          }
+          const w3 = document.createElement("span");
+          w3.className = wd2.skip ? "w skip" : "w";
+          const k4 = wd2.skip ? -1 : own[wi++];
+          if (k4 >= 0) w3.dataset.w = String(k4);
+          w3.textContent = wd2.part;
+          span.appendChild(w3);
         }
         sentences.push({ text: speak, el: span, block: el3, heading: b3.kind === "h", lang: b3.lang || "en", at: s3, end: e2 });
-      } else span.textContent = raw;
+      } else {
+        span.textContent = raw;
+        if (cut.length) span.classList.add("skip");
+      }
       el3.appendChild(span);
     }
     if (last < text.length) el3.appendChild(document.createTextNode(text.slice(last)));
@@ -163251,7 +163371,9 @@ async function render(blocks, title) {
   if (carryPlace && carryPlace.key !== docKey && carryPlace.count) {
     try {
       const old = parseInt(localStorage.getItem("murmur:pos:" + carryPlace.key) || "0", 10);
-      if (old > 0) {
+      const oldAt = parseInt(localStorage.getItem("murmur:posAt:" + carryPlace.key) || "0", 10);
+      const mineAt = parseInt(localStorage.getItem("murmur:posAt:" + docKey) || "0", 10);
+      if (old > 0 && oldAt >= mineAt) {
         localStorage.setItem("murmur:pos:" + docKey, String(Math.min(sentences.length - 1, Math.round(old / carryPlace.count * sentences.length))));
         localStorage.setItem("murmur:posAt:" + docKey, localStorage.getItem("murmur:posAt:" + carryPlace.key) || String(Date.now()));
       }

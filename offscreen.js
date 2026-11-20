@@ -97003,8 +97003,21 @@ var DEFAULTS = {
   speed: 1,
   engine: "auto",
   // 'auto' (GPU, then CPU), 'webgpu' or 'wasm'
+  // What the reader skips (Reading options in the reader). Skipped words stay on the page, in grey.
   skipCitations: true,
-  // leave out [12], (Smith, 2020), footnote marks and reference lists
+  // [12], (Smith, 2020) (on web pages also footnote marks and reference sections)
+  skipFootnotes: false,
+  // footnote numbers and the footnotes at the bottom of PDF pages, Word footnotes
+  skipReferences: true,
+  // the reference list at the end of a paper
+  skipHeaders: true,
+  // running headers, footers and page numbers of PDFs
+  skipBrackets: false,
+  // anything in [square brackets]
+  skipParens: false,
+  // anything in (round brackets)
+  skipUrls: false,
+  // web addresses and email addresses
   caption: true,
   // big text of the current sentence in the middle of the screen
   selectButton: true,
