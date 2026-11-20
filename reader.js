@@ -162869,7 +162869,7 @@ async function pdfToBlocks(data2, onProgress) {
       else para += (para ? " " : "") + l2.text;
       if (l2.box) {
         box = union(box, l2.box);
-        plines.push({ t: l2.text, box: l2.box });
+        plines.push({ t: l2.text, box: l2.box, page: i3 + 1 });
       }
       prev = l2;
     }
@@ -162970,40 +162970,50 @@ function lineOffsets(lines, text) {
     const probe = String(ln2.t || "").replace(/\s+/g, " ").trim().slice(0, 12);
     let at = probe ? text.indexOf(probe, cur) : -1;
     if (at < 0) at = cur;
-    out.push({ at, box: ln2.box });
+    out.push({ at, box: ln2.box, page: ln2.page });
     cur = at + 1;
   }
   return out;
 }
-function sentenceBox(s3) {
+function sentenceLines(s3) {
   const place = s3 && blockPlace.get(s3.block);
-  if (!place) return null;
-  if (!place.lines || s3.at == null) return place.box;
-  let box = null;
+  if (!place) return [];
+  if (!place.lines || s3.at == null) return place.box ? [{ at: s3.at ?? 0, box: place.box, page: place.page }] : [];
+  const out = [];
   for (const [k4, ln2] of place.lines.entries()) {
     const next = place.lines[k4 + 1]?.at ?? Infinity;
-    if (ln2.at < s3.end && next > s3.at && ln2.box) {
-      const b3 = ln2.box;
-      box = !box ? { ...b3 } : { x0: Math.min(box.x0, b3.x0), x1: Math.max(box.x1, b3.x1), top: Math.max(box.top, b3.top), bottom: Math.min(box.bottom, b3.bottom) };
-    }
+    if (ln2.at < s3.end && next > s3.at && ln2.box) out.push({ at: ln2.at, box: ln2.box, page: ln2.page || place.page });
   }
-  return box || place.box;
+  return out.length ? out : place.box ? [{ at: s3.at, box: place.box, page: place.page }] : [];
+}
+function sentenceBoxes(s3) {
+  const by = /* @__PURE__ */ new Map();
+  for (const ln2 of sentenceLines(s3)) by.set(ln2.page, unionBox(by.get(ln2.page), ln2.box));
+  return [...by].map(([page, box]) => ({ page, box }));
 }
 function markOnPage(s3) {
-  for (const pg3 of pageEls) pg3.querySelector(".hl").hidden = true;
-  const place = s3 && blockPlace.get(s3.block);
-  const b3 = sentenceBox(s3);
-  if (!place || !b3) return;
-  const pg2 = pageEls[place.page - 1];
-  const size = pdfSizes[place.page - 1];
-  if (!pg2 || !size) return;
-  const hl2 = pg2.querySelector(".hl");
-  hl2.style.left = `${b3.x0 / size.w * 100}%`;
-  hl2.style.width = `${(b3.x1 - b3.x0) / size.w * 100}%`;
-  hl2.style.top = `${(1 - b3.top / size.h) * 100}%`;
-  hl2.style.height = `${(b3.top - b3.bottom) / size.h * 100}%`;
-  hl2.hidden = false;
-  followTo(hl2);
+  for (const pg2 of pageEls) pg2.querySelector(".hl").hidden = true;
+  let first = null;
+  for (const { page, box: b3 } of sentenceBoxes(s3)) {
+    const pg2 = pageEls[page - 1];
+    const size = pdfSizes[page - 1];
+    if (!pg2 || !size) continue;
+    const hl2 = pg2.querySelector(".hl");
+    hl2.style.left = `${b3.x0 / size.w * 100}%`;
+    hl2.style.width = `${(b3.x1 - b3.x0) / size.w * 100}%`;
+    hl2.style.top = `${(1 - b3.top / size.h) * 100}%`;
+    hl2.style.height = `${(b3.top - b3.bottom) / size.h * 100}%`;
+    hl2.hidden = false;
+    first = first || hl2;
+  }
+  if (first) followTo(first);
+}
+function wordAtLine(s3, lineAt) {
+  if (s3.at == null || lineAt <= s3.at) return 0;
+  const rawBefore = (s3.el.textContent || "").slice(0, lineAt - s3.at).split(/\s+/).filter(Boolean).length;
+  const w3 = s3.el.querySelectorAll(".w")[rawBefore];
+  const k4 = w3 ? parseInt(w3.dataset.w ?? "", 10) : NaN;
+  return Number.isFinite(k4) && k4 > 0 ? k4 : 0;
 }
 function jumpToPageSpot(n2, ev2) {
   const pg2 = pageEls[n2 - 1];
@@ -163011,22 +163021,24 @@ function jumpToPageSpot(n2, ev2) {
   const rect = pg2.querySelector(".in").getBoundingClientRect();
   const x2 = (ev2.clientX - rect.left) / rect.width * size.w;
   const y3 = (1 - (ev2.clientY - rect.top) / rect.height) * size.h;
-  let best = -1;
+  let best = null;
   let bestD = Infinity;
-  for (const [i3, s3] of sentences.entries()) {
-    const p3 = blockPlace.get(s3.block);
-    if (!p3 || p3.page !== n2) continue;
-    const sb = sentenceBox(s3);
-    if (!sb) continue;
-    const inside = y3 <= sb.top && y3 >= sb.bottom && x2 >= sb.x0 - 20 && x2 <= sb.x1 + 20;
-    const d3 = inside ? 0 : Math.min(Math.abs(y3 - sb.top), Math.abs(y3 - sb.bottom));
-    if (d3 < bestD) {
-      bestD = d3;
-      best = i3;
+  for (const [i3, s4] of sentences.entries()) {
+    for (const ln2 of sentenceLines(s4)) {
+      if (ln2.page !== n2) continue;
+      const b3 = ln2.box;
+      const inside = y3 <= b3.top && y3 >= b3.bottom && x2 >= b3.x0 - 20 && x2 <= b3.x1 + 20;
+      const d3 = inside ? 0 : Math.min(Math.abs(y3 - b3.top), Math.abs(y3 - b3.bottom));
+      if (d3 < bestD) {
+        bestD = d3;
+        best = { i: i3, ln: ln2 };
+      }
     }
-    if (inside) break;
+    if (bestD === 0) break;
   }
-  if (best >= 0) startFrom(best);
+  if (!best) return;
+  const s3 = sentences[best.i];
+  startFrom(best.i, wordAtLine(s3, best.ln.at));
 }
 function setPagesMode(on2) {
   pagesMode = on2 && pagesAvailable();
@@ -163078,6 +163090,7 @@ function carriesOn(a2, b3) {
   return true;
 }
 var unionBox = (a2, b3) => !a2 ? { ...b3 } : !b3 ? a2 : { x0: Math.min(a2.x0, b3.x0), x1: Math.max(a2.x1, b3.x1), top: Math.max(a2.top, b3.top), bottom: Math.min(a2.bottom, b3.bottom) };
+var linesWithPage = (blk) => (blk.lines || []).map((l2) => l2.page ? l2 : { ...l2, page: blk.page });
 function joinBrokenParagraphs(blocks) {
   const out = [];
   let lastP = -1;
@@ -163090,10 +163103,8 @@ function joinBrokenParagraphs(blocks) {
     if (b3.kind === "p" && !b3.note && prev && carriesOn(prev.text, b3.text)) {
       const j2 = { ...prev };
       j2.text = new RegExp("\\p{Ll}-$", "u").test(prev.text) && new RegExp("^\\p{Ll}", "u").test(b3.text) ? prev.text.slice(0, -1) + b3.text : prev.text + " " + b3.text;
-      if (prev.page === b3.page && b3.box) {
-        j2.box = unionBox(prev.box, b3.box);
-        j2.lines = [...prev.lines || [], ...b3.lines || []];
-      }
+      if (prev.page === b3.page && b3.box) j2.box = unionBox(prev.box, b3.box);
+      if (prev.lines || b3.lines) j2.lines = [...linesWithPage(prev), ...linesWithPage(b3)];
       out[lastP] = j2;
       continue;
     }
