@@ -162213,6 +162213,7 @@ function setCurrent(i3) {
   current = i3;
   const s3 = sentences[i3];
   if (!s3) return;
+  wordPieces(s3);
   s3.el.classList.add("cur");
   s3.el.querySelectorAll(".w.cur").forEach((w3) => w3.classList.remove("cur"));
   if (pagesMode) markOnPage(s3);
@@ -162225,6 +162226,7 @@ function setCurrent(i3) {
 function setWord(i3, w3) {
   const s3 = sentences[i3];
   if (!s3) return;
+  wordPieces(s3);
   s3.el.querySelectorAll(".w.cur").forEach((x2) => x2.classList.remove("cur"));
   s3.el.querySelectorAll(`.w[data-w="${w3}"]`).forEach((el3) => el3.classList.add("cur"));
   const cap2 = $3("caption");
@@ -162680,7 +162682,11 @@ docEl.addEventListener("click", (e2) => {
   const s3 = e2.target.closest(".s");
   if (!s3 || s3.dataset.i == null) return;
   const i3 = Number(s3.dataset.i);
-  const w3 = e2.altKey ? e2.target.closest(".w[data-w]") : null;
+  let w3 = null;
+  if (e2.altKey) {
+    wordPieces(sentences[i3]);
+    w3 = document.elementFromPoint(e2.clientX, e2.clientY)?.closest(".w[data-w]") || null;
+  }
   if (w3) {
     e2.preventDefault();
     const st2 = engine.state.status;
@@ -163162,6 +163168,7 @@ function markOnPage(s3) {
 }
 function wordAtLine(s3, lineAt) {
   if (s3.at == null || lineAt <= s3.at) return 0;
+  wordPieces(s3);
   const rawBefore = (s3.el.textContent || "").slice(0, lineAt - s3.at).split(/\s+/).filter(Boolean).length;
   const w3 = s3.el.querySelectorAll(".w")[rawBefore];
   const k4 = w3 ? parseInt(w3.dataset.w ?? "", 10) : NaN;
@@ -163344,6 +163351,55 @@ function joinBrokenParagraphs(blocks) {
   }
   return out;
 }
+var pieced = [];
+function plainSentence(s3) {
+  const parts = [];
+  let at = 0;
+  for (const [a2, z2] of s3.cut) {
+    if (a2 > at) parts.push(document.createTextNode(s3.raw.slice(at, a2)));
+    const sk2 = document.createElement("span");
+    sk2.className = "skip";
+    sk2.textContent = s3.raw.slice(a2, z2);
+    parts.push(sk2);
+    at = z2;
+  }
+  if (at < s3.raw.length) parts.push(document.createTextNode(s3.raw.slice(at)));
+  s3.el.replaceChildren(...parts);
+}
+function wordPieces(s3) {
+  if (!s3 || pieced.includes(s3)) return;
+  const words = [];
+  let pos = 0;
+  for (const part of s3.raw.split(/(\s+)/)) {
+    if (!part) continue;
+    if (/^\s+$/.test(part)) words.push({ space: part });
+    else {
+      let inCut = 0;
+      for (const [a2, z2] of s3.cut) inCut += Math.max(0, Math.min(z2, pos + part.length) - Math.max(a2, pos));
+      words.push({ part, skip: inCut * 2 > part.length });
+    }
+    pos += part.length;
+  }
+  const said = words.filter((w3) => w3.part && !w3.skip).map((w3) => w3.part);
+  const own = alignWords(said.join(" "), s3.text);
+  let wi = 0;
+  const nodes = words.map((wd2) => {
+    if (wd2.space) return document.createTextNode(wd2.space);
+    const w3 = document.createElement("span");
+    w3.className = wd2.skip ? "w skip" : "w";
+    const k4 = wd2.skip ? -1 : own[wi++];
+    if (k4 >= 0) w3.dataset.w = String(k4);
+    w3.textContent = wd2.part;
+    return w3;
+  });
+  s3.el.replaceChildren(...nodes);
+  pieced.push(s3);
+  while (pieced.length > 3) {
+    const k4 = pieced.findIndex((x2) => x2 !== s3 && x2 !== sentences[current]);
+    if (k4 < 0) break;
+    plainSentence(pieced.splice(k4, 1)[0]);
+  }
+}
 var lastRender = null;
 async function render(blocks, title) {
   lastRender = { blocks: blocks.map((b3) => ({ ...b3 })), title };
@@ -163353,6 +163409,7 @@ async function render(blocks, title) {
   $3("docTitle").textContent = title || "";
   docEl.innerHTML = "";
   sentences = [];
+  pieced.length = 0;
   pageCrop = /* @__PURE__ */ new Map();
   for (const b3 of blocks) {
     if (!b3.page || !b3.box || b3.kind === "page" || b3.kind === "boiler") continue;
@@ -163385,34 +163442,9 @@ async function render(blocks, title) {
       span.className = "s";
       if (speak) {
         span.dataset.i = String(sentences.length);
-        const words = [];
-        let pos = 0;
-        for (const part of raw.split(/(\s+)/)) {
-          if (!part) continue;
-          if (/^\s+$/.test(part)) words.push({ space: part });
-          else {
-            let inCut = 0;
-            for (const [a2, z2] of cut) inCut += Math.max(0, Math.min(z2, pos + part.length) - Math.max(a2, pos));
-            words.push({ part, skip: inCut * 2 > part.length });
-          }
-          pos += part.length;
-        }
-        const said = words.filter((w3) => w3.part && !w3.skip).map((w3) => w3.part);
-        const own = alignWords(said.join(" "), speak);
-        let wi = 0;
-        for (const wd2 of words) {
-          if (wd2.space) {
-            span.appendChild(document.createTextNode(wd2.space));
-            continue;
-          }
-          const w3 = document.createElement("span");
-          w3.className = wd2.skip ? "w skip" : "w";
-          const k4 = wd2.skip ? -1 : own[wi++];
-          if (k4 >= 0) w3.dataset.w = String(k4);
-          w3.textContent = wd2.part;
-          span.appendChild(w3);
-        }
-        sentences.push({ text: speak, el: span, block: el3, heading: b3.kind === "h", lang: b3.lang || "en", at: s3, end: e2 });
+        const sent = { text: speak, el: span, block: el3, heading: b3.kind === "h", lang: b3.lang || "en", at: s3, end: e2, raw, cut };
+        plainSentence(sent);
+        sentences.push(sent);
       } else {
         span.textContent = raw;
         if (cut.length) span.classList.add("skip");
