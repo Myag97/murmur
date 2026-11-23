@@ -71,9 +71,43 @@
     if (heading && !/[.!?:]$/.test(t)) t += ".";
     return t;
   }
+  var BRACKET = /\s?\[(?:\d{1,3}[a-z]?(?:\s*[-–,]\s*\d{1,3}[a-z]?)*|[a-z]|note \d+)\]/gi;
   var NAME = "[A-Z][\\p{L}'\u2019-]+(?: (?:and|&|y|et) [A-Z][\\p{L}'\u2019-]+)?(?: et al\\.?)?";
   var ONE = `(?:see |see also |e\\.g\\.,? |cf\\. )?${NAME},? \\d{4}[a-z]?(?:, pp?\\. ?\\d+(?:[-\u2013]\\d+)?)?`;
   var PAREN = new RegExp(`\\s?\\((?:${ONE})(?:; ?(?:${ONE}))*\\)`, "gu");
+  var SUPERSCRIPT = /[⁰¹²³⁴⁵⁶⁷⁸⁹]+(?:[,⁻–][⁰¹²³⁴⁵⁶⁷⁸⁹]+)*/g;
+  var URLS = /\b(?:https?:\/\/|www\.)[^\s<>"]*[^\s<>".,;:!?)\]'’”]|\b[\w.+-]+@[\w-]+(?:\.[\w-]+)+\b/gi;
+  function skipRanges(text, o = {}) {
+    const res = [];
+    const add = (re) => {
+      for (const m of text.matchAll(re)) if (m[0]) res.push([m.index, m.index + m[0].length]);
+    };
+    if (o.skipCitations) {
+      add(BRACKET);
+      add(PAREN);
+    }
+    if (o.skipFootnotes) add(SUPERSCRIPT);
+    if (o.skipBrackets) add(/\s?\[[^\]\n]{0,400}\]/g);
+    if (o.skipParens) add(/\s?\([^)\n]{0,400}\)/g);
+    if (o.skipUrls) add(URLS);
+    res.sort((a, b) => a[0] - b[0]);
+    const out = [];
+    for (const r of res) {
+      const last = out[out.length - 1];
+      if (last && r[0] <= last[1]) last[1] = Math.max(last[1], r[1]);
+      else out.push([...r]);
+    }
+    return out;
+  }
+  function withoutRanges(text, ranges) {
+    let out = "";
+    let at = 0;
+    for (const [s, e] of ranges) {
+      out += text.slice(at, s) + " ";
+      at = e;
+    }
+    return (out + text.slice(at)).replace(/\s+([,.;:!?])/g, "$1").replace(/\s{2,}/g, " ").trim();
+  }
   function alignWords(raw, spoken) {
     const rawW = raw.match(/\S+/g) || [];
     const spW = spoken.split(" ").filter(Boolean);
@@ -662,11 +696,13 @@
       for (const block of collectBlocks(root)) {
         const heading = /^H[1-6]$/.test(block.el.tagName);
         for (const [s, e] of splitSentences(block.text)) {
-          const text = speakable(block.text.slice(s, e), { heading });
+          const raw = block.text.slice(s, e);
+          const cut = skipRanges(raw, S.settings);
+          const text = speakable(cut.length ? withoutRanges(raw, cut) : raw, { heading });
           if (!text) continue;
           const range = makeRange(block, s, e);
           if (!range) continue;
-          out.push({ text, range, el: block.el, block, s, e, words: null });
+          out.push({ text, range, el: block.el, block, s, e, words: null, cut });
         }
       }
       return out;
@@ -741,11 +777,16 @@
       if (!s) return [];
       if (s.words) return s.words;
       const raw = s.block.text.slice(s.s, s.e);
-      const own = alignWords(raw, s.text);
+      const cut = s.cut || [];
+      const kept = [...raw.matchAll(/\S+/g)].filter((m) => {
+        let inCut = 0;
+        for (const [a, z] of cut) inCut += Math.max(0, Math.min(z, m.index + m[0].length) - Math.max(a, m.index));
+        return inCut * 2 <= m[0].length;
+      });
+      const own = alignWords(kept.map((m) => m[0]).join(" "), s.text);
       const span = [];
-      const re = /\S+/g;
-      let m;
-      for (let k = 0; m = re.exec(raw); k++) {
+      for (let k = 0; k < kept.length; k++) {
+        const m = kept[k];
         const w = own[k];
         if (w < 0) continue;
         const a = s.s + m.index;

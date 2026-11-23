@@ -1667,7 +1667,7 @@
     $("voice").value = settings.voice;
     if (speedCtl) speedCtl.refresh();
     else speedCtl = speedButtons({ minus: $("speedDown"), plus: $("speedUp"), label: $("speedVal"), get: () => Number(settings.speed) || 1, set: (v) => saveSettings({ speed: v }) });
-    $("skipCitations").checked = settings.skipCitations !== false;
+    for (const c of document.querySelectorAll("#skipBox input[data-k]")) c.checked = !!settings[c.dataset.k];
     $("selectButton").checked = !!settings.selectButton;
     renderOnline();
   }
@@ -1839,7 +1839,7 @@
       $("listen").innerHTML = "&#10074;&#10074; Stop";
     };
     $("sample").onended = () => $("listen").innerHTML = "&#9654; Listen";
-    $("skipCitations").onchange = () => saveSettings({ skipCitations: $("skipCitations").checked });
+    for (const c of document.querySelectorAll("#skipBox input[data-k]")) c.onchange = () => saveSettings({ [c.dataset.k]: c.checked });
     $("selectButton").onchange = () => saveSettings({ selectButton: $("selectButton").checked });
     $("shortcuts").onclick = () => chrome.tabs.create({ url: "chrome://extensions/shortcuts" });
     chrome.runtime.onMessage.addListener((msg) => {
