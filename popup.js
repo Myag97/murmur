@@ -1805,6 +1805,19 @@
     }
     $("readPage").onclick = () => run({ type: "popup:start", mode: "page" });
     $("openReader").onclick = () => run({ type: "popup:open-reader" });
+    $("showDock").onclick = async () => {
+      const note = $("dockNote");
+      note.hidden = false;
+      note.textContent = "Asking the Murmur app\u2026";
+      try {
+        const r = await fetch("http://127.0.0.1:47816/show", { method: "POST", signal: AbortSignal.timeout(2e3) });
+        if (!r.ok) throw new Error(String(r.status));
+        note.textContent = "There they are (look near where you last left them).";
+      } catch {
+        note.textContent = 'The Murmur app was closed: opening it. If Chrome asks, choose Open (tick "Always allow" to skip this next time). The buttons appear in about 15 seconds.';
+        chrome.tabs.create({ url: "murmur-dictation://show", active: true });
+      }
+    };
     $("savePage").onclick = () => run({ type: "popup:save-page" });
     $("voices").onclick = () => run({ type: "popup:open-welcome", hash: "#voices" });
     $("help").onclick = () => run({ type: "popup:open-welcome", hash: "#how" });
