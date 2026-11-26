@@ -1,9 +1,8 @@
-/* Sentence being read: soft. Word being spoken: clear.
-   These are the light-page defaults; content.js swaps in dark-page colours
-   when the site is dark (see applyHighlightTheme). */
+/* Sentence being read: a soft yellow behind it, the text in the page's own
+   colour (so it can be read on light and dark pages alike). Word being spoken:
+   clear. content.js fine-tunes the yellow (see applyHighlightTheme). */
 ::highlight(murmur-current) {
-  background-color: rgba(255, 226, 122, 0.5);
-  color: #141414;
+  background-color: rgba(255, 214, 74, 0.35);
 }
 ::highlight(murmur-word) {
   background-color: #ffd54a;

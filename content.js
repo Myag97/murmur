@@ -767,7 +767,7 @@
         (document.head || document.documentElement).appendChild(st);
       }
       const word = "::highlight(murmur-word){background-color:#ffd54a!important;color:#141414!important;text-shadow:none!important}";
-      const css = dark ? "::highlight(murmur-current){background-color:rgba(255,214,74,.24)!important;color:#ffffff!important;text-shadow:none!important}" + word : "::highlight(murmur-current){background-color:rgba(255,226,122,.5)!important;color:#141414!important;text-shadow:none!important}" + word;
+      const css = (dark ? "::highlight(murmur-current){background-color:rgba(255,214,74,.28)!important}" : "::highlight(murmur-current){background-color:rgba(255,214,74,.38)!important}") + word;
       if (st.textContent !== css) st.textContent = css;
     }
     try {
