@@ -453,6 +453,7 @@
     for (const id of ["murmur-player", "murmur-caption", "murmur-select"]) {
       for (const old of document.querySelectorAll("#" + id)) old.remove();
     }
+    for (const old of document.querySelectorAll(".murmur-read")) old.remove();
     let retired = false;
     document.addEventListener(
       "murmur-takeover",
@@ -466,6 +467,7 @@
           }
         }
         for (const id of ["murmur-player", "murmur-caption", "murmur-select"]) document.getElementById(id)?.remove();
+        for (const old of document.querySelectorAll(".murmur-read")) old.remove();
       },
       { once: true }
     );
@@ -1279,25 +1281,30 @@
     function claudeMessage(key, fallback) {
       return key && document.querySelector(`${CLAUDE_MSG}[data-turn-key="${CSS.escape(key)}"]`) || fallback;
     }
-    function replyBody(msg) {
-      const body = [...msg.children].find((c) => c.tagName === "DIV" && !c.querySelector('[data-testid="message-actions"]'));
-      return body || msg;
+    function replyBodies(msg) {
+      const isStatus = (c) => /^\s*(thought|thinking|searched|reading|ran|used|viewed)\b[^.]{0,60}$/i.test(c.textContent || "") && !c.querySelector("p, li, pre");
+      const parts = [...msg.children].filter((c) => c.tagName === "DIV" && !c.querySelector('[data-testid="message-actions"]') && !isStatus(c));
+      return parts.length ? parts : [msg];
     }
-    function readElement(root) {
+    function readElement(roots) {
+      roots = Array.isArray(roots) ? roots : [roots];
       hidePill();
-      pageParagraphChars = paragraphTextLength(root) || 1;
+      pageParagraphChars = roots.reduce((n, r) => n + (paragraphTextLength(r) || 0), 0) || 1;
       relaxed = false;
       const hasText = (c) => c.querySelector("p, li, h1, h2, h3, h4, h5, h6, pre, blockquote, td, th") || /^(P|LI|H[1-6]|PRE|BLOCKQUOTE|TABLE|UL|OL)$/.test(c.tagName);
-      const parts = [...root.children].filter(hasText);
       let sentences = [];
-      for (const part of parts) sentences.push(...sentencesIn(part));
-      if (!sentences.length) sentences = sentencesIn(root);
+      for (const root of roots) {
+        const parts = [...root.children].filter(hasText);
+        const mine = [];
+        for (const part of parts) mine.push(...sentencesIn(part));
+        sentences.push(...mine.length ? mine : sentencesIn(root));
+      }
       beginReading(sentences, 0);
     }
     function readClaudeMessage(msg) {
       const el = claudeMessage(msg.getAttribute("data-turn-key"), msg);
       if (!el || !el.isConnected) return;
-      readElement(replyBody(el));
+      readElement(replyBodies(el));
     }
     const READ_BTN_CSS = `
     :host { all: initial; display: inline-flex; align-items: center; margin-left: 8px; vertical-align: middle; }
